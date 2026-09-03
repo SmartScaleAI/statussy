@@ -5,12 +5,12 @@ export default function HomePage() {
     <div className="flex min-h-svh flex-col">
       <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-12 px-6 py-16 sm:py-24">
         <header className="flex flex-col gap-2">
-          <p className="font-heading text-xl tracking-tight text-foreground">
+          <h1 className="font-heading text-xl tracking-tight text-foreground">
             Statussy
-          </p>
-          <h1 className="text-sm text-muted-foreground">
-            One place to see if AI is down.
           </h1>
+          <p className="text-sm text-muted-foreground">
+            One place to see if AI is down.
+          </p>
         </header>
         <StatusBoard />
       </main>
