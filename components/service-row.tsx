@@ -1,5 +1,6 @@
 import { ArrowUpRightIcon } from "lucide-react"
 
+import { ProviderLogo } from "@/components/provider-logo"
 import { StatusBadge } from "@/components/status-badge"
 import { buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -24,15 +25,18 @@ export function ServiceRow({ service }: { service: Service }) {
         healthy ? "bg-transparent" : "bg-muted/30"
       )}
     >
-      <div className="flex min-w-0 flex-col gap-0.5">
-        <p className="font-medium tracking-tight text-foreground">
-          {service.name}
-        </p>
-        {service.incidentTitle ? (
-          <p className="text-sm text-muted-foreground">
-            {service.incidentTitle}
+      <div className="flex min-w-0 items-start gap-3">
+        <ProviderLogo id={service.id} className="mt-0.5" />
+        <div className="flex min-w-0 flex-col gap-0.5">
+          <p className="font-medium tracking-tight text-foreground">
+            {service.name}
           </p>
-        ) : null}
+          {service.incidentTitle ? (
+            <p className="text-sm text-muted-foreground">
+              {service.incidentTitle}
+            </p>
+          ) : null}
+        </div>
       </div>
       <div className="flex shrink-0 items-center gap-3">
         <StatusBadge status={service.status} />

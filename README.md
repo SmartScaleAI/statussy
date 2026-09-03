@@ -23,10 +23,15 @@ Provider rows come from [`data/services.ts`](data/services.ts). Statuses are see
 
 To plug in live feeds later, keep the `Service` type in that file and replace the static `status` / `incidentTitle` / `updatedAt` fields with a mapper from Statuspage JSON or RSS. [`getStatusBoard()`](lib/status.ts) is the only read path the UI uses.
 
+## Provider logos
+
+Each row shows a monochrome mark to the left of the provider name. Assets live in [`public/logos/`](public/logos/) — one SVG per v0 provider, named by `Service.id` (for example `openai.svg`, `google-gemini.svg`). They are simple currentColor marks vendored from [Lobe Icons](https://lobehub.com/icons) (`@lobehub/icons-static-svg`, MIT). [`ProviderLogo`](components/provider-logo.tsx) paints them with the Geist `foreground` token via CSS mask so they stay readable on the dark board.
+
 ## Add a provider
 
 1. Open `data/services.ts`.
-2. Append an object to `services`:
+2. Add a monochrome SVG at `public/logos/{id}.svg` and a matching entry in [`ProviderLogo`](components/provider-logo.tsx).
+3. Append an object to `services`:
 
 ```ts
 {
