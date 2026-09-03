@@ -1,6 +1,7 @@
 /**
  * Static marks for the v0 board. Files live in `public/logos/{service.id}.svg`.
- * Keep them small, monochrome or brand-tinted for dark UI — no animation.
+ * Keep them small with brand-colored fills for dark UI — no animation.
+ * Colors and sources: `public/logos/README.md`.
  */
 export function ProviderLogo({
   id,
