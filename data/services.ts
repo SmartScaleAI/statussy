@@ -1,0 +1,119 @@
+/**
+ * Single mock source for the v0 board.
+ *
+ * Live Statuspage / RSS should map onto this `Service` shape:
+ * - Keep `id`, `name`, `category`, and `statusUrl` in config.
+ * - Fill `status`, `incidentTitle`, and `updatedAt` from the feed.
+ * Do not scrape provider status pages from the client.
+ */
+export const SERVICE_STATUSES = [
+  "operational",
+  "degraded",
+  "partial_outage",
+  "major_outage",
+  "maintenance",
+] as const
+
+export type ServiceStatus = (typeof SERVICE_STATUSES)[number]
+
+export type ServiceCategory = "ai"
+
+export type Service = {
+  id: string
+  name: string
+  category: ServiceCategory
+  /** Official vendor status page. */
+  statusUrl: string
+  status: ServiceStatus
+  /** Short incident or maintenance title when not fully operational. */
+  incidentTitle?: string
+  updatedAt: string
+}
+
+export const LAST_REFRESHED_AT = "2026-09-03T21:40:00.000Z"
+
+export const services: Service[] = [
+  {
+    id: "openai",
+    name: "OpenAI",
+    category: "ai",
+    statusUrl: "https://status.openai.com/",
+    status: "operational",
+    updatedAt: "2026-09-03T21:30:00.000Z",
+  },
+  {
+    id: "anthropic",
+    name: "Anthropic",
+    category: "ai",
+    statusUrl: "https://status.claude.com/",
+    status: "operational",
+    updatedAt: "2026-09-03T21:28:00.000Z",
+  },
+  {
+    id: "google-gemini",
+    name: "Google Gemini",
+    category: "ai",
+    statusUrl: "https://aistudio.google.com/status",
+    status: "degraded",
+    incidentTitle: "Elevated latency on generateContent",
+    updatedAt: "2026-09-03T20:55:00.000Z",
+  },
+  {
+    id: "xai",
+    name: "xAI",
+    category: "ai",
+    statusUrl: "https://status.x.ai/",
+    status: "operational",
+    updatedAt: "2026-09-03T21:26:00.000Z",
+  },
+  {
+    id: "mistral",
+    name: "Mistral",
+    category: "ai",
+    statusUrl: "https://status.mistral.ai/",
+    status: "operational",
+    updatedAt: "2026-09-03T21:22:00.000Z",
+  },
+  {
+    id: "groq",
+    name: "Groq",
+    category: "ai",
+    statusUrl: "https://groqstatus.com/",
+    status: "operational",
+    updatedAt: "2026-09-03T21:31:00.000Z",
+  },
+  {
+    id: "perplexity",
+    name: "Perplexity",
+    category: "ai",
+    statusUrl: "https://status.perplexity.com/",
+    status: "operational",
+    updatedAt: "2026-09-03T21:18:00.000Z",
+  },
+  {
+    id: "deepseek",
+    name: "DeepSeek",
+    category: "ai",
+    statusUrl: "https://status.deepseek.com/",
+    status: "major_outage",
+    incidentTitle: "Chat API unavailable",
+    updatedAt: "2026-09-03T21:12:00.000Z",
+  },
+  {
+    id: "cohere",
+    name: "Cohere",
+    category: "ai",
+    statusUrl: "https://status.cohere.com/",
+    status: "operational",
+    updatedAt: "2026-09-03T21:24:00.000Z",
+  },
+  {
+    id: "openrouter",
+    name: "OpenRouter",
+    category: "ai",
+    statusUrl: "https://status.openrouter.ai/",
+    status: "maintenance",
+    incidentTitle: "Scheduled edge routing window",
+    updatedAt: "2026-09-03T18:00:00.000Z",
+  },
+]

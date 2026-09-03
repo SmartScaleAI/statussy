@@ -1,0 +1,51 @@
+import { Separator } from "@/components/ui/separator"
+import { formatTimestamp } from "@/lib/status"
+import { cn } from "@/lib/utils"
+
+type StatusSummaryProps = {
+  operational: number
+  issues: number
+  total: number
+  refreshedAt: string
+}
+
+export function StatusSummary({
+  operational,
+  issues,
+  total,
+  refreshedAt,
+}: StatusSummaryProps) {
+  const allClear = issues === 0
+
+  return (
+    <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-4">
+        <p className="text-sm" role="status" aria-live="polite">
+          {allClear ? (
+            <span className="text-success">All {total} operational</span>
+          ) : (
+            <>
+              <span
+                className={cn(
+                  "font-medium",
+                  issues >= 2 ? "text-destructive" : "text-warning"
+                )}
+              >
+                {issues} {issues === 1 ? "issue" : "issues"}
+              </span>
+              <span className="text-muted-foreground">
+                {" "}
+                · {operational} operational
+              </span>
+            </>
+          )}
+        </p>
+        <p className="text-xs text-muted-foreground">
+          Refreshed{" "}
+          <time dateTime={refreshedAt}>{formatTimestamp(refreshedAt)}</time>
+        </p>
+      </div>
+      <Separator />
+    </div>
+  )
+}
