@@ -44,4 +44,4 @@ Non-operational services automatically float to the top of the board. Card accen
 
 ## Provider logos
 
-Each card shows a static mark in the header. Files live in [`public/logos/`](public/logos/) and are named `{service.id}.svg` (for example `public/logos/openai.svg`). They are served as-is from `/logos/{id}.svg` — no CDN and no animation. Most marks are light fills for the dark board; a few keep a simple brand tint (Gemini, Mistral, Perplexity, DeepSeek).
+Each card shows a static brand-colored mark in the header. Files live in [`public/logos/`](public/logos/) and are named `{service.id}.svg` (for example `public/logos/openai.svg`). They are served as-is from `/logos/{id}.svg` — no CDN and no animation. Hex values and asset sources are listed in [`public/logos/README.md`](public/logos/README.md).

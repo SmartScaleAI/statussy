@@ -1,8 +1,9 @@
 import { cn } from "@/lib/utils"
 
 /**
- * Static marks for the v0 board. Files live in `public/logos/{service.id}.svg`.
- * Keep them small, monochrome or brand-tinted for dark UI — no animation.
+ * Static brand-colored marks for the v0 board.
+ * Files live in `public/logos/{service.id}.svg`. Keep them small and readable
+ * on dark UI — official/simple brand fills only, no animation.
  */
 export function ProviderLogo({
   id,
