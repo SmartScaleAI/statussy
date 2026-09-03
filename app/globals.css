@@ -133,3 +133,194 @@
     @apply font-sans;
   }
 }
+
+/*
+ * Course-style provider tiles (SMA-9).
+ * Recreated from the 21st.dev / Kristen course-design cards look:
+ * dark rounded tile, corner color glow, status-driven accent.
+ */
+@layer components {
+  .service-card {
+    --service-accent: #01c3a8;
+    --service-glow: #107667ed;
+    position: relative;
+    isolation: isolate;
+    z-index: 1;
+    display: flex;
+    min-height: 20rem;
+    width: 100%;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 2.25rem;
+    background: radial-gradient(
+      ellipse at right top,
+      var(--service-glow) 0%,
+      #151419 47%,
+      #151419 100%
+    );
+    box-shadow: 0.063em 0.75em 1.563em rgb(0 0 0 / 78%);
+  }
+
+  .service-card::before {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    content: "";
+    border: 0.155rem solid transparent;
+    border-radius: inherit;
+    background: linear-gradient(
+        45deg,
+        #232228,
+        #232228,
+        #232228,
+        #232228,
+        var(--service-accent)
+      )
+      border-box;
+    mask:
+      linear-gradient(#fff 0 0) padding-box,
+      linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    -webkit-mask:
+      linear-gradient(#fff 0 0) padding-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: destination-out;
+  }
+
+  .service-card[data-status="operational"] {
+    --service-accent: #01c3a8;
+    --service-glow: #107667ed;
+  }
+
+  .service-card[data-status="degraded"] {
+    --service-accent: #ffb741;
+    --service-glow: #ffb74194;
+  }
+
+  .service-card[data-status="maintenance"] {
+    --service-accent: #1890ff;
+    --service-glow: #00458f8f;
+  }
+
+  .service-card[data-status="partial_outage"] {
+    --service-accent: #a63d2a;
+    --service-glow: #a63d2a82;
+  }
+
+  .service-card[data-status="major_outage"] {
+    --service-accent: #e24a32;
+    --service-glow: #a63d2acc;
+  }
+
+  .service-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.1em 1.25em 0 1.5em;
+  }
+
+  .service-card-date {
+    font-size: 0.875rem;
+    color: #ddd;
+  }
+
+  .service-card-body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1.25em 1.5em 1em;
+    text-align: center;
+  }
+
+  .service-card-body h3 {
+    font-size: 1.375rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: #fff;
+    text-wrap: balance;
+  }
+
+  .service-card-body > p {
+    margin-top: 0.188em;
+    font-size: 1rem;
+    letter-spacing: 0.031rem;
+    color: var(--service-accent);
+  }
+
+  .service-card-incident {
+    margin-top: 0.4em;
+    font-size: 0.875rem;
+    letter-spacing: 0.01rem;
+    color: #c8c8c8;
+    text-wrap: balance;
+  }
+
+  .service-card-progress {
+    margin-top: 0.938rem;
+    width: 100%;
+  }
+
+  .service-card-progress > span {
+    display: block;
+    margin-bottom: 0.313rem;
+    font-weight: 600;
+    color: #fff;
+    text-align: left;
+  }
+
+  .service-card-progress-track {
+    position: relative;
+    display: block;
+    height: 0.313rem;
+    overflow: hidden;
+    border-radius: 3.125rem;
+    background: #363636;
+  }
+
+  .service-card-progress-fill {
+    height: 100%;
+    border-radius: inherit;
+    background: var(--service-accent);
+  }
+
+  .service-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0.7em 1.25em 0.85em 1.5em;
+    background: #151419;
+    border-top: 0.063rem solid #292929;
+    border-bottom-right-radius: 2.25rem;
+    border-bottom-left-radius: 2.25rem;
+  }
+
+  .service-card-status-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    border-radius: 2em;
+    background: #222127;
+    padding: 0.625rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #fff;
+    transition: background-color 150ms ease;
+  }
+
+  .service-card-status-link:hover {
+    background: var(--service-accent);
+    color: #fff;
+  }
+
+  .service-card-status-link:focus-visible {
+    outline: 2px solid var(--service-accent);
+    outline-offset: 2px;
+  }
+
+  .service-card-status-link svg {
+    width: 1rem;
+    height: 1rem;
+  }
+}

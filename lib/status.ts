@@ -53,6 +53,28 @@ export function formatTimestamp(iso: string) {
   }).format(new Date(iso))
 }
 
+/** Compact card header date from a real `updatedAt` — not a fake countdown. */
+export function formatCardDate(iso: string) {
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(iso))
+}
+
+/**
+ * Visual health fill (0–100) from status severity.
+ * Not measured uptime — do not show this number as a percentage.
+ */
+export const STATUS_HEALTH: Record<Service["status"], number> = {
+  operational: 100,
+  degraded: 64,
+  maintenance: 50,
+  partial_outage: 32,
+  major_outage: 8,
+}
+
 /**
  * v0 board payload. Swap `services` / `LAST_REFRESHED_AT` for a Statuspage or
  * RSS mapper that still returns `Service[]` — no UI changes required.
