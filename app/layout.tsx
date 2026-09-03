@@ -21,6 +21,7 @@ export const metadata: Metadata = {
   description: "One place to see if AI is down.",
   icons: {
     icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
       {
         url: "/brand/favicon-light-32.png",
         type: "image/png",
@@ -34,6 +35,7 @@ export const metadata: Metadata = {
         media: "(prefers-color-scheme: dark)",
       },
     ],
+    apple: [{ url: "/apple-icon.png", sizes: "180x180", type: "image/png" }],
   },
 }
 
