@@ -10,7 +10,7 @@ export function ProviderLogo({
   name: string
 }) {
   return (
-    // Decorative: the row already shows the provider name.
+    // Decorative: the card already shows the provider name.
     // eslint-disable-next-line @next/next/no-img-element
     <img
       src={`/logos/${id}.svg`}

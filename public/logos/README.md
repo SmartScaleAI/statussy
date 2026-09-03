@@ -15,4 +15,4 @@ One static SVG per v0 provider. Filename = `Service.id` from `data/services.ts`.
 | `cohere.svg` | Cohere |
 | `openrouter.svg` | OpenRouter |
 
-Rendered by `components/provider-logo.tsx` at 24×24 (`size-6`) on the left of each `ServiceRow`.
+Rendered by `components/provider-logo.tsx` at 24×24 (`size-6`) on each provider card.
