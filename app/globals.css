@@ -135,192 +135,281 @@
 }
 
 /*
- * Course-style provider tiles (SMA-9).
- * Recreated from the 21st.dev / Kristen course-design cards look:
- * dark rounded tile, corner color glow, status-driven accent.
+ * 21st.dev Course Design Cards styles (kristen17).
+ * Variables from their published index.css; layout/theme rules from the
+ * preview bundle CSS. Scoped so body/section resets do not leak.
+ * Progress fill uses --progress from the Card prop, not hardcoded 90/30/50/20.
+ * https://21st.dev/@kristen17/components/course-design-cards
  */
-@layer components {
-  .service-card {
-    --service-accent: #01c3a8;
-    --service-glow: #107667ed;
-    position: relative;
-    isolation: isolate;
-    z-index: 1;
-    display: flex;
-    min-height: 20rem;
-    width: 100%;
-    flex-direction: column;
-    overflow: hidden;
-    border-radius: 2.25rem;
-    background: radial-gradient(
-      ellipse at right top,
-      var(--service-glow) 0%,
-      #151419 47%,
-      #151419 100%
-    );
-    box-shadow: 0.063em 0.75em 1.563em rgb(0 0 0 / 78%);
-  }
+.course-design-board {
+  --clr-blue: #1890ff;
+  --clr-green: #01c3a8;
+  --clr-orange: #ffb741;
+  --clr-red: #a63d2a;
+  --bg-dark: #232228;
+  --bg-footer: #151419;
+  --color-white: #fff;
+  --color-gray-light: #ddd;
+  --color-gray-medium: #363636;
+  --color-gray-dark: #292929;
+  --color-gray-very-dark: #222127;
+}
 
-  .service-card::before {
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    pointer-events: none;
-    content: "";
-    border: 0.155rem solid transparent;
-    border-radius: inherit;
-    background: linear-gradient(
-        45deg,
-        #232228,
-        #232228,
-        #232228,
-        #232228,
-        var(--service-accent)
-      )
-      border-box;
-    mask:
-      linear-gradient(#fff 0 0) padding-box,
-      linear-gradient(#fff 0 0);
-    mask-composite: exclude;
-    -webkit-mask:
-      linear-gradient(#fff 0 0) padding-box,
-      linear-gradient(#fff 0 0);
-    -webkit-mask-composite: destination-out;
-  }
+.course-design-board a {
+  text-decoration: none;
+  display: inline-block;
+}
 
-  .service-card[data-status="operational"] {
-    --service-accent: #01c3a8;
-    --service-glow: #107667ed;
-  }
+.course-design-board .card {
+  isolation: isolate;
+  z-index: 1;
+  text-align: center;
+  border-radius: 2.25rem;
+  place-content: center;
+  place-items: center;
+  width: 100%;
+  min-height: 20rem;
+  display: grid;
+  position: relative;
+  box-shadow: 0.063em 0.75em 1.563em #000000c7;
+}
 
-  .service-card[data-status="degraded"] {
-    --service-accent: #ffb741;
-    --service-glow: #ffb74194;
-  }
+.course-design-board .card:before {
+  content: "";
+  z-index: -1;
+  border: 0.155rem solid transparent;
+  border-radius: 2.25rem;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(#fff 0 0), linear-gradient(#fff 0 0);
+  -webkit-mask-clip: padding-box, border-box;
+  -webkit-mask-origin: padding-box, border-box;
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
 
-  .service-card[data-status="maintenance"] {
-    --service-accent: #1890ff;
-    --service-glow: #00458f8f;
-  }
+.course-design-board .card-header {
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0.8em 0.5em 0 1.5em;
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
 
-  .service-card[data-status="partial_outage"] {
-    --service-accent: #a63d2a;
-    --service-glow: #a63d2a82;
-  }
+.course-design-board .card-header .date {
+  color: var(--color-gray-light);
+}
 
-  .service-card[data-status="major_outage"] {
-    --service-accent: #e24a32;
-    --service-glow: #a63d2acc;
-  }
+.course-design-board .card-header svg {
+  color: var(--color-white);
+  width: 2.5rem;
+}
 
-  .service-card-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1.1em 1.25em 0 1.5em;
-  }
+.course-design-board .card-body {
+  width: 100%;
+  padding: 0.7em 1.25em 0.5em 1.5em;
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
 
-  .service-card-date {
-    font-size: 0.875rem;
-    color: #ddd;
-  }
+.course-design-board .card-body h3 {
+  color: var(--color-white);
+  text-transform: capitalize;
+  margin-top: 0.625em;
+  margin-bottom: 0.188em;
+  font-size: 1.375rem;
+  font-weight: 600;
+}
 
-  .service-card-body {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    justify-content: center;
-    padding: 1.25em 1.5em 1em;
-    text-align: center;
-  }
+.course-design-board .card-body p {
+  color: var(--color-gray-light);
+  letter-spacing: 0.031rem;
+  font-size: 1rem;
+}
 
-  .service-card-body h3 {
-    font-size: 1.375rem;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    color: #fff;
-    text-wrap: balance;
-  }
+.course-design-board .card-body .progress {
+  margin-top: 0.938rem;
+}
 
-  .service-card-body > p {
-    margin-top: 0.188em;
-    font-size: 1rem;
-    letter-spacing: 0.031rem;
-    color: var(--service-accent);
-  }
+.course-design-board .card-body .progress .progress-bar {
+  background: var(--color-gray-medium);
+  border-radius: 3.125rem;
+  width: 100%;
+  height: 0.313rem;
+  display: block;
+  position: relative;
+}
 
-  .service-card-incident {
-    margin-top: 0.4em;
-    font-size: 0.875rem;
-    letter-spacing: 0.01rem;
-    color: #c8c8c8;
-    text-wrap: balance;
-  }
+.course-design-board .card-body .progress .progress-bar:after {
+  content: "";
+  border-radius: 3.125rem;
+  height: 100%;
+  display: block;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: var(--progress, 0%);
+}
 
-  .service-card-progress {
-    margin-top: 0.938rem;
-    width: 100%;
-  }
+.course-design-board .card-body .progress span:first-of-type {
+  color: var(--color-white);
+  text-align: left;
+  width: 100%;
+  margin-bottom: 0.313rem;
+  font-weight: 600;
+  display: block;
+}
 
-  .service-card-progress > span {
-    display: block;
-    margin-bottom: 0.313rem;
-    font-weight: 600;
-    color: #fff;
-    text-align: left;
-  }
+.course-design-board .card-body .progress span {
+  text-align: right;
+  color: var(--color-white);
+  margin-top: 0.313rem;
+  display: block;
+}
 
-  .service-card-progress-track {
-    position: relative;
-    display: block;
-    height: 0.313rem;
-    overflow: hidden;
-    border-radius: 3.125rem;
-    background: #363636;
-  }
+.course-design-board .card-footer {
+  border-top: 0.063rem solid var(--color-gray-dark);
+  background: var(--bg-footer);
+  border-bottom-right-radius: 2.25rem;
+  border-bottom-left-radius: 2.25rem;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.7em 1.25em 0.5em 1.5em;
+  display: flex;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
 
-  .service-card-progress-fill {
-    height: 100%;
-    border-radius: inherit;
-    background: var(--service-accent);
-  }
+.course-design-board .card-footer ul {
+  align-items: center;
+  display: flex;
+}
 
-  .service-card-footer {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    padding: 0.7em 1.25em 0.85em 1.5em;
-    background: #151419;
-    border-top: 0.063rem solid #292929;
-    border-bottom-right-radius: 2.25rem;
-    border-bottom-left-radius: 2.25rem;
-  }
+.course-design-board .card-footer ul li {
+  margin-right: -0.625rem;
+  list-style-type: none;
+  display: flex;
+}
 
-  .service-card-status-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    border-radius: 2em;
-    background: #222127;
-    padding: 0.625rem 1.25rem;
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: #fff;
-    transition: background-color 150ms ease;
-  }
+.course-design-board .card-footer ul li img {
+  object-fit: contain;
+  border-radius: 50%;
+  width: 1.875rem;
+  height: 1.875rem;
+}
 
-  .service-card-status-link:hover {
-    background: var(--service-accent);
-    color: #fff;
-  }
+.course-design-board .card-footer .btn-countdown {
+  background: var(--color-gray-very-dark);
+  color: var(--color-white);
+  border-radius: 2em;
+  padding: 0.625rem 1.5rem;
+}
 
-  .service-card-status-link:focus-visible {
-    outline: 2px solid var(--service-accent);
-    outline-offset: 2px;
-  }
+.course-design-board .card.green {
+  background: radial-gradient(at 100% 0, #107667ed, #151419 47%, #151419);
+}
 
-  .service-card-status-link svg {
-    width: 1rem;
-    height: 1rem;
-  }
+.course-design-board .card.green:before {
+  background: linear-gradient(
+      45deg,
+      var(--bg-dark),
+      var(--bg-dark),
+      var(--bg-dark),
+      var(--bg-dark),
+      var(--clr-green)
+    )
+    border-box;
+}
+
+.course-design-board .card.green .progress-bar:after {
+  background: var(--clr-green);
+}
+
+.course-design-board .card.green .btn-countdown:hover {
+  background: var(--clr-green);
+}
+
+.course-design-board .card.blue {
+  background: radial-gradient(at 100% 0, #00458f8f, #151419 45%, #151419);
+}
+
+.course-design-board .card.blue:before {
+  background: linear-gradient(
+      45deg,
+      var(--bg-dark),
+      var(--bg-dark),
+      var(--bg-dark),
+      var(--bg-dark),
+      var(--clr-blue)
+    )
+    border-box;
+}
+
+.course-design-board .card.blue .progress-bar:after {
+  background: var(--clr-blue);
+}
+
+.course-design-board .card.blue .btn-countdown:hover {
+  background: var(--clr-blue);
+}
+
+.course-design-board .card.orange {
+  background: radial-gradient(at 100% 0, #ffb74194, #151419 47%, #151419);
+}
+
+.course-design-board .card.orange:before {
+  background: linear-gradient(
+      45deg,
+      var(--bg-dark),
+      var(--bg-dark),
+      var(--bg-dark),
+      var(--bg-dark),
+      var(--clr-orange)
+    )
+    border-box;
+}
+
+.course-design-board .card.orange .progress-bar:after {
+  background: var(--clr-orange);
+}
+
+.course-design-board .card.orange .btn-countdown:hover {
+  background: var(--clr-orange);
+}
+
+.course-design-board .card.red {
+  background: radial-gradient(at 100% 0, #a63d2a82, #151419 47%, #151419);
+}
+
+.course-design-board .card.red:before {
+  background: linear-gradient(
+      45deg,
+      var(--bg-dark),
+      var(--bg-dark),
+      var(--bg-dark),
+      var(--bg-dark),
+      var(--clr-red)
+    )
+    border-box;
+}
+
+.course-design-board .card.red .progress-bar:after {
+  background: var(--clr-red);
+}
+
+.course-design-board .card.red .btn-countdown:hover {
+  background: var(--clr-red);
 }

@@ -1,51 +1,41 @@
-import { ArrowUpRightIcon } from "lucide-react"
-
-import { ProviderLogo } from "@/components/provider-logo"
+import CourseCard from "@/components/ui/course-design-cards"
 import {
   formatCardDate,
   STATUS_HEALTH,
   STATUS_LABEL,
   type Service,
+  type ServiceStatus,
 } from "@/lib/status"
 
+/** 21st.dev color themes, driven by status severity — not random. */
+const STATUS_COLOR: Record<ServiceStatus, string> = {
+  operational: "green",
+  degraded: "orange",
+  maintenance: "blue",
+  partial_outage: "red",
+  major_outage: "red",
+}
+
 export function ServiceCard({ service }: { service: Service }) {
-  const health = STATUS_HEALTH[service.status]
+  const label = STATUS_LABEL[service.status]
 
   return (
-    <li className="service-card" data-status={service.status}>
-      <header className="service-card-header">
-        <time className="service-card-date" dateTime={service.updatedAt}>
-          {formatCardDate(service.updatedAt)}
-        </time>
-        <ProviderLogo id={service.id} name={service.name} className="size-8" />
-      </header>
-      <div className="service-card-body">
-        <h3>{service.name}</h3>
-        <p>{STATUS_LABEL[service.status]}</p>
-        {service.incidentTitle ? (
-          <p className="service-card-incident">{service.incidentTitle}</p>
-        ) : null}
-        <div className="service-card-progress">
-          <span>Health</span>
-          <div className="service-card-progress-track" aria-hidden="true">
-            <div
-              className="service-card-progress-fill"
-              style={{ width: `${health}%` }}
-            />
-          </div>
-        </div>
-      </div>
-      <footer className="service-card-footer">
-        <a
-          href={service.statusUrl}
-          target="_blank"
-          rel="noreferrer"
-          className="service-card-status-link"
-        >
-          Official status
-          <ArrowUpRightIcon data-icon="inline-end" />
-        </a>
-      </footer>
+    <li>
+      <CourseCard
+        data={{
+          id: service.id,
+          colorClass: STATUS_COLOR[service.status],
+          date: formatCardDate(service.updatedAt),
+          title: service.name,
+          description: service.incidentTitle ?? label,
+          progressPercent: `${STATUS_HEALTH[service.status]}%`,
+          progressValue: label,
+          imgSrc1: `/logos/${service.id}.svg`,
+          imgAlt1: "",
+          countdownText: "Official status",
+          countdownHref: service.statusUrl,
+        }}
+      />
     </li>
   )
 }

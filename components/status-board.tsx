@@ -6,7 +6,10 @@ export function StatusBoard() {
   const { items, summary, refreshedAt } = getStatusBoard()
 
   return (
-    <section className="flex flex-col gap-8" aria-label="AI provider status">
+    <section
+      className="course-design-board flex flex-col gap-8"
+      aria-label="AI provider status"
+    >
       <StatusSummary
         operational={summary.operational}
         issues={summary.issues}
