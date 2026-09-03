@@ -1,3 +1,4 @@
+import { services } from "@/data/services"
 import { cn } from "@/lib/utils"
 
 /**
@@ -16,6 +17,14 @@ const LOGO_SRC: Record<string, string> = {
   deepseek: "/logos/deepseek.svg",
   cohere: "/logos/cohere.svg",
   openrouter: "/logos/openrouter.svg",
+}
+
+const missingLogos = services
+  .map((service) => service.id)
+  .filter((id) => !LOGO_SRC[id])
+
+if (missingLogos.length > 0) {
+  throw new Error(`Missing provider logo for: ${missingLogos.join(", ")}`)
 }
 
 export function ProviderLogo({
