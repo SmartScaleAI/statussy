@@ -19,6 +19,7 @@ export type ServiceStatus = (typeof SERVICE_STATUSES)[number]
 export type ServiceCategory = "ai"
 
 export type Service = {
+  /** Matches a static mark at `public/logos/{id}.svg`. */
   id: string
   name: string
   category: ServiceCategory

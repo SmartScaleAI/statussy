@@ -41,3 +41,7 @@ To plug in live feeds later, keep the `Service` type in that file and replace th
 ```
 
 Non-operational services automatically float to the top of the board.
+
+## Provider logos
+
+Each row shows a static mark to the left of the name. Files live in [`public/logos/`](public/logos/) and are named `{service.id}.svg` (for example `public/logos/openai.svg`). They are served as-is from `/logos/{id}.svg` — no CDN and no animation. Most marks are light fills for the dark board; a few keep a simple brand tint (Gemini, Mistral, Perplexity, DeepSeek).
