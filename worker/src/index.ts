@@ -5,13 +5,15 @@
  * on a fixed interval (REFRESH_INTERVAL_SECONDS, default 300 = 5 minutes).
  * Each tick fetches live status for providers with a fetcher (OpenAI per
  * SMA-16; Anthropic, Groq, and Cohere per SMA-19 — all via the
- * Statuspage-compatible API; OpenRouter via OnlineOrNot, SMA-21) and writes
+ * Statuspage-compatible API; OpenRouter via OnlineOrNot, SMA-21; Perplexity
+ * via Instatus, SMA-20) and writes
  * snapshots, components, and incidents to Postgres. A tiny HTTP server
  * exposes /healthz.
  */
 import { createServer } from "node:http"
 import { loadConfig } from "./config.js"
 import { createPool } from "./db.js"
+import { fetchInstatusState } from "./instatus.js"
 import { runMigrations } from "./migrate.js"
 import { seedProviders } from "./seed.js"
 import { fetchOnlineOrNotState } from "./onlineornot.js"
@@ -69,6 +71,13 @@ const PROVIDER_JOBS: ProviderJob[] = [
     // incidents, so ones that drop out are marked resolved at persist time.
     id: "openrouter",
     fetch: () => fetchOnlineOrNotState("status.openrouter.ai", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  {
+    // SMA-20: Perplexity via Instatus. summary.json also only carries
+    // *active* incidents, so ones that drop out are resolved at persist time.
+    id: "perplexity",
+    fetch: () => fetchInstatusState("https://status.perplexity.com", fetchOptions()),
     persistOptions: { resolveMissingIncidents: true },
   },
 ]

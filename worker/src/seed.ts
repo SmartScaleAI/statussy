@@ -22,7 +22,12 @@ export const PROVIDER_SEED = [
   { id: "xai", name: "xAI", statusUrl: "https://status.x.ai/" },
   { id: "mistral", name: "Mistral", statusUrl: "https://status.mistral.ai/" },
   { id: "groq", name: "Groq", statusUrl: "https://groqstatus.com/", fetcherType: "statuspage" },
-  { id: "perplexity", name: "Perplexity", statusUrl: "https://status.perplexity.com/" },
+  {
+    id: "perplexity",
+    name: "Perplexity",
+    statusUrl: "https://status.perplexity.com/",
+    fetcherType: "instatus",
+  },
   { id: "deepseek", name: "DeepSeek", statusUrl: "https://status.deepseek.com/" },
   {
     id: "cohere",
