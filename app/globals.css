@@ -144,6 +144,21 @@
   --clr-green: #48aa4a;
   --clr-amber: #fdb203;
   --clr-red: #de4649;
+  --bg-dark: #d4d4d4; /* border-gradient base */
+  --bg-footer: #f5f5f5; /* light card surface */
+  --color-white: #171717; /* title / primary text */
+  --color-gray-light: #737373; /* secondary text */
+  --color-gray-medium: #a3a3a3;
+  --color-gray-dark: #e5e5e5; /* footer divider */
+  --color-gray-very-dark: #fafafa;
+  --card-shadow: 0.063em 0.5em 1.25em rgb(0 0 0 / 0.1);
+  --glow-green: 20%;
+  --glow-blue: 18%;
+  --glow-amber: 22%;
+  --glow-red: 18%;
+}
+
+.dark .course-design-board {
   --bg-dark: #262626; /* border-gradient base */
   --bg-footer: #171717; /* charcoal card surface (user reference) */
   --color-white: #ededed; /* gray-1000 */
@@ -151,6 +166,11 @@
   --color-gray-medium: #454545; /* gray-500 */
   --color-gray-dark: #2e2e2e; /* gray-400 */
   --color-gray-very-dark: #1f1f1f; /* gray-200 */
+  --card-shadow: 0.063em 0.75em 1.563em #000000c7;
+  --glow-green: 42%;
+  --glow-blue: 38%;
+  --glow-amber: 42%;
+  --glow-red: 40%;
 }
 
 .course-design-board a {
@@ -167,7 +187,7 @@
   display: flex;
   flex-direction: column;
   position: relative;
-  box-shadow: 0.063em 0.75em 1.563em #000000c7;
+  box-shadow: var(--card-shadow);
 }
 
 .course-design-board .card:before {
@@ -214,8 +234,7 @@
 
 .course-design-board .card.amber .status-live {
   color: var(--clr-amber);
-  text-shadow: 0 0 0.35rem
-    color-mix(in srgb, var(--clr-amber) 35%, transparent);
+  text-shadow: 0 0 0.35rem color-mix(in srgb, var(--clr-amber) 35%, transparent);
 }
 
 .course-design-board .card.blue .status-live {
@@ -443,7 +462,7 @@
 .course-design-board .card.green {
   background: radial-gradient(
     at 100% 0,
-    color-mix(in srgb, var(--clr-green) 42%, transparent),
+    color-mix(in srgb, var(--clr-green) var(--glow-green), transparent),
     var(--bg-footer) 47%,
     var(--bg-footer)
   );
@@ -464,7 +483,7 @@
 .course-design-board .card.blue {
   background: radial-gradient(
     at 100% 0,
-    color-mix(in srgb, var(--clr-blue) 38%, transparent),
+    color-mix(in srgb, var(--clr-blue) var(--glow-blue), transparent),
     var(--bg-footer) 45%,
     var(--bg-footer)
   );
@@ -485,7 +504,7 @@
 .course-design-board .card.amber {
   background: radial-gradient(
     at 100% 0,
-    color-mix(in srgb, var(--clr-amber) 42%, transparent),
+    color-mix(in srgb, var(--clr-amber) var(--glow-amber), transparent),
     var(--bg-footer) 47%,
     var(--bg-footer)
   );
@@ -506,7 +525,7 @@
 .course-design-board .card.red {
   background: radial-gradient(
     at 100% 0,
-    color-mix(in srgb, var(--clr-red) 40%, transparent),
+    color-mix(in srgb, var(--clr-red) var(--glow-red), transparent),
     var(--bg-footer) 47%,
     var(--bg-footer)
   );
@@ -523,4 +542,3 @@
     )
     border-box;
 }
-
