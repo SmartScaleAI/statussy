@@ -4,16 +4,24 @@ import { StatusBoard } from "@/components/status-board"
 export default function HomePage() {
   return (
     <div className="flex min-h-svh flex-col">
-      <header className="mx-auto flex w-full max-w-5xl items-center justify-between px-6 pt-8 sm:pt-12">
+      <header className="flex w-full items-center justify-between px-4 pt-4 sm:px-5 sm:pt-5">
         <h1 className="flex items-center gap-2.5 font-heading text-2xl font-semibold tracking-tight text-foreground">
-          {/* Brand mark is a black tile with a white S — readable in light and dark. */}
+          {/* Light: black mark. Dark: white-on-black tile. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/brand/logo-light.svg"
+            alt=""
+            width={24}
+            height={24}
+            className="size-[1em] dark:hidden"
+          />
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/brand/logo.svg"
             alt=""
             width={24}
             height={24}
-            className="size-[1em]"
+            className="hidden size-[1em] dark:block"
           />
           Statussy
         </h1>
