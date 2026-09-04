@@ -292,21 +292,21 @@
   flex: 1 1 0;
   min-width: 0;
   border-radius: 1px;
-  background: #4e7d5c;
+  background: var(--clr-green);
 }
 
 .course-design-board
   .card-body
   .status-history-bar
   span[data-status="operational"] {
-  background: #4e7d5c;
+  background: var(--clr-green);
 }
 
 .course-design-board
   .card-body
   .status-history-bar
   span[data-status="degraded"] {
-  background: #d4a017;
+  background: var(--clr-orange);
 }
 
 .course-design-board
