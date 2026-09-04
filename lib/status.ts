@@ -189,20 +189,17 @@ export function historySparkline(
   width = 120,
   height = 36
 ) {
-  const padX = 3
   const padY = 3
-  const innerW = width - padX * 2
   const innerH = height - padY * 2
   const count = history.length
   const points = history.map((status, index) => ({
-    x: count === 1 ? width / 2 : padX + (index / (count - 1)) * innerW,
+    x: count === 1 ? width / 2 : (index / (count - 1)) * width,
     y: padY + STATUS_LEVEL[status] * innerH,
   }))
 
   const line = catmullRomLine(points)
-  const first = points[0]
   const last = points[points.length - 1]
-  const area = `${line} L${last.x.toFixed(2)} ${height} L${first.x.toFixed(2)} ${height} Z`
+  const area = `${line} L${width.toFixed(2)} ${height} L0 ${height} Z`
   return {
     line,
     area,
