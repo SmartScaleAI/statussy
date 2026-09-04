@@ -28,7 +28,13 @@ export function SiteFooter({ className }: { className?: string }) {
       )}
     >
       <Separator />
-      <SuggestProviderForm />
+      <div className="course-design-board">
+        <div className="card plain">
+          <div className="suggest-card-body">
+            <SuggestProviderForm />
+          </div>
+        </div>
+      </div>
       <div className="mt-8 flex flex-col items-center gap-2 text-xs text-muted-foreground sm:grid sm:grid-cols-3 sm:items-center sm:gap-3">
         <Link
           href="/"

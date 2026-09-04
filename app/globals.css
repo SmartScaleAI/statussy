@@ -537,3 +537,19 @@
     border-box;
 }
 
+/* Suggest-form card: charcoal surface + border, no status wash. */
+.course-design-board .card.plain {
+  background: var(--bg-footer);
+  text-align: left;
+}
+
+.course-design-board .card.plain:before {
+  background: var(--bg-dark) border-box;
+}
+
+.course-design-board .card.plain .suggest-card-body {
+  width: 100%;
+  padding: 1.25rem 1.35rem 1.35rem;
+  box-sizing: border-box;
+}
+
