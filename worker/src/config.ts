@@ -2,9 +2,14 @@ export type Config = {
   databaseUrl: string
   refreshIntervalSeconds: number
   port: number
+  fetchTimeoutMs: number
+  fetchUserAgent: string
 }
 
 const DEFAULT_REFRESH_INTERVAL_SECONDS = 300
+const DEFAULT_FETCH_TIMEOUT_MS = 10_000
+const DEFAULT_FETCH_USER_AGENT =
+  "statussy-worker/0.1 (+https://github.com/SmartScaleAI/statussy)"
 
 export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
   const databaseUrl = env.DATABASE_URL
@@ -28,5 +33,18 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
     throw new Error(`PORT must be a positive integer, got ${JSON.stringify(env.PORT)}`)
   }
 
-  return { databaseUrl, refreshIntervalSeconds, port }
+  let fetchTimeoutMs = DEFAULT_FETCH_TIMEOUT_MS
+  if (env.FETCH_TIMEOUT_MS !== undefined) {
+    const parsed = Number(env.FETCH_TIMEOUT_MS)
+    if (!Number.isInteger(parsed) || parsed <= 0) {
+      throw new Error(
+        `FETCH_TIMEOUT_MS must be a positive integer, got ${JSON.stringify(env.FETCH_TIMEOUT_MS)}`,
+      )
+    }
+    fetchTimeoutMs = parsed
+  }
+
+  const fetchUserAgent = env.FETCH_USER_AGENT?.trim() || DEFAULT_FETCH_USER_AGENT
+
+  return { databaseUrl, refreshIntervalSeconds, port, fetchTimeoutMs, fetchUserAgent }
 }
