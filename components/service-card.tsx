@@ -1,6 +1,7 @@
 import CourseCard from "@/components/ui/course-design-cards"
 import {
-  STATUS_HEALTH,
+  formatHistoryUptime,
+  getStatusHistory,
   STATUS_LABEL,
   STATUS_SHORT,
   type Service,
@@ -18,6 +19,7 @@ const STATUS_COLOR: Record<ServiceStatus, string> = {
 
 export function ServiceCard({ service }: { service: Service }) {
   const label = STATUS_LABEL[service.status]
+  const history = getStatusHistory(service)
 
   return (
     <li>
@@ -27,8 +29,8 @@ export function ServiceCard({ service }: { service: Service }) {
           colorClass: STATUS_COLOR[service.status],
           title: service.name,
           description: service.incidentTitle ?? label,
-          progressPercent: `${STATUS_HEALTH[service.status]}%`,
-          progressValue: label,
+          history,
+          uptimeLabel: formatHistoryUptime(history),
           imgSrc1: `/logos/${service.id}.svg`,
           imgAlt1: "",
           countdownText: "Official status",

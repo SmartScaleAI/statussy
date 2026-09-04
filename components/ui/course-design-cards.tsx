@@ -10,14 +10,20 @@
 import { ArrowUpRightIcon } from "lucide-react"
 import React from "react"
 
+import {
+  STATUS_HISTORY_DAYS,
+  STATUS_SHORT,
+  type ServiceStatus,
+} from "@/lib/status"
+
 export interface CardData {
   id: number | string
   colorClass: string
   date?: string
   title: string
   description: string
-  progressPercent: string
-  progressValue: string
+  history?: ServiceStatus[]
+  uptimeLabel?: string
   imgSrc1?: string
   imgAlt1?: string
   imgSrc2?: string
@@ -53,8 +59,8 @@ const Card: React.FC<CardProps> = ({ data }) => {
     date,
     title,
     description,
-    progressPercent,
-    progressValue,
+    history,
+    uptimeLabel,
     imgSrc1,
     imgAlt1,
     imgSrc2,
@@ -76,14 +82,27 @@ const Card: React.FC<CardProps> = ({ data }) => {
       <div className="card-body">
         <h3>{title}</h3>
         <p>{description}</p>
-        <div className="progress">
-          <span>Progress</span>
+        {history && history.length > 0 ? (
           <div
-            className="progress-bar"
-            style={{ ["--progress" as string]: progressPercent }}
-          />
-          <span>{progressValue}</span>
-        </div>
+            className="status-history"
+            aria-label={`${STATUS_HISTORY_DAYS}-day status history`}
+          >
+            <div className="status-history-bar">
+              {history.map((dayStatus, index) => (
+                <span
+                  key={index}
+                  data-status={dayStatus}
+                  title={STATUS_SHORT[dayStatus]}
+                />
+              ))}
+            </div>
+            <div className="status-history-meta">
+              <span>{STATUS_HISTORY_DAYS} days ago</span>
+              {uptimeLabel ? <span>{uptimeLabel}</span> : null}
+              <span>Today</span>
+            </div>
+          </div>
+        ) : null}
       </div>
       <div className="card-footer">
         <ul>
