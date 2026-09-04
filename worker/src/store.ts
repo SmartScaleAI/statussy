@@ -1,5 +1,18 @@
 import type pg from "pg"
-import type { MappedProviderState } from "./statuspage.js"
+import type { MappedComponent, MappedIncident, ProviderStatus } from "./statuspage.js"
+
+/**
+ * Normalized provider state accepted by the store, regardless of which
+ * fetcher produced it (Statuspage API per SMA-16/19, RSS per SMA-22).
+ * `detail` is fetcher-specific structured JSON (never raw HTML).
+ */
+export type PersistableProviderState = {
+  status: ProviderStatus
+  incidentTitle: string | null
+  detail: object
+  components: MappedComponent[]
+  incidents: MappedIncident[]
+}
 
 export type PersistOptions = {
   /**
@@ -19,7 +32,7 @@ export type PersistOptions = {
 export async function persistProviderState(
   pool: pg.Pool,
   providerId: string,
-  state: MappedProviderState,
+  state: PersistableProviderState,
   options: PersistOptions = {},
 ): Promise<void> {
   const client = await pool.connect()
