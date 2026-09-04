@@ -163,11 +163,9 @@
   z-index: 1;
   text-align: center;
   border-radius: 1rem;
-  place-content: center;
-  place-items: center;
   width: 100%;
-  min-height: 22rem;
-  display: grid;
+  display: flex;
+  flex-direction: column;
   position: relative;
   box-shadow: 0.063em 0.75em 1.563em #000000c7;
 }
@@ -193,12 +191,9 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  padding: 0.8em 0.5em 0 1.5em;
+  padding: 0.75rem 0.5rem 0.15rem 1.35rem;
   display: flex;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
+  position: relative;
 }
 
 .course-design-board .card-header .status-live {
@@ -286,15 +281,11 @@
 
 .course-design-board .card-body {
   width: 100%;
-  padding: 0.15rem 1.35rem 0.2rem;
+  padding: 0.15rem 1.35rem 0.75rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  position: absolute;
-  top: 2.65rem;
-  bottom: 3.85rem;
-  left: 0;
-  right: 0;
+  position: relative;
   box-sizing: border-box;
 }
 
@@ -412,10 +403,7 @@
   width: 100%;
   padding: 0.75rem;
   display: flex;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  position: relative;
 }
 
 .course-design-board .card-footer .updated-at {
