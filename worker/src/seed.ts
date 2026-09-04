@@ -18,7 +18,12 @@ export const PROVIDER_SEED = [
     statusUrl: "https://status.claude.com/",
     fetcherType: "statuspage",
   },
-  { id: "google-gemini", name: "Google Gemini", statusUrl: "https://aistudio.google.com/status" },
+  {
+    id: "google-gemini",
+    name: "Google Gemini",
+    statusUrl: "https://aistudio.google.com/status",
+    fetcherType: "google_cloud",
+  },
   { id: "xai", name: "xAI", statusUrl: "https://status.x.ai/", fetcherType: "rss" },
   { id: "mistral", name: "Mistral", statusUrl: "https://status.mistral.ai/" },
   { id: "groq", name: "Groq", statusUrl: "https://groqstatus.com/", fetcherType: "statuspage" },

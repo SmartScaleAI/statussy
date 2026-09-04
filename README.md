@@ -2,7 +2,7 @@
 
 Glanceable “is anything down?” board for AI providers. A SmartScale app, separate from Zerro.
 
-The board reads **live status from Postgres** for the 8 providers the worker fetches (OpenAI, Anthropic, Groq, Cohere, OpenRouter, Perplexity, xAI, DeepSeek) and falls back to mock data for the rest (Google Gemini and Mistral have no fetchers yet). Nothing is scraped from the client.
+The board reads **live status from Postgres** for the 9 providers the worker fetches (OpenAI, Anthropic, Groq, Cohere, OpenRouter, Perplexity, xAI, DeepSeek, Google Gemini) and falls back to mock data for the rest (Mistral has no fetcher yet). Nothing is scraped from the client.
 
 ## Run
 
@@ -25,10 +25,10 @@ worker in [`worker/`](worker/). The worker owns the schema (`providers`,
 and ticks on a configurable interval (default every 5 minutes). Each tick fetches
 live status for providers with a fetcher — OpenAI, Anthropic, Groq, and Cohere
 via the Statuspage-compatible API, OpenRouter via OnlineOrNot, Perplexity via
-Instatus, and xAI and DeepSeek via their RSS/Atom feeds — and upserts snapshot,
-component, and incident rows. On a failed fetch the worker keeps last-known rows
-and flags the latest snapshot `stale`. Google Gemini and Mistral have no
-fetchers yet and render mock data.
+Instatus, xAI and DeepSeek via their RSS/Atom feeds, and Google Gemini via
+Google Cloud Status `incidents.json` — and upserts snapshot, component, and
+incident rows. On a failed fetch the worker keeps last-known rows and flags
+the latest snapshot `stale`. Mistral has no fetcher yet and renders mock data.
 
 ### Environment variables
 
@@ -105,7 +105,7 @@ registry in [`data/services.ts`](data/services.ts).
 
 Fallback policy (SMA-18):
 
-- **Provider has snapshots** (the 8 fetched providers): the card shows the live overall
+- **Provider has snapshots** (the 9 fetched providers): the card shows the live overall
   status, the snapshot's incident title / fetch time, and an **uptime**
   chicklet derived from the last 24h of non-stale snapshots (share reporting
   `operational` — a board heuristic, not a vendor SLA). A **Stale** badge

@@ -1,0 +1,29 @@
+{
+  "products": [
+    {
+      "title": "Access Approval",
+      "id": "duAxoF9U3MBmoAihC67y",
+      "current_title": "Access Approval"
+    },
+    {
+      "title": "Gemini Code Assist",
+      "id": "deUeOEPYanfJ9w8cpyBJ",
+      "current_title": "Gemini Code Assist"
+    },
+    {
+      "title": "Gemini Enterprise",
+      "id": "cxUh24jPxEXgyRlaVhuk",
+      "current_title": "Gemini Enterprise"
+    },
+    {
+      "title": "Vertex Gemini API",
+      "id": "Z0FZJAMvEB4j3NbCJs6B",
+      "current_title": "Gemini on Agent Platform"
+    },
+    {
+      "title": "Google Compute Engine",
+      "id": "L3ggmi3Jy4xJmgodFA9K",
+      "current_title": "Google Compute Engine"
+    }
+  ]
+}
