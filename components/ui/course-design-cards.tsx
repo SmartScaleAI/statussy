@@ -33,8 +33,15 @@ export interface CardData {
   statusLabel?: string
 }
 
-function StatusSparkline({ history }: { history: ServiceStatus[] }) {
+function StatusSparkline({
+  history,
+  fadeId,
+}: {
+  history: ServiceStatus[]
+  fadeId: string
+}) {
   const spark = historySparkline(history)
+  const gradientId = `spark-fade-${fadeId}`
 
   return (
     <div className="status-sparkline-wrap">
@@ -44,7 +51,17 @@ function StatusSparkline({ history }: { history: ServiceStatus[] }) {
         preserveAspectRatio="none"
         aria-hidden="true"
       >
-        <path className="spark-fill" d={spark.area} />
+        <defs>
+          <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+            <stop className="spark-fade-start" offset="0%" />
+            <stop className="spark-fade-end" offset="100%" />
+          </linearGradient>
+        </defs>
+        <path
+          className="spark-fill"
+          d={spark.area}
+          fill={`url(#${gradientId})`}
+        />
         <path className="spark-line" d={spark.line} />
       </svg>
       <span
@@ -113,7 +130,7 @@ const Card: React.FC<CardProps> = ({ data }) => {
             className="status-history"
             aria-label={`${STATUS_HISTORY_DAYS}-day status history`}
           >
-            <StatusSparkline history={history} />
+            <StatusSparkline fadeId={String(data.id)} history={history} />
             <div className="status-history-meta">
               <span>{STATUS_HISTORY_DAYS} days ago</span>
               {uptimeLabel ? <span>{uptimeLabel}</span> : null}

@@ -135,28 +135,40 @@ const STATUS_LEVEL: Record<Service["status"], number> = {
   major_outage: 0.88,
 }
 
+function catmullRomLine(points: { x: number; y: number }[]) {
+  const fmt = (n: number) => n.toFixed(2)
+  let d = `M${fmt(points[0].x)} ${fmt(points[0].y)}`
+  for (let i = 0; i < points.length - 1; i++) {
+    const p0 = points[i - 1] ?? points[i]
+    const p1 = points[i]
+    const p2 = points[i + 1]
+    const p3 = points[i + 2] ?? p2
+    const c1x = p1.x + (p2.x - p0.x) / 6
+    const c1y = p1.y + (p2.y - p0.y) / 6
+    const c2x = p2.x - (p3.x - p1.x) / 6
+    const c2y = p2.y - (p3.y - p1.y) / 6
+    d += ` C${fmt(c1x)} ${fmt(c1y)}, ${fmt(c2x)} ${fmt(c2y)}, ${fmt(p2.x)} ${fmt(p2.y)}`
+  }
+  return d
+}
+
 /** Smooth sparkline paths from daily status (Robinhood-style line + area). */
 export function historySparkline(
   history: Service["status"][],
   width = 120,
-  height = 32
+  height = 36
 ) {
-  const pad = 2
-  const innerH = height - pad * 2
+  const padX = 3
+  const padY = 3
+  const innerW = width - padX * 2
+  const innerH = height - padY * 2
   const count = history.length
   const points = history.map((status, index) => ({
-    x: count === 1 ? width / 2 : (index / (count - 1)) * width,
-    y: pad + STATUS_LEVEL[status] * innerH,
+    x: count === 1 ? width / 2 : padX + (index / (count - 1)) * innerW,
+    y: padY + STATUS_LEVEL[status] * innerH,
   }))
 
-  let line = `M${points[0].x.toFixed(2)} ${points[0].y.toFixed(2)}`
-  for (let i = 1; i < points.length; i++) {
-    const prev = points[i - 1]
-    const cur = points[i]
-    const cx = ((prev.x + cur.x) / 2).toFixed(2)
-    line += ` C${cx} ${prev.y.toFixed(2)}, ${cx} ${cur.y.toFixed(2)}, ${cur.x.toFixed(2)} ${cur.y.toFixed(2)}`
-  }
-
+  const line = catmullRomLine(points)
   const first = points[0]
   const last = points[points.length - 1]
   const area = `${line} L${last.x.toFixed(2)} ${height} L${first.x.toFixed(2)} ${height} Z`
