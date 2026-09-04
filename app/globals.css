@@ -141,6 +141,21 @@
  */
 .course-design-board {
   --clr-blue: #276df5;
+  --clr-green: #15803d;
+  --clr-amber: #d97706;
+  --clr-red: #dc2626;
+  /* Light surfaces — Geist-adjacent grays so cards stay readable off dark. */
+  --bg-dark: #d4d4d4; /* border-gradient base */
+  --bg-footer: #f5f5f5; /* card surface */
+  --color-white: #171717; /* primary text */
+  --color-gray-light: #737373;
+  --color-gray-medium: #a3a3a3;
+  --color-gray-dark: #e5e5e5;
+  --color-gray-very-dark: #fafafa;
+  --card-shadow: 0 0.25em 1em rgb(0 0 0 / 10%);
+}
+
+.dark .course-design-board {
   --clr-green: #48aa4a;
   --clr-amber: #fdb203;
   --clr-red: #de4649;
@@ -151,6 +166,16 @@
   --color-gray-medium: #454545; /* gray-500 */
   --color-gray-dark: #2e2e2e; /* gray-400 */
   --color-gray-very-dark: #1f1f1f; /* gray-200 */
+  --card-shadow: 0.063em 0.75em 1.563em #000000c7;
+}
+
+/* xAI mark is white-on-transparent; invert it on light card surfaces only. */
+.course-design-board img[data-provider="xai"] {
+  filter: invert(1);
+}
+
+.dark .course-design-board img[data-provider="xai"] {
+  filter: none;
 }
 
 .course-design-board a {
@@ -167,18 +192,17 @@
   display: flex;
   flex-direction: column;
   position: relative;
-  box-shadow: 0.063em 0.75em 1.563em #000000c7;
+  box-shadow: var(--card-shadow);
 }
 
 .course-design-board .card:before {
   content: "";
-  z-index: -1;
-  border: 0.155rem solid transparent;
+  /* Paint above the shelf so the outline wraps the whole card, not just the body. */
+  z-index: 1;
+  border: 1px solid transparent;
   border-radius: 1rem;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   position: absolute;
-  top: 0;
   pointer-events: none;
   -webkit-mask-image: linear-gradient(#fff 0 0), linear-gradient(#fff 0 0);
   -webkit-mask-clip: padding-box, border-box;
