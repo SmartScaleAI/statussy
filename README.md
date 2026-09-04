@@ -2,7 +2,7 @@
 
 Glanceable “is anything down?” board for AI providers. A SmartScale app, separate from Zerro.
 
-v0 is a dark, Vercel-like homepage with **mock data only**. Live Statuspage / RSS feeds are next — nothing is scraped today.
+The board reads **live status from Postgres** for providers the worker fetches (OpenAI today) and falls back to mock data for the rest. Nothing is scraped from the client.
 
 ## Run
 
@@ -64,11 +64,28 @@ interval while developing, e.g. `REFRESH_INTERVAL_SECONDS=10 npm run dev`.
 - The Postgres service lives in the same Railway project; the worker's
   `DATABASE_URL` references it over the private network.
 
-## Data is mock
+## Board data: live + mock fallback
 
-Provider cards come from [`data/services.ts`](data/services.ts). Statuses are seeded so the board is not all-green. The footer on the page is explicit: `mock data · live feeds next`.
+[`getStatusBoard()`](lib/status.ts) is the only read path the UI uses. On each
+request it reads the latest `provider_snapshots` row per provider from Postgres
+(server-side only, via `DATABASE_URL` — see
+[`lib/live-status.ts`](lib/live-status.ts)) and merges it over the mock
+registry in [`data/services.ts`](data/services.ts).
 
-To plug in live feeds later, keep the `Service` type in that file and replace the static `status` / `incidentTitle` / `updatedAt` fields with a mapper from Statuspage JSON or RSS. [`getStatusBoard()`](lib/status.ts) is the only read path the UI uses.
+Fallback policy (SMA-18):
+
+- **Provider has snapshots** (OpenAI today): the card shows the live overall
+  status, the snapshot's incident title / fetch time, and an **uptime**
+  chicklet derived from the last 24h of non-stale snapshots (share reporting
+  `operational` — a board heuristic, not a vendor SLA). A **Stale** badge
+  appears when the worker flagged the latest snapshot stale (failed fetch) or
+  the snapshot is older than 15 minutes (3 missed worker ticks).
+- **Provider has no snapshots yet**: the card keeps its prior mock entry from
+  `data/services.ts` and shows an em-dash uptime placeholder.
+- **No `DATABASE_URL` or the read fails**: the whole board falls back to mock.
+
+The 30-day status-history sparkline is hidden until a real history UI exists;
+its slot now holds the uptime chicklet.
 
 ## Add a provider
 

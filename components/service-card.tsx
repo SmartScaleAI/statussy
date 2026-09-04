@@ -1,26 +1,22 @@
 import CourseCard from "@/components/ui/course-design-cards"
 import {
-  formatHistoryUptime,
-  formatMockLatency,
   formatCardUpdatedAt,
-  getStatusHistory,
   STATUS_SHORT,
-  type Service,
-  type ServiceStatus,
+  type BoardService,
+  type BoardStatus,
 } from "@/lib/status"
 
 /** Geist accents (https://vercel.com/geist/colors), driven by status severity. */
-const STATUS_COLOR: Record<ServiceStatus, string> = {
+const STATUS_COLOR: Record<BoardStatus, string> = {
   operational: "green",
   degraded: "amber",
   maintenance: "blue",
   partial_outage: "red",
   major_outage: "red",
+  unknown: "gray",
 }
 
-export function ServiceCard({ service }: { service: Service }) {
-  const history = getStatusHistory(service)
-
+export function ServiceCard({ service }: { service: BoardService }) {
   return (
     <li>
       <CourseCard
@@ -28,9 +24,8 @@ export function ServiceCard({ service }: { service: Service }) {
           id: service.id,
           colorClass: STATUS_COLOR[service.status],
           title: service.name,
-          history,
-          uptimeLabel: formatHistoryUptime(history),
-          latencyLabel: formatMockLatency(service),
+          uptimeLabel: service.uptimeLabel ?? undefined,
+          stale: service.stale,
           imgSrc1: `/logos/${service.id}.svg`,
           imgAlt1: "",
           countdownText: "Official status",

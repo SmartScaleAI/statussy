@@ -12,21 +12,16 @@
 import { ArrowUpRightIcon, StarIcon } from "lucide-react"
 import React, { useState } from "react"
 
-import {
-  historySparkline,
-  STATUS_HISTORY_DAYS,
-  type ServiceStatus,
-} from "@/lib/status"
-
 export interface CardData {
   id: number | string
   colorClass: string
   date?: string
   title: string
   description?: string
-  history?: ServiceStatus[]
+  /** 24h snapshot-derived uptime; omitted until live data exists. */
   uptimeLabel?: string
-  latencyLabel?: string
+  /** Latest snapshot is stale (failed fetch or past freshness threshold). */
+  stale?: boolean
   imgSrc1?: string
   imgAlt1?: string
   imgSrc2?: string
@@ -36,49 +31,6 @@ export interface CardData {
   statusLabel?: string
   updatedAt?: string
   updatedLabel?: string
-}
-
-function StatusSparkline({
-  history,
-  fadeId,
-}: {
-  history: ServiceStatus[]
-  fadeId: string
-}) {
-  const spark = historySparkline(history)
-  const gradientId = `spark-fade-${fadeId}`
-
-  return (
-    <div className="status-sparkline-wrap">
-      <svg
-        className="status-sparkline"
-        viewBox={`0 0 ${spark.width} ${spark.height}`}
-        preserveAspectRatio="none"
-        aria-hidden="true"
-      >
-        <defs>
-          <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-            <stop className="spark-fade-start" offset="0%" />
-            <stop className="spark-fade-end" offset="100%" />
-          </linearGradient>
-        </defs>
-        <path
-          className="spark-fill"
-          d={spark.area}
-          fill={`url(#${gradientId})`}
-        />
-        <path className="spark-line" d={spark.line} />
-      </svg>
-      <span
-        className="spark-today"
-        style={{
-          left: `${(spark.endX / spark.width) * 100}%`,
-          top: `${(spark.endY / spark.height) * 100}%`,
-        }}
-        title="Today"
-      />
-    </div>
-  )
 }
 
 interface CardProps {
@@ -107,9 +59,8 @@ const Card: React.FC<CardProps> = ({ data }) => {
     date,
     title,
     description,
-    history,
     uptimeLabel,
-    latencyLabel,
+    stale,
     imgSrc1,
     imgAlt1,
     countdownText,
@@ -125,6 +76,14 @@ const Card: React.FC<CardProps> = ({ data }) => {
         <div className="status-live">
           <span className="status-dot" aria-hidden="true" />
           {statusLabel ?? date}
+          {stale ? (
+            <span
+              className="stale-badge"
+              title="Last fetch failed or data is out of date"
+            >
+              Stale
+            </span>
+          ) : null}
         </div>
         <FavoriteButton />
       </div>
@@ -141,28 +100,11 @@ const Card: React.FC<CardProps> = ({ data }) => {
         ) : null}
         <h3>{title}</h3>
         {description ? <p>{description}</p> : null}
-        {history && history.length > 0 ? (
-          <div
-            className="status-history"
-            aria-label={`${STATUS_HISTORY_DAYS}-day status history`}
-          >
-            <StatusSparkline fadeId={String(data.id)} history={history} />
-            <div className="status-history-meta">
-              {latencyLabel ? (
-                <span>
-                  <span className="status-metric-label">Latency</span>
-                  {latencyLabel}
-                </span>
-              ) : null}
-              {uptimeLabel ? (
-                <span>
-                  <span className="status-metric-label">Uptime</span>
-                  {uptimeLabel}
-                </span>
-              ) : null}
-            </div>
-          </div>
-        ) : null}
+        {/* Sparkline removed until a real history UI exists (SMA-18). */}
+        <div className="uptime-chicklet" aria-label="Uptime, last 24 hours">
+          <span className="status-metric-label">Uptime</span>
+          {uptimeLabel ?? "—"}
+        </div>
       </div>
       <div className="card-footer">
         {updatedLabel ? (

@@ -10,8 +10,8 @@ import {
 } from "@/components/ui/input-group"
 import { getStatusBoard } from "@/lib/status"
 
-export function StatusBoard() {
-  const { items, summary, refreshedAt } = getStatusBoard()
+export async function StatusBoard() {
+  const { items, summary, refreshedAt } = await getStatusBoard()
 
   return (
     <section
