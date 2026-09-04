@@ -5,10 +5,12 @@
  *
  * Small Statussy adaptations (SMA-9): optional official-status href, progress
  * width from `progressPercent` instead of theme-hardcoded 90/30/50/20, no
- * fake “add teammate” control. Ellipsis path completed (upstream was truncated).
+ * fake “add teammate” control. Header menu replaced with a local favorite star.
  */
-import { ArrowUpRightIcon } from "lucide-react"
-import React from "react"
+"use client"
+
+import { ArrowUpRightIcon, StarIcon } from "lucide-react"
+import React, { useState } from "react"
 
 import {
   historySparkline,
@@ -81,21 +83,21 @@ interface CardProps {
   data: CardData
 }
 
-const EllipsisIcon: React.FC = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    fill="currentColor"
-    className="size-6"
-    aria-hidden="true"
-  >
-    <path
-      fillRule="evenodd"
-      d="M10.5 6a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Zm0 6a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Zm0 6a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0"
-      clipRule="evenodd"
-    />
-  </svg>
-)
+function FavoriteButton() {
+  const [favorited, setFavorited] = useState(false)
+
+  return (
+    <button
+      type="button"
+      className={favorited ? "btn-favorite is-favorited" : "btn-favorite"}
+      aria-pressed={favorited}
+      aria-label={favorited ? "Remove from favorites" : "Add to favorites"}
+      onClick={() => setFavorited((on) => !on)}
+    >
+      <StarIcon aria-hidden="true" fill={favorited ? "currentColor" : "none"} />
+    </button>
+  )
+}
 
 const Card: React.FC<CardProps> = ({ data }) => {
   const {
@@ -122,7 +124,7 @@ const Card: React.FC<CardProps> = ({ data }) => {
           <span className="status-dot" aria-hidden="true" />
           {statusLabel ?? date}
         </div>
-        <EllipsisIcon />
+        <FavoriteButton />
       </div>
       <div className="card-body">
         <h3>{title}</h3>
