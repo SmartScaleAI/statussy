@@ -8,10 +8,10 @@ import {
   type ServiceStatus,
 } from "@/lib/status"
 
-/** 21st.dev color themes, driven by status severity — not random. */
+/** Geist accents (https://vercel.com/geist/colors), driven by status severity. */
 const STATUS_COLOR: Record<ServiceStatus, string> = {
   operational: "green",
-  degraded: "orange",
+  degraded: "amber",
   maintenance: "blue",
   partial_outage: "red",
   major_outage: "red",

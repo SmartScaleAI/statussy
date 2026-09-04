@@ -135,24 +135,22 @@
 }
 
 /*
- * 21st.dev Course Design Cards styles (kristen17).
- * Variables from their published index.css; layout/theme rules from the
- * preview bundle CSS. Scoped so body/section resets do not leak.
- * Progress fill uses --progress from the Card prop, not hardcoded 90/30/50/20.
- * https://21st.dev/@kristen17/components/course-design-cards
+ * Course-card theme: Geist dark palette (https://vercel.com/geist/colors).
+ * Accents use step 900 (secondary text/icons). Surfaces use gray + backgrounds.
+ * Layout rules stay scoped so body/section resets do not leak.
  */
 .course-design-board {
-  --clr-blue: #1890ff;
-  --clr-green: #01c3a8;
-  --clr-orange: #ffb741;
-  --clr-red: #a63d2a;
-  --bg-dark: #232228;
-  --bg-footer: #151419;
-  --color-white: #fff;
-  --color-gray-light: #ddd;
-  --color-gray-medium: #363636;
-  --color-gray-dark: #292929;
-  --color-gray-very-dark: #222127;
+  --clr-blue: #52a8ff; /* blue-900 */
+  --clr-green: #62c073; /* green-900 */
+  --clr-amber: #ff990a; /* amber-900 */
+  --clr-red: #ff6166; /* red-900 */
+  --bg-dark: #1a1a1a; /* gray-100 */
+  --bg-footer: #0a0a0a; /* background-100 */
+  --color-white: #ededed; /* gray-1000 */
+  --color-gray-light: #a1a1a1; /* gray-900 */
+  --color-gray-medium: #454545; /* gray-500 */
+  --color-gray-dark: #2e2e2e; /* gray-400 */
+  --color-gray-very-dark: #1f1f1f; /* gray-200 */
 }
 
 .course-design-board a {
@@ -219,10 +217,10 @@
   text-shadow: 0 0 0.35rem color-mix(in srgb, var(--clr-green) 35%, transparent);
 }
 
-.course-design-board .card.orange .status-live {
-  color: var(--clr-orange);
+.course-design-board .card.amber .status-live {
+  color: var(--clr-amber);
   text-shadow: 0 0 0.35rem
-    color-mix(in srgb, var(--clr-orange) 35%, transparent);
+    color-mix(in srgb, var(--clr-amber) 35%, transparent);
 }
 
 .course-design-board .card.blue .status-live {
@@ -251,10 +249,10 @@
     color-mix(in srgb, var(--clr-green) 80%, transparent);
 }
 
-.course-design-board .card.orange .status-dot {
-  background: var(--clr-orange);
+.course-design-board .card.amber .status-dot {
+  background: var(--clr-amber);
   box-shadow: 0 0 0.55rem 0.12rem
-    color-mix(in srgb, var(--clr-orange) 80%, transparent);
+    color-mix(in srgb, var(--clr-amber) 80%, transparent);
 }
 
 .course-design-board .card.blue .status-dot {
@@ -314,8 +312,8 @@
   color: var(--clr-green);
 }
 
-.course-design-board .card.orange .status-sparkline-wrap {
-  color: var(--clr-orange);
+.course-design-board .card.amber .status-sparkline-wrap {
+  color: var(--clr-amber);
 }
 
 .course-design-board .card.blue .status-sparkline-wrap {
@@ -371,7 +369,7 @@
   gap: 0.5rem;
   margin-top: 0.4rem;
   font-size: 0.7rem;
-  color: #9a9a9a;
+  color: var(--color-gray-light);
 }
 
 .course-design-board .card-footer {
@@ -424,7 +422,12 @@
 }
 
 .course-design-board .card.green {
-  background: radial-gradient(at 100% 0, #107667ed, #151419 47%, #151419);
+  background: radial-gradient(
+    at 100% 0,
+    color-mix(in srgb, var(--clr-green) 42%, transparent),
+    var(--bg-footer) 47%,
+    var(--bg-footer)
+  );
 }
 
 .course-design-board .card.green:before {
@@ -444,7 +447,12 @@
 }
 
 .course-design-board .card.blue {
-  background: radial-gradient(at 100% 0, #00458f8f, #151419 45%, #151419);
+  background: radial-gradient(
+    at 100% 0,
+    color-mix(in srgb, var(--clr-blue) 38%, transparent),
+    var(--bg-footer) 45%,
+    var(--bg-footer)
+  );
 }
 
 .course-design-board .card.blue:before {
@@ -463,28 +471,38 @@
   background: color-mix(in srgb, var(--clr-blue) 72%, transparent);
 }
 
-.course-design-board .card.orange {
-  background: radial-gradient(at 100% 0, #ffb74194, #151419 47%, #151419);
+.course-design-board .card.amber {
+  background: radial-gradient(
+    at 100% 0,
+    color-mix(in srgb, var(--clr-amber) 42%, transparent),
+    var(--bg-footer) 47%,
+    var(--bg-footer)
+  );
 }
 
-.course-design-board .card.orange:before {
+.course-design-board .card.amber:before {
   background: linear-gradient(
       45deg,
       var(--bg-dark),
       var(--bg-dark),
       var(--bg-dark),
       var(--bg-dark),
-      var(--clr-orange)
+      var(--clr-amber)
     )
     border-box;
 }
 
-.course-design-board .card.orange .btn-countdown:hover {
-  background: color-mix(in srgb, var(--clr-orange) 72%, transparent);
+.course-design-board .card.amber .btn-countdown:hover {
+  background: color-mix(in srgb, var(--clr-amber) 72%, transparent);
 }
 
 .course-design-board .card.red {
-  background: radial-gradient(at 100% 0, #a63d2a82, #151419 47%, #151419);
+  background: radial-gradient(
+    at 100% 0,
+    color-mix(in srgb, var(--clr-red) 40%, transparent),
+    var(--bg-footer) 47%,
+    var(--bg-footer)
+  );
 }
 
 .course-design-board .card.red:before {

@@ -40,7 +40,7 @@ To plug in live feeds later, keep the `Service` type in that file and replace th
 }
 ```
 
-Non-operational services automatically float to the top of the board. Card accent color follows status severity (green / orange / blue / red), not a random theme.
+Non-operational services automatically float to the top of the board. Card accent color follows status severity using the Geist palette (green / amber / blue / red), not a random theme.
 
 ## Provider logos
 
