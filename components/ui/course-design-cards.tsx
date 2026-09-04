@@ -134,8 +134,18 @@ const Card: React.FC<CardProps> = ({ data }) => {
           >
             <StatusSparkline fadeId={String(data.id)} history={history} />
             <div className="status-history-meta">
-              {uptimeLabel ? <span>{uptimeLabel}</span> : null}
-              {latencyLabel ? <span>{latencyLabel}</span> : null}
+              {latencyLabel ? (
+                <span>
+                  <span className="status-metric-label">Latency</span>
+                  {latencyLabel}
+                </span>
+              ) : null}
+              {uptimeLabel ? (
+                <span>
+                  <span className="status-metric-label">Uptime</span>
+                  {uptimeLabel}
+                </span>
+              ) : null}
             </div>
           </div>
         ) : null}

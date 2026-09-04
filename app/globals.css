@@ -369,6 +369,10 @@
   color: var(--color-gray-light);
 }
 
+.course-design-board .card-body .status-metric-label {
+  margin-right: 0.35rem;
+}
+
 .course-design-board .card-footer {
   border-top: 0.063rem solid var(--color-gray-dark);
   background: var(--bg-footer);
