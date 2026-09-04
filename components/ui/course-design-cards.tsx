@@ -10,6 +10,7 @@
 "use client"
 
 import { ArrowUpRightIcon, StarIcon } from "lucide-react"
+import Link from "next/link"
 import React, { useState } from "react"
 
 export interface CardData {
@@ -28,6 +29,8 @@ export interface CardData {
   imgAlt2?: string
   countdownText: string
   countdownHref?: string
+  /** Internal deep-dive route (SMA-17); wraps the logo + title in a link. */
+  detailHref?: string
   statusLabel?: string
   updatedAt?: string
   updatedLabel?: string
@@ -65,10 +68,27 @@ const Card: React.FC<CardProps> = ({ data }) => {
     imgAlt1,
     countdownText,
     countdownHref,
+    detailHref,
     statusLabel,
     updatedAt,
     updatedLabel,
   } = data
+
+  const identity = (
+    <>
+      {imgSrc1 ? (
+        // Decorative when alt is empty — title is already on the card.
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          className="card-logo"
+          src={imgSrc1}
+          alt={imgAlt1 || ""}
+          data-provider={data.id}
+        />
+      ) : null}
+      <h3>{title}</h3>
+    </>
+  )
 
   return (
     <div className={`card ${colorClass}`}>
@@ -88,17 +108,17 @@ const Card: React.FC<CardProps> = ({ data }) => {
         <FavoriteButton />
       </div>
       <div className="card-body">
-        {imgSrc1 ? (
-          // Decorative when alt is empty — title is already on the card.
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            className="card-logo"
-            src={imgSrc1}
-            alt={imgAlt1 || ""}
-            data-provider={data.id}
-          />
-        ) : null}
-        <h3>{title}</h3>
+        {detailHref ? (
+          <Link
+            href={detailHref}
+            className="card-detail-link"
+            aria-label={`${title} status details`}
+          >
+            {identity}
+          </Link>
+        ) : (
+          identity
+        )}
         {description ? <p>{description}</p> : null}
         {/* Sparkline removed until a real history UI exists (SMA-18). */}
         <div className="uptime-chicklet" aria-label="Uptime, last 24 hours">

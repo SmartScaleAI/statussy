@@ -341,6 +341,20 @@
   box-sizing: border-box;
 }
 
+/* Logo + title link to the provider deep dive (SMA-17). */
+.course-design-board .card-body .card-detail-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 0.5rem;
+}
+
+.course-design-board .card-body .card-detail-link:hover h3,
+.course-design-board .card-body .card-detail-link:focus-visible h3 {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
 .course-design-board .card-body .card-logo {
   display: block;
   object-fit: contain;
