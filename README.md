@@ -17,6 +17,48 @@ Open [http://localhost:3000](http://localhost:3000).
 npm run build
 ```
 
+## Live data worker (Railway)
+
+Live-data foundation for the board: a Railway Postgres database plus a small Node
+worker in [`worker/`](worker/). The worker owns the schema (`providers`,
+`provider_snapshots`, `components`, `incidents`), seeds the 10 board providers,
+and ticks on a configurable interval (default every 5 minutes). The tick is a
+no-op heartbeat today — provider fetchers are later tickets, and the board still
+renders mock data.
+
+### Environment variables
+
+| Variable | Where | Purpose |
+| --- | --- | --- |
+| `DATABASE_URL` | Railway (worker, read/write) and later Vercel (Next.js app, read-only) | Postgres connection string. On Railway, reference the Postgres service (`${{Postgres.DATABASE_URL}}`). Point Vercel at the same database's public connection URL when the board switches to live reads. |
+| `REFRESH_INTERVAL_SECONDS` | Railway (worker) | Seconds between cron ticks. Optional, defaults to `300` (5 minutes). |
+| `PORT` | Railway (worker) | Injected by Railway; the health endpoint listens on it (defaults to `8080` locally). |
+
+### Run the worker locally
+
+```bash
+cd worker
+npm install
+export DATABASE_URL=postgres://user:pass@localhost:5432/statussy
+npm run migrate   # apply migrations + seed the 10 providers, then exit
+npm run dev       # migrate, seed, tick on the interval, serve /healthz
+```
+
+`npm run dev` logs a `[tick]` heartbeat line on every interval; `curl
+localhost:8080/healthz` reports tick count and last tick time. Use a low
+interval while developing, e.g. `REFRESH_INTERVAL_SECONDS=10 npm run dev`.
+
+### Deploy notes
+
+- The worker deploys as a Railway service with **root directory `worker/`**;
+  build and deploy settings live in [`worker/railway.json`](worker/railway.json)
+  (Railpack build, `npm run start`, `/healthz` healthcheck).
+- Migrations and the provider seed run automatically on worker boot, so a deploy
+  with a new migration file updates the schema. Both are idempotent and guarded
+  by a Postgres advisory lock.
+- The Postgres service lives in the same Railway project; the worker's
+  `DATABASE_URL` references it over the private network.
+
 ## Data is mock
 
 Provider cards come from [`data/services.ts`](data/services.ts). Statuses are seeded so the board is not all-green. The footer on the page is explicit: `mock data · live feeds next`.
