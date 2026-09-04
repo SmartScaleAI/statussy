@@ -2,10 +2,8 @@
 
 import { useActionState, useEffect, useRef } from "react"
 
-import {
-  initialSuggestProviderState,
-  suggestProvider,
-} from "@/app/actions/suggest-provider"
+import { suggestProvider } from "@/app/actions/suggest-provider"
+import { initialSuggestProviderState } from "@/lib/suggest-provider"
 import { Button } from "@/components/ui/button"
 import {
   Field,
