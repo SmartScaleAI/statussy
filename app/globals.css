@@ -294,10 +294,19 @@
   transform: translate(-50%, -50%);
 }
 
+.course-design-board .card-body .card-logo {
+  display: block;
+  object-fit: contain;
+  width: auto;
+  height: 2.25rem;
+  max-width: 3.5rem;
+  margin: 0 auto;
+}
+
 .course-design-board .card-body h3 {
   color: var(--color-white);
   text-transform: capitalize;
-  margin-top: 0.625em;
+  margin-top: 0.45em;
   margin-bottom: 0.188em;
   font-size: 1.375rem;
   font-weight: 600;
@@ -401,25 +410,11 @@
   right: 0;
 }
 
-.course-design-board .card-footer ul {
-  align-items: center;
-  display: flex;
-}
-
-.course-design-board .card-footer ul li {
-  list-style-type: none;
-  display: flex;
-  align-items: center;
-}
-
-.course-design-board .card-footer ul li img {
-  display: block;
-  object-fit: contain;
-  object-position: left center;
-  border-radius: 0;
-  width: auto;
-  height: 1.75rem;
-  max-width: 2.75rem;
+.course-design-board .card-footer .updated-at {
+  color: var(--color-gray-light);
+  font-size: 0.7rem;
+  text-align: left;
+  min-width: 0;
 }
 
 .course-design-board .card-footer .btn-countdown {

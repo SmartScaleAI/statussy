@@ -34,6 +34,8 @@ export interface CardData {
   countdownText: string
   countdownHref?: string
   statusLabel?: string
+  updatedAt?: string
+  updatedLabel?: string
 }
 
 function StatusSparkline({
@@ -110,11 +112,11 @@ const Card: React.FC<CardProps> = ({ data }) => {
     latencyLabel,
     imgSrc1,
     imgAlt1,
-    imgSrc2,
-    imgAlt2,
     countdownText,
     countdownHref,
     statusLabel,
+    updatedAt,
+    updatedLabel,
   } = data
 
   return (
@@ -127,6 +129,11 @@ const Card: React.FC<CardProps> = ({ data }) => {
         <FavoriteButton />
       </div>
       <div className="card-body">
+        {imgSrc1 ? (
+          // Decorative when alt is empty — title is already on the card.
+          // eslint-disable-next-line @next/next/no-img-element
+          <img className="card-logo" src={imgSrc1} alt={imgAlt1 || ""} />
+        ) : null}
         <h3>{title}</h3>
         <p>{description}</p>
         {history && history.length > 0 ? (
@@ -153,21 +160,13 @@ const Card: React.FC<CardProps> = ({ data }) => {
         ) : null}
       </div>
       <div className="card-footer">
-        <ul>
-          {imgSrc1 && (
-            <li>
-              {/* Decorative when alt is empty — title is already on the card. */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={imgSrc1} alt={imgAlt1 || ""} />
-            </li>
-          )}
-          {imgSrc2 && (
-            <li>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={imgSrc2} alt={imgAlt2 || ""} />
-            </li>
-          )}
-        </ul>
+        {updatedLabel ? (
+          <time className="updated-at" dateTime={updatedAt}>
+            Updated {updatedLabel}
+          </time>
+        ) : (
+          <span />
+        )}
         {countdownHref ? (
           <a
             href={countdownHref}
