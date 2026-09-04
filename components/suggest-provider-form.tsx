@@ -38,7 +38,7 @@ export function SuggestProviderForm() {
       <FieldSet>
         <FieldLegend>Suggest a Provider</FieldLegend>
         <FieldDescription>
-          Know an AI service we should track? Name is required; email is
+          Know a service we should track? Name is required; email is
           optional.
         </FieldDescription>
         <div aria-hidden="true" className="sr-only">
