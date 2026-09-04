@@ -126,6 +126,43 @@ export function formatHistoryUptime(ticks: Service["status"][]) {
   return `${pct.toFixed(digits)}% uptime`
 }
 
+/** Higher on the chart = healthier. SVG y still grows downward. */
+const STATUS_LEVEL: Record<Service["status"], number> = {
+  operational: 0.14,
+  degraded: 0.4,
+  maintenance: 0.5,
+  partial_outage: 0.7,
+  major_outage: 0.88,
+}
+
+/** Smooth sparkline paths from daily status (Robinhood-style line + area). */
+export function historySparkline(
+  history: Service["status"][],
+  width = 120,
+  height = 32
+) {
+  const pad = 2
+  const innerH = height - pad * 2
+  const count = history.length
+  const points = history.map((status, index) => ({
+    x: count === 1 ? width / 2 : (index / (count - 1)) * width,
+    y: pad + STATUS_LEVEL[status] * innerH,
+  }))
+
+  let line = `M${points[0].x.toFixed(2)} ${points[0].y.toFixed(2)}`
+  for (let i = 1; i < points.length; i++) {
+    const prev = points[i - 1]
+    const cur = points[i]
+    const cx = ((prev.x + cur.x) / 2).toFixed(2)
+    line += ` C${cx} ${prev.y.toFixed(2)}, ${cx} ${cur.y.toFixed(2)}, ${cur.x.toFixed(2)} ${cur.y.toFixed(2)}`
+  }
+
+  const first = points[0]
+  const last = points[points.length - 1]
+  const area = `${line} L${last.x.toFixed(2)} ${height} L${first.x.toFixed(2)} ${height} Z`
+  return { line, area, width, height }
+}
+
 /**
  * v0 board payload. Swap `services` / `LAST_REFRESHED_AT` for a Statuspage or
  * RSS mapper that still returns `Service[]` — no UI changes required.

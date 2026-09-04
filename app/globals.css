@@ -211,14 +211,12 @@
   font-weight: 600;
   letter-spacing: 0.01em;
   color: var(--clr-green);
-  text-shadow: 0 0 0.35rem
-    color-mix(in srgb, var(--clr-green) 35%, transparent);
+  text-shadow: 0 0 0.35rem color-mix(in srgb, var(--clr-green) 35%, transparent);
 }
 
 .course-design-board .card.green .status-live {
   color: var(--clr-green);
-  text-shadow: 0 0 0.35rem
-    color-mix(in srgb, var(--clr-green) 35%, transparent);
+  text-shadow: 0 0 0.35rem color-mix(in srgb, var(--clr-green) 35%, transparent);
 }
 
 .course-design-board .card.orange .status-live {
@@ -229,14 +227,12 @@
 
 .course-design-board .card.blue .status-live {
   color: var(--clr-blue);
-  text-shadow: 0 0 0.35rem
-    color-mix(in srgb, var(--clr-blue) 35%, transparent);
+  text-shadow: 0 0 0.35rem color-mix(in srgb, var(--clr-blue) 35%, transparent);
 }
 
 .course-design-board .card.red .status-live {
   color: var(--clr-red);
-  text-shadow: 0 0 0.35rem
-    color-mix(in srgb, var(--clr-red) 35%, transparent);
+  text-shadow: 0 0 0.35rem color-mix(in srgb, var(--clr-red) 35%, transparent);
 }
 
 .course-design-board .card-header .status-dot {
@@ -307,53 +303,41 @@
   margin-top: 0.938rem;
 }
 
-.course-design-board .card-body .status-history-bar {
-  display: flex;
-  align-items: stretch;
-  gap: 0.11rem;
-  height: 1.65rem;
+.course-design-board .card-body .status-sparkline {
+  display: block;
+  width: 100%;
+  height: 2.35rem;
+  overflow: visible;
+  color: var(--clr-green);
 }
 
-.course-design-board .card-body .status-history-bar span {
-  flex: 1 1 0;
-  min-width: 0;
-  border-radius: 1px;
-  background: var(--clr-green);
+.course-design-board .card.green .status-sparkline {
+  color: var(--clr-green);
 }
 
-.course-design-board
-  .card-body
-  .status-history-bar
-  span[data-status="operational"] {
-  background: var(--clr-green);
+.course-design-board .card.orange .status-sparkline {
+  color: var(--clr-orange);
 }
 
-.course-design-board
-  .card-body
-  .status-history-bar
-  span[data-status="degraded"] {
-  background: var(--clr-orange);
+.course-design-board .card.blue .status-sparkline {
+  color: var(--clr-blue);
 }
 
-.course-design-board
-  .card-body
-  .status-history-bar
-  span[data-status="maintenance"] {
-  background: var(--clr-blue);
+.course-design-board .card.red .status-sparkline {
+  color: var(--clr-red);
 }
 
-.course-design-board
-  .card-body
-  .status-history-bar
-  span[data-status="partial_outage"] {
-  background: var(--clr-orange);
+.course-design-board .card-body .status-sparkline .spark-fill {
+  fill: currentColor;
+  opacity: 0.18;
 }
 
-.course-design-board
-  .card-body
-  .status-history-bar
-  span[data-status="major_outage"] {
-  background: var(--clr-red);
+.course-design-board .card-body .status-sparkline .spark-line {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .course-design-board .card-body .status-history-meta {

@@ -11,8 +11,8 @@ import { ArrowUpRightIcon } from "lucide-react"
 import React from "react"
 
 import {
+  historySparkline,
   STATUS_HISTORY_DAYS,
-  STATUS_SHORT,
   type ServiceStatus,
 } from "@/lib/status"
 
@@ -31,6 +31,22 @@ export interface CardData {
   countdownText: string
   countdownHref?: string
   statusLabel?: string
+}
+
+function StatusSparkline({ history }: { history: ServiceStatus[] }) {
+  const spark = historySparkline(history)
+
+  return (
+    <svg
+      className="status-sparkline"
+      viewBox={`0 0 ${spark.width} ${spark.height}`}
+      preserveAspectRatio="none"
+      aria-hidden="true"
+    >
+      <path className="spark-fill" d={spark.area} />
+      <path className="spark-line" d={spark.line} />
+    </svg>
+  )
 }
 
 interface CardProps {
@@ -87,15 +103,7 @@ const Card: React.FC<CardProps> = ({ data }) => {
             className="status-history"
             aria-label={`${STATUS_HISTORY_DAYS}-day status history`}
           >
-            <div className="status-history-bar">
-              {history.map((dayStatus, index) => (
-                <span
-                  key={index}
-                  data-status={dayStatus}
-                  title={STATUS_SHORT[dayStatus]}
-                />
-              ))}
-            </div>
+            <StatusSparkline history={history} />
             <div className="status-history-meta">
               <span>{STATUS_HISTORY_DAYS} days ago</span>
               {uptimeLabel ? <span>{uptimeLabel}</span> : null}
