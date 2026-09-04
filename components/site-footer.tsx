@@ -1,3 +1,4 @@
+import { GithubIcon } from "lucide-react"
 import Link from "next/link"
 
 import { SuggestProviderForm } from "@/components/suggest-provider-form"
@@ -47,9 +48,10 @@ export function SiteFooter({ className }: { className?: string }) {
           href={GITHUB_REPO}
           target="_blank"
           rel="noreferrer"
-          className="underline-offset-2 hover:text-foreground hover:underline sm:justify-self-end"
+          className="inline-flex items-center gap-1.5 underline-offset-2 hover:text-foreground hover:underline sm:justify-self-end"
         >
-          github
+          <GithubIcon aria-hidden="true" className="size-3.5" />
+          GitHub
         </a>
       </div>
     </footer>
