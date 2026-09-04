@@ -7,7 +7,8 @@
  * SMA-16; Anthropic, Groq, and Cohere per SMA-19 — all via the
  * Statuspage-compatible API; OpenRouter via OnlineOrNot, SMA-21; Perplexity
  * via Instatus, SMA-20; xAI and DeepSeek via their RSS/Atom status feeds,
- * SMA-22; Google Gemini via Google Cloud Status incidents.json, SMA-26)
+ * SMA-22; Mistral via its Checkly/Nuxt `__NUXT_DATA__` HTML payload,
+ * SMA-25; Google Gemini via Google Cloud Status incidents.json, SMA-26)
  * and writes snapshots, components, and incidents to Postgres.
  * Optionally it also runs latency probes (SMA-23) against safe public
  * endpoints and records latency_ms on the snapshot — independent of
@@ -16,6 +17,7 @@
 import { createServer } from "node:http"
 import { loadConfig } from "./config.js"
 import { createPool } from "./db.js"
+import { fetchChecklyNuxtState } from "./checkly-nuxt.js"
 import { fetchInstatusState } from "./instatus.js"
 import { runMigrations } from "./migrate.js"
 import { fetchRssState } from "./rss.js"
@@ -65,8 +67,7 @@ type ProviderJob = {
   persistOptions?: PersistOptions
 }
 
-// Providers fetched each tick. Other providers stay fetcher_type='none'
-// in the registry until their fetchers land (later tickets).
+// All 10 board providers are fetched each tick.
 const statuspageJob = (id: string, baseUrl: string): ProviderJob => ({
   id,
   fetch: () => fetchStatuspageState(baseUrl, fetchOptions()),
@@ -110,6 +111,14 @@ const PROVIDER_JOBS: ProviderJob[] = [
     // previously open ones that drop out of the open set.
     id: "google-gemini",
     fetch: () => fetchGoogleCloudGeminiState(fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  {
+    // SMA-25: Mistral via Checkly/Nuxt HTML (__NUXT_DATA__). The payload only
+    // lists *unresolved* incidents, so ones that drop out are resolved at
+    // persist time. Parse/CF failures mark the latest snapshot stale.
+    id: "mistral",
+    fetch: () => fetchChecklyNuxtState("https://status.mistral.ai", fetchOptions()),
     persistOptions: { resolveMissingIncidents: true },
   },
 ]
