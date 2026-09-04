@@ -29,7 +29,7 @@ export function SiteFooter({ className }: { className?: string }) {
     >
       <Separator />
       <SuggestProviderForm />
-      <div className="flex flex-col items-center gap-2 text-xs text-muted-foreground sm:grid sm:grid-cols-3 sm:items-center sm:gap-3">
+      <div className="mt-8 flex flex-col items-center gap-2 text-xs text-muted-foreground sm:grid sm:grid-cols-3 sm:items-center sm:gap-3">
         <Link
           href="/"
           className="flex items-center gap-1.5 font-heading text-sm font-semibold text-foreground"
