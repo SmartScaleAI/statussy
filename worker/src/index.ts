@@ -3,8 +3,9 @@
  *
  * On boot: applies migrations, seeds the static provider registry, then ticks
  * on a fixed interval (REFRESH_INTERVAL_SECONDS, default 300 = 5 minutes).
- * Each tick fetches live status for providers with a fetcher (currently
- * OpenAI via the Statuspage-compatible API, SMA-16) and writes snapshots,
+ * Each tick fetches live status for providers with a fetcher (OpenAI per
+ * SMA-16; Anthropic, Groq, and Cohere per SMA-19 — all via the
+ * Statuspage-compatible API) and writes snapshots,
  * components, and incidents to Postgres. A tiny HTTP server exposes /healthz.
  */
 import { createServer } from "node:http"
@@ -40,7 +41,12 @@ console.log("[worker] provider registry seeded")
 
 // Providers fetched each tick. Other providers stay fetcher_type='none'
 // in the registry until their fetchers land (later tickets).
-const STATUSPAGE_PROVIDERS = [{ id: "openai", baseUrl: "https://status.openai.com" }] as const
+const STATUSPAGE_PROVIDERS = [
+  { id: "openai", baseUrl: "https://status.openai.com" },
+  { id: "anthropic", baseUrl: "https://status.claude.com" },
+  { id: "groq", baseUrl: "https://groqstatus.com" },
+  { id: "cohere", baseUrl: "https://status.cohere.com" },
+] as const
 
 async function fetchProvider(provider: { id: string; baseUrl: string }): Promise<boolean> {
   try {

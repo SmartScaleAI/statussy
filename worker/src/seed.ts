@@ -12,14 +12,24 @@ export const PROVIDER_SEED = [
     statusUrl: "https://status.openai.com/",
     fetcherType: "statuspage",
   },
-  { id: "anthropic", name: "Anthropic", statusUrl: "https://status.claude.com/" },
+  {
+    id: "anthropic",
+    name: "Anthropic",
+    statusUrl: "https://status.claude.com/",
+    fetcherType: "statuspage",
+  },
   { id: "google-gemini", name: "Google Gemini", statusUrl: "https://aistudio.google.com/status" },
   { id: "xai", name: "xAI", statusUrl: "https://status.x.ai/" },
   { id: "mistral", name: "Mistral", statusUrl: "https://status.mistral.ai/" },
-  { id: "groq", name: "Groq", statusUrl: "https://groqstatus.com/" },
+  { id: "groq", name: "Groq", statusUrl: "https://groqstatus.com/", fetcherType: "statuspage" },
   { id: "perplexity", name: "Perplexity", statusUrl: "https://status.perplexity.com/" },
   { id: "deepseek", name: "DeepSeek", statusUrl: "https://status.deepseek.com/" },
-  { id: "cohere", name: "Cohere", statusUrl: "https://status.cohere.com/" },
+  {
+    id: "cohere",
+    name: "Cohere",
+    statusUrl: "https://status.cohere.com/",
+    fetcherType: "statuspage",
+  },
   { id: "openrouter", name: "OpenRouter", statusUrl: "https://status.openrouter.ai/" },
 ] as const
 
