@@ -1,13 +1,9 @@
-import { ServiceRow } from "@/components/service-row"
+import { ServiceCard } from "@/components/service-card"
 import { StatusSummary } from "@/components/status-summary"
-import { Card, CardContent } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
-import { getStatusBoard, isOperational } from "@/lib/status"
+import { getStatusBoard } from "@/lib/status"
 
 export function StatusBoard() {
   const { items, summary, refreshedAt } = getStatusBoard()
-  const issues = items.filter((item) => !isOperational(item.status))
-  const healthy = items.filter((item) => isOperational(item.status))
 
   return (
     <section className="flex flex-col gap-6" aria-label="AI provider status">
@@ -17,23 +13,11 @@ export function StatusBoard() {
         total={summary.total}
         refreshedAt={refreshedAt}
       />
-      <Card className="gap-0 py-0 ring-foreground/8">
-        <CardContent className="px-0">
-          <ul className="flex flex-col">
-            {issues.map((service) => (
-              <ServiceRow key={service.id} service={service} />
-            ))}
-            {issues.length > 0 && healthy.length > 0 ? (
-              <li aria-hidden="true" className="list-none">
-                <Separator />
-              </li>
-            ) : null}
-            {healthy.map((service) => (
-              <ServiceRow key={service.id} service={service} />
-            ))}
-          </ul>
-        </CardContent>
-      </Card>
+      <ul className="grid list-none grid-cols-1 gap-8 sm:grid-cols-2 xl:grid-cols-3">
+        {items.map((service) => (
+          <ServiceCard key={service.id} service={service} />
+        ))}
+      </ul>
     </section>
   )
 }

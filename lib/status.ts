@@ -19,6 +19,15 @@ export const STATUS_LABEL: Record<Service["status"], string> = {
   maintenance: "Maintenance",
 }
 
+/** Health fill for the course card bar — derived from status severity, not a fake %. */
+export const STATUS_HEALTH: Record<Service["status"], number> = {
+  operational: 100,
+  maintenance: 75,
+  degraded: 60,
+  partial_outage: 35,
+  major_outage: 10,
+}
+
 export function isOperational(status: Service["status"]) {
   return status === "operational"
 }

@@ -133,3 +133,84 @@
     @apply font-sans;
   }
 }
+
+/* Course-style provider cards (21st.dev / kristen17 look; accent from status). */
+@layer components {
+  .status-course-card {
+    position: relative;
+    z-index: 1;
+    border-radius: 2.25rem;
+    background: radial-gradient(
+      ellipse at right top,
+      var(--status-glow) 0%,
+      #151419 47%,
+      #151419 100%
+    );
+    box-shadow: 0.063em 0.75em 1.563em rgb(0 0 0 / 78%);
+  }
+
+  .status-course-card::before {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    content: "";
+    pointer-events: none;
+    border: 0.155rem solid transparent;
+    border-radius: inherit;
+    background: linear-gradient(
+        45deg,
+        #232228,
+        #232228,
+        #232228,
+        #232228,
+        var(--status-accent)
+      )
+      border-box;
+    mask:
+      linear-gradient(#fff 0 0) padding-box,
+      linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    -webkit-mask:
+      linear-gradient(#fff 0 0) padding-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: destination-out;
+  }
+
+  .status-course-card > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .status-course-card-fill {
+    background: var(--status-accent);
+  }
+
+  .status-course-card-link:hover {
+    background: var(--status-accent);
+  }
+
+  .status-course-card[data-status="operational"] {
+    --status-accent: #01c3a8;
+    --status-glow: #107667ed;
+  }
+
+  .status-course-card[data-status="maintenance"] {
+    --status-accent: #1890ff;
+    --status-glow: #00458f8f;
+  }
+
+  .status-course-card[data-status="degraded"] {
+    --status-accent: #ffb741;
+    --status-glow: #ffb74194;
+  }
+
+  .status-course-card[data-status="partial_outage"] {
+    --status-accent: #a63d2a;
+    --status-glow: #a63d2a82;
+  }
+
+  .status-course-card[data-status="major_outage"] {
+    --status-accent: #c0392b;
+    --status-glow: #c0392b99;
+  }
+}
