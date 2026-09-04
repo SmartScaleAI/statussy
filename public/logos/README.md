@@ -9,7 +9,7 @@ Marks keep the SMA-8 paths and viewBoxes (same size/alignment). Fills use docume
 | `openai.svg`        | OpenAI        | `#10A37F`                    | ChatGPT / OpenAI accent green ([openai.com/brand](https://openai.com/brand/)) — official lockup is black/white; green is the chromatic brand color that reads on dark |
 | `anthropic.svg`     | Anthropic     | `#D97757`                    | Claude Clay token from Anthropic’s public design system ([anthropic.com](https://www.anthropic.com)) |
 | `google-gemini.svg` | Google Gemini | `#4285F4 → #9B72CB → #D96570` | Official Gemini sparkle gradient ([design.google/library/gemini-ai-visual-design](https://design.google/library/gemini-ai-visual-design)); same path, static fill only |
-| `xai.svg`           | xAI           | `#FFFFFF`                    | Official dark-surface mark ([x.ai](https://x.ai)); xAI has no chromatic primary |
+| `xai.svg`           | xAI           | `#FFFFFF`                    | Official geometric x/A/I mark from [x.ai](https://x.ai) (Wikimedia / brand path); white on dark, no chromatic primary |
 | `mistral.svg`       | Mistral       | `#FA520F`                    | [Simple Icons](https://simpleicons.org) `Mistral AI` hex, sourced from [chat.mistral.ai](https://chat.mistral.ai) |
 | `groq.svg`          | Groq          | `#F55036`                    | Groq primary orange in public brand guidelines |
 | `perplexity.svg`    | Perplexity    | `#1FB8CD`                    | [Simple Icons](https://simpleicons.org) `Perplexity` hex, sourced from [perplexity.ai](https://www.perplexity.ai) |
