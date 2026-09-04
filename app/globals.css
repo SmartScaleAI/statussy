@@ -135,19 +135,19 @@
 }
 
 /*
- * Course-card theme: Geist dark palette (https://vercel.com/geist/colors).
- * Accents use step 900 (secondary text/icons). Surfaces use gray + backgrounds.
+ * Course-card theme: Geist scale swatches from https://vercel.com/geist/colors
+ * (the rounded pills: gray, blue, red, amber, green). Surfaces stay Geist gray.
  * Layout rules stay scoped so body/section resets do not leak.
  */
 .course-design-board {
-  --clr-blue: #52a8ff; /* blue-900 */
-  --clr-green: #62c073; /* green-900 */
-  --clr-amber: #ff990a; /* amber-900 */
-  --clr-red: #ff6166; /* red-900 */
+  --clr-blue: #276df5;
+  --clr-green: #48aa4a;
+  --clr-amber: #fdb203;
+  --clr-red: #de4649;
   --bg-dark: #1a1a1a; /* gray-100 */
   --bg-footer: #0a0a0a; /* background-100 */
   --color-white: #ededed; /* gray-1000 */
-  --color-gray-light: #a1a1a1; /* gray-900 */
+  --color-gray-light: #8f8f8f; /* gray swatch */
   --color-gray-medium: #454545; /* gray-500 */
   --color-gray-dark: #2e2e2e; /* gray-400 */
   --color-gray-very-dark: #1f1f1f; /* gray-200 */
