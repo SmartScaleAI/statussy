@@ -1,27 +1,21 @@
 "use server"
 
 import { headers } from "next/headers"
+import { unstable_rethrow } from "next/navigation"
 
-import { describeDatabaseTarget, getDatabasePool } from "@/lib/db"
-import { parseSuggestionInput } from "@/lib/suggest-provider"
-
-export type SuggestProviderState = {
-  status: "idle" | "success" | "error"
-  message: string
-  fieldErrors?: {
-    name?: string
-    email?: string
-  }
-}
-
-export const initialSuggestProviderState: SuggestProviderState = {
-  status: "idle",
-  message: "",
-}
+import { insertProviderSuggestion } from "@/lib/db"
+import {
+  SUGGEST_RATE_LIMIT_MESSAGE,
+  SUGGEST_SAVE_FAILED_MESSAGE,
+  SUGGEST_SUCCESS_MESSAGE,
+  SUGGEST_UNAVAILABLE_MESSAGE,
+  notifySlackSuggestion,
+  parseSuggestionInput,
+  type SuggestProviderState,
+} from "@/lib/suggest-provider"
 
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000
 const RATE_LIMIT_MAX = 5
-const SLACK_TIMEOUT_MS = 5_000
 
 const rateLimitHits = new Map<string, number[]>()
 
@@ -56,60 +50,20 @@ function isHoneypotTripped(formData: FormData) {
   return typeof website === "string" && website.trim().length > 0
 }
 
-async function notifySlack(payload: {
-  name: string
-  email: string | null
-  createdAt: Date
-}) {
-  const webhookUrl = process.env.SLACK_WEBHOOK_URL
-  if (!webhookUrl) {
-    console.warn(
-      "[statussy] SLACK_WEBHOOK_URL is not set — suggestion stored without Slack notify"
-    )
-    return
-  }
-
-  const text = [
-    "New provider suggestion",
-    `Name: ${payload.name}`,
-    payload.email ? `Email: ${payload.email}` : "Email: (none)",
-    `Submitted: ${payload.createdAt.toISOString()}`,
-  ].join("\n")
-
-  try {
-    const res = await fetch(webhookUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text }),
-      signal: AbortSignal.timeout(SLACK_TIMEOUT_MS),
-    })
-    if (!res.ok) {
-      console.error(
-        "[statussy] Slack suggestion notify failed",
-        res.status,
-        await res.text()
-      )
-    }
-  } catch (err) {
-    console.error("[statussy] Slack suggestion notify failed", err)
-  }
-}
-
-export async function suggestProvider(
-  _prev: SuggestProviderState,
+async function runSuggestProvider(
   formData: FormData
 ): Promise<SuggestProviderState> {
   if (isHoneypotTripped(formData)) {
     return {
       status: "success",
-      message: "Thanks — we received your suggestion.",
+      message: SUGGEST_SUCCESS_MESSAGE,
     }
   }
 
   if (isRateLimited(await clientKey())) {
     return {
       status: "error",
-      message: "Too many suggestions. Try again in a few minutes.",
+      message: SUGGEST_RATE_LIMIT_MESSAGE,
     }
   }
 
@@ -125,39 +79,45 @@ export async function suggestProvider(
     }
   }
 
-  const pool = getDatabasePool()
-  if (!pool) {
+  const inserted = await insertProviderSuggestion(parsed.name, parsed.email)
+  if (!inserted.ok) {
     return {
       status: "error",
-      message: "Suggestions are unavailable right now.",
+      message: process.env.DATABASE_URL
+        ? SUGGEST_SAVE_FAILED_MESSAGE
+        : SUGGEST_UNAVAILABLE_MESSAGE,
     }
   }
 
+  // Slack must never change the success response — save already succeeded.
   try {
-    const { rows } = await pool.query<{ created_at: Date }>(
-      `INSERT INTO provider_suggestions (name, email)
-       VALUES ($1, $2)
-       RETURNING created_at`,
-      [parsed.name, parsed.email]
-    )
-    const createdAt = rows[0]?.created_at ?? new Date()
-    await notifySlack({
+    await notifySlackSuggestion({
       name: parsed.name,
       email: parsed.email,
-      createdAt,
+      createdAt: inserted.createdAt,
     })
-    return {
-      status: "success",
-      message: "Thanks — we received your suggestion.",
-    }
   } catch (err) {
-    console.error(
-      `[statussy] provider suggestion insert failed (db=${describeDatabaseTarget()})`,
-      err
-    )
+    console.error("[statussy] Slack suggestion notify failed", err)
+  }
+
+  return {
+    status: "success",
+    message: SUGGEST_SUCCESS_MESSAGE,
+  }
+}
+
+export async function suggestProvider(
+  _prev: SuggestProviderState,
+  formData: FormData
+): Promise<SuggestProviderState> {
+  try {
+    return await runSuggestProvider(formData)
+  } catch (err) {
+    unstable_rethrow(err)
+    console.error("[statussy] provider suggestion action failed", err)
     return {
       status: "error",
-      message: "Could not save that suggestion. Try again in a moment.",
+      message: SUGGEST_SAVE_FAILED_MESSAGE,
     }
   }
 }

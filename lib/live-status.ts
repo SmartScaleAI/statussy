@@ -65,6 +65,7 @@ declare global {
 
 /** Fail fast instead of hanging a server render on an unreachable database. */
 const CONNECT_TIMEOUT_MS = 5_000
+const QUERY_TIMEOUT_MS = 8_000
 
 /** Hosts reachable only over trusted private networks — no TLS needed. */
 function isPrivateHost(hostname: string): boolean {
@@ -139,6 +140,7 @@ function getPool(): Pool | null {
     max: 3,
     ssl: resolveSsl(databaseUrl),
     connectionTimeoutMillis: CONNECT_TIMEOUT_MS,
+    query_timeout: QUERY_TIMEOUT_MS,
   })
   return globalThis.__statussyPool
 }
