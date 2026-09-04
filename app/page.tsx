@@ -4,8 +4,8 @@ import { StatusBoard } from "@/components/status-board"
 export default function HomePage() {
   return (
     <div className="flex min-h-svh flex-col">
-      <header className="flex w-full items-center justify-between px-4 pt-4 sm:px-5 sm:pt-5">
-        <h1 className="flex items-center gap-2.5 font-heading text-2xl font-semibold tracking-tight text-foreground">
+      <header className="flex h-14 w-full items-center justify-between px-4 sm:h-16 sm:px-5">
+        <h1 className="flex items-center gap-2.5 font-heading text-2xl font-semibold leading-none tracking-tight text-foreground">
           {/* Light: black mark. Dark: white-on-black tile. */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
