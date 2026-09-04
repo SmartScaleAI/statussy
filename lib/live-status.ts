@@ -12,6 +12,9 @@
 import { Pool } from "pg"
 
 import type { ServiceStatus } from "@/data/services"
+import { resolveLiveHealth } from "@/lib/health"
+
+export { resolveLiveHealth }
 
 /** Board-facing status: worker enum adds 'unknown' on failed first fetch. */
 export type LiveStatus = ServiceStatus | "unknown"
@@ -23,13 +26,13 @@ export type LiveSnapshot = {
   /** Worker marked the latest snapshot stale after a failed fetch. */
   stale: boolean
   fetchedAt: Date
-  /** Non-stale snapshots in the uptime window; null when none exist yet. */
-  uptime: { up: number; total: number } | null
   /**
-   * Measured probe latency (SMA-23): Statussy's own round-trip measurement,
-   * independent of official vendor status. Null = no measurement this tick.
+   * Live Health (SMA-31): operational components ÷ total current `components`
+   * rows. This is a live snapshot of component health, not historical uptime
+   * or a vendor SLA. When the provider has no component rows, fallback is
+   * 1/1 if latest overall status is `operational`, else 0/1.
    */
-  latencyMs: number | null
+  health: { operational: number; total: number }
 }
 
 const LIVE_STATUSES: readonly LiveStatus[] = [
@@ -44,17 +47,13 @@ const LIVE_STATUSES: readonly LiveStatus[] = [
 /** Worker cron runs every 5m — 3 missed ticks means the data is stale. */
 export const STALE_AFTER_MS = 15 * 60 * 1000
 
-/** Rolling window used to derive the uptime chicklet from snapshots. */
-const UPTIME_WINDOW = "24 hours"
-
 type SnapshotRow = {
   provider_id: string
   status: string
   incident_title: string | null
   stale: boolean
   fetched_at: Date
-  latency_ms: number | null
-  up: string | null
+  operational: string | null
   total: string | null
 }
 
@@ -152,10 +151,9 @@ function toLiveStatus(status: string): LiveStatus {
 }
 
 /**
- * Latest snapshot per provider plus a snapshot-derived uptime ratio over the
- * last 24h (share of non-stale snapshots reporting 'operational' — a board
- * heuristic, not a vendor SLA). Returns an empty map when no database is
- * configured or the read fails, so the board can fall back to mock data.
+ * Latest snapshot per provider plus live Health from current `components`
+ * rows (SMA-31). Returns an empty map when no database is configured or the
+ * read fails, so the board can fall back to mock data.
  */
 export async function getLiveSnapshots(): Promise<Map<string, LiveSnapshot>> {
   const pool = getPool()
@@ -168,35 +166,37 @@ export async function getLiveSnapshots(): Promise<Map<string, LiveSnapshot>> {
       `WITH latest AS (
          SELECT DISTINCT ON (provider_id)
                 provider_id, status::text AS status, incident_title, stale,
-                fetched_at, latency_ms
+                fetched_at
          FROM provider_snapshots
          ORDER BY provider_id, fetched_at DESC, id DESC
        ),
-       uptime AS (
+       health AS (
          SELECT provider_id,
-                count(*) FILTER (WHERE status = 'operational') AS up,
+                count(*) FILTER (WHERE status = 'operational') AS operational,
                 count(*) AS total
-         FROM provider_snapshots
-         WHERE NOT stale AND fetched_at > now() - interval '${UPTIME_WINDOW}'
+         FROM components
          GROUP BY provider_id
        )
        SELECT l.provider_id, l.status, l.incident_title, l.stale, l.fetched_at,
-              l.latency_ms, u.up, u.total
+              h.operational, h.total
        FROM latest l
-       LEFT JOIN uptime u USING (provider_id)`
+       LEFT JOIN health h USING (provider_id)`
     )
 
     const snapshots = new Map<string, LiveSnapshot>()
     for (const row of rows) {
-      const total = Number(row.total ?? 0)
+      const status = toLiveStatus(row.status)
       snapshots.set(row.provider_id, {
         providerId: row.provider_id,
-        status: toLiveStatus(row.status),
+        status,
         incidentTitle: row.incident_title,
         stale: row.stale,
         fetchedAt: row.fetched_at,
-        uptime: total > 0 ? { up: Number(row.up ?? 0), total } : null,
-        latencyMs: row.latency_ms,
+        health: resolveLiveHealth(
+          status,
+          Number(row.operational ?? 0),
+          Number(row.total ?? 0)
+        ),
       })
     }
     return snapshots
@@ -263,7 +263,10 @@ type IncidentRow = {
   updated_at: Date
 }
 
-type DetailSnapshotRow = Omit<SnapshotRow, "provider_id" | "up" | "total">
+type DetailSnapshotRow = Omit<
+  SnapshotRow,
+  "provider_id" | "operational" | "total"
+>
 
 /** Vendor lifecycle states that mean an incident is over even when the feed
  *  omits `resolved_at`. */

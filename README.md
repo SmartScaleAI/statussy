@@ -115,17 +115,19 @@ registry in [`data/services.ts`](data/services.ts).
 Fallback policy (SMA-18):
 
 - **Provider has snapshots** (all 10 fetched providers): the card shows the live overall
-  status, the snapshot's incident title / fetch time, and an **uptime**
-  chicklet derived from the last 24h of non-stale snapshots (share reporting
-  `operational` — a board heuristic, not a vendor SLA). A **Stale** badge
-  appears when the worker flagged the latest snapshot stale (failed fetch) or
-  the snapshot is older than 15 minutes (3 missed worker ticks).
+  status, the snapshot's incident title / fetch time, and a **Health**
+  chicklet from current `components` rows (operational count ÷ total — a live
+  snapshot, not historical uptime or a vendor SLA). Providers with no
+  component rows show Health 100% if the latest overall status is
+  `operational`, else 0%. A **Stale** badge appears when the worker flagged
+  the latest snapshot stale (failed fetch) or the snapshot is older than 15
+  minutes (3 missed worker ticks).
 - **Provider has no snapshots yet**: the card keeps its prior mock entry from
-  `data/services.ts` and shows an em-dash uptime placeholder.
+  `data/services.ts` and shows an em-dash Health placeholder.
 - **No `DATABASE_URL` or the read fails**: the whole board falls back to mock.
 
 The 30-day status-history sparkline is hidden until a real history UI exists;
-its slot now holds the uptime chicklet.
+its slot now holds the live Health chicklet.
 
 ## Add a provider
 

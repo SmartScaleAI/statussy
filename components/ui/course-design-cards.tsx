@@ -19,12 +19,11 @@ export interface CardData {
   date?: string
   title: string
   description?: string
-  /** 24h snapshot-derived uptime; omitted until live data exists. */
-  uptimeLabel?: string
-  /** Measured probe latency (SMA-23); omitted when there is no measurement. */
-  latencyLabel?: string
-  /** Tooltip clarifying the latency source (our probe, not the vendor). */
-  latencyTitle?: string
+  /**
+   * Live Health % from current components (SMA-31); omitted until live
+   * data exists. This is a live snapshot, not historical uptime.
+   */
+  healthLabel?: string
   /** Latest snapshot is stale (failed fetch or past freshness threshold). */
   stale?: boolean
   imgSrc1?: string
@@ -66,9 +65,7 @@ const Card: React.FC<CardProps> = ({ data }) => {
     date,
     title,
     description,
-    uptimeLabel,
-    latencyLabel,
-    latencyTitle,
+    healthLabel,
     stale,
     imgSrc1,
     imgAlt1,
@@ -128,22 +125,14 @@ const Card: React.FC<CardProps> = ({ data }) => {
         {description ? <p>{description}</p> : null}
         {/* Sparkline removed until a real history UI exists (SMA-18). */}
         <div className="metric-chicklets">
-          <div className="uptime-chicklet" aria-label="Uptime, last 24 hours">
-            <span className="status-metric-label">Uptime</span>
-            {uptimeLabel ?? "—"}
+          <div
+            className="health-chicklet"
+            aria-label="Live health, current components"
+            title="Live component health — not historical uptime"
+          >
+            <span className="status-metric-label">Health</span>
+            {healthLabel ?? "—"}
           </div>
-          {latencyLabel ? (
-            // Second chicklet (SMA-23): latency measured by our own probe,
-            // clearly separate from the official vendor status above.
-            <div
-              className="uptime-chicklet"
-              aria-label="Measured latency"
-              title={latencyTitle}
-            >
-              <span className="status-metric-label">Latency</span>
-              {latencyLabel}
-            </div>
-          ) : null}
         </div>
       </div>
       <div className="card-footer">

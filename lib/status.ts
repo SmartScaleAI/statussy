@@ -1,6 +1,7 @@
 import { connection } from "next/server"
 
 import { LAST_REFRESHED_AT, services, type Service } from "@/data/services"
+import { formatHealth } from "@/lib/health"
 import {
   getLiveSnapshots,
   isSnapshotStale,
@@ -19,15 +20,13 @@ export type BoardService = Omit<Service, "status"> & {
   live: boolean
   /** Worker flagged the snapshot stale, or it is older than the threshold. */
   stale: boolean
-  /** Snapshot-derived uptime over the last 24h; null until data exists. */
-  uptimeLabel: string | null
   /**
-   * Measured probe latency chicklet (SMA-23) — our own measurement, kept
-   * separate from official vendor status. Null when the latest snapshot has
-   * no measurement (probe off, unconfigured, or failed); a null here never
-   * implies the official status is stale.
+   * Live Health chicklet (SMA-31): operational components ÷ total current
+   * components, formatted as a percent. Null until a live snapshot exists
+   * (mock fallback shows an em-dash). This is a live snapshot, not
+   * historical uptime or a vendor SLA.
    */
-  latencyLabel: string | null
+  healthLabel: string | null
 }
 
 /** Lower number = more urgent. Non-operational statuses sort above healthy. */
@@ -104,25 +103,6 @@ export function formatCardUpdatedAt(iso: string) {
   }).format(new Date(iso))
 }
 
-/** e.g. 47/48 operational snapshots → "97.9%". */
-function formatUptime(up: number, total: number) {
-  const pct = (up / total) * 100
-  const digits = pct >= 99.5 ? 2 : 1
-  return `${pct.toFixed(digits)}%`
-}
-
-/**
- * Measured probe latency (SMA-23) — Statussy's own round-trip measurement
- * against a safe public endpoint, never vendor-reported data. Returns null
- * when there is no measurement so the chicklet can render a placeholder.
- */
-export function formatMeasuredLatency(latencyMs: number | null | undefined) {
-  if (latencyMs == null || !Number.isFinite(latencyMs) || latencyMs < 0) {
-    return null
-  }
-  return `${Math.round(latencyMs)} ms`
-}
-
 /**
  * Board payload: latest Postgres snapshot per provider (SMA-15/16 worker)
  * merged over the mock registry. Providers without a snapshot keep their
@@ -141,8 +121,7 @@ export async function getStatusBoard() {
           ...service,
           live: false,
           stale: false,
-          uptimeLabel: null,
-          latencyLabel: null,
+          healthLabel: null,
         }
       }
       return {
@@ -152,10 +131,10 @@ export async function getStatusBoard() {
         updatedAt: snapshot.fetchedAt.toISOString(),
         live: true,
         stale: isSnapshotStale(snapshot),
-        uptimeLabel: snapshot.uptime
-          ? formatUptime(snapshot.uptime.up, snapshot.uptime.total)
-          : null,
-        latencyLabel: formatMeasuredLatency(snapshot.latencyMs),
+        healthLabel: formatHealth(
+          snapshot.health.operational,
+          snapshot.health.total
+        ),
       }
     })
   )
