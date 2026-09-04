@@ -388,7 +388,7 @@
   font-size: 1rem;
 }
 
-/* Metric chicklet row (SMA-18 uptime + SMA-23 measured latency). */
+/* Metric chicklet row (SMA-31 live Health). */
 .course-design-board .card-body .metric-chicklets {
   display: flex;
   flex-wrap: wrap;
@@ -397,8 +397,8 @@
   margin-top: 0.7rem;
 }
 
-/* Uptime chicklet in the old sparkline slot (SMA-18). "—" when no data yet. */
-.course-design-board .card-body .uptime-chicklet {
+/* Live Health chicklet (SMA-31). Current components, not historical uptime. */
+.course-design-board .card-body .health-chicklet {
   display: inline-flex;
   align-items: center;
   padding: 0.2rem 0.6rem;

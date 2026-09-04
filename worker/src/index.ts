@@ -10,9 +10,7 @@
  * SMA-22; Mistral via its Checkly/Nuxt `__NUXT_DATA__` HTML payload,
  * SMA-25; Google Gemini via Google Cloud Status incidents.json, SMA-26)
  * and writes snapshots, components, and incidents to Postgres.
- * Optionally it also runs latency probes (SMA-23) against safe public
- * endpoints and records latency_ms on the snapshot — independent of
- * official status. A tiny HTTP server exposes /healthz.
+ * A tiny HTTP server exposes /healthz.
  */
 import { createServer } from "node:http"
 import { loadConfig } from "./config.js"
@@ -23,7 +21,6 @@ import { runMigrations } from "./migrate.js"
 import { fetchRssState } from "./rss.js"
 import { seedProviders } from "./seed.js"
 import { fetchOnlineOrNotState } from "./onlineornot.js"
-import { PROBE_TARGETS, probeAll } from "./probe.js"
 import { fetchGoogleCloudGeminiState } from "./google-cloud.js"
 import { fetchStatuspageState } from "./statuspage.js"
 import {
@@ -123,37 +120,15 @@ const PROVIDER_JOBS: ProviderJob[] = [
   },
 ]
 
-/**
- * Optional latency probes (SMA-23). Measured by us against safe public
- * endpoints — separate from official vendor status. A probe failure yields
- * latency null for the tick and never marks official status stale.
- */
-async function runProbes(): Promise<Map<string, number | null>> {
-  if (!config.latencyProbesEnabled || PROBE_TARGETS.length === 0) {
-    return new Map()
-  }
-  const latencies = await probeAll(PROBE_TARGETS, {
-    timeoutMs: config.probeTimeoutMs,
-    userAgent: config.fetchUserAgent,
-  })
-  for (const [providerId, latencyMs] of latencies) {
-    console.log(
-      `[probe] ${providerId} ${latencyMs === null ? "no measurement" : `latency=${latencyMs}ms`}`,
-    )
-  }
-  return latencies
-}
-
-async function fetchProvider(
-  provider: ProviderJob,
-  latencies: ReadonlyMap<string, number | null>,
-): Promise<boolean> {
+async function fetchProvider(provider: ProviderJob): Promise<boolean> {
   try {
     const fetched = await provider.fetch()
-    await persistProviderState(pool, provider.id, fetched, {
-      ...provider.persistOptions,
-      latencyMs: latencies.get(provider.id) ?? null,
-    })
+    await persistProviderState(
+      pool,
+      provider.id,
+      fetched,
+      provider.persistOptions,
+    )
     console.log(
       `[fetch] ${provider.id} ok status=${fetched.status} components=${fetched.components.length} incidents=${fetched.incidents.length}`,
     )
@@ -171,11 +146,8 @@ async function fetchProvider(
 async function runTick(): Promise<void> {
   const tickNumber = ++state.tickCount
   try {
-    // Probe failures only produce null latency; they never fail the tick
-    // or affect the official status path below.
-    const latencies = await runProbes()
     const results = await Promise.all(
-      PROVIDER_JOBS.map((provider) => fetchProvider(provider, latencies)),
+      PROVIDER_JOBS.map((provider) => fetchProvider(provider)),
     )
     const okCount = results.filter(Boolean).length
     state.lastTickAt = new Date()

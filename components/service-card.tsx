@@ -24,11 +24,7 @@ export function ServiceCard({ service }: { service: BoardService }) {
           id: service.id,
           colorClass: STATUS_COLOR[service.status],
           title: service.name,
-          uptimeLabel: service.uptimeLabel ?? undefined,
-          // Probe latency (SMA-23) is Statussy's own measurement — kept
-          // visually distinct from the official vendor status on the card.
-          latencyLabel: service.latencyLabel ?? undefined,
-          latencyTitle: "Measured by Statussy's probe — not vendor-reported",
+          healthLabel: service.healthLabel ?? undefined,
           stale: service.stale,
           imgSrc1: `/logos/${service.id}.svg`,
           imgAlt1: "",
