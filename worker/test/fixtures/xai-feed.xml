@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>SpaceXAI System Status</title>
+    <link>https://status.x.ai</link>
+    <description>Current status and incident history of SpaceXAI's services and systems</description>
+    <language>en-us</language>
+    <atom:link href="https://status.x.ai/feed.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 03 Sep 2026 17:10:57 GMT</lastBuildDate>
+    <ttl>30</ttl>
+
+    <item>
+      <title>[API] Elevated error rates</title>
+      <link>https://status.x.ai/api/INCaaaa111</link>
+      <guid isPermaLink="false">INCaaaa111</guid>
+      <description><![CDATA[
+           <h3>Status: ONGOING</h3>
+           <p>Severity: degraded</p>
+           <hr />
+           <h4>Updates:</h4>
+
+             <div>
+               <p><strong>Thu, 03 Sep 2026 18:00:00 GMT</strong></p>
+               <h3>Investigating elevated error rates</h3>
+               <p>We are investigating elevated error rates on the API.</p>
+             </div>
+
+      ]]></description>
+      <pubDate>Thu, 03 Sep 2026 18:00:00 GMT</pubDate>
+      <category>degraded</category>
+      <category>ongoing</category>
+    </item>
+
+    <item>
+      <title>[Grok (iOS)] Models outage</title>
+      <link>https://status.x.ai/ios-app/INCc33a8af</link>
+      <guid isPermaLink="false">INCc33a8af</guid>
+      <description><![CDATA[
+           <h3>Status: RESOLVED</h3>
+           <p>Severity: available</p>
+           <p>Resolved: Thu, 03 Sep 2026 17:08:11 GMT</p>
+           <hr />
+           <h4>Updates:</h4>
+
+             <div>
+               <p><strong>Thu, 03 Sep 2026 17:08:11 GMT</strong></p>
+               <h3>Traffic is healthy again</h3>
+               <p>We have resolved the situation, and traffic is healthy again.</p>
+             </div>
+
+             <div>
+               <p><strong>Thu, 03 Sep 2026 13:30:00 GMT</strong></p>
+               <h3>Investigating outage</h3>
+               <p>Grok is experiencing issues. We are working on restoring service as quickly as possible.</p>
+             </div>
+
+      ]]></description>
+      <pubDate>Thu, 03 Sep 2026 13:30:00 GMT</pubDate>
+      <category>available</category>
+      <category>resolved</category>
+    </item>
+
+    <item>
+      <title>[Grok (Web)] Models outage</title>
+      <link>https://status.x.ai/grok-com/INC25664c15</link>
+      <guid isPermaLink="false">INC25664c15</guid>
+      <description><![CDATA[
+           <h3>Status: RESOLVED</h3>
+           <p>Severity: available</p>
+           <p>Resolved: Thu, 03 Sep 2026 17:07:07 GMT</p>
+           <hr />
+           <h4>Updates:</h4>
+
+             <div>
+               <p><strong>Thu, 03 Sep 2026 17:07:07 GMT</strong></p>
+               <h3>Traffic is healthy again</h3>
+               <p>We have resolved the situation, and traffic is healthy again.</p>
+             </div>
+
+      ]]></description>
+      <pubDate>Thu, 03 Sep 2026 13:30:00 GMT</pubDate>
+      <category>available</category>
+      <category>resolved</category>
+    </item>
+  </channel>
+</rss>

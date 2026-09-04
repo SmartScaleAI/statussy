@@ -6,7 +6,8 @@
  * Each tick fetches live status for providers with a fetcher (OpenAI per
  * SMA-16; Anthropic, Groq, and Cohere per SMA-19 — all via the
  * Statuspage-compatible API; OpenRouter via OnlineOrNot, SMA-21; Perplexity
- * via Instatus, SMA-20) and writes
+ * via Instatus, SMA-20; xAI and DeepSeek via their RSS/Atom status feeds,
+ * SMA-22) and writes
  * snapshots, components, and incidents to Postgres. A tiny HTTP server
  * exposes /healthz.
  */
@@ -15,10 +16,16 @@ import { loadConfig } from "./config.js"
 import { createPool } from "./db.js"
 import { fetchInstatusState } from "./instatus.js"
 import { runMigrations } from "./migrate.js"
+import { fetchRssState } from "./rss.js"
 import { seedProviders } from "./seed.js"
 import { fetchOnlineOrNotState } from "./onlineornot.js"
-import { fetchStatuspageState, type MappedProviderState } from "./statuspage.js"
-import { markProviderStale, persistProviderState, type PersistOptions } from "./store.js"
+import { fetchStatuspageState } from "./statuspage.js"
+import {
+  markProviderStale,
+  persistProviderState,
+  type PersistableProviderState,
+  type PersistOptions,
+} from "./store.js"
 
 const config = loadConfig()
 const pool = createPool(config.databaseUrl)
@@ -50,7 +57,7 @@ const fetchOptions = () => ({
 
 type ProviderJob = {
   id: string
-  fetch: () => Promise<MappedProviderState>
+  fetch: () => Promise<PersistableProviderState>
   persistOptions?: PersistOptions
 }
 
@@ -59,6 +66,14 @@ type ProviderJob = {
 const statuspageJob = (id: string, baseUrl: string): ProviderJob => ({
   id,
   fetch: () => fetchStatuspageState(baseUrl, fetchOptions()),
+})
+
+// SMA-22: providers whose status page is only exposed as an RSS/Atom feed.
+// Feed URLs are tried in order; DeepSeek serves the same items as both
+// feed.rss and feed.atom.
+const rssJob = (id: string, feedUrls: readonly string[]): ProviderJob => ({
+  id,
+  fetch: () => fetchRssState(feedUrls, fetchOptions()),
 })
 
 const PROVIDER_JOBS: ProviderJob[] = [
@@ -80,6 +95,11 @@ const PROVIDER_JOBS: ProviderJob[] = [
     fetch: () => fetchInstatusState("https://status.perplexity.com", fetchOptions()),
     persistOptions: { resolveMissingIncidents: true },
   },
+  rssJob("xai", ["https://status.x.ai/feed.xml"]),
+  rssJob("deepseek", [
+    "https://status.deepseek.com/feed.rss",
+    "https://status.deepseek.com/feed.atom",
+  ]),
 ]
 
 async function fetchProvider(provider: ProviderJob): Promise<boolean> {

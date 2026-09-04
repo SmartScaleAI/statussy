@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>DeepSeek</title>
+    <link>https://status.deepseek.com</link>
+    <description>Status updates for DeepSeek</description>
+    <pubDate>Wed, 02 Sep 2026 14:25:45 +0800</pubDate>
+    <lastBuildDate>Wed, 02 Sep 2026 14:25:45 +0800</lastBuildDate>
+    <item>
+      <title>DeepSeek 网页/API 部分中断（DeepSeek Web/API partially unavailable)</title>
+      <link>https://status.deepseek.com/incidents/6927183076287</link>
+      <description>&lt;p&gt;&lt;strong&gt;Status:&lt;/strong&gt; resolved&lt;/p&gt;&lt;p&gt;本次问题已解决，服务已恢复。&#xA;&#xA;The incident has been resolved and service has been restored.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Affected components:&lt;/strong&gt; DeepSeek V4 Pro API服务(API Service), DeepSeek V4 Flash API服务(API Service), 快速模式(Instant Mode), 专家模式(Expert Mode)&lt;/p&gt;</description>
+      <guid>urn:flashduty:change:6927183076287</guid>
+      <pubDate>Wed, 02 Sep 2026 13:54:24 +0800</pubDate>
+    </item>
+    <item>
+      <title>DeepSeek API 性能下降（DeepSeek API Degraded Performance）</title>
+      <link>https://status.deepseek.com/incidents/6877795382287</link>
+      <description>&lt;p&gt;&lt;strong&gt;Status:&lt;/strong&gt; investigating&lt;/p&gt;&lt;p&gt;我们正在调查该问题。&#xA;&#xA;We are investigating the issue.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Affected components:&lt;/strong&gt; DeepSeek V4 Flash API服务(API Service)&lt;/p&gt;</description>
+      <guid>urn:flashduty:change:6877795382287</guid>
+      <pubDate>Sat, 22 Aug 2026 09:57:40 +0800</pubDate>
+    </item>
+    <item>
+      <title>DeepSeek 网页/API 性能下降（DeepSeek Web/API Degraded Performance）</title>
+      <link>https://status.deepseek.com/incidents/6874252609287</link>
+      <description>&lt;p&gt;&lt;strong&gt;Status:&lt;/strong&gt; resolved&lt;/p&gt;&lt;p&gt;本次问题已解决，服务已恢复。&#xA;&#xA;The incident has been resolved and service has been restored.&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Affected components:&lt;/strong&gt; 专家模式(Expert Mode)&lt;/p&gt;</description>
+      <guid>urn:flashduty:change:6874252609287</guid>
+      <pubDate>Fri, 21 Aug 2026 14:44:26 +0800</pubDate>
+    </item>
+  </channel>
+</rss>

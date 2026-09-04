@@ -19,7 +19,7 @@ export const PROVIDER_SEED = [
     fetcherType: "statuspage",
   },
   { id: "google-gemini", name: "Google Gemini", statusUrl: "https://aistudio.google.com/status" },
-  { id: "xai", name: "xAI", statusUrl: "https://status.x.ai/" },
+  { id: "xai", name: "xAI", statusUrl: "https://status.x.ai/", fetcherType: "rss" },
   { id: "mistral", name: "Mistral", statusUrl: "https://status.mistral.ai/" },
   { id: "groq", name: "Groq", statusUrl: "https://groqstatus.com/", fetcherType: "statuspage" },
   {
@@ -28,7 +28,12 @@ export const PROVIDER_SEED = [
     statusUrl: "https://status.perplexity.com/",
     fetcherType: "instatus",
   },
-  { id: "deepseek", name: "DeepSeek", statusUrl: "https://status.deepseek.com/" },
+  {
+    id: "deepseek",
+    name: "DeepSeek",
+    statusUrl: "https://status.deepseek.com/",
+    fetcherType: "rss",
+  },
   {
     id: "cohere",
     name: "Cohere",
