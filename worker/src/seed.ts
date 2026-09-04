@@ -30,7 +30,12 @@ export const PROVIDER_SEED = [
     statusUrl: "https://status.cohere.com/",
     fetcherType: "statuspage",
   },
-  { id: "openrouter", name: "OpenRouter", statusUrl: "https://status.openrouter.ai/" },
+  {
+    id: "openrouter",
+    name: "OpenRouter",
+    statusUrl: "https://status.openrouter.ai/",
+    fetcherType: "onlineornot",
+  },
 ] as const
 
 export async function seedProviders(pool: pg.Pool): Promise<void> {

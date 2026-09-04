@@ -1,6 +1,16 @@
 import type pg from "pg"
 import type { MappedProviderState } from "./statuspage.js"
 
+export type PersistOptions = {
+  /**
+   * Sources that only expose *active* incidents (e.g. OnlineOrNot's summary
+   * API) can't tell us when an incident resolved — it just disappears from
+   * the feed. When true, unresolved incidents absent from this fetch are
+   * marked resolved at persist time.
+   */
+  resolveMissingIncidents?: boolean
+}
+
 /**
  * Persist a successful fetch for one provider in a single transaction:
  * a fresh snapshot row, upserted components (removing ones the vendor
@@ -10,6 +20,7 @@ export async function persistProviderState(
   pool: pg.Pool,
   providerId: string,
   state: MappedProviderState,
+  options: PersistOptions = {},
 ): Promise<void> {
   const client = await pool.connect()
   try {
@@ -62,6 +73,19 @@ export async function persistProviderState(
           incident.startedAt,
           incident.resolvedAt,
         ],
+      )
+    }
+
+    if (options.resolveMissingIncidents) {
+      await client.query(
+        `UPDATE incidents
+         SET status = 'resolved',
+             resolved_at = COALESCE(resolved_at, now()),
+             updated_at = now()
+         WHERE provider_id = $1
+           AND resolved_at IS NULL
+           AND external_id != ALL($2::text[])`,
+        [providerId, state.incidents.map((i) => i.externalId)],
       )
     }
 
