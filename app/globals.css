@@ -394,16 +394,19 @@
 }
 
 .course-design-board .card-footer ul li {
-  margin-right: -0.625rem;
   list-style-type: none;
   display: flex;
+  align-items: center;
 }
 
 .course-design-board .card-footer ul li img {
+  display: block;
   object-fit: contain;
-  border-radius: 50%;
-  width: 1.875rem;
-  height: 1.875rem;
+  object-position: left center;
+  border-radius: 0;
+  width: auto;
+  height: 1.75rem;
+  max-width: 2.75rem;
 }
 
 .course-design-board .card-footer .btn-countdown {
