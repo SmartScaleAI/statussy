@@ -16,22 +16,30 @@ export function StatusBoard() {
   return (
     <section
       className="course-design-board flex flex-col gap-8"
-      aria-label="AI provider status"
+      aria-labelledby="all-services-heading"
     >
-      <StatusSummary
-        operational={summary.operational}
-        issues={summary.issues}
-        total={summary.total}
-        refreshedAt={refreshedAt}
-      />
+      <div className="flex flex-col gap-3">
+        <h2
+          id="all-services-heading"
+          className="font-heading text-lg font-semibold tracking-tight text-foreground"
+        >
+          All Services
+        </h2>
+        <StatusSummary
+          operational={summary.operational}
+          issues={summary.issues}
+          total={summary.total}
+          refreshedAt={refreshedAt}
+        />
+      </div>
       <div className="flex flex-col gap-6">
         <div className="flex items-center gap-2">
           <InputGroup className="h-10 min-w-0 flex-1">
             <InputGroupInput
-              id="provider-search"
+              id="service-search"
               type="search"
-              placeholder="Search providers by name..."
-              aria-label="Search providers by name"
+              placeholder="Search services by name..."
+              aria-label="Search services by name"
               className="h-10"
             />
             <InputGroupAddon align="inline-start">
