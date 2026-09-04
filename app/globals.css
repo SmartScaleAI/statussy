@@ -144,6 +144,18 @@
   --clr-green: #48aa4a;
   --clr-amber: #fdb203;
   --clr-red: #de4649;
+  /* Light surfaces — Geist-adjacent grays so cards stay readable off dark. */
+  --bg-dark: #d4d4d4; /* border-gradient base */
+  --bg-footer: #f5f5f5; /* card surface */
+  --color-white: #171717; /* primary text */
+  --color-gray-light: #737373;
+  --color-gray-medium: #a3a3a3;
+  --color-gray-dark: #e5e5e5;
+  --color-gray-very-dark: #fafafa;
+  --card-shadow: 0 0.25em 1em rgb(0 0 0 / 10%);
+}
+
+.dark .course-design-board {
   --bg-dark: #262626; /* border-gradient base */
   --bg-footer: #171717; /* charcoal card surface (user reference) */
   --color-white: #ededed; /* gray-1000 */
@@ -151,6 +163,7 @@
   --color-gray-medium: #454545; /* gray-500 */
   --color-gray-dark: #2e2e2e; /* gray-400 */
   --color-gray-very-dark: #1f1f1f; /* gray-200 */
+  --card-shadow: 0.063em 0.75em 1.563em #000000c7;
 }
 
 .course-design-board a {
@@ -167,7 +180,7 @@
   display: flex;
   flex-direction: column;
   position: relative;
-  box-shadow: 0.063em 0.75em 1.563em #000000c7;
+  box-shadow: var(--card-shadow);
 }
 
 .course-design-board .card:before {
