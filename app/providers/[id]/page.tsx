@@ -207,6 +207,23 @@ export default async function ProviderDetailPage({ params }: PageProps) {
           </p>
         </section>
 
+        <section className="flex flex-col gap-3" aria-label="Active incidents">
+          <h2 className="font-heading text-lg font-semibold tracking-tight text-foreground">
+            Active incidents
+          </h2>
+          {activeIncidents.length > 0 ? (
+            <ul className="flex flex-col gap-3">
+              {activeIncidents.map((incident) => (
+                <IncidentItem key={incident.id} incident={incident} />
+              ))}
+            </ul>
+          ) : (
+            <p className="rounded-lg border border-dashed border-border px-4 py-6 text-center text-sm text-muted-foreground">
+              No active incidents.
+            </p>
+          )}
+        </section>
+
         <section className="flex flex-col gap-3" aria-label="Components">
           <h2 className="font-heading text-lg font-semibold tracking-tight text-foreground">
             Components
@@ -228,23 +245,6 @@ export default async function ProviderDetailPage({ params }: PageProps) {
           ) : (
             <p className="rounded-lg border border-dashed border-border px-4 py-6 text-center text-sm text-muted-foreground">
               No components reported for this provider yet.
-            </p>
-          )}
-        </section>
-
-        <section className="flex flex-col gap-3" aria-label="Active incidents">
-          <h2 className="font-heading text-lg font-semibold tracking-tight text-foreground">
-            Active incidents
-          </h2>
-          {activeIncidents.length > 0 ? (
-            <ul className="flex flex-col gap-3">
-              {activeIncidents.map((incident) => (
-                <IncidentItem key={incident.id} incident={incident} />
-              ))}
-            </ul>
-          ) : (
-            <p className="rounded-lg border border-dashed border-border px-4 py-6 text-center text-sm text-muted-foreground">
-              No active incidents.
             </p>
           )}
         </section>
