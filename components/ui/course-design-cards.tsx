@@ -6,12 +6,19 @@
  * Small Statussy adaptations (SMA-9 / SMA-12): optional official-status href,
  * no fake “add teammate” control. Header menu replaced with a local favorite
  * star. Footer is a compact text link (underline on hover/press).
+ *
+ * SMA-33: the whole card is the detail hit target (stretched overlay link).
+ * Star + Official status sit above it and stopPropagation so they stay usable.
  */
 "use client"
 
 import { ArrowUpRightIcon, StarIcon } from "lucide-react"
 import Link from "next/link"
-import React, { useState } from "react"
+import React, { useState, type MouseEvent } from "react"
+
+function stopCardNavigation(event: MouseEvent) {
+  event.stopPropagation()
+}
 
 export interface CardData {
   id: number | string
@@ -32,7 +39,7 @@ export interface CardData {
   imgAlt2?: string
   countdownText: string
   countdownHref?: string
-  /** Internal deep-dive route (SMA-17); wraps the logo + title in a link. */
+  /** Internal deep-dive route (SMA-17 / SMA-33); whole-card hit target. */
   detailHref?: string
   statusLabel?: string
   updatedAt?: string
@@ -52,7 +59,11 @@ function FavoriteButton() {
       className={favorited ? "btn-favorite is-favorited" : "btn-favorite"}
       aria-pressed={favorited}
       aria-label={favorited ? "Remove from favorites" : "Add to favorites"}
-      onClick={() => setFavorited((on) => !on)}
+      onClick={(event) => {
+        event.preventDefault()
+        stopCardNavigation(event)
+        setFavorited((on) => !on)
+      }}
     >
       <StarIcon aria-hidden="true" fill={favorited ? "currentColor" : "none"} />
     </button>
@@ -95,6 +106,15 @@ const Card: React.FC<CardProps> = ({ data }) => {
 
   return (
     <div className={`card ${colorClass}`}>
+      {detailHref ? (
+        <Link
+          href={detailHref}
+          className="card-hit-target"
+          aria-label={`${title} status details`}
+        >
+          <span className="sr-only">{title} status details</span>
+        </Link>
+      ) : null}
       <div className="card-header">
         <div className="status-live">
           <span className="status-dot" aria-hidden="true" />
@@ -111,17 +131,7 @@ const Card: React.FC<CardProps> = ({ data }) => {
         <FavoriteButton />
       </div>
       <div className="card-body">
-        {detailHref ? (
-          <Link
-            href={detailHref}
-            className="card-detail-link"
-            aria-label={`${title} status details`}
-          >
-            {identity}
-          </Link>
-        ) : (
-          identity
-        )}
+        <div className="card-identity">{identity}</div>
         {description ? <p>{description}</p> : null}
         {/* Sparkline removed until a real history UI exists (SMA-18). */}
         <div className="metric-chicklets">
@@ -153,12 +163,13 @@ const Card: React.FC<CardProps> = ({ data }) => {
             className="btn-countdown"
             target="_blank"
             rel="noreferrer"
+            onClick={stopCardNavigation}
           >
             {countdownText}
             <ArrowUpRightIcon aria-hidden="true" />
           </a>
         ) : (
-          <a href="#" className="btn-countdown">
+          <a href="#" className="btn-countdown" onClick={stopCardNavigation}>
             {countdownText}
             <ArrowUpRightIcon aria-hidden="true" />
           </a>
