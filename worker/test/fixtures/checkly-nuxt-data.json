@@ -1,0 +1,252 @@
+[
+  [
+    "ShallowReactive",
+    1
+  ],
+  {
+    "data": 2,
+    "serverRendered": 3,
+    "path": 4
+  },
+  [
+    "ShallowReactive",
+    5
+  ],
+  true,
+  "/",
+  {
+    "status-page-resolver-status.mistral.ai": 6,
+    "maintenance-windows-mistral-ai": 13,
+    "unresolved-incidents-89510173-714f-4ba6-9ad3-b4598370f903": 18,
+    "uptime-89510173-714f-4ba6-9ad3-b4598370f903": 38
+  },
+  {
+    "notFound": 7,
+    "statusPage": 8
+  },
+  false,
+  {
+    "id": 9,
+    "name": 10,
+    "customDomain": 11,
+    "url": 12
+  },
+  "89510173-714f-4ba6-9ad3-b4598370f903",
+  "Mistral AI Status Page",
+  "status.mistral.ai",
+  "mistral-ai",
+  {
+    "upcoming": 14,
+    "active": 15,
+    "recentlyCompleted": 16,
+    "past": 17
+  },
+  [],
+  [],
+  [],
+  [],
+  {
+    "incidents": 19
+  },
+  [
+    20
+  ],
+  {
+    "id": 21,
+    "name": 22,
+    "severity": 23,
+    "duration": 24,
+    "created_at": 25,
+    "updated_at": 26,
+    "lastUpdateStatus": 27,
+    "services": 28,
+    "incidentUpdates": 32
+  },
+  "44cb5e11-4736-4e6b-9198-97121820e15e",
+  "Free Tier Temporarily Disabled",
+  "MAJOR",
+  31762,
+  "2026-09-04T04:04:04.000Z",
+  "2026-09-04T12:53:26.492Z",
+  "IDENTIFIED",
+  [
+    29
+  ],
+  {
+    "id": 30,
+    "name": 31
+  },
+  "c4869a5a-054c-4c1b-88d1-3d195ba58511",
+  "Chat Completions API",
+  [
+    33
+  ],
+  {
+    "id": 34,
+    "status": 35,
+    "description": 36,
+    "publicIncidentUpdateDate": 37
+  },
+  "29c635df-5cf9-4ed7-9e22-5ebec94adb43",
+  "IDENTIFIED",
+  "The Free tier of API has temporarily been disabled due to high load and potential abuse.",
+  "2026-09-04T04:04:04.000Z",
+  {
+    "metadata": 39,
+    "uptime": 75,
+    "partialError": 106
+  },
+  [
+    40,
+    60
+  ],
+  {
+    "id": 41,
+    "name": 42,
+    "order": 43,
+    "services": 44
+  },
+  "7f8b1452-5a3d-4a38-a497-fdd11f624a3f",
+  "API",
+  0,
+  [
+    45,
+    50,
+    55
+  ],
+  {
+    "id": 46,
+    "name": 47,
+    "createdAt": 48,
+    "order": 49
+  },
+  "c4869a5a-054c-4c1b-88d1-3d195ba58511",
+  "Chat Completions API",
+  "2025-06-01T18:12:11.236Z",
+  0,
+  {
+    "id": 51,
+    "name": 52,
+    "createdAt": 53,
+    "order": 54
+  },
+  "6d1417e5-81f5-44f4-bfd4-d2eb44d95988",
+  "Embeddings API",
+  "2025-06-01T18:12:11.236Z",
+  1,
+  {
+    "id": 56,
+    "name": 57,
+    "createdAt": 58,
+    "order": 59
+  },
+  "09f74bbf-a6e6-4751-a057-70da6c502c06",
+  "OCR API",
+  "2025-06-01T18:12:11.236Z",
+  2,
+  {
+    "id": 61,
+    "name": 62,
+    "order": 63,
+    "services": 64
+  },
+  "9bdbdb2d-2afe-4907-82e4-4b01ff40b8ad",
+  "Services",
+  1,
+  [
+    65,
+    70
+  ],
+  {
+    "id": 66,
+    "name": 67,
+    "createdAt": 68,
+    "order": 69
+  },
+  "69c33753-b109-4a61-a281-0b52e7b41db4",
+  "Le Console (developer tools)",
+  "2025-06-01T18:12:11.236Z",
+  0,
+  {
+    "id": 71,
+    "name": 72,
+    "createdAt": 73,
+    "order": 74
+  },
+  "c3a1efcb-24a2-4b8e-99da-bb28a4cd5af8",
+  "Documentation",
+  "2025-06-01T18:12:11.236Z",
+  1,
+  [
+    76,
+    93
+  ],
+  {
+    "id": 77,
+    "name": 78,
+    "uptime": 79,
+    "services": 80
+  },
+  "7f8b1452-5a3d-4a38-a497-fdd11f624a3f",
+  "API",
+  99.319,
+  [
+    81,
+    85,
+    89
+  ],
+  {
+    "id": 82,
+    "name": 83,
+    "uptime": 84
+  },
+  "c4869a5a-054c-4c1b-88d1-3d195ba58511",
+  "Chat Completions API",
+  98.731,
+  {
+    "id": 86,
+    "name": 87,
+    "uptime": 88
+  },
+  "6d1417e5-81f5-44f4-bfd4-d2eb44d95988",
+  "Embeddings API",
+  94.337,
+  {
+    "id": 90,
+    "name": 91,
+    "uptime": 92
+  },
+  "09f74bbf-a6e6-4751-a057-70da6c502c06",
+  "OCR API",
+  99.789,
+  {
+    "id": 94,
+    "name": 95,
+    "uptime": 96,
+    "services": 97
+  },
+  "9bdbdb2d-2afe-4907-82e4-4b01ff40b8ad",
+  "Services",
+  99.797,
+  [
+    98,
+    102
+  ],
+  {
+    "id": 99,
+    "name": 100,
+    "uptime": 101
+  },
+  "69c33753-b109-4a61-a281-0b52e7b41db4",
+  "Le Console (developer tools)",
+  99.965,
+  {
+    "id": 103,
+    "name": 104,
+    "uptime": 105
+  },
+  "c3a1efcb-24a2-4b8e-99da-bb28a4cd5af8",
+  "Documentation",
+  100,
+  false
+]

@@ -25,7 +25,12 @@ export const PROVIDER_SEED = [
     fetcherType: "google_cloud",
   },
   { id: "xai", name: "xAI", statusUrl: "https://status.x.ai/", fetcherType: "rss" },
-  { id: "mistral", name: "Mistral", statusUrl: "https://status.mistral.ai/" },
+  {
+    id: "mistral",
+    name: "Mistral",
+    statusUrl: "https://status.mistral.ai/",
+    fetcherType: "checkly_nuxt",
+  },
   { id: "groq", name: "Groq", statusUrl: "https://groqstatus.com/", fetcherType: "statuspage" },
   {
     id: "perplexity",

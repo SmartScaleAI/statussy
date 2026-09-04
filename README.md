@@ -2,7 +2,7 @@
 
 Glanceable “is anything down?” board for AI providers. A SmartScale app, separate from Zerro.
 
-The board reads **live status from Postgres** for the 9 providers the worker fetches (OpenAI, Anthropic, Groq, Cohere, OpenRouter, Perplexity, xAI, DeepSeek, Google Gemini) and falls back to mock data for the rest (Mistral has no fetcher yet). Nothing is scraped from the client.
+The board reads **live status from Postgres** for all 10 providers the worker fetches (OpenAI, Anthropic, Groq, Cohere, OpenRouter, Perplexity, xAI, DeepSeek, Google Gemini, Mistral). Nothing is scraped from the client. When a provider has no snapshot yet, or the database is unreachable, the board still falls back to mock data.
 
 ## Run
 
@@ -25,10 +25,12 @@ worker in [`worker/`](worker/). The worker owns the schema (`providers`,
 and ticks on a configurable interval (default every 5 minutes). Each tick fetches
 live status for providers with a fetcher — OpenAI, Anthropic, Groq, and Cohere
 via the Statuspage-compatible API, OpenRouter via OnlineOrNot, Perplexity via
-Instatus, xAI and DeepSeek via their RSS/Atom feeds, and Google Gemini via
-Google Cloud Status `incidents.json` — and upserts snapshot, component, and
-incident rows. On a failed fetch the worker keeps last-known rows and flags
-the latest snapshot `stale`. Mistral has no fetcher yet and renders mock data.
+Instatus, xAI and DeepSeek via their RSS/Atom feeds, Google Gemini via Google
+Cloud Status `incidents.json`, and Mistral via its Checkly/Nuxt status page
+(`__NUXT_DATA__` embedded in `https://status.mistral.ai/` HTML; there is no
+public JSON API, and Cloudflare may challenge the fetch) — and upserts snapshot,
+component, and incident rows. On a failed fetch the worker keeps last-known rows
+and flags the latest snapshot `stale`.
 
 ### Environment variables
 
@@ -38,7 +40,7 @@ the latest snapshot `stale`. Mistral has no fetcher yet and renders mock data.
 | `REFRESH_INTERVAL_SECONDS` | Railway (worker) | Seconds between cron ticks. Optional, defaults to `300` (5 minutes). |
 | `PORT` | Railway (worker) | Injected by Railway; the health endpoint listens on it (defaults to `8080` locally). |
 | `FETCH_TIMEOUT_MS` | Railway (worker) | Per-request timeout for provider status fetches. Optional, defaults to `10000`. |
-| `FETCH_USER_AGENT` | Railway (worker) | User-Agent header sent to provider status APIs. Optional, defaults to `statussy-worker/0.1 (+https://github.com/SmartScaleAI/statussy)`. |
+| `FETCH_USER_AGENT` | Railway (worker) | User-Agent header sent to provider status APIs. Optional, defaults to `statussy-worker/0.1 (+https://github.com/SmartScaleAI/statussy)`. The Mistral Checkly/Nuxt fetcher always sends a browser-like Chrome UA instead (Cloudflare in front of `status.mistral.ai` often challenges bot UAs). |
 
 ### Run the worker locally
 
@@ -105,7 +107,7 @@ registry in [`data/services.ts`](data/services.ts).
 
 Fallback policy (SMA-18):
 
-- **Provider has snapshots** (the 9 fetched providers): the card shows the live overall
+- **Provider has snapshots** (all 10 fetched providers): the card shows the live overall
   status, the snapshot's incident title / fetch time, and an **uptime**
   chicklet derived from the last 24h of non-stale snapshots (share reporting
   `operational` — a board heuristic, not a vendor SLA). A **Stale** badge
