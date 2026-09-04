@@ -32,7 +32,7 @@ export default function HomePage() {
       </main>
       <footer className="mx-auto w-full max-w-5xl px-6 pb-10">
         <p className="text-xs text-muted-foreground">
-          mock data · live feeds next
+          live status from Postgres · mock fallback for unfetched providers
         </p>
       </footer>
     </div>

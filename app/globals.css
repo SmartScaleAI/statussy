@@ -144,6 +144,7 @@
   --clr-green: #15803d;
   --clr-amber: #d97706;
   --clr-red: #dc2626;
+  --clr-gray: #737373;
   /* Light surfaces — Geist-adjacent grays so cards stay readable off dark. */
   --bg-dark: #d4d4d4; /* border-gradient base */
   --bg-footer: #f5f5f5; /* card surface */
@@ -159,6 +160,7 @@
   --clr-green: #48aa4a;
   --clr-amber: #fdb203;
   --clr-red: #de4649;
+  --clr-gray: #8f8f8f;
   --bg-dark: #262626; /* border-gradient base */
   --bg-footer: #171717; /* charcoal card surface (user reference) */
   --color-white: #ededed; /* gray-1000 */
@@ -252,6 +254,26 @@
   text-shadow: 0 0 0.35rem color-mix(in srgb, var(--clr-red) 35%, transparent);
 }
 
+.course-design-board .card.gray .status-live {
+  color: var(--clr-gray);
+  text-shadow: 0 0 0.35rem color-mix(in srgb, var(--clr-gray) 35%, transparent);
+}
+
+/* Stale affordance next to the status chip: failed fetch or aged snapshot. */
+.course-design-board .card-header .stale-badge {
+  margin-left: 0.15rem;
+  padding: 0.1rem 0.4rem;
+  border: 1px solid var(--color-gray-dark);
+  border-radius: 999px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-shadow: none;
+  color: var(--color-gray-light);
+  background: var(--color-gray-very-dark);
+}
+
 .course-design-board .card-header .status-dot {
   width: 0.5rem;
   height: 0.5rem;
@@ -284,6 +306,12 @@
   background: var(--clr-red);
   box-shadow: 0 0 0.55rem 0.12rem
     color-mix(in srgb, var(--clr-red) 80%, transparent);
+}
+
+.course-design-board .card.gray .status-dot {
+  background: var(--clr-gray);
+  box-shadow: 0 0 0.55rem 0.12rem
+    color-mix(in srgb, var(--clr-gray) 80%, transparent);
 }
 
 .course-design-board .card-header .btn-favorite {
@@ -337,84 +365,23 @@
   font-size: 1rem;
 }
 
-.course-design-board .card-body .status-history {
+/* Uptime chicklet in the old sparkline slot (SMA-18). "—" when no data yet. */
+.course-design-board .card-body .uptime-chicklet {
+  display: inline-flex;
+  align-items: center;
   margin-top: 0.7rem;
-  width: 100%;
-  flex-shrink: 0;
-}
-
-.course-design-board .card-body .status-sparkline-wrap {
-  position: relative;
-  width: 100%;
-  height: 2.85rem;
-  color: var(--clr-green);
-}
-
-.course-design-board .card.green .status-sparkline-wrap {
-  color: var(--clr-green);
-}
-
-.course-design-board .card.amber .status-sparkline-wrap {
-  color: var(--clr-amber);
-}
-
-.course-design-board .card.blue .status-sparkline-wrap {
-  color: var(--clr-blue);
-}
-
-.course-design-board .card.red .status-sparkline-wrap {
-  color: var(--clr-red);
-}
-
-.course-design-board .card-body .status-sparkline {
-  display: block;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-}
-
-.course-design-board .card-body .status-sparkline .spark-fade-start {
-  stop-color: currentColor;
-  stop-opacity: 0.34;
-}
-
-.course-design-board .card-body .status-sparkline .spark-fade-end {
-  stop-color: currentColor;
-  stop-opacity: 0;
-}
-
-.course-design-board .card-body .status-sparkline .spark-line {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.4;
-  stroke-linecap: butt;
-  stroke-linejoin: round;
-  vector-effect: non-scaling-stroke;
-}
-
-.course-design-board .card-body .spark-today {
-  position: absolute;
-  width: 0.5rem;
-  height: 0.5rem;
-  border-radius: 50%;
-  background: currentColor;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-}
-
-.course-design-board .card-body .status-history-meta {
-  display: flex;
-  justify-content: space-between;
-  gap: 0.5rem;
-  margin-top: 0.4rem;
-  padding-bottom: 0.1rem;
+  padding: 0.2rem 0.6rem;
+  border: 1px solid var(--color-gray-dark);
+  border-radius: 999px;
   font-size: 0.7rem;
   line-height: 1.25;
-  color: var(--color-gray-light);
+  color: var(--color-white);
+  background: var(--color-gray-very-dark);
 }
 
 .course-design-board .card-body .status-metric-label {
   margin-right: 0.35rem;
+  color: var(--color-gray-light);
 }
 
 .course-design-board .card-footer {

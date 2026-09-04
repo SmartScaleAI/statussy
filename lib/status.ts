@@ -1,38 +1,62 @@
+import { connection } from "next/server"
+
 import { LAST_REFRESHED_AT, services, type Service } from "@/data/services"
+import {
+  getLiveSnapshots,
+  isSnapshotStale,
+  type LiveStatus,
+} from "@/lib/live-status"
 
 export type { Service, ServiceCategory, ServiceStatus } from "@/data/services"
 
+/** Card status: mock statuses plus 'unknown' from the live worker schema. */
+export type BoardStatus = LiveStatus
+
+/** One board card: mock config merged with the latest live snapshot. */
+export type BoardService = Omit<Service, "status"> & {
+  status: BoardStatus
+  /** True when status comes from a Postgres snapshot (vs. mock fallback). */
+  live: boolean
+  /** Worker flagged the snapshot stale, or it is older than the threshold. */
+  stale: boolean
+  /** Snapshot-derived uptime over the last 24h; null until data exists. */
+  uptimeLabel: string | null
+}
+
 /** Lower number = more urgent. Non-operational statuses sort above healthy. */
-const STATUS_RANK = {
+const STATUS_RANK: Record<BoardStatus, number> = {
   major_outage: 0,
   partial_outage: 1,
   degraded: 2,
   maintenance: 3,
-  operational: 4,
-} as const
+  unknown: 4,
+  operational: 5,
+}
 
-export const STATUS_LABEL: Record<Service["status"], string> = {
+export const STATUS_LABEL: Record<BoardStatus, string> = {
   operational: "Operational",
   degraded: "Degraded",
   partial_outage: "Partial outage",
   major_outage: "Major outage",
   maintenance: "Maintenance",
+  unknown: "Unknown",
 }
 
 /** Short card-header labels (dot + text). */
-export const STATUS_SHORT: Record<Service["status"], string> = {
+export const STATUS_SHORT: Record<BoardStatus, string> = {
   operational: "Live",
   degraded: "Degraded",
   partial_outage: "Partial Outage",
   major_outage: "Major Outage",
   maintenance: "Maintenance",
+  unknown: "Unknown",
 }
 
-export function isOperational(status: Service["status"]) {
+export function isOperational(status: BoardStatus) {
   return status === "operational"
 }
 
-export function sortServices(items: Service[]) {
+export function sortServices(items: BoardService[]) {
   return [...items].sort((a, b) => {
     const rank = STATUS_RANK[a.status] - STATUS_RANK[b.status]
     if (rank !== 0) {
@@ -42,7 +66,7 @@ export function sortServices(items: Service[]) {
   })
 }
 
-export function summarizeServices(items: Service[]) {
+export function summarizeServices(items: BoardService[]) {
   const operational = items.filter((item) => isOperational(item.status)).length
   return {
     total: items.length,
@@ -73,153 +97,54 @@ export function formatCardUpdatedAt(iso: string) {
   }).format(new Date(iso))
 }
 
-/** Mock 30-day window (one tick per day) until live Statuspage history exists. */
-export const STATUS_HISTORY_DAYS = 30
-
-function seedFromId(id: string) {
-  let hash = 2166136261
-  for (let i = 0; i < id.length; i++) {
-    hash ^= id.charCodeAt(i)
-    hash = Math.imul(hash, 16777619)
-  }
-  return hash >>> 0
-}
-
-function rng(seed: number) {
-  return () => {
-    seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0
-    return seed / 0xffffffff
-  }
-}
-
-/**
- * Deterministic mock day-by-day history. Recent ticks match `service.status`.
- * Replace with Statuspage incident windows when live feeds land.
- */
-export function getStatusHistory(service: Service): Service["status"][] {
-  const next = rng(seedFromId(service.id))
-  const ticks: Service["status"][] = []
-
-  for (let i = 0; i < STATUS_HISTORY_DAYS; i++) {
-    const roll = next()
-    if (roll < 0.012) {
-      ticks.push("degraded")
-    } else if (roll < 0.016) {
-      ticks.push("partial_outage")
-    } else {
-      ticks.push("operational")
-    }
-  }
-
-  const recent =
-    service.status === "operational"
-      ? 0
-      : service.status === "degraded"
-        ? 4 + Math.floor(next() * 4)
-        : service.status === "maintenance"
-          ? 2 + Math.floor(next() * 3)
-          : service.status === "partial_outage"
-            ? 3 + Math.floor(next() * 4)
-            : 2 + Math.floor(next() * 3)
-
-  for (let i = STATUS_HISTORY_DAYS - recent; i < STATUS_HISTORY_DAYS; i++) {
-    ticks[i] = service.status
-  }
-
-  return ticks
-}
-
-/** Uptime over the mock history window — not a measured SLA. */
-export function formatHistoryUptime(ticks: Service["status"][]) {
-  const up = ticks.filter((tick) => tick === "operational").length
-  const pct = (up / ticks.length) * 100
+/** e.g. 47/48 operational snapshots → "97.9%". */
+function formatUptime(up: number, total: number) {
+  const pct = (up / total) * 100
   const digits = pct >= 99.5 ? 2 : 1
   return `${pct.toFixed(digits)}%`
 }
 
-/** Mock request latency until a live probe exists. Seeded from `service.id`. */
-export function formatMockLatency(service: Service) {
-  if (service.status === "major_outage") {
-    return "timeout"
-  }
-  if (service.status === "maintenance") {
-    return "—"
-  }
-
-  const next = rng(seedFromId(`latency:${service.id}`))
-  const ms =
-    service.status === "degraded"
-      ? 380 + Math.round(next() * 420)
-      : service.status === "partial_outage"
-        ? 900 + Math.round(next() * 700)
-        : 70 + Math.round(next() * 150)
-
-  return `${ms} ms`
-}
-
-/** Higher on the chart = healthier. SVG y still grows downward. */
-const STATUS_LEVEL: Record<Service["status"], number> = {
-  operational: 0.14,
-  degraded: 0.4,
-  maintenance: 0.5,
-  partial_outage: 0.7,
-  major_outage: 0.88,
-}
-
-function catmullRomLine(points: { x: number; y: number }[]) {
-  const fmt = (n: number) => n.toFixed(2)
-  let d = `M${fmt(points[0].x)} ${fmt(points[0].y)}`
-  for (let i = 0; i < points.length - 1; i++) {
-    const p0 = points[i - 1] ?? points[i]
-    const p1 = points[i]
-    const p2 = points[i + 1]
-    const p3 = points[i + 2] ?? p2
-    const c1x = p1.x + (p2.x - p0.x) / 6
-    const c1y = p1.y + (p2.y - p0.y) / 6
-    const c2x = p2.x - (p3.x - p1.x) / 6
-    const c2y = p2.y - (p3.y - p1.y) / 6
-    d += ` C${fmt(c1x)} ${fmt(c1y)}, ${fmt(c2x)} ${fmt(c2y)}, ${fmt(p2.x)} ${fmt(p2.y)}`
-  }
-  return d
-}
-
-/** Smooth sparkline paths from daily status (Robinhood-style line + area). */
-export function historySparkline(
-  history: Service["status"][],
-  width = 120,
-  height = 36
-) {
-  const padY = 3
-  const innerH = height - padY * 2
-  const count = history.length
-  const points = history.map((status, index) => ({
-    x: count === 1 ? width / 2 : (index / (count - 1)) * width,
-    y: padY + STATUS_LEVEL[status] * innerH,
-  }))
-
-  const line = catmullRomLine(points)
-  const last = points[points.length - 1]
-  const area = `${line} L${width.toFixed(2)} ${height} L0 ${height} Z`
-  return {
-    line,
-    area,
-    width,
-    height,
-    endX: last.x,
-    endY: last.y,
-  }
-}
-
 /**
- * v0 board payload. Swap `services` / `LAST_REFRESHED_AT` for a Statuspage or
- * RSS mapper that still returns `Service[]` — no UI changes required.
+ * Board payload: latest Postgres snapshot per provider (SMA-15/16 worker)
+ * merged over the mock registry. Providers without a snapshot keep their
+ * prior mock entry — see the fallback policy in `lib/live-status.ts`.
  */
-export function getStatusBoard() {
-  const items = sortServices(services)
+export async function getStatusBoard() {
+  // Status must reflect the DB at request time, never a build-time prerender.
+  await connection()
+  const snapshots = await getLiveSnapshots()
+
+  const items = sortServices(
+    services.map((service): BoardService => {
+      const snapshot = snapshots.get(service.id)
+      if (!snapshot) {
+        return { ...service, live: false, stale: false, uptimeLabel: null }
+      }
+      return {
+        ...service,
+        status: snapshot.status,
+        incidentTitle: snapshot.incidentTitle ?? undefined,
+        updatedAt: snapshot.fetchedAt.toISOString(),
+        live: true,
+        stale: isSnapshotStale(snapshot),
+        uptimeLabel: snapshot.uptime
+          ? formatUptime(snapshot.uptime.up, snapshot.uptime.total)
+          : null,
+      }
+    })
+  )
+
+  const liveCount = items.filter((item) => item.live).length
+  const refreshedAt = items
+    .filter((item) => item.live)
+    .map((item) => item.updatedAt)
+    .sort()
+    .at(-1)
+
   return {
     items,
     summary: summarizeServices(items),
-    refreshedAt: LAST_REFRESHED_AT,
-    source: "mock" as const,
+    refreshedAt: refreshedAt ?? LAST_REFRESHED_AT,
+    source: liveCount > 0 ? ("live" as const) : ("mock" as const),
   }
 }
