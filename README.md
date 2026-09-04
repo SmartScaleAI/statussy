@@ -2,7 +2,7 @@
 
 Glanceable “is anything down?” board for AI providers. A SmartScale app, separate from Zerro.
 
-The board reads **live status from Postgres** for providers the worker fetches (OpenAI today) and falls back to mock data for the rest. Nothing is scraped from the client.
+The board reads **live status from Postgres** for the 8 providers the worker fetches (OpenAI, Anthropic, Groq, Cohere, OpenRouter, Perplexity, xAI, DeepSeek) and falls back to mock data for the rest (Google Gemini and Mistral have no fetchers yet). Nothing is scraped from the client.
 
 ## Run
 
@@ -23,17 +23,18 @@ Live-data foundation for the board: a Railway Postgres database plus a small Nod
 worker in [`worker/`](worker/). The worker owns the schema (`providers`,
 `provider_snapshots`, `components`, `incidents`), seeds the 10 board providers,
 and ticks on a configurable interval (default every 5 minutes). Each tick fetches
-live status for providers with a fetcher — currently OpenAI via its
-Statuspage-compatible API (`/api/v2/summary.json` + `/api/v2/incidents.json`) —
-and upserts snapshot, component, and incident rows. On a failed fetch the worker
-keeps last-known rows and flags the latest snapshot `stale`. Fetchers for the
-other providers are later tickets, and the board still renders mock data.
+live status for providers with a fetcher — OpenAI, Anthropic, Groq, and Cohere
+via the Statuspage-compatible API, OpenRouter via OnlineOrNot, Perplexity via
+Instatus, and xAI and DeepSeek via their RSS/Atom feeds — and upserts snapshot,
+component, and incident rows. On a failed fetch the worker keeps last-known rows
+and flags the latest snapshot `stale`. Google Gemini and Mistral have no
+fetchers yet and render mock data.
 
 ### Environment variables
 
 | Variable | Where | Purpose |
 | --- | --- | --- |
-| `DATABASE_URL` | Railway (worker, read/write) and later Vercel (Next.js app, read-only) | Postgres connection string. On Railway, reference the Postgres service (`${{Postgres.DATABASE_URL}}`). Point Vercel at the same database's public connection URL when the board switches to live reads. |
+| `DATABASE_URL` | Railway (worker, read/write) and Vercel (Next.js app, read-only) | Postgres connection string. On Railway, reference the Postgres service (`${{Postgres.DATABASE_URL}}`, private network). On Vercel, use the Railway Postgres **`DATABASE_PUBLIC_URL`** — see [Point Vercel at Railway Postgres](#point-vercel-at-railway-postgres). |
 | `REFRESH_INTERVAL_SECONDS` | Railway (worker) | Seconds between cron ticks. Optional, defaults to `300` (5 minutes). |
 | `PORT` | Railway (worker) | Injected by Railway; the health endpoint listens on it (defaults to `8080` locally). |
 | `FETCH_TIMEOUT_MS` | Railway (worker) | Per-request timeout for provider status fetches. Optional, defaults to `10000`. |
@@ -64,6 +65,36 @@ interval while developing, e.g. `REFRESH_INTERVAL_SECONDS=10 npm run dev`.
 - The Postgres service lives in the same Railway project; the worker's
   `DATABASE_URL` references it over the private network.
 
+### Point Vercel at Railway Postgres
+
+Without a working `DATABASE_URL`, Production silently renders the mock board
+(and logs a `[statussy]` warning). To switch it to live reads:
+
+1. In Railway, open the **Postgres service → Variables** tab and copy the value
+   of **`DATABASE_PUBLIC_URL`** (it routes through the public TCP proxy, e.g.
+   `postgresql://postgres:…@altaria.proxy.rlwy.net:24195/railway`). **Never**
+   use the private `DATABASE_URL` (`…@postgres.railway.internal…`) — that
+   hostname only resolves inside Railway's network and will fail from Vercel.
+2. In Vercel, open the project → **Settings → Environment Variables** and add:
+   - **Key:** `DATABASE_URL` — exactly this name, **no `NEXT_PUBLIC_` prefix**.
+     It is read server-side only and must never reach the client bundle.
+   - **Value:** the `DATABASE_PUBLIC_URL` you copied.
+   - **Environments:** **Production** (required). Preview is optional — add it
+     there too if preview deploys should show live data.
+3. **Redeploy.** Environment variables only apply to new deployments; the
+   current one keeps serving mock data until it is rebuilt.
+
+No `sslmode` parameter is needed: the app enables TLS automatically for any
+non-private host. Railway's public proxy presents a **self-signed certificate
+(CN=localhost)**, and for node-pg appending `?sslmode=require` to the URL is
+**not enough** — pg still verifies the certificate chain and rejects it. The
+`Pool` must be constructed with `ssl: { rejectUnauthorized: false }`, which
+`lib/live-status.ts` (and the worker's `worker/src/db.ts`) now do for every
+non-private host, so the connection is encrypted without CA verification. If
+the connection still fails, the Vercel function logs show a
+`[statussy] … read failed (db=host:port/db)` error with the cause instead of
+silently rendering mock data.
+
 ## Board data: live + mock fallback
 
 [`getStatusBoard()`](lib/status.ts) is the only read path the UI uses. On each
@@ -74,7 +105,7 @@ registry in [`data/services.ts`](data/services.ts).
 
 Fallback policy (SMA-18):
 
-- **Provider has snapshots** (OpenAI today): the card shows the live overall
+- **Provider has snapshots** (the 8 fetched providers): the card shows the live overall
   status, the snapshot's incident title / fetch time, and an **uptime**
   chicklet derived from the last 24h of non-stale snapshots (share reporting
   `operational` — a board heuristic, not a vendor SLA). A **Stale** badge

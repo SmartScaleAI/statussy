@@ -63,14 +63,82 @@ declare global {
   var __statussyPool: Pool | undefined
 }
 
+/** Fail fast instead of hanging a server render on an unreachable database. */
+const CONNECT_TIMEOUT_MS = 5_000
+
+/** Hosts reachable only over trusted private networks — no TLS needed. */
+function isPrivateHost(hostname: string): boolean {
+  return (
+    hostname === "localhost" ||
+    hostname === "127.0.0.1" ||
+    hostname === "::1" ||
+    hostname.endsWith(".railway.internal")
+  )
+}
+
+/**
+ * SSL config for `pg` from the connection URL. Keep in sync with
+ * `worker/src/db.ts` (separate package, same policy).
+ *
+ * Railway's public TCP proxy (`*.proxy.rlwy.net` — what Vercel must use)
+ * serves a self-signed certificate, so full CA verification fails. We encrypt
+ * without verification (libpq `sslmode=require` semantics) for any non-private
+ * host. Passing `ssl` explicitly also sidesteps pg's own `sslmode=require`
+ * parsing, which *does* verify and would reject Railway's certificate.
+ */
+export function resolveSsl(
+  databaseUrl: string
+): false | { rejectUnauthorized: false } {
+  let url: URL
+  try {
+    url = new URL(databaseUrl)
+  } catch {
+    // Let pg surface the connection-string error itself.
+    return false
+  }
+  const sslmode = url.searchParams.get("sslmode")
+  if (sslmode === "disable") {
+    return false
+  }
+  if (sslmode !== null || !isPrivateHost(url.hostname)) {
+    return { rejectUnauthorized: false }
+  }
+  return false
+}
+
+/** `host:port/db` for error logs — never includes credentials. */
+function describeDatabaseTarget(): string {
+  const databaseUrl = process.env.DATABASE_URL
+  if (!databaseUrl) {
+    return "<DATABASE_URL unset>"
+  }
+  try {
+    const url = new URL(databaseUrl)
+    return `${url.hostname}:${url.port || "5432"}${url.pathname}`
+  } catch {
+    return "<unparseable DATABASE_URL>"
+  }
+}
+
+let warnedMissingDatabaseUrl = false
+
 function getPool(): Pool | null {
   const databaseUrl = process.env.DATABASE_URL
   if (!databaseUrl) {
+    if (!warnedMissingDatabaseUrl) {
+      warnedMissingDatabaseUrl = true
+      console.warn(
+        "[statussy] DATABASE_URL is not set — the board is serving MOCK data. " +
+          "Set it to the Railway Postgres DATABASE_PUBLIC_URL (see README) and redeploy."
+      )
+    }
     return null
   }
   globalThis.__statussyPool ??= new Pool({
     connectionString: databaseUrl,
     max: 3,
+    ssl: resolveSsl(databaseUrl),
+    connectionTimeoutMillis: CONNECT_TIMEOUT_MS,
   })
   return globalThis.__statussyPool
 }
@@ -131,7 +199,10 @@ export async function getLiveSnapshots(): Promise<Map<string, LiveSnapshot>> {
     }
     return snapshots
   } catch (err) {
-    console.error("[statussy] live snapshot read failed, using mock data", err)
+    console.error(
+      `[statussy] live snapshot read failed (db=${describeDatabaseTarget()}) — board is falling back to MOCK data`,
+      err
+    )
     return new Map()
   }
 }
@@ -266,7 +337,7 @@ export async function getProviderLiveDetail(
     }
   } catch (err) {
     console.error(
-      `[statussy] provider detail read failed for ${providerId}, using mock data`,
+      `[statussy] provider detail read failed for ${providerId} (db=${describeDatabaseTarget()}) — page is falling back to MOCK data`,
       err
     )
     return null
