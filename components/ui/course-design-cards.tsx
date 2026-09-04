@@ -23,11 +23,8 @@ export interface CardData {
   title: string
   description: string
   history?: ServiceStatus[]
-  uptimeLabel?: string
   imgSrc1?: string
   imgAlt1?: string
-  imgSrc2?: string
-  imgAlt2?: string
   countdownText: string
   countdownHref?: string
   statusLabel?: string
@@ -103,11 +100,8 @@ const Card: React.FC<CardProps> = ({ data }) => {
     title,
     description,
     history,
-    uptimeLabel,
     imgSrc1,
     imgAlt1,
-    imgSrc2,
-    imgAlt2,
     countdownText,
     countdownHref,
     statusLabel,
@@ -123,6 +117,11 @@ const Card: React.FC<CardProps> = ({ data }) => {
         <EllipsisIcon />
       </div>
       <div className="card-body">
+        {imgSrc1 ? (
+          // Decorative when alt is empty — title is already on the card.
+          // eslint-disable-next-line @next/next/no-img-element
+          <img className="card-logo" src={imgSrc1} alt={imgAlt1 || ""} />
+        ) : null}
         <h3>{title}</h3>
         <p>{description}</p>
         {history && history.length > 0 ? (
@@ -131,30 +130,10 @@ const Card: React.FC<CardProps> = ({ data }) => {
             aria-label={`${STATUS_HISTORY_DAYS}-day status history`}
           >
             <StatusSparkline fadeId={String(data.id)} history={history} />
-            <div className="status-history-meta">
-              <span>{STATUS_HISTORY_DAYS} days ago</span>
-              {uptimeLabel ? <span>{uptimeLabel}</span> : null}
-              <span>Today</span>
-            </div>
           </div>
         ) : null}
       </div>
       <div className="card-footer">
-        <ul>
-          {imgSrc1 && (
-            <li>
-              {/* Decorative when alt is empty — title is already on the card. */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={imgSrc1} alt={imgAlt1 || ""} />
-            </li>
-          )}
-          {imgSrc2 && (
-            <li>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={imgSrc2} alt={imgAlt2 || ""} />
-            </li>
-          )}
-        </ul>
         {countdownHref ? (
           <a
             href={countdownHref}

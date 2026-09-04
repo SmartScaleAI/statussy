@@ -274,18 +274,30 @@
 
 .course-design-board .card-body {
   width: 100%;
-  padding: 0.7em 1.25em 0.5em 1.5em;
-  display: block;
+  padding: 0.35rem 1.5rem 0.4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  top: 2.75rem;
+  bottom: 3.85rem;
+  left: 0;
+  right: 0;
+}
+
+.course-design-board .card-body .card-logo {
+  display: block;
+  object-fit: contain;
+  width: auto;
+  height: 2.25rem;
+  max-width: 3.5rem;
+  margin: 0 auto;
 }
 
 .course-design-board .card-body h3 {
   color: var(--color-white);
   text-transform: capitalize;
-  margin-top: 0.625em;
+  margin-top: 0.45em;
   margin-bottom: 0.188em;
   font-size: 1.375rem;
   font-weight: 600;
@@ -298,7 +310,8 @@
 }
 
 .course-design-board .card-body .status-history {
-  margin-top: 0.938rem;
+  margin-top: auto;
+  width: 100%;
 }
 
 .course-design-board .card-body .status-sparkline-wrap {
@@ -345,7 +358,7 @@
   fill: none;
   stroke: currentColor;
   stroke-width: 1.4;
-  stroke-linecap: round;
+  stroke-linecap: butt;
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
 }
@@ -360,21 +373,12 @@
   pointer-events: none;
 }
 
-.course-design-board .card-body .status-history-meta {
-  display: flex;
-  justify-content: space-between;
-  gap: 0.5rem;
-  margin-top: 0.4rem;
-  font-size: 0.7rem;
-  color: var(--color-gray-light);
-}
-
 .course-design-board .card-footer {
   border-top: 0.063rem solid var(--color-gray-dark);
   background: var(--bg-footer);
   border-bottom-right-radius: 1rem;
   border-bottom-left-radius: 1rem;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   width: 100%;
   padding: 0.75rem;
@@ -383,27 +387,6 @@
   bottom: 0;
   left: 0;
   right: 0;
-}
-
-.course-design-board .card-footer ul {
-  align-items: center;
-  display: flex;
-}
-
-.course-design-board .card-footer ul li {
-  list-style-type: none;
-  display: flex;
-  align-items: center;
-}
-
-.course-design-board .card-footer ul li img {
-  display: block;
-  object-fit: contain;
-  object-position: left center;
-  border-radius: 0;
-  width: auto;
-  height: 1.75rem;
-  max-width: 2.75rem;
 }
 
 .course-design-board .card-footer .btn-countdown {
