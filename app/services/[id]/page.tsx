@@ -250,7 +250,7 @@ export default async function ServiceDetailPage({ params }: PageProps) {
           )}
         </section>
       </main>
-      <SiteFooter className="max-w-3xl" />
+      <SiteFooter className="max-w-3xl" showSuggest={false} />
     </div>
   )
 }

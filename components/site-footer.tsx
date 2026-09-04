@@ -19,20 +19,33 @@ function GitHubMark({ className }: { className?: string }) {
   )
 }
 
-export function SiteFooter({ className }: { className?: string }) {
+export function SiteFooter({
+  className,
+  showSuggest = true,
+}: {
+  className?: string
+  showSuggest?: boolean
+}) {
   return (
     <footer
       className={cn("mx-auto flex w-full max-w-5xl flex-col px-6 pb-10", className)}
     >
       <Separator />
-      <div className="course-design-board mt-8 sm:mt-12">
-        <div className="card plain">
-          <div className="suggest-card-body">
-            <SuggestServiceForm />
+      {showSuggest ? (
+        <div className="course-design-board mt-8 sm:mt-12">
+          <div className="card plain">
+            <div className="suggest-card-body">
+              <SuggestServiceForm />
+            </div>
           </div>
         </div>
-      </div>
-      <div className="mt-14 flex flex-col items-center gap-2 text-xs text-muted-foreground sm:grid sm:grid-cols-3 sm:items-center sm:gap-3">
+      ) : null}
+      <div
+        className={cn(
+          "flex flex-col items-center gap-2 text-xs text-muted-foreground sm:grid sm:grid-cols-3 sm:items-center sm:gap-3",
+          showSuggest ? "mt-14" : "mt-8"
+        )}
+      >
         <Link
           href="/"
           className="flex items-center gap-1.5 font-heading text-sm font-semibold text-foreground"
