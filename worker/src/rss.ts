@@ -1,17 +1,17 @@
 /**
  * RSS/Atom status-feed fetcher + mapper (SMA-22: xAI + DeepSeek).
  *
- * Unlike Statuspage providers there is no summary endpoint: the feed is a
+ * Unlike Statuspage-compatible services there is no summary endpoint: the feed is a
  * flat list of incident items. Each item embeds its lifecycle state in the
  * description HTML ("Status: RESOLVED" for xAI, "<strong>Status:</strong>
  * resolved" for DeepSeek), so we strip tags and parse best-effort. Overall
- * provider status is derived from open (unresolved) incidents; a clean feed
+ * service status is derived from open (unresolved) incidents; a clean feed
  * means operational. Components are intentionally not extracted — neither
  * feed carries a reliable component grid (out of scope per SMA-22).
  */
 
-import type { MappedIncident, ProviderStatus } from "./statuspage.js"
-import type { PersistableProviderState } from "./store.js"
+import type { MappedIncident, ServiceStatus } from "./statuspage.js"
+import type { PersistableServiceState } from "./store.js"
 
 export type RssItem = {
   /** guid (RSS) or id (Atom); falls back to link when the feed omits it. */
@@ -107,7 +107,7 @@ function atomLinkHref(block: string): string | null {
 
 /**
  * Parse an RSS 2.0 or Atom feed into a flat item list. Throws when the
- * payload is not recognizably a feed (so callers can mark the provider stale).
+ * payload is not recognizably a feed (so callers can mark the service stale).
  */
 export function parseFeed(xml: string): RssItem[] {
   const isRss = /<rss[\s>]/i.test(xml) || /<channel[\s>]/i.test(xml)
@@ -149,7 +149,7 @@ export function parseFeed(xml: string): RssItem[] {
 }
 
 // ---------------------------------------------------------------------------
-// Mapping feed items -> normalized provider state
+// Mapping feed items -> normalized service state
 // ---------------------------------------------------------------------------
 
 /** Lifecycle states that mean the incident is over (mirrors lib/live-status.ts). */
@@ -213,7 +213,7 @@ function toIso(raw: string | null): string | null {
  * Covers DeepSeek's bilingual titles (部分中断 = partial outage, 性能下降 =
  * degraded performance) and xAI's "<something> outage" titles.
  */
-export function classifyOpenIncident(item: RssItem): ProviderStatus {
+export function classifyOpenIncident(item: RssItem): ServiceStatus {
   const haystack = `${item.title}\n${item.text}`.toLowerCase()
   if (/major outage|全面中断/.test(haystack)) {
     return "major_outage"
@@ -230,7 +230,7 @@ export function classifyOpenIncident(item: RssItem): ProviderStatus {
   return "degraded"
 }
 
-const STATUS_SEVERITY_ORDER: ProviderStatus[] = [
+const STATUS_SEVERITY_ORDER: ServiceStatus[] = [
   "operational",
   "maintenance",
   "degraded",
@@ -238,8 +238,8 @@ const STATUS_SEVERITY_ORDER: ProviderStatus[] = [
   "major_outage",
 ]
 
-function worstStatus(statuses: ProviderStatus[]): ProviderStatus {
-  let worst: ProviderStatus = "operational"
+function worstStatus(statuses: ServiceStatus[]): ServiceStatus {
+  let worst: ServiceStatus = "operational"
   for (const status of statuses) {
     if (STATUS_SEVERITY_ORDER.indexOf(status) > STATUS_SEVERITY_ORDER.indexOf(worst)) {
       worst = status
@@ -255,7 +255,7 @@ export type RssFeedMeta = {
 }
 
 /**
- * Map parsed feed items into the normalized provider state persisted by
+ * Map parsed feed items into the normalized service state persisted by
  * store.ts. Overall status: operational when every incident in the feed is
  * closed, otherwise the worst keyword-classified severity among open items.
  */
@@ -263,9 +263,9 @@ export function mapRssFeed(
   items: RssItem[],
   meta: RssFeedMeta,
   maxIncidents = 25,
-): PersistableProviderState {
+): PersistableServiceState {
   const incidents: MappedIncident[] = []
-  const openSeverities: ProviderStatus[] = []
+  const openSeverities: ServiceStatus[] = []
   let headline: string | null = null
 
   for (const item of items.slice(0, maxIncidents)) {
@@ -329,7 +329,7 @@ async function fetchText(url: string, options: RssFetchOptions): Promise<string>
 }
 
 /**
- * Fetch and map live state from a provider's status feed. `feedUrls` are
+ * Fetch and map live state from a service's status feed. `feedUrls` are
  * tried in order (e.g. DeepSeek serves both feed.rss and feed.atom); the
  * first one that fetches and parses wins. Throws when all candidates fail,
  * so the caller can keep last-known rows and mark the snapshot stale.
@@ -337,7 +337,7 @@ async function fetchText(url: string, options: RssFetchOptions): Promise<string>
 export async function fetchRssState(
   feedUrls: readonly string[],
   options: RssFetchOptions,
-): Promise<PersistableProviderState> {
+): Promise<PersistableServiceState> {
   let lastError: Error | null = null
   for (const feedUrl of feedUrls) {
     try {

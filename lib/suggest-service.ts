@@ -15,7 +15,7 @@ export type ParsedSuggestion =
   | { ok: true; name: string; email: string | null }
   | { ok: false; fieldErrors: SuggestionFieldErrors; message: string }
 
-export type SuggestProviderState = {
+export type SuggestServiceState = {
   status: "idle" | "success" | "error"
   message: string
   fieldErrors?: {
@@ -24,7 +24,7 @@ export type SuggestProviderState = {
   }
 }
 
-export const initialSuggestProviderState: SuggestProviderState = {
+export const initialSuggestServiceState: SuggestServiceState = {
   status: "idle",
   message: "",
 }
@@ -47,7 +47,7 @@ export function parseSuggestionInput(input: {
   const fieldErrors: SuggestionFieldErrors = {}
 
   if (!name) {
-    fieldErrors.name = "Provider name is required."
+    fieldErrors.name = "Service name is required."
   } else if (name.length > MAX_NAME_LENGTH) {
     fieldErrors.name = `Name must be ${MAX_NAME_LENGTH} characters or fewer.`
   }
@@ -134,7 +134,7 @@ export async function notifySlackSuggestion(
   }
 
   const text = [
-    "New provider suggestion",
+    "New service suggestion",
     `Name: ${payload.name}`,
     payload.email ? `Email: ${payload.email}` : "Email: (none)",
     `Submitted: ${formatSuggestionIso(payload.createdAt)}`,

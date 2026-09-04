@@ -1,11 +1,11 @@
 /**
- * One-shot: apply pending migrations and (re)seed providers, then exit.
+ * One-shot: apply pending migrations and (re)seed services, then exit.
  * Usage: npm run migrate (requires DATABASE_URL).
  */
 import { loadConfig } from "./config.js"
 import { createPool } from "./db.js"
 import { runMigrations } from "./migrate.js"
-import { seedProviders } from "./seed.js"
+import { seedServices } from "./seed.js"
 
 const config = loadConfig()
 const pool = createPool(config.databaseUrl)
@@ -17,8 +17,8 @@ try {
       ? `[migrate] applied: ${applied.join(", ")}`
       : "[migrate] no pending migrations",
   )
-  await seedProviders(pool)
-  console.log("[migrate] providers seeded")
+  await seedServices(pool)
+  console.log("[migrate] services seeded")
 } finally {
   await pool.end()
 }

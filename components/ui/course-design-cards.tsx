@@ -86,7 +86,7 @@ const Card: React.FC<CardProps> = ({ data }) => {
           className="card-logo"
           src={imgSrc1}
           alt={imgAlt1 || ""}
-          data-provider={data.id}
+          data-service={data.id}
         />
       ) : null}
       <h3>{title}</h3>

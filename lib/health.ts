@@ -1,7 +1,7 @@
 /**
  * Live Health (SMA-31) from current `components` rows.
  *
- * When the provider has component rows: operational count / total.
+ * When the service has component rows: operational count / total.
  * When it has none: 100% if latest overall status is `operational`, else 0%.
  * This is a live snapshot, not historical uptime or a vendor SLA.
  */

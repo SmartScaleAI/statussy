@@ -7,13 +7,13 @@ import {
   notifySlackSuggestion,
   parseSuggestionInput,
   toSuggestionTimestamp,
-} from "./suggest-provider.ts"
+} from "./suggest-service.ts"
 
 test("name is required", () => {
   const parsed = parseSuggestionInput({ name: "  ", email: "" })
   assert.equal(parsed.ok, false)
   if (!parsed.ok) {
-    assert.equal(parsed.fieldErrors.name, "Provider name is required.")
+    assert.equal(parsed.fieldErrors.name, "Service name is required.")
   }
 })
 
@@ -137,7 +137,7 @@ test("Slack 200 is sent", async () => {
     }
   )
   assert.equal(result, "sent")
-  assert.match(body, /New provider suggestion/)
+  assert.match(body, /New service suggestion/)
   assert.match(body, /Groq/)
   assert.match(body, /colin@example.com/)
 })

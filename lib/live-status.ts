@@ -3,7 +3,7 @@
  * Only ever imported from Server Components — `pg` and `DATABASE_URL` must
  * never reach the client bundle.
  *
- * Fallback policy (SMA-18): providers with no snapshot rows keep their prior
+ * Fallback policy (SMA-18): services with no snapshot rows keep their prior
  * mock entry from `data/services.ts`. A snapshot whose status is `unknown`
  * (worker's failed-first-fetch marker) renders as an "Unknown" card. When the
  * database is unreachable or `DATABASE_URL` is unset, the whole board falls
@@ -20,7 +20,7 @@ export { resolveLiveHealth }
 export type LiveStatus = ServiceStatus | "unknown"
 
 export type LiveSnapshot = {
-  providerId: string
+  serviceId: string
   status: LiveStatus
   incidentTitle: string | null
   /** Worker marked the latest snapshot stale after a failed fetch. */
@@ -29,7 +29,7 @@ export type LiveSnapshot = {
   /**
    * Live Health (SMA-31): operational components ÷ total current `components`
    * rows. This is a live snapshot of component health, not historical uptime
-   * or a vendor SLA. When the provider has no component rows, fallback is
+   * or a vendor SLA. When the service has no component rows, fallback is
    * 1/1 if latest overall status is `operational`, else 0/1.
    */
   health: { operational: number; total: number }
@@ -48,7 +48,7 @@ const LIVE_STATUSES: readonly LiveStatus[] = [
 export const STALE_AFTER_MS = 15 * 60 * 1000
 
 type SnapshotRow = {
-  provider_id: string
+  service_id: string
   status: string
   incident_title: string | null
   stale: boolean
@@ -151,7 +151,7 @@ function toLiveStatus(status: string): LiveStatus {
 }
 
 /**
- * Latest snapshot per provider plus live Health from current `components`
+ * Latest snapshot per service plus live Health from current `components`
  * rows (SMA-31). Returns an empty map when no database is configured or the
  * read fails, so the board can fall back to mock data.
  */
@@ -164,30 +164,30 @@ export async function getLiveSnapshots(): Promise<Map<string, LiveSnapshot>> {
   try {
     const { rows } = await pool.query<SnapshotRow>(
       `WITH latest AS (
-         SELECT DISTINCT ON (provider_id)
-                provider_id, status::text AS status, incident_title, stale,
+         SELECT DISTINCT ON (service_id)
+                service_id, status::text AS status, incident_title, stale,
                 fetched_at
-         FROM provider_snapshots
-         ORDER BY provider_id, fetched_at DESC, id DESC
+         FROM service_snapshots
+         ORDER BY service_id, fetched_at DESC, id DESC
        ),
        health AS (
-         SELECT provider_id,
+         SELECT service_id,
                 count(*) FILTER (WHERE status = 'operational') AS operational,
                 count(*) AS total
          FROM components
-         GROUP BY provider_id
+         GROUP BY service_id
        )
-       SELECT l.provider_id, l.status, l.incident_title, l.stale, l.fetched_at,
+       SELECT l.service_id, l.status, l.incident_title, l.stale, l.fetched_at,
               h.operational, h.total
        FROM latest l
-       LEFT JOIN health h USING (provider_id)`
+       LEFT JOIN health h USING (service_id)`
     )
 
     const snapshots = new Map<string, LiveSnapshot>()
     for (const row of rows) {
       const status = toLiveStatus(row.status)
-      snapshots.set(row.provider_id, {
-        providerId: row.provider_id,
+      snapshots.set(row.service_id, {
+        serviceId: row.service_id,
         status,
         incidentTitle: row.incident_title,
         stale: row.stale,
@@ -219,13 +219,13 @@ export function isSnapshotStale(
   )
 }
 
-export type ProviderComponent = {
+export type ServiceComponent = {
   id: number
   name: string
   status: LiveStatus
 }
 
-export type ProviderIncident = {
+export type ServiceIncident = {
   id: number
   title: string
   /** Vendor lifecycle state (investigating / identified / monitoring / ...). */
@@ -237,14 +237,14 @@ export type ProviderIncident = {
   updatedAt: Date
 }
 
-export type ProviderLiveDetail = {
-  /** Latest snapshot; null when the worker has not fetched this provider. */
+export type ServiceLiveDetail = {
+  /** Latest snapshot; null when the worker has not fetched this service. */
   snapshot: Pick<
     LiveSnapshot,
     "status" | "incidentTitle" | "stale" | "fetchedAt"
   > | null
-  components: ProviderComponent[]
-  activeIncidents: ProviderIncident[]
+  components: ServiceComponent[]
+  activeIncidents: ServiceIncident[]
 }
 
 type ComponentRow = {
@@ -265,7 +265,7 @@ type IncidentRow = {
 
 type DetailSnapshotRow = Omit<
   SnapshotRow,
-  "provider_id" | "operational" | "total"
+  "service_id" | "operational" | "total"
 >
 
 /** Vendor lifecycle states that mean an incident is over even when the feed
@@ -273,14 +273,14 @@ type DetailSnapshotRow = Omit<
 const CLOSED_INCIDENT_STATUSES = ["resolved", "completed", "postmortem"]
 
 /**
- * Deep-dive read for `/providers/[id]` (SMA-17): latest snapshot, current
- * components, and unresolved incidents for one provider. Returns null when no
+ * Deep-dive read for `/services/[id]` (SMA-17): latest snapshot, current
+ * components, and unresolved incidents for one service. Returns null when no
  * database is configured or the read fails, so the page can fall back to the
  * mock registry entry — same policy as the board.
  */
-export async function getProviderLiveDetail(
-  providerId: string
-): Promise<ProviderLiveDetail | null> {
+export async function getServiceLiveDetail(
+  serviceId: string
+): Promise<ServiceLiveDetail | null> {
   const pool = getPool()
   if (!pool) {
     return null
@@ -291,27 +291,27 @@ export async function getProviderLiveDetail(
       await Promise.all([
         pool.query<DetailSnapshotRow>(
           `SELECT status::text AS status, incident_title, stale, fetched_at
-           FROM provider_snapshots
-           WHERE provider_id = $1
+           FROM service_snapshots
+           WHERE service_id = $1
            ORDER BY fetched_at DESC, id DESC
            LIMIT 1`,
-          [providerId]
+          [serviceId]
         ),
         pool.query<ComponentRow>(
           `SELECT id, name, status::text AS status
            FROM components
-           WHERE provider_id = $1
+           WHERE service_id = $1
            ORDER BY position NULLS LAST, name, id`,
-          [providerId]
+          [serviceId]
         ),
         pool.query<IncidentRow>(
           `SELECT id, title, status, impact, url, started_at, updated_at
            FROM incidents
-           WHERE provider_id = $1
+           WHERE service_id = $1
              AND resolved_at IS NULL
              AND status != ALL($2::text[])
            ORDER BY started_at DESC NULLS LAST, id DESC`,
-          [providerId, CLOSED_INCIDENT_STATUSES]
+          [serviceId, CLOSED_INCIDENT_STATUSES]
         ),
       ])
 
@@ -342,7 +342,7 @@ export async function getProviderLiveDetail(
     }
   } catch (err) {
     console.error(
-      `[statussy] provider detail read failed for ${providerId} (db=${describeDatabaseTarget()}) — page is falling back to MOCK data`,
+      `[statussy] service detail read failed for ${serviceId} (db=${describeDatabaseTarget()}) — page is falling back to MOCK data`,
       err
     )
     return null

@@ -1,7 +1,7 @@
 import { Pool } from "pg"
 
 import { resolveSsl } from "@/lib/live-status"
-import { toSuggestionTimestamp } from "@/lib/suggest-provider"
+import { toSuggestionTimestamp } from "@/lib/suggest-service"
 
 declare global {
   // Shared with `lib/live-status.ts` so reads and suggestion writes reuse one pool.
@@ -54,7 +54,7 @@ export function getDatabasePool(): Pool | null {
   }
 }
 
-export async function insertProviderSuggestion(
+export async function insertServiceSuggestion(
   name: string,
   email: string | null
 ): Promise<{ ok: true; createdAt: Date } | { ok: false }> {
@@ -65,7 +65,7 @@ export async function insertProviderSuggestion(
 
   try {
     const { rows } = await pool.query<{ created_at: Date }>(
-      `INSERT INTO provider_suggestions (name, email)
+      `INSERT INTO service_suggestions (name, email)
        VALUES ($1, $2)
        RETURNING created_at`,
       [name, email]
@@ -76,7 +76,7 @@ export async function insertProviderSuggestion(
     }
   } catch (err) {
     console.error(
-      `[statussy] provider suggestion insert failed (db=${describeDatabaseTarget()})`,
+      `[statussy] service suggestion insert failed (db=${describeDatabaseTarget()})`,
       err
     )
     return { ok: false }

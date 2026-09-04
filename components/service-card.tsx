@@ -28,7 +28,7 @@ export function ServiceCard({ service }: { service: BoardService }) {
           stale: service.stale,
           imgSrc1: `/logos/${service.id}.svg`,
           imgAlt1: "",
-          detailHref: `/providers/${service.id}`,
+          detailHref: `/services/${service.id}`,
           countdownText: "Official status",
           countdownHref: service.statusUrl,
           statusLabel: STATUS_SHORT[service.status],

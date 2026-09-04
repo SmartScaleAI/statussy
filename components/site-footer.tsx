@@ -1,6 +1,6 @@
 import Link from "next/link"
 
-import { SuggestProviderForm } from "@/components/suggest-provider-form"
+import { SuggestServiceForm } from "@/components/suggest-service-form"
 import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
 
@@ -28,7 +28,7 @@ export function SiteFooter({ className }: { className?: string }) {
       <div className="course-design-board mt-8 sm:mt-12">
         <div className="card plain">
           <div className="suggest-card-body">
-            <SuggestProviderForm />
+            <SuggestServiceForm />
           </div>
         </div>
       </div>

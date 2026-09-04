@@ -1,10 +1,10 @@
-# Provider logos
+# Service logos
 
-One static SVG per v0 provider. Filename = `Service.id` from `data/services.ts`.
+One static SVG per v0 service. Filename = `Service.id` from `data/services.ts`.
 
 Marks keep the SMA-8 paths and viewBoxes (same size/alignment). Fills use documented brand colors so they stay readable on the dark board. No animation, no CDN.
 
-| File                | Provider      | Fill                         | Source |
+| File                | Service       | Fill                         | Source |
 | ------------------- | ------------- | ---------------------------- | ------ |
 | `openai.svg`        | OpenAI        | `#10A37F`                    | ChatGPT / OpenAI accent green ([openai.com/brand](https://openai.com/brand/)) — official lockup is black/white; green is the chromatic brand color that reads on dark |
 | `anthropic.svg`     | Anthropic     | `#D97757`                    | Claude Clay token from Anthropic’s public design system ([anthropic.com](https://www.anthropic.com)) |
@@ -17,4 +17,4 @@ Marks keep the SMA-8 paths and viewBoxes (same size/alignment). Fills use docume
 | `cohere.svg`        | Cohere        | `#FF7759`                    | Cohere Bittersweet accent from the Pentagram brand system — primary charcoal `#212121` fails on dark UI |
 | `openrouter.svg`    | OpenRouter    | `#94A3B8`                    | [Simple Icons](https://simpleicons.org) `OpenRouter` hex, verified from [openrouter.ai](https://openrouter.ai) favicon |
 
-Rendered centered above the provider name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.
+Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.

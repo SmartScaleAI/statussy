@@ -1,9 +1,9 @@
 /**
  * Statussy worker (SMA-15 skeleton).
  *
- * On boot: applies migrations, seeds the static provider registry, then ticks
+ * On boot: applies migrations, seeds the static service registry, then ticks
  * on a fixed interval (REFRESH_INTERVAL_SECONDS, default 300 = 5 minutes).
- * Each tick fetches live status for providers with a fetcher (OpenAI per
+ * Each tick fetches live status for services with a fetcher (OpenAI per
  * SMA-16; Anthropic, Groq, and Cohere per SMA-19 — all via the
  * Statuspage-compatible API; OpenRouter via OnlineOrNot, SMA-21; Perplexity
  * via Instatus, SMA-20; xAI and DeepSeek via their RSS/Atom status feeds,
@@ -19,14 +19,14 @@ import { fetchChecklyNuxtState } from "./checkly-nuxt.js"
 import { fetchInstatusState } from "./instatus.js"
 import { runMigrations } from "./migrate.js"
 import { fetchRssState } from "./rss.js"
-import { seedProviders } from "./seed.js"
+import { seedServices } from "./seed.js"
 import { fetchOnlineOrNotState } from "./onlineornot.js"
 import { fetchGoogleCloudGeminiState } from "./google-cloud.js"
 import { fetchStatuspageState } from "./statuspage.js"
 import {
-  markProviderStale,
-  persistProviderState,
-  type PersistableProviderState,
+  markServiceStale,
+  persistServiceState,
+  type PersistableServiceState,
   type PersistOptions,
 } from "./store.js"
 
@@ -50,35 +50,35 @@ console.log(
     ? `[worker] migrations applied: ${applied.join(", ")}`
     : "[worker] schema up to date",
 )
-await seedProviders(pool)
-console.log("[worker] provider registry seeded")
+await seedServices(pool)
+console.log("[worker] service registry seeded")
 
 const fetchOptions = () => ({
   timeoutMs: config.fetchTimeoutMs,
   userAgent: config.fetchUserAgent,
 })
 
-type ProviderJob = {
+type ServiceJob = {
   id: string
-  fetch: () => Promise<PersistableProviderState>
+  fetch: () => Promise<PersistableServiceState>
   persistOptions?: PersistOptions
 }
 
-// All 10 board providers are fetched each tick.
-const statuspageJob = (id: string, baseUrl: string): ProviderJob => ({
+// All 10 board services are fetched each tick.
+const statuspageJob = (id: string, baseUrl: string): ServiceJob => ({
   id,
   fetch: () => fetchStatuspageState(baseUrl, fetchOptions()),
 })
 
-// SMA-22: providers whose status page is only exposed as an RSS/Atom feed.
+// SMA-22: services whose status page is only exposed as an RSS/Atom feed.
 // Feed URLs are tried in order; DeepSeek serves the same items as both
 // feed.rss and feed.atom.
-const rssJob = (id: string, feedUrls: readonly string[]): ProviderJob => ({
+const rssJob = (id: string, feedUrls: readonly string[]): ServiceJob => ({
   id,
   fetch: () => fetchRssState(feedUrls, fetchOptions()),
 })
 
-const PROVIDER_JOBS: ProviderJob[] = [
+const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("openai", "https://status.openai.com"),
   statuspageJob("anthropic", "https://status.claude.com"),
   statuspageJob("groq", "https://groqstatus.com"),
@@ -120,24 +120,24 @@ const PROVIDER_JOBS: ProviderJob[] = [
   },
 ]
 
-async function fetchProvider(provider: ProviderJob): Promise<boolean> {
+async function fetchService(service: ServiceJob): Promise<boolean> {
   try {
-    const fetched = await provider.fetch()
-    await persistProviderState(
+    const fetched = await service.fetch()
+    await persistServiceState(
       pool,
-      provider.id,
+      service.id,
       fetched,
-      provider.persistOptions,
+      service.persistOptions,
     )
     console.log(
-      `[fetch] ${provider.id} ok status=${fetched.status} components=${fetched.components.length} incidents=${fetched.incidents.length}`,
+      `[fetch] ${service.id} ok status=${fetched.status} components=${fetched.components.length} incidents=${fetched.incidents.length}`,
     )
     return true
   } catch (err) {
-    console.error(`[fetch] ${provider.id} failed: ${(err as Error).message}`)
+    console.error(`[fetch] ${service.id} failed: ${(err as Error).message}`)
     // Keep last-known rows; just flag the latest snapshot as stale.
-    await markProviderStale(pool, provider.id).catch((staleErr: Error) => {
-      console.error(`[fetch] ${provider.id} could not mark stale: ${staleErr.message}`)
+    await markServiceStale(pool, service.id).catch((staleErr: Error) => {
+      console.error(`[fetch] ${service.id} could not mark stale: ${staleErr.message}`)
     })
     return false
   }
@@ -147,7 +147,7 @@ async function runTick(): Promise<void> {
   const tickNumber = ++state.tickCount
   try {
     const results = await Promise.all(
-      PROVIDER_JOBS.map((provider) => fetchProvider(provider)),
+      SERVICE_JOBS.map((service) => fetchService(service)),
     )
     const okCount = results.filter(Boolean).length
     state.lastTickAt = new Date()

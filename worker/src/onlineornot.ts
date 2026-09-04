@@ -14,8 +14,8 @@ import type {
   FetchOptions,
   MappedComponent,
   MappedIncident,
-  MappedProviderState,
-  ProviderStatus,
+  MappedServiceState,
+  ServiceStatus,
 } from "./statuspage.js"
 
 export type OnlineOrNotComponent = {
@@ -45,8 +45,8 @@ export type OnlineOrNotSummary = {
   }
 }
 
-/** OnlineOrNot component status -> our provider_status enum. */
-export function mapOnlineOrNotComponentStatus(status: string | undefined): ProviderStatus {
+/** OnlineOrNot component status -> our service_status enum. */
+export function mapOnlineOrNotComponentStatus(status: string | undefined): ServiceStatus {
   switch (status?.toUpperCase()) {
     case "OPERATIONAL":
     case "NO_IMPACT":
@@ -78,7 +78,7 @@ export function mapOnlineOrNotImpact(impact: string | null | undefined): string 
  * (e.g. "All Systems Operational"). Map recognizable phrases; unrecognized
  * descriptions fall back to the worst component status.
  */
-export function mapOnlineOrNotDescription(description: string | undefined): ProviderStatus {
+export function mapOnlineOrNotDescription(description: string | undefined): ServiceStatus {
   const d = (description ?? "").toLowerCase()
   if (!d) return "unknown"
   if (d.includes("all systems operational") || d.includes("operational")) return "operational"
@@ -91,7 +91,7 @@ export function mapOnlineOrNotDescription(description: string | undefined): Prov
 
 // Higher = worse. 'unknown' ranks lowest so it never masks a real signal;
 // overall status is only 'unknown' when no source yields a real status.
-const SEVERITY: Record<ProviderStatus, number> = {
+const SEVERITY: Record<ServiceStatus, number> = {
   unknown: 0,
   operational: 1,
   maintenance: 2,
@@ -100,12 +100,12 @@ const SEVERITY: Record<ProviderStatus, number> = {
   major_outage: 5,
 }
 
-function worst(a: ProviderStatus, b: ProviderStatus): ProviderStatus {
+function worst(a: ServiceStatus, b: ServiceStatus): ServiceStatus {
   return SEVERITY[b] > SEVERITY[a] ? b : a
 }
 
 /** Map an OnlineOrNot summary payload into our normalized shape. */
-export function mapOnlineOrNot(summary: OnlineOrNotSummary, pageUrl: string): MappedProviderState {
+export function mapOnlineOrNot(summary: OnlineOrNotSummary, pageUrl: string): MappedServiceState {
   const result = summary.result ?? {}
   const base = pageUrl.replace(/\/+$/, "")
 
@@ -134,7 +134,7 @@ export function mapOnlineOrNot(summary: OnlineOrNotSummary, pageUrl: string): Ma
 
   const description = result.status?.description
   const fromDescription = mapOnlineOrNotDescription(description)
-  const fromComponents = components.reduce<ProviderStatus>(
+  const fromComponents = components.reduce<ServiceStatus>(
     (acc, c) => worst(acc, c.status),
     "unknown",
   )
@@ -160,7 +160,7 @@ export function mapOnlineOrNot(summary: OnlineOrNotSummary, pageUrl: string): Ma
 export async function fetchOnlineOrNotState(
   pageHost: string,
   options: FetchOptions,
-): Promise<MappedProviderState> {
+): Promise<MappedServiceState> {
   const url = `https://api.onlineornot.com/v1/status_pages/${pageHost}/summary`
   const res = await fetch(url, {
     headers: { accept: "application/json", "user-agent": options.userAgent },
