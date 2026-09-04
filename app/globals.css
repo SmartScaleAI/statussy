@@ -154,6 +154,7 @@
   --color-gray-dark: #e5e5e5;
   --color-gray-very-dark: #fafafa;
   --card-shadow: 0 0.25em 1em rgb(0 0 0 / 10%);
+  --card-shadow-hover: 0 0.75em 2em rgb(0 0 0 / 18%);
   /* Light-mode status wash — quieter than dark so the flare stays a hint. */
   --card-wash-green: 14%;
   --card-wash-blue: 12%;
@@ -174,6 +175,7 @@
   --color-gray-dark: #2e2e2e; /* gray-400 */
   --color-gray-very-dark: #1f1f1f; /* gray-200 */
   --card-shadow: 0.063em 0.75em 1.563em #000000c7;
+  --card-shadow-hover: 0.08em 1.15em 2.25em #000000ee;
   --card-wash-green: 42%;
   --card-wash-blue: 38%;
   --card-wash-amber: 42%;
@@ -204,6 +206,45 @@
   flex-direction: column;
   position: relative;
   box-shadow: var(--card-shadow);
+}
+
+/* Whole-card detail hit target (SMA-33). Star + Official status sit above it. */
+.course-design-board .card-hit-target {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  border-radius: inherit;
+}
+
+.course-design-board .card:not(.plain):has(.card-hit-target) {
+  cursor: pointer;
+  transition:
+    transform 220ms ease,
+    box-shadow 220ms ease;
+}
+
+.course-design-board .card:not(.plain):has(.card-hit-target):hover,
+.course-design-board .card:not(.plain):has(.card-hit-target:focus-visible) {
+  z-index: 2;
+  transform: translateY(-0.35rem) scale(1.025);
+  box-shadow: var(--card-shadow-hover);
+}
+
+.course-design-board .card:not(.plain):has(.card-hit-target:focus-visible) {
+  outline: 2px solid var(--ring);
+  outline-offset: 0.2rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .course-design-board .card:not(.plain):has(.card-hit-target) {
+    transition: none;
+  }
+
+  .course-design-board .card:not(.plain):has(.card-hit-target):hover,
+  .course-design-board .card:not(.plain):has(.card-hit-target:focus-visible) {
+    transform: none;
+  }
 }
 
 .course-design-board .card:before {
@@ -332,6 +373,8 @@
   color: var(--color-white);
   cursor: pointer;
   line-height: 0;
+  position: relative;
+  z-index: 2;
 }
 
 .course-design-board .card-header .btn-favorite svg {
@@ -350,18 +393,10 @@
   box-sizing: border-box;
 }
 
-/* Logo + title link to the service deep dive (SMA-17). */
-.course-design-board .card-body .card-detail-link {
+.course-design-board .card-body .card-identity {
   display: flex;
   flex-direction: column;
   align-items: center;
-  border-radius: 0.5rem;
-}
-
-.course-design-board .card-body .card-detail-link:hover h3,
-.course-design-board .card-body .card-detail-link:focus-visible h3 {
-  text-decoration: underline;
-  text-underline-offset: 0.2em;
 }
 
 .course-design-board .card-body .card-logo {
@@ -447,6 +482,8 @@
   font-size: 0.7rem;
   line-height: 1.25;
   text-decoration: none;
+  position: relative;
+  z-index: 2;
 }
 
 .course-design-board .card-footer .btn-countdown svg {
