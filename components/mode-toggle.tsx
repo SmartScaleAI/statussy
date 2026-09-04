@@ -19,7 +19,6 @@ export function ModeToggle() {
       type="button"
       variant="ghost"
       size="icon"
-      disabled={!mounted}
       aria-label={
         !mounted
           ? "Toggle theme"
@@ -27,7 +26,12 @@ export function ModeToggle() {
             ? "Switch to light mode"
             : "Switch to dark mode"
       }
-      onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
+      onClick={() => {
+        if (!mounted || !resolvedTheme) {
+          return
+        }
+        setTheme(resolvedTheme === "dark" ? "light" : "dark")
+      }}
     >
       <SunIcon className="hidden dark:block" />
       <MoonIcon className="dark:hidden" />
