@@ -118,6 +118,14 @@ export function getStatusHistory(service: Service): Service["status"][] {
   return ticks
 }
 
+/** Uptime over the mock history window — not a measured SLA. */
+export function formatHistoryUptime(ticks: Service["status"][]) {
+  const up = ticks.filter((tick) => tick === "operational").length
+  const pct = (up / ticks.length) * 100
+  const digits = pct >= 99.5 ? 2 : 1
+  return `${pct.toFixed(digits)}% uptime`
+}
+
 /** Higher on the chart = healthier. SVG y still grows downward. */
 const STATUS_LEVEL: Record<Service["status"], number> = {
   operational: 0.14,
@@ -150,17 +158,20 @@ export function historySparkline(
   width = 120,
   height = 36
 ) {
+  const padX = 3
   const padY = 3
+  const innerW = width - padX * 2
   const innerH = height - padY * 2
   const count = history.length
   const points = history.map((status, index) => ({
-    x: count === 1 ? width / 2 : (index / (count - 1)) * width,
+    x: count === 1 ? width / 2 : padX + (index / (count - 1)) * innerW,
     y: padY + STATUS_LEVEL[status] * innerH,
   }))
 
   const line = catmullRomLine(points)
+  const first = points[0]
   const last = points[points.length - 1]
-  const area = `${line} L${width.toFixed(2)} ${height} L0 ${height} Z`
+  const area = `${line} L${last.x.toFixed(2)} ${height} L${first.x.toFixed(2)} ${height} Z`
   return {
     line,
     area,

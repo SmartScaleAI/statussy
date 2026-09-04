@@ -1,5 +1,6 @@
 import CourseCard from "@/components/ui/course-design-cards"
 import {
+  formatHistoryUptime,
   getStatusHistory,
   STATUS_LABEL,
   STATUS_SHORT,
@@ -29,6 +30,7 @@ export function ServiceCard({ service }: { service: Service }) {
           title: service.name,
           description: service.incidentTitle ?? label,
           history,
+          uptimeLabel: formatHistoryUptime(history),
           imgSrc1: `/logos/${service.id}.svg`,
           imgAlt1: "",
           countdownText: "Official status",

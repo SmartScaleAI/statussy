@@ -17,4 +17,4 @@ Marks keep the SMA-8 paths and viewBoxes (same size/alignment). Fills use docume
 | `cohere.svg`        | Cohere        | `#FF7759`                    | Cohere Bittersweet accent from the Pentagram brand system — primary charcoal `#212121` fails on dark UI |
 | `openrouter.svg`    | OpenRouter    | `#94A3B8`                    | [Simple Icons](https://simpleicons.org) `OpenRouter` hex, verified from [openrouter.ai](https://openrouter.ai) favicon |
 
-Rendered centered above the provider name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.
+Rendered in the card footer (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.
