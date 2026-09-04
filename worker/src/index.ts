@@ -7,7 +7,8 @@
  * SMA-16; Anthropic, Groq, and Cohere per SMA-19 — all via the
  * Statuspage-compatible API; OpenRouter via OnlineOrNot, SMA-21; Perplexity
  * via Instatus, SMA-20; xAI and DeepSeek via their RSS/Atom status feeds,
- * SMA-22) and writes snapshots, components, and incidents to Postgres.
+ * SMA-22; Google Gemini via Google Cloud Status incidents.json, SMA-26)
+ * and writes snapshots, components, and incidents to Postgres.
  * Optionally it also runs latency probes (SMA-23) against safe public
  * endpoints and records latency_ms on the snapshot — independent of
  * official status. A tiny HTTP server exposes /healthz.
@@ -21,6 +22,7 @@ import { fetchRssState } from "./rss.js"
 import { seedProviders } from "./seed.js"
 import { fetchOnlineOrNotState } from "./onlineornot.js"
 import { PROBE_TARGETS, probeAll } from "./probe.js"
+import { fetchGoogleCloudGeminiState } from "./google-cloud.js"
 import { fetchStatuspageState } from "./statuspage.js"
 import {
   markProviderStale,
@@ -102,6 +104,14 @@ const PROVIDER_JOBS: ProviderJob[] = [
     "https://status.deepseek.com/feed.rss",
     "https://status.deepseek.com/feed.atom",
   ]),
+  {
+    // SMA-26: Gemini via Google Cloud Status incidents.json. The feed mixes
+    // historical incidents; we persist Gemini-relevant rows and resolve any
+    // previously open ones that drop out of the open set.
+    id: "google-gemini",
+    fetch: () => fetchGoogleCloudGeminiState(fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
 ]
 
 /**

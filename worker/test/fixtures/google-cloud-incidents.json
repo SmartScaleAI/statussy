@@ -1,0 +1,73 @@
+[
+  {
+    "id": "open-vertex-gemini",
+    "begin": "2026-09-04T12:00:00+00:00",
+    "created": "2026-09-04T12:05:00+00:00",
+    "modified": "2026-09-04T12:10:00+00:00",
+    "external_desc": "Vertex AI Gemini API customers experiencing increased error rates.",
+    "status_impact": "SERVICE_DISRUPTION",
+    "severity": "medium",
+    "uri": "incidents/open-vertex-gemini",
+    "affected_products": [
+      {
+        "title": "Vertex Gemini API",
+        "id": "Z0FZJAMvEB4j3NbCJs6B",
+        "current_title": "Gemini on Agent Platform"
+      },
+      {
+        "title": "Dialogflow CX",
+        "id": "BnCicQdHSdxaCv8Ya6Vm",
+        "current_title": "Dialogflow CX"
+      }
+    ]
+  },
+  {
+    "id": "open-gemini-code-assist",
+    "begin": "2026-09-04T11:00:00+00:00",
+    "created": "2026-09-04T11:01:00+00:00",
+    "external_desc": "Gemini Code Assist completions delayed.",
+    "status_impact": "SERVICE_INFORMATION",
+    "severity": "low",
+    "uri": "incidents/open-gemini-code-assist",
+    "affected_products": [
+      {
+        "title": "Gemini Code Assist",
+        "id": "deUeOEPYanfJ9w8cpyBJ",
+        "current_title": "Gemini Code Assist"
+      }
+    ]
+  },
+  {
+    "id": "open-compute",
+    "begin": "2026-09-04T13:00:00+00:00",
+    "created": "2026-09-04T13:01:00+00:00",
+    "external_desc": "Compute Engine zone outage in us-central1-b.",
+    "status_impact": "SERVICE_OUTAGE",
+    "severity": "high",
+    "uri": "incidents/open-compute",
+    "affected_products": [
+      {
+        "title": "Google Compute Engine",
+        "id": "L3ggmi3Jy4xJmgodFA9K",
+        "current_title": "Google Compute Engine"
+      }
+    ]
+  },
+  {
+    "id": "closed-vertex-gemini",
+    "begin": "2026-02-27T12:37:00+00:00",
+    "created": "2026-02-27T16:12:30+00:00",
+    "end": "2026-02-27T14:35:00+00:00",
+    "external_desc": "Vertex AI Gemini API customers experienced increased error rates when accessing the global endpoint.",
+    "status_impact": "SERVICE_INFORMATION",
+    "severity": "low",
+    "uri": "incidents/closed-vertex-gemini",
+    "affected_products": [
+      {
+        "title": "Vertex Gemini API",
+        "id": "Z0FZJAMvEB4j3NbCJs6B",
+        "current_title": "Gemini on Agent Platform"
+      }
+    ]
+  }
+]
