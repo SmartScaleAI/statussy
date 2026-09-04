@@ -25,6 +25,9 @@ export function ServiceCard({ service }: { service: BoardService }) {
           colorClass: STATUS_COLOR[service.status],
           title: service.name,
           uptimeLabel: service.uptimeLabel ?? undefined,
+          // SMA-31: chicklet is operational/total components (else 24h snapshots).
+          uptimeTitle:
+            "Operational components now; last 24h snapshots if this provider has none. Board heuristic, not a vendor SLA.",
           // Probe latency (SMA-23) is Statussy's own measurement — kept
           // visually distinct from the official vendor status on the card.
           latencyLabel: service.latencyLabel ?? undefined,

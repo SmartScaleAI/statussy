@@ -19,7 +19,11 @@ export type BoardService = Omit<Service, "status"> & {
   live: boolean
   /** Worker flagged the snapshot stale, or it is older than the threshold. */
   stale: boolean
-  /** Snapshot-derived uptime over the last 24h; null until data exists. */
+  /**
+   * Board uptime chicklet (SMA-31): operational / total components when the
+   * provider has component rows, else last-24h snapshot ratio. Null until
+   * data exists. Not a vendor SLA.
+   */
   uptimeLabel: string | null
   /**
    * Measured probe latency chicklet (SMA-23) — our own measurement, kept
@@ -104,7 +108,7 @@ export function formatCardUpdatedAt(iso: string) {
   }).format(new Date(iso))
 }
 
-/** e.g. 47/48 operational snapshots → "97.9%". */
+/** e.g. 16/17 operational components → "94.1%". */
 function formatUptime(up: number, total: number) {
   const pct = (up / total) * 100
   const digits = pct >= 99.5 ? 2 : 1

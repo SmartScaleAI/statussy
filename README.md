@@ -116,8 +116,9 @@ Fallback policy (SMA-18):
 
 - **Provider has snapshots** (all 10 fetched providers): the card shows the live overall
   status, the snapshot's incident title / fetch time, and an **uptime**
-  chicklet derived from the last 24h of non-stale snapshots (share reporting
-  `operational` — a board heuristic, not a vendor SLA). A **Stale** badge
+  chicklet: operational / total current `components` when that table has
+  rows, otherwise the last 24h of non-stale snapshots reporting
+  `operational` (SMA-31 board heuristic, not a vendor SLA). A **Stale** badge
   appears when the worker flagged the latest snapshot stale (failed fetch) or
   the snapshot is older than 15 minutes (3 missed worker ticks).
 - **Provider has no snapshots yet**: the card keeps its prior mock entry from

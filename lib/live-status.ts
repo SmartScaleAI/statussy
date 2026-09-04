@@ -23,7 +23,13 @@ export type LiveSnapshot = {
   /** Worker marked the latest snapshot stale after a failed fetch. */
   stale: boolean
   fetchedAt: Date
-  /** Non-stale snapshots in the uptime window; null when none exist yet. */
+  /**
+   * Board uptime chicklet (SMA-31) — not a vendor SLA and not overall status.
+   * Prefer operational / total rows in `components` (current set). Fall back
+   * to last-24h non-stale snapshots with status = 'operational' only when
+   * the provider has no component rows (e.g. RSS). Null until either source
+   * has data. Partial/degraded therefore cannot collapse the chicklet to 0%.
+   */
   uptime: { up: number; total: number } | null
   /**
    * Measured probe latency (SMA-23): Statussy's own round-trip measurement,
@@ -44,7 +50,7 @@ const LIVE_STATUSES: readonly LiveStatus[] = [
 /** Worker cron runs every 5m — 3 missed ticks means the data is stale. */
 export const STALE_AFTER_MS = 15 * 60 * 1000
 
-/** Rolling window used to derive the uptime chicklet from snapshots. */
+/** Rolling window for the snapshot-ratio fallback when a provider has no components. */
 const UPTIME_WINDOW = "24 hours"
 
 type SnapshotRow = {
@@ -152,10 +158,17 @@ function toLiveStatus(status: string): LiveStatus {
 }
 
 /**
- * Latest snapshot per provider plus a snapshot-derived uptime ratio over the
- * last 24h (share of non-stale snapshots reporting 'operational' — a board
- * heuristic, not a vendor SLA). Returns an empty map when no database is
- * configured or the read fails, so the board can fall back to mock data.
+ * Latest snapshot per provider plus the board uptime chicklet.
+ *
+ * SMA-31 heuristic (not a vendor SLA; does not change overall status):
+ * - If `components` has rows for the provider, chicklet = count(status =
+ *   'operational') / count(*) on the current component set. A single
+ *   partial/degraded component (Mistral-like) is ~16/17, not 0%.
+ * - If there are no component rows, fall back to last-24h non-stale
+ *   snapshots with status = 'operational' (RSS / no-component providers).
+ *
+ * Returns an empty map when no database is configured or the read fails,
+ * so the board can fall back to mock data.
  */
 export async function getLiveSnapshots(): Promise<Map<string, LiveSnapshot>> {
   const pool = getPool()
@@ -172,18 +185,28 @@ export async function getLiveSnapshots(): Promise<Map<string, LiveSnapshot>> {
          FROM provider_snapshots
          ORDER BY provider_id, fetched_at DESC, id DESC
        ),
-       uptime AS (
+       snapshot_uptime AS (
          SELECT provider_id,
                 count(*) FILTER (WHERE status = 'operational') AS up,
                 count(*) AS total
          FROM provider_snapshots
          WHERE NOT stale AND fetched_at > now() - interval '${UPTIME_WINDOW}'
          GROUP BY provider_id
+       ),
+       component_uptime AS (
+         SELECT provider_id,
+                count(*) FILTER (WHERE status = 'operational') AS up,
+                count(*) AS total
+         FROM components
+         GROUP BY provider_id
        )
        SELECT l.provider_id, l.status, l.incident_title, l.stale, l.fetched_at,
-              l.latency_ms, u.up, u.total
+              l.latency_ms,
+              COALESCE(c.up, s.up) AS up,
+              COALESCE(c.total, s.total) AS total
        FROM latest l
-       LEFT JOIN uptime u USING (provider_id)`
+       LEFT JOIN snapshot_uptime s USING (provider_id)
+       LEFT JOIN component_uptime c USING (provider_id)`
     )
 
     const snapshots = new Map<string, LiveSnapshot>()
