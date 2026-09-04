@@ -160,7 +160,14 @@ export function historySparkline(
   const first = points[0]
   const last = points[points.length - 1]
   const area = `${line} L${last.x.toFixed(2)} ${height} L${first.x.toFixed(2)} ${height} Z`
-  return { line, area, width, height }
+  return {
+    line,
+    area,
+    width,
+    height,
+    endX: last.x,
+    endY: last.y,
+  }
 }
 
 /**

@@ -37,15 +37,25 @@ function StatusSparkline({ history }: { history: ServiceStatus[] }) {
   const spark = historySparkline(history)
 
   return (
-    <svg
-      className="status-sparkline"
-      viewBox={`0 0 ${spark.width} ${spark.height}`}
-      preserveAspectRatio="none"
-      aria-hidden="true"
-    >
-      <path className="spark-fill" d={spark.area} />
-      <path className="spark-line" d={spark.line} />
-    </svg>
+    <div className="status-sparkline-wrap">
+      <svg
+        className="status-sparkline"
+        viewBox={`0 0 ${spark.width} ${spark.height}`}
+        preserveAspectRatio="none"
+        aria-hidden="true"
+      >
+        <path className="spark-fill" d={spark.area} />
+        <path className="spark-line" d={spark.line} />
+      </svg>
+      <span
+        className="spark-today"
+        style={{
+          left: `${(spark.endX / spark.width) * 100}%`,
+          top: `${(spark.endY / spark.height) * 100}%`,
+        }}
+        title="Today"
+      />
+    </div>
   )
 }
 
