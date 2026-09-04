@@ -7,6 +7,7 @@
  * width from `progressPercent` instead of theme-hardcoded 90/30/50/20, no
  * fake “add teammate” control. Ellipsis path completed (upstream was truncated).
  */
+import { ArrowUpRightIcon } from "lucide-react"
 import React from "react"
 
 export interface CardData {
@@ -103,10 +104,12 @@ const Card: React.FC<CardProps> = ({ data }) => {
             rel="noreferrer"
           >
             {countdownText}
+            <ArrowUpRightIcon aria-hidden="true" />
           </a>
         ) : (
           <a href="#" className="btn-countdown">
             {countdownText}
+            <ArrowUpRightIcon aria-hidden="true" />
           </a>
         )}
       </div>

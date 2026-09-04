@@ -313,10 +313,18 @@
 }
 
 .course-design-board .card-footer .btn-countdown {
-  background: var(--color-gray-very-dark);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: color-mix(in srgb, var(--color-gray-very-dark) 72%, transparent);
   color: var(--color-white);
   border-radius: 1rem;
   padding: 0.625rem 1.25rem;
+}
+
+.course-design-board .card-footer .btn-countdown svg {
+  width: 0.9rem;
+  height: 0.9rem;
 }
 
 .course-design-board .card.green {
@@ -340,7 +348,7 @@
 }
 
 .course-design-board .card.green .btn-countdown:hover {
-  background: var(--clr-green);
+  background: color-mix(in srgb, var(--clr-green) 72%, transparent);
 }
 
 .course-design-board .card.blue {
@@ -364,7 +372,7 @@
 }
 
 .course-design-board .card.blue .btn-countdown:hover {
-  background: var(--clr-blue);
+  background: color-mix(in srgb, var(--clr-blue) 72%, transparent);
 }
 
 .course-design-board .card.orange {
@@ -388,7 +396,7 @@
 }
 
 .course-design-board .card.orange .btn-countdown:hover {
-  background: var(--clr-orange);
+  background: color-mix(in srgb, var(--clr-orange) 72%, transparent);
 }
 
 .course-design-board .card.red {
@@ -412,5 +420,5 @@
 }
 
 .course-design-board .card.red .btn-countdown:hover {
-  background: var(--clr-red);
+  background: color-mix(in srgb, var(--clr-red) 72%, transparent);
 }
