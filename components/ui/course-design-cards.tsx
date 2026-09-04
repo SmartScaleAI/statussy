@@ -3,9 +3,9 @@
  * https://21st.dev/@kristen17/components/course-design-cards
  * Source file: https://cdn.21st.dev/larsen66/course-design-cards/code.1753891438710.tsx
  *
- * Small Statussy adaptations (SMA-9): optional official-status href, progress
- * width from `progressPercent` instead of theme-hardcoded 90/30/50/20, no
- * fake “add teammate” control. Header menu replaced with a local favorite star.
+ * Small Statussy adaptations (SMA-9 / SMA-12): optional official-status href,
+ * no subtitle under the title, official status as a text link. Header menu
+ * replaced with a local favorite star.
  */
 "use client"
 
@@ -23,7 +23,6 @@ export interface CardData {
   colorClass: string
   date?: string
   title: string
-  description: string
   history?: ServiceStatus[]
   uptimeLabel?: string
   latencyLabel?: string
@@ -106,7 +105,6 @@ const Card: React.FC<CardProps> = ({ data }) => {
     colorClass,
     date,
     title,
-    description,
     history,
     uptimeLabel,
     latencyLabel,
@@ -135,7 +133,6 @@ const Card: React.FC<CardProps> = ({ data }) => {
           <img className="card-logo" src={imgSrc1} alt={imgAlt1 || ""} />
         ) : null}
         <h3>{title}</h3>
-        <p>{description}</p>
         {history && history.length > 0 ? (
           <div
             className="status-history"
@@ -174,7 +171,7 @@ const Card: React.FC<CardProps> = ({ data }) => {
         {countdownHref ? (
           <a
             href={countdownHref}
-            className="btn-countdown"
+            className="official-status-link"
             target="_blank"
             rel="noreferrer"
           >
@@ -182,7 +179,7 @@ const Card: React.FC<CardProps> = ({ data }) => {
             <ArrowUpRightIcon aria-hidden="true" />
           </a>
         ) : (
-          <a href="#" className="btn-countdown">
+          <a href="#" className="official-status-link">
             {countdownText}
             <ArrowUpRightIcon aria-hidden="true" />
           </a>
