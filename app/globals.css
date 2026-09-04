@@ -136,7 +136,8 @@
 
 /*
  * Course-card theme: Geist scale swatches from https://vercel.com/geist/colors
- * (the rounded pills: gray, blue, red, amber, green). Surfaces stay Geist gray.
+ * (the rounded pills: gray, blue, red, amber, green). Surfaces stay Geist gray
+ * and follow next-themes via the `.dark` class on <html>.
  * Layout rules stay scoped so body/section resets do not leak.
  */
 .course-design-board {
@@ -144,13 +145,33 @@
   --clr-green: #48aa4a;
   --clr-amber: #fdb203;
   --clr-red: #de4649;
-  --bg-dark: #262626; /* border-gradient base */
-  --bg-footer: #171717; /* charcoal card surface (user reference) */
-  --color-white: #ededed; /* gray-1000 */
-  --color-gray-light: #8f8f8f; /* gray swatch */
-  --color-gray-medium: #454545; /* gray-500 */
-  --color-gray-dark: #2e2e2e; /* gray-400 */
-  --color-gray-very-dark: #1f1f1f; /* gray-200 */
+  --bg-dark: #d4d4d4; /* border-gradient base */
+  --bg-footer: #ffffff; /* card surface */
+  --color-white: #171717; /* primary text */
+  --color-gray-light: #737373; /* secondary text */
+  --color-gray-medium: #a3a3a3;
+  --color-gray-dark: #e5e5e5; /* footer rule */
+  --color-gray-very-dark: #f5f5f5;
+  --card-shadow: 0.063em 0.5em 1.25em rgb(0 0 0 / 10%);
+  --wash-green: 22%;
+  --wash-blue: 20%;
+  --wash-amber: 24%;
+  --wash-red: 20%;
+}
+
+.dark .course-design-board {
+  --bg-dark: #262626;
+  --bg-footer: #171717;
+  --color-white: #ededed;
+  --color-gray-light: #8f8f8f;
+  --color-gray-medium: #454545;
+  --color-gray-dark: #2e2e2e;
+  --color-gray-very-dark: #1f1f1f;
+  --card-shadow: 0.063em 0.75em 1.563em #000000c7;
+  --wash-green: 42%;
+  --wash-blue: 38%;
+  --wash-amber: 42%;
+  --wash-red: 40%;
 }
 
 .course-design-board a {
@@ -167,7 +188,7 @@
   display: flex;
   flex-direction: column;
   position: relative;
-  box-shadow: 0.063em 0.75em 1.563em #000000c7;
+  box-shadow: var(--card-shadow);
 }
 
 .course-design-board .card:before {
@@ -296,6 +317,15 @@
   height: 2.25rem;
   max-width: 3.5rem;
   margin: 0 auto;
+}
+
+/* xAI mark is white — invert on light cards so it stays visible. */
+.course-design-board .card-body .card-logo[src="/logos/xai.svg"] {
+  filter: invert(1);
+}
+
+.dark .course-design-board .card-body .card-logo[src="/logos/xai.svg"] {
+  filter: none;
 }
 
 .course-design-board .card-body h3 {
@@ -443,7 +473,7 @@
 .course-design-board .card.green {
   background: radial-gradient(
     at 100% 0,
-    color-mix(in srgb, var(--clr-green) 42%, transparent),
+    color-mix(in srgb, var(--clr-green) var(--wash-green), transparent),
     var(--bg-footer) 47%,
     var(--bg-footer)
   );
@@ -464,7 +494,7 @@
 .course-design-board .card.blue {
   background: radial-gradient(
     at 100% 0,
-    color-mix(in srgb, var(--clr-blue) 38%, transparent),
+    color-mix(in srgb, var(--clr-blue) var(--wash-blue), transparent),
     var(--bg-footer) 45%,
     var(--bg-footer)
   );
@@ -485,7 +515,7 @@
 .course-design-board .card.amber {
   background: radial-gradient(
     at 100% 0,
-    color-mix(in srgb, var(--clr-amber) 42%, transparent),
+    color-mix(in srgb, var(--clr-amber) var(--wash-amber), transparent),
     var(--bg-footer) 47%,
     var(--bg-footer)
   );
@@ -506,7 +536,7 @@
 .course-design-board .card.red {
   background: radial-gradient(
     at 100% 0,
-    color-mix(in srgb, var(--clr-red) 40%, transparent),
+    color-mix(in srgb, var(--clr-red) var(--wash-red), transparent),
     var(--bg-footer) 47%,
     var(--bg-footer)
   );

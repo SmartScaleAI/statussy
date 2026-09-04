@@ -1,12 +1,13 @@
 import { StatusBoard } from "@/components/status-board"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 export default function HomePage() {
   return (
     <div className="flex min-h-svh flex-col">
       <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-12 px-6 py-16 sm:py-24">
-        <header className="flex flex-col gap-2">
+        <header className="flex items-center justify-between gap-4">
           <h1 className="flex items-center gap-2.5 font-heading text-2xl font-semibold tracking-tight text-foreground">
-            {/* Brand mark is white-on-black so it stays readable on the dark UI. */}
+            {/* Black tile + white glyph stays readable on both light and dark chrome. */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/brand/logo.svg"
@@ -17,9 +18,7 @@ export default function HomePage() {
             />
             Statussy
           </h1>
-          <p className="text-sm text-muted-foreground">
-            One place to see if AI is down.
-          </p>
+          <ThemeToggle />
         </header>
         <StatusBoard />
       </main>
