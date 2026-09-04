@@ -26,12 +26,13 @@ export function StatusBoard() {
       />
       <div className="flex flex-col gap-6">
         <div className="flex items-center gap-2">
-          <InputGroup className="min-w-0 flex-1">
+          <InputGroup className="h-10 min-w-0 flex-1">
             <InputGroupInput
               id="provider-search"
               type="search"
               placeholder="Search providers by name..."
               aria-label="Search providers by name"
+              className="h-10"
             />
             <InputGroupAddon align="inline-start">
               <SearchIcon />
@@ -42,10 +43,17 @@ export function StatusBoard() {
             variant="outline"
             size="icon"
             aria-label="Filters"
+            className="size-10"
           >
             <FunnelIcon />
           </Button>
-          <Button type="button" variant="outline" size="icon" aria-label="Sort">
+          <Button
+            type="button"
+            variant="outline"
+            size="icon"
+            aria-label="Sort"
+            className="size-10"
+          >
             <ArrowUpDownIcon />
           </Button>
         </div>
