@@ -33,18 +33,15 @@ export function SuggestProviderForm() {
     <form
       ref={formRef}
       action={action}
-      className="relative flex flex-col gap-3 overflow-hidden"
+      className="relative flex flex-col gap-3"
     >
       <FieldSet>
         <FieldLegend>Suggest a Provider</FieldLegend>
         <FieldDescription>
-          Know an AI service we should track? Name is required; email is
+          Know a service we should track? Name is required; email is
           optional.
         </FieldDescription>
-        <div
-          aria-hidden="true"
-          className="absolute left-[-10000px] h-px w-px overflow-hidden"
-        >
+        <div aria-hidden="true" className="sr-only">
           <label htmlFor="suggest-website">Website</label>
           <input
             id="suggest-website"

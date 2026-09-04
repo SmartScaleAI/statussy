@@ -154,6 +154,11 @@
   --color-gray-dark: #e5e5e5;
   --color-gray-very-dark: #fafafa;
   --card-shadow: 0 0.25em 1em rgb(0 0 0 / 10%);
+  /* Light-mode status wash — quieter than dark so the flare stays a hint. */
+  --card-wash-green: 14%;
+  --card-wash-blue: 12%;
+  --card-wash-amber: 14%;
+  --card-wash-red: 13%;
 }
 
 .dark .course-design-board {
@@ -169,6 +174,10 @@
   --color-gray-dark: #2e2e2e; /* gray-400 */
   --color-gray-very-dark: #1f1f1f; /* gray-200 */
   --card-shadow: 0.063em 0.75em 1.563em #000000c7;
+  --card-wash-green: 42%;
+  --card-wash-blue: 38%;
+  --card-wash-amber: 42%;
+  --card-wash-red: 40%;
 }
 
 /* xAI mark is white-on-transparent; invert it on light card surfaces only. */
@@ -456,7 +465,7 @@
 .course-design-board .card.green {
   background: radial-gradient(
     at 100% 0,
-    color-mix(in srgb, var(--clr-green) 42%, transparent),
+    color-mix(in srgb, var(--clr-green) var(--card-wash-green), transparent),
     var(--bg-footer) 47%,
     var(--bg-footer)
   );
@@ -477,7 +486,7 @@
 .course-design-board .card.blue {
   background: radial-gradient(
     at 100% 0,
-    color-mix(in srgb, var(--clr-blue) 38%, transparent),
+    color-mix(in srgb, var(--clr-blue) var(--card-wash-blue), transparent),
     var(--bg-footer) 45%,
     var(--bg-footer)
   );
@@ -498,7 +507,7 @@
 .course-design-board .card.amber {
   background: radial-gradient(
     at 100% 0,
-    color-mix(in srgb, var(--clr-amber) 42%, transparent),
+    color-mix(in srgb, var(--clr-amber) var(--card-wash-amber), transparent),
     var(--bg-footer) 47%,
     var(--bg-footer)
   );
@@ -519,7 +528,7 @@
 .course-design-board .card.red {
   background: radial-gradient(
     at 100% 0,
-    color-mix(in srgb, var(--clr-red) 40%, transparent),
+    color-mix(in srgb, var(--clr-red) var(--card-wash-red), transparent),
     var(--bg-footer) 47%,
     var(--bg-footer)
   );
@@ -535,5 +544,21 @@
       var(--clr-red)
     )
     border-box;
+}
+
+/* Suggest-form card: charcoal surface + border, no status wash. */
+.course-design-board .card.plain {
+  background: var(--bg-footer);
+  text-align: left;
+}
+
+.course-design-board .card.plain:before {
+  background: var(--bg-dark) border-box;
+}
+
+.course-design-board .card.plain .suggest-card-body {
+  width: 100%;
+  padding: 1.25rem 1.35rem 1.35rem;
+  box-sizing: border-box;
 }
 
