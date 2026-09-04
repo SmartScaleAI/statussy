@@ -21,6 +21,10 @@ export interface CardData {
   description?: string
   /** 24h snapshot-derived uptime; omitted until live data exists. */
   uptimeLabel?: string
+  /** Measured probe latency (SMA-23); omitted when there is no measurement. */
+  latencyLabel?: string
+  /** Tooltip clarifying the latency source (our probe, not the vendor). */
+  latencyTitle?: string
   /** Latest snapshot is stale (failed fetch or past freshness threshold). */
   stale?: boolean
   imgSrc1?: string
@@ -63,6 +67,8 @@ const Card: React.FC<CardProps> = ({ data }) => {
     title,
     description,
     uptimeLabel,
+    latencyLabel,
+    latencyTitle,
     stale,
     imgSrc1,
     imgAlt1,
@@ -121,9 +127,23 @@ const Card: React.FC<CardProps> = ({ data }) => {
         )}
         {description ? <p>{description}</p> : null}
         {/* Sparkline removed until a real history UI exists (SMA-18). */}
-        <div className="uptime-chicklet" aria-label="Uptime, last 24 hours">
-          <span className="status-metric-label">Uptime</span>
-          {uptimeLabel ?? "—"}
+        <div className="metric-chicklets">
+          <div className="uptime-chicklet" aria-label="Uptime, last 24 hours">
+            <span className="status-metric-label">Uptime</span>
+            {uptimeLabel ?? "—"}
+          </div>
+          {latencyLabel ? (
+            // Second chicklet (SMA-23): latency measured by our own probe,
+            // clearly separate from the official vendor status above.
+            <div
+              className="uptime-chicklet"
+              aria-label="Measured latency"
+              title={latencyTitle}
+            >
+              <span className="status-metric-label">Latency</span>
+              {latencyLabel}
+            </div>
+          ) : null}
         </div>
       </div>
       <div className="card-footer">

@@ -379,11 +379,19 @@
   font-size: 1rem;
 }
 
+/* Metric chicklet row (SMA-18 uptime + SMA-23 measured latency). */
+.course-design-board .card-body .metric-chicklets {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.7rem;
+}
+
 /* Uptime chicklet in the old sparkline slot (SMA-18). "—" when no data yet. */
 .course-design-board .card-body .uptime-chicklet {
   display: inline-flex;
   align-items: center;
-  margin-top: 0.7rem;
   padding: 0.2rem 0.6rem;
   border: 1px solid var(--color-gray-dark);
   border-radius: 999px;

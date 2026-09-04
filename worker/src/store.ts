@@ -22,6 +22,12 @@ export type PersistOptions = {
    * marked resolved at persist time.
    */
   resolveMissingIncidents?: boolean
+  /**
+   * SMA-23: measured round-trip latency from our own probe, recorded on the
+   * snapshot alongside — but independent of — official status. undefined/null
+   * means no measurement this tick and has no bearing on `status` or `stale`.
+   */
+  latencyMs?: number | null
 }
 
 /**
@@ -40,9 +46,15 @@ export async function persistProviderState(
     await client.query("BEGIN")
 
     await client.query(
-      `INSERT INTO provider_snapshots (provider_id, status, incident_title, detail, stale, fetched_at)
-       VALUES ($1, $2, $3, $4, false, now())`,
-      [providerId, state.status, state.incidentTitle, JSON.stringify(state.detail)],
+      `INSERT INTO provider_snapshots (provider_id, status, incident_title, detail, stale, latency_ms, fetched_at)
+       VALUES ($1, $2, $3, $4, false, $5, now())`,
+      [
+        providerId,
+        state.status,
+        state.incidentTitle,
+        JSON.stringify(state.detail),
+        options.latencyMs ?? null,
+      ],
     )
 
     for (const component of state.components) {

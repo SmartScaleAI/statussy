@@ -21,6 +21,13 @@ export type BoardService = Omit<Service, "status"> & {
   stale: boolean
   /** Snapshot-derived uptime over the last 24h; null until data exists. */
   uptimeLabel: string | null
+  /**
+   * Measured probe latency chicklet (SMA-23) — our own measurement, kept
+   * separate from official vendor status. Null when the latest snapshot has
+   * no measurement (probe off, unconfigured, or failed); a null here never
+   * implies the official status is stale.
+   */
+  latencyLabel: string | null
 }
 
 /** Lower number = more urgent. Non-operational statuses sort above healthy. */
@@ -105,6 +112,18 @@ function formatUptime(up: number, total: number) {
 }
 
 /**
+ * Measured probe latency (SMA-23) — Statussy's own round-trip measurement
+ * against a safe public endpoint, never vendor-reported data. Returns null
+ * when there is no measurement so the chicklet can render a placeholder.
+ */
+export function formatMeasuredLatency(latencyMs: number | null | undefined) {
+  if (latencyMs == null || !Number.isFinite(latencyMs) || latencyMs < 0) {
+    return null
+  }
+  return `${Math.round(latencyMs)} ms`
+}
+
+/**
  * Board payload: latest Postgres snapshot per provider (SMA-15/16 worker)
  * merged over the mock registry. Providers without a snapshot keep their
  * prior mock entry — see the fallback policy in `lib/live-status.ts`.
@@ -118,7 +137,13 @@ export async function getStatusBoard() {
     services.map((service): BoardService => {
       const snapshot = snapshots.get(service.id)
       if (!snapshot) {
-        return { ...service, live: false, stale: false, uptimeLabel: null }
+        return {
+          ...service,
+          live: false,
+          stale: false,
+          uptimeLabel: null,
+          latencyLabel: null,
+        }
       }
       return {
         ...service,
@@ -130,6 +155,7 @@ export async function getStatusBoard() {
         uptimeLabel: snapshot.uptime
           ? formatUptime(snapshot.uptime.up, snapshot.uptime.total)
           : null,
+        latencyLabel: formatMeasuredLatency(snapshot.latencyMs),
       }
     })
   )

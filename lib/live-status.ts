@@ -25,6 +25,11 @@ export type LiveSnapshot = {
   fetchedAt: Date
   /** Non-stale snapshots in the uptime window; null when none exist yet. */
   uptime: { up: number; total: number } | null
+  /**
+   * Measured probe latency (SMA-23): Statussy's own round-trip measurement,
+   * independent of official vendor status. Null = no measurement this tick.
+   */
+  latencyMs: number | null
 }
 
 const LIVE_STATUSES: readonly LiveStatus[] = [
@@ -48,6 +53,7 @@ type SnapshotRow = {
   incident_title: string | null
   stale: boolean
   fetched_at: Date
+  latency_ms: number | null
   up: string | null
   total: string | null
 }
@@ -91,7 +97,8 @@ export async function getLiveSnapshots(): Promise<Map<string, LiveSnapshot>> {
     const { rows } = await pool.query<SnapshotRow>(
       `WITH latest AS (
          SELECT DISTINCT ON (provider_id)
-                provider_id, status::text AS status, incident_title, stale, fetched_at
+                provider_id, status::text AS status, incident_title, stale,
+                fetched_at, latency_ms
          FROM provider_snapshots
          ORDER BY provider_id, fetched_at DESC, id DESC
        ),
@@ -104,7 +111,7 @@ export async function getLiveSnapshots(): Promise<Map<string, LiveSnapshot>> {
          GROUP BY provider_id
        )
        SELECT l.provider_id, l.status, l.incident_title, l.stale, l.fetched_at,
-              u.up, u.total
+              l.latency_ms, u.up, u.total
        FROM latest l
        LEFT JOIN uptime u USING (provider_id)`
     )
@@ -119,6 +126,7 @@ export async function getLiveSnapshots(): Promise<Map<string, LiveSnapshot>> {
         stale: row.stale,
         fetchedAt: row.fetched_at,
         uptime: total > 0 ? { up: Number(row.up ?? 0), total } : null,
+        latencyMs: row.latency_ms,
       })
     }
     return snapshots
