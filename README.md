@@ -21,7 +21,7 @@ npm run build
 
 Live-data foundation for the board: a Railway Postgres database plus a small Node
 worker in [`worker/`](worker/). The worker owns the schema (`providers`,
-`provider_snapshots`, `components`, `incidents`), seeds the 10 board providers,
+`provider_snapshots`, `components`, `incidents`, `provider_suggestions`), seeds the 10 board providers,
 and ticks on a configurable interval (default every 5 minutes). Each tick fetches
 live status for providers with a fetcher — OpenAI, Anthropic, Groq, and Cohere
 via the Statuspage-compatible API, OpenRouter via OnlineOrNot, Perplexity via
@@ -36,7 +36,8 @@ and flags the latest snapshot `stale`.
 
 | Variable | Where | Purpose |
 | --- | --- | --- |
-| `DATABASE_URL` | Railway (worker, read/write) and Vercel (Next.js app, read-only) | Postgres connection string. On Railway, reference the Postgres service (`${{Postgres.DATABASE_URL}}`, private network). On Vercel, use the Railway Postgres **`DATABASE_PUBLIC_URL`** — see [Point Vercel at Railway Postgres](#point-vercel-at-railway-postgres). |
+| `DATABASE_URL` | Railway (worker, read/write) and Vercel (Next.js app) | Postgres connection string. The app reads live status and inserts footer **Suggest a Provider** rows into `provider_suggestions` (it does not write the `providers` catalog). On Railway, reference the Postgres service (`${{Postgres.DATABASE_URL}}`, private network). On Vercel, use the Railway Postgres **`DATABASE_PUBLIC_URL`** — see [Point Vercel at Railway Postgres](#point-vercel-at-railway-postgres). |
+| `SLACK_WEBHOOK_URL` | Vercel (Next.js app) | Incoming webhook targeting `#product` (or a Statussy channel). Posted after each successful suggestion insert (name, email if present, timestamp). Optional locally — a missing webhook logs a warning and still stores the row. |
 | `REFRESH_INTERVAL_SECONDS` | Railway (worker) | Seconds between cron ticks. Optional, defaults to `300` (5 minutes). |
 | `PORT` | Railway (worker) | Injected by Railway; the health endpoint listens on it (defaults to `8080` locally). |
 | `FETCH_TIMEOUT_MS` | Railway (worker) | Per-request timeout for provider status fetches. Optional, defaults to `10000`. |
@@ -66,6 +67,12 @@ interval while developing, e.g. `REFRESH_INTERVAL_SECONDS=10 npm run dev`.
   by a Postgres advisory lock.
 - The Postgres service lives in the same Railway project; the worker's
   `DATABASE_URL` references it over the private network.
+
+### Suggest a Provider
+
+The site footer form takes a required provider **name** and optional **email**.
+Submissions go to `provider_suggestions` (`status` defaults to `new`) and ping
+Slack via `SLACK_WEBHOOK_URL`. They are **not** added to the board catalog.
 
 ### Point Vercel at Railway Postgres
 

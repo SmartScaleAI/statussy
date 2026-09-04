@@ -4,6 +4,7 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import { connection } from "next/server"
 
+import { SiteFooter } from "@/components/site-footer"
 import { SiteHeader } from "@/components/site-header"
 import { services } from "@/data/services"
 import {
@@ -65,7 +66,7 @@ function StatusChip({
 function StaleBadge() {
   return (
     <span
-      className="rounded-full border border-border bg-muted px-2 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wider text-muted-foreground"
+      className="rounded-full border border-border bg-muted px-2 py-0.5 text-[0.65rem] font-semibold tracking-wider text-muted-foreground uppercase"
       title="Last fetch failed or data is out of date"
     >
       Stale
@@ -102,7 +103,7 @@ function IncidentItem({ incident }: { incident: ProviderIncident }) {
           )}
         </span>
         {incident.impact ? (
-          <span className="rounded-full border border-border bg-muted px-2 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wider text-muted-foreground">
+          <span className="rounded-full border border-border bg-muted px-2 py-0.5 text-[0.65rem] font-semibold tracking-wider text-muted-foreground uppercase">
             {formatImpact(incident.impact)}
           </span>
         ) : null}
@@ -249,6 +250,7 @@ export default async function ProviderDetailPage({ params }: PageProps) {
           )}
         </section>
       </main>
+      <SiteFooter className="max-w-3xl" />
     </div>
   )
 }
