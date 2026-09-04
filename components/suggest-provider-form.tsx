@@ -32,7 +32,11 @@ export function SuggestProviderForm() {
   }, [state])
 
   return (
-    <form ref={formRef} action={action} className="flex flex-col gap-3">
+    <form
+      ref={formRef}
+      action={action}
+      className="relative flex flex-col gap-3 overflow-hidden"
+    >
       <FieldSet>
         <FieldLegend>Suggest a Provider</FieldLegend>
         <FieldDescription>
