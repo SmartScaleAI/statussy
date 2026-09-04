@@ -62,8 +62,8 @@ export function formatTimestamp(iso: string) {
   }).format(new Date(iso))
 }
 
-/** Mock 90-day window until live Statuspage history exists. */
-export const STATUS_HISTORY_DAYS = 90
+/** Mock 30-day window (one tick per day) until live Statuspage history exists. */
+export const STATUS_HISTORY_DAYS = 30
 
 function seedFromId(id: string) {
   let hash = 2166136261
