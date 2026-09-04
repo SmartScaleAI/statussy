@@ -95,15 +95,13 @@ export type MappedIncident = {
   resolvedAt: string | null
 }
 
+/** Fetcher-specific parsed detail stored on each snapshot (jsonb column). */
+export type SnapshotDetail = { source: string } & Record<string, unknown>
+
 export type MappedProviderState = {
   status: ProviderStatus
   incidentTitle: string | null
-  detail: {
-    source: "statuspage"
-    indicator: string | null
-    description: string | null
-    pageUpdatedAt: string | null
-  }
+  detail: SnapshotDetail
   components: MappedComponent[]
   incidents: MappedIncident[]
 }

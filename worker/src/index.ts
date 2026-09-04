@@ -5,16 +5,18 @@
  * on a fixed interval (REFRESH_INTERVAL_SECONDS, default 300 = 5 minutes).
  * Each tick fetches live status for providers with a fetcher (OpenAI per
  * SMA-16; Anthropic, Groq, and Cohere per SMA-19 — all via the
- * Statuspage-compatible API) and writes snapshots,
- * components, and incidents to Postgres. A tiny HTTP server exposes /healthz.
+ * Statuspage-compatible API; OpenRouter via OnlineOrNot, SMA-21) and writes
+ * snapshots, components, and incidents to Postgres. A tiny HTTP server
+ * exposes /healthz.
  */
 import { createServer } from "node:http"
 import { loadConfig } from "./config.js"
 import { createPool } from "./db.js"
 import { runMigrations } from "./migrate.js"
 import { seedProviders } from "./seed.js"
-import { fetchStatuspageState } from "./statuspage.js"
-import { markProviderStale, persistProviderState } from "./store.js"
+import { fetchOnlineOrNotState } from "./onlineornot.js"
+import { fetchStatuspageState, type MappedProviderState } from "./statuspage.js"
+import { markProviderStale, persistProviderState, type PersistOptions } from "./store.js"
 
 const config = loadConfig()
 const pool = createPool(config.databaseUrl)
@@ -39,22 +41,42 @@ console.log(
 await seedProviders(pool)
 console.log("[worker] provider registry seeded")
 
+const fetchOptions = () => ({
+  timeoutMs: config.fetchTimeoutMs,
+  userAgent: config.fetchUserAgent,
+})
+
+type ProviderJob = {
+  id: string
+  fetch: () => Promise<MappedProviderState>
+  persistOptions?: PersistOptions
+}
+
 // Providers fetched each tick. Other providers stay fetcher_type='none'
 // in the registry until their fetchers land (later tickets).
-const STATUSPAGE_PROVIDERS = [
-  { id: "openai", baseUrl: "https://status.openai.com" },
-  { id: "anthropic", baseUrl: "https://status.claude.com" },
-  { id: "groq", baseUrl: "https://groqstatus.com" },
-  { id: "cohere", baseUrl: "https://status.cohere.com" },
-] as const
+const statuspageJob = (id: string, baseUrl: string): ProviderJob => ({
+  id,
+  fetch: () => fetchStatuspageState(baseUrl, fetchOptions()),
+})
 
-async function fetchProvider(provider: { id: string; baseUrl: string }): Promise<boolean> {
+const PROVIDER_JOBS: ProviderJob[] = [
+  statuspageJob("openai", "https://status.openai.com"),
+  statuspageJob("anthropic", "https://status.claude.com"),
+  statuspageJob("groq", "https://groqstatus.com"),
+  statuspageJob("cohere", "https://status.cohere.com"),
+  {
+    // SMA-21: OpenRouter via OnlineOrNot. The summary API only lists active
+    // incidents, so ones that drop out are marked resolved at persist time.
+    id: "openrouter",
+    fetch: () => fetchOnlineOrNotState("status.openrouter.ai", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+]
+
+async function fetchProvider(provider: ProviderJob): Promise<boolean> {
   try {
-    const fetched = await fetchStatuspageState(provider.baseUrl, {
-      timeoutMs: config.fetchTimeoutMs,
-      userAgent: config.fetchUserAgent,
-    })
-    await persistProviderState(pool, provider.id, fetched)
+    const fetched = await provider.fetch()
+    await persistProviderState(pool, provider.id, fetched, provider.persistOptions)
     console.log(
       `[fetch] ${provider.id} ok status=${fetched.status} components=${fetched.components.length} incidents=${fetched.incidents.length}`,
     )
@@ -72,7 +94,7 @@ async function fetchProvider(provider: { id: string; baseUrl: string }): Promise
 async function runTick(): Promise<void> {
   const tickNumber = ++state.tickCount
   try {
-    const results = await Promise.all(STATUSPAGE_PROVIDERS.map(fetchProvider))
+    const results = await Promise.all(PROVIDER_JOBS.map(fetchProvider))
     const okCount = results.filter(Boolean).length
     state.lastTickAt = new Date()
     state.lastTickOk = okCount === results.length

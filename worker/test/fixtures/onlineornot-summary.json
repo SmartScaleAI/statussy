@@ -1,0 +1,87 @@
+{
+  "success": true,
+  "result": {
+    "status": {
+      "description": "Partial System Outage"
+    },
+    "status_page": {
+      "id": "bLYZeyaq",
+      "name": "OpenRouter",
+      "subdomain": "openrouter",
+      "custom_domain": "status.openrouter.ai"
+    },
+    "components": [
+      {
+        "id": "oRWryVpo1B24",
+        "name": "Chat (/api/v1/chat/completions)",
+        "status": "PARTIAL_OUTAGE",
+        "display_metrics": false,
+        "display_uptime": true,
+        "created_at": "2024-08-29T17:42:33.407Z",
+        "updated_at": "2026-08-28T22:33:41.556Z",
+        "group_id": null
+      },
+      {
+        "id": "j3NVyxQg1Bxv",
+        "name": "Models (/api/v1/models)",
+        "status": "OPERATIONAL",
+        "display_metrics": false,
+        "display_uptime": true,
+        "created_at": "2024-07-16T14:56:12.006Z",
+        "updated_at": "2025-08-28T14:55:18.777Z",
+        "group_id": "Dgjx8Kn84bPk"
+      },
+      {
+        "id": "QVG5ypo5JbnZ",
+        "name": "Generation (/api/v1/generation)",
+        "status": "DEGRADED_PERFORMANCE",
+        "display_metrics": false,
+        "display_uptime": true,
+        "created_at": "2024-07-16T16:21:37.979Z",
+        "updated_at": "2026-02-17T06:12:39.791Z",
+        "group_id": "Dgjx8Kn84bPk"
+      },
+      {
+        "id": "mE7zymQB93NM",
+        "name": "Homepage (us east)",
+        "status": "MAINTENANCE",
+        "display_metrics": false,
+        "display_uptime": true,
+        "created_at": "2024-07-16T15:23:23.708Z",
+        "updated_at": "2026-02-13T23:41:22.951Z",
+        "group_id": "lA-mX738Y2WR"
+      },
+      {
+        "id": "4mwR9W2xya5G",
+        "name": "Homepage (us west)",
+        "status": "SOMETHING_NEW",
+        "display_metrics": false,
+        "display_uptime": true,
+        "created_at": "2024-07-16T14:46:24.468Z",
+        "updated_at": "2026-02-13T23:41:22.956Z",
+        "group_id": "lA-mX738Y2WR"
+      }
+    ],
+    "active_incidents": [
+      {
+        "id": "RJ0mNKO5Arwy",
+        "title": "Degraded chat completions API",
+        "impact": "MAJOR",
+        "started": "2026-09-04T18:27:28.310Z",
+        "created_at": "2026-09-04T18:27:28.310Z",
+        "updated_at": "2026-09-04T18:27:28.310Z"
+      },
+      {
+        "id": "Xk2mPQO5Brzz",
+        "title": "Elevated homepage latency",
+        "impact": "NO_IMPACT",
+        "started": null,
+        "created_at": "2026-09-04T16:00:00.000Z",
+        "updated_at": "2026-09-04T16:05:00.000Z"
+      }
+    ],
+    "scheduled_maintenance": []
+  },
+  "errors": [],
+  "messages": []
+}
