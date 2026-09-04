@@ -14,8 +14,8 @@ import type {
   FetchOptions,
   MappedComponent,
   MappedIncident,
-  MappedProviderState,
-  ProviderStatus,
+  MappedServiceState,
+  ServiceStatus,
 } from "./statuspage.js"
 
 export type InstatusSummary = {
@@ -56,7 +56,7 @@ export type InstatusComponent = {
  * (OPERATIONAL / UNDERMAINTENANCE / DEGRADEDPERFORMANCE / PARTIALOUTAGE /
  * MAJOROUTAGE), so one mapper covers both.
  */
-export function mapInstatusComponentStatus(status: string | undefined | null): ProviderStatus {
+export function mapInstatusComponentStatus(status: string | undefined | null): ServiceStatus {
   switch (status) {
     case "OPERATIONAL":
       return "operational"
@@ -73,7 +73,7 @@ export function mapInstatusComponentStatus(status: string | undefined | null): P
   }
 }
 
-const SEVERITY_RANK: Record<ProviderStatus, number> = {
+const SEVERITY_RANK: Record<ServiceStatus, number> = {
   operational: 0,
   unknown: 1,
   maintenance: 2,
@@ -93,7 +93,7 @@ function toIso(value: string | null | undefined): string | null {
 export function mapInstatus(
   summary: InstatusSummary,
   components: InstatusComponent[],
-): MappedProviderState {
+): MappedServiceState {
   const mappedComponents: MappedComponent[] = components
     .filter((c) => c.id && c.name)
     .map((c, index) => ({
@@ -119,7 +119,7 @@ export function mapInstatus(
     }))
 
   const pageStatus = summary.page?.status ?? null
-  let status: ProviderStatus
+  let status: ServiceStatus
   switch (pageStatus) {
     case "UP":
       status = "operational"
@@ -130,11 +130,11 @@ export function mapInstatus(
     case "HASISSUES": {
       // No page-level severity on Instatus: take the worst signal from
       // active-incident impacts and component statuses.
-      const signals: ProviderStatus[] = [
+      const signals: ServiceStatus[] = [
         ...activeIncidents.map((i) => mapInstatusComponentStatus(i.impact)),
         ...mappedComponents.map((c) => c.status),
       ]
-      const worst = signals.reduce<ProviderStatus>(
+      const worst = signals.reduce<ServiceStatus>(
         (acc, s) => (SEVERITY_RANK[s] > SEVERITY_RANK[acc] ? s : acc),
         "operational",
       )
@@ -173,16 +173,16 @@ async function fetchJson<T>(url: string, options: FetchOptions): Promise<T> {
 }
 
 /**
- * Fetch and map live state for one Instatus provider.
+ * Fetch and map live state for one Instatus service.
  * Throws on network error, timeout, non-2xx, or unparseable payload.
  * components.json is required: persisting an empty component list would
  * delete the last-known components, so a components failure marks the
- * provider stale instead (via the caller's error handling).
+ * service stale instead (via the caller's error handling).
  */
 export async function fetchInstatusState(
   baseUrl: string,
   options: FetchOptions,
-): Promise<MappedProviderState> {
+): Promise<MappedServiceState> {
   const root = baseUrl.replace(/\/+$/, "")
 
   const summary = await fetchJson<InstatusSummary>(`${root}/summary.json`, options)

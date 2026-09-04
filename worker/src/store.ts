@@ -1,13 +1,13 @@
 import type pg from "pg"
-import type { MappedComponent, MappedIncident, ProviderStatus } from "./statuspage.js"
+import type { MappedComponent, MappedIncident, ServiceStatus } from "./statuspage.js"
 
 /**
- * Normalized provider state accepted by the store, regardless of which
+ * Normalized service state accepted by the store, regardless of which
  * fetcher produced it (Statuspage API per SMA-16/19, RSS per SMA-22).
  * `detail` is fetcher-specific structured JSON (never raw HTML).
  */
-export type PersistableProviderState = {
-  status: ProviderStatus
+export type PersistableServiceState = {
+  status: ServiceStatus
   incidentTitle: string | null
   detail: object
   components: MappedComponent[]
@@ -25,14 +25,14 @@ export type PersistOptions = {
 }
 
 /**
- * Persist a successful fetch for one provider in a single transaction:
+ * Persist a successful fetch for one service in a single transaction:
  * a fresh snapshot row, upserted components (removing ones the vendor
  * dropped), and upserted incidents.
  */
-export async function persistProviderState(
+export async function persistServiceState(
   pool: pg.Pool,
-  providerId: string,
-  state: PersistableProviderState,
+  serviceId: string,
+  state: PersistableServiceState,
   options: PersistOptions = {},
 ): Promise<void> {
   const client = await pool.connect()
@@ -41,10 +41,10 @@ export async function persistProviderState(
 
     // SMA-31: stop writing latency_ms (column stays; new rows default to NULL).
     await client.query(
-      `INSERT INTO provider_snapshots (provider_id, status, incident_title, detail, stale, fetched_at)
+      `INSERT INTO service_snapshots (service_id, status, incident_title, detail, stale, fetched_at)
        VALUES ($1, $2, $3, $4, false, now())`,
       [
-        providerId,
+        serviceId,
         state.status,
         state.incidentTitle,
         JSON.stringify(state.detail),
@@ -53,28 +53,28 @@ export async function persistProviderState(
 
     for (const component of state.components) {
       await client.query(
-        `INSERT INTO components (provider_id, external_id, name, status, position)
+        `INSERT INTO components (service_id, external_id, name, status, position)
          VALUES ($1, $2, $3, $4, $5)
-         ON CONFLICT (provider_id, external_id) DO UPDATE
+         ON CONFLICT (service_id, external_id) DO UPDATE
            SET name = EXCLUDED.name,
                status = EXCLUDED.status,
                position = EXCLUDED.position,
                updated_at = now()`,
-        [providerId, component.externalId, component.name, component.status, component.position],
+        [serviceId, component.externalId, component.name, component.status, component.position],
       )
     }
     // Components the vendor no longer reports are gone, not "last-known".
     await client.query(
       `DELETE FROM components
-       WHERE provider_id = $1 AND external_id != ALL($2::text[])`,
-      [providerId, state.components.map((c) => c.externalId)],
+       WHERE service_id = $1 AND external_id != ALL($2::text[])`,
+      [serviceId, state.components.map((c) => c.externalId)],
     )
 
     for (const incident of state.incidents) {
       await client.query(
-        `INSERT INTO incidents (provider_id, external_id, title, status, impact, url, started_at, resolved_at)
+        `INSERT INTO incidents (service_id, external_id, title, status, impact, url, started_at, resolved_at)
          VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-         ON CONFLICT (provider_id, external_id) DO UPDATE
+         ON CONFLICT (service_id, external_id) DO UPDATE
            SET title = EXCLUDED.title,
                status = EXCLUDED.status,
                impact = EXCLUDED.impact,
@@ -83,7 +83,7 @@ export async function persistProviderState(
                resolved_at = EXCLUDED.resolved_at,
                updated_at = now()`,
         [
-          providerId,
+          serviceId,
           incident.externalId,
           incident.title,
           incident.status,
@@ -101,10 +101,10 @@ export async function persistProviderState(
          SET status = 'resolved',
              resolved_at = COALESCE(resolved_at, now()),
              updated_at = now()
-         WHERE provider_id = $1
+         WHERE service_id = $1
            AND resolved_at IS NULL
            AND external_id != ALL($2::text[])`,
-        [providerId, state.incidents.map((i) => i.externalId)],
+        [serviceId, state.incidents.map((i) => i.externalId)],
       )
     }
 
@@ -119,24 +119,24 @@ export async function persistProviderState(
 
 /**
  * On fetch failure: keep all last-known rows untouched and flag the
- * provider's latest snapshot as stale. If the provider has no snapshot
+ * service's latest snapshot as stale. If the service has no snapshot
  * yet, record an 'unknown' stale snapshot so the board shows something.
  */
-export async function markProviderStale(pool: pg.Pool, providerId: string): Promise<void> {
+export async function markServiceStale(pool: pg.Pool, serviceId: string): Promise<void> {
   const { rowCount } = await pool.query(
-    `UPDATE provider_snapshots SET stale = true
+    `UPDATE service_snapshots SET stale = true
      WHERE id = (
-       SELECT id FROM provider_snapshots
-       WHERE provider_id = $1
+       SELECT id FROM service_snapshots
+       WHERE service_id = $1
        ORDER BY fetched_at DESC, id DESC
        LIMIT 1
      )`,
-    [providerId],
+    [serviceId],
   )
   if (rowCount === 0) {
     await pool.query(
-      `INSERT INTO provider_snapshots (provider_id, status, stale) VALUES ($1, 'unknown', true)`,
-      [providerId],
+      `INSERT INTO service_snapshots (service_id, status, stale) VALUES ($1, 'unknown', true)`,
+      [serviceId],
     )
   }
 }

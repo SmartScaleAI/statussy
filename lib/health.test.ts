@@ -13,7 +13,7 @@ test("Health uses operational / total current components", () => {
   assert.equal(formatHealth(allGreen.operational, allGreen.total), "100.00%")
 })
 
-test("Health fallback when a provider has no components", () => {
+test("Health fallback when a service has no components", () => {
   const operational = resolveLiveHealth("operational", 0, 0)
   assert.deepEqual(operational, { operational: 1, total: 1 })
   assert.equal(formatHealth(operational.operational, operational.total), "100.00%")

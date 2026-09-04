@@ -3,7 +3,7 @@
 import { headers } from "next/headers"
 import { unstable_rethrow } from "next/navigation"
 
-import { insertProviderSuggestion } from "@/lib/db"
+import { insertServiceSuggestion } from "@/lib/db"
 import {
   SUGGEST_RATE_LIMIT_MESSAGE,
   SUGGEST_SAVE_FAILED_MESSAGE,
@@ -11,8 +11,8 @@ import {
   SUGGEST_UNAVAILABLE_MESSAGE,
   notifySlackSuggestion,
   parseSuggestionInput,
-  type SuggestProviderState,
-} from "@/lib/suggest-provider"
+  type SuggestServiceState,
+} from "@/lib/suggest-service"
 
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000
 const RATE_LIMIT_MAX = 5
@@ -50,9 +50,9 @@ function isHoneypotTripped(formData: FormData) {
   return typeof website === "string" && website.trim().length > 0
 }
 
-async function runSuggestProvider(
+async function runSuggestService(
   formData: FormData
-): Promise<SuggestProviderState> {
+): Promise<SuggestServiceState> {
   if (isHoneypotTripped(formData)) {
     return {
       status: "success",
@@ -79,7 +79,7 @@ async function runSuggestProvider(
     }
   }
 
-  const inserted = await insertProviderSuggestion(parsed.name, parsed.email)
+  const inserted = await insertServiceSuggestion(parsed.name, parsed.email)
   if (!inserted.ok) {
     return {
       status: "error",
@@ -106,15 +106,15 @@ async function runSuggestProvider(
   }
 }
 
-export async function suggestProvider(
-  _prev: SuggestProviderState,
+export async function suggestService(
+  _prev: SuggestServiceState,
   formData: FormData
-): Promise<SuggestProviderState> {
+): Promise<SuggestServiceState> {
   try {
-    return await runSuggestProvider(formData)
+    return await runSuggestService(formData)
   } catch (err) {
     unstable_rethrow(err)
-    console.error("[statussy] provider suggestion action failed", err)
+    console.error("[statussy] service suggestion action failed", err)
     return {
       status: "error",
       message: SUGGEST_SAVE_FAILED_MESSAGE,

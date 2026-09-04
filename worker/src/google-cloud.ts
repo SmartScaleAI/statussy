@@ -17,8 +17,8 @@ import type {
   FetchOptions,
   MappedComponent,
   MappedIncident,
-  MappedProviderState,
-  ProviderStatus,
+  MappedServiceState,
+  ServiceStatus,
 } from "./statuspage.js"
 
 /** Vertex Gemini API — the product id Statussy tracks as Google Gemini. */
@@ -48,7 +48,7 @@ export type GoogleCloudIncident = {
   affected_products?: GoogleCloudProduct[] | null
 }
 
-const SEVERITY_RANK: Record<ProviderStatus, number> = {
+const SEVERITY_RANK: Record<ServiceStatus, number> = {
   operational: 0,
   unknown: 1,
   maintenance: 2,
@@ -57,7 +57,7 @@ const SEVERITY_RANK: Record<ProviderStatus, number> = {
   major_outage: 5,
 }
 
-function worst(a: ProviderStatus, b: ProviderStatus): ProviderStatus {
+function worst(a: ServiceStatus, b: ServiceStatus): ServiceStatus {
   return SEVERITY_RANK[b] > SEVERITY_RANK[a] ? b : a
 }
 
@@ -90,7 +90,7 @@ export function incidentAffectsGemini(incident: Pick<GoogleCloudIncident, "affec
 export function mapGoogleCloudImpact(
   statusImpact: string | null | undefined,
   severity?: string | null,
-): ProviderStatus {
+): ServiceStatus {
   switch ((statusImpact ?? "").toUpperCase()) {
     case "SERVICE_OUTAGE":
       return "major_outage"
@@ -188,13 +188,13 @@ export type MapGoogleCloudOptions = {
 
 /**
  * Map Cloud Status incidents (+ optional product catalog) into our
- * normalized provider state. Only Gemini-relevant incidents are kept.
+ * normalized service state. Only Gemini-relevant incidents are kept.
  */
 export function mapGoogleCloud(
   incidents: GoogleCloudIncident[],
   products: GoogleCloudProduct[] | null | undefined,
   options: MapGoogleCloudOptions = {},
-): MappedProviderState {
+): MappedServiceState {
   const pageUrl = options.pageUrl ?? GOOGLE_CLOUD_STATUS_ORIGIN
   const geminiIncidents = incidents
     .filter((incident) => incident.id && incidentAffectsGemini(incident))
@@ -216,7 +216,7 @@ export function mapGoogleCloud(
     }
   })
 
-  let status: ProviderStatus = "operational"
+  let status: ServiceStatus = "operational"
   for (const incident of openIncidents) {
     const mapped = mapGoogleCloudImpact(incident.status_impact, incident.severity)
     status = worst(status, mapped === "unknown" ? "degraded" : mapped)
@@ -227,7 +227,7 @@ export function mapGoogleCloud(
     ? geminiProductsFromCatalog(catalog)
     : geminiProductsFromIncidents(geminiIncidents)
 
-  const affectedStatusByProduct = new Map<string, ProviderStatus>()
+  const affectedStatusByProduct = new Map<string, ServiceStatus>()
   for (const incident of openIncidents) {
     const incidentStatus = mapGoogleCloudImpact(incident.status_impact, incident.severity)
     const signal = incidentStatus === "unknown" ? "degraded" : incidentStatus
@@ -291,7 +291,7 @@ async function fetchJson<T>(url: string, options: FetchOptions): Promise<T> {
  * payload so the caller can keep last-known rows and mark the snapshot stale.
  * products.json is optional (logged + skipped on failure).
  */
-export async function fetchGoogleCloudGeminiState(options: FetchOptions): Promise<MappedProviderState> {
+export async function fetchGoogleCloudGeminiState(options: FetchOptions): Promise<MappedServiceState> {
   const incidents = await fetchJson<unknown>(GOOGLE_CLOUD_INCIDENTS_URL, options)
   if (!Array.isArray(incidents)) {
     throw new Error(`Unexpected incidents.json payload from ${GOOGLE_CLOUD_STATUS_ORIGIN}`)

@@ -4,7 +4,7 @@
  * Live Statuspage / RSS should map onto this `Service` shape:
  * - Keep `id`, `name`, `category`, and `statusUrl` in config.
  * - Fill `status`, `incidentTitle`, and `updatedAt` from the feed.
- * Do not scrape provider status pages from the client.
+ * Do not scrape service status pages from the client.
  */
 export const SERVICE_STATUSES = [
   "operational",

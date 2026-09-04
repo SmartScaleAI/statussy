@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils"
  * Files live in `public/logos/{service.id}.svg`. Keep them small and readable
  * on dark UI — official/simple brand fills only, no animation.
  */
-export function ProviderLogo({
+export function ServiceLogo({
   id,
   name,
   className,
@@ -15,7 +15,7 @@ export function ProviderLogo({
   className?: string
 }) {
   return (
-    // Decorative: the card already shows the provider name.
+    // Decorative: the card already shows the service name.
     // eslint-disable-next-line @next/next/no-img-element
     <img
       src={`/logos/${id}.svg`}
@@ -24,7 +24,7 @@ export function ProviderLogo({
       height={24}
       className={cn("size-6 shrink-0", className)}
       aria-hidden="true"
-      data-provider={id}
+      data-service={id}
       title={name}
     />
   )

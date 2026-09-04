@@ -8,10 +8,10 @@ import { SiteFooter } from "@/components/site-footer"
 import { SiteHeader } from "@/components/site-header"
 import { services } from "@/data/services"
 import {
-  getProviderLiveDetail,
+  getServiceLiveDetail,
   isSnapshotStale,
   type LiveStatus,
-  type ProviderIncident,
+  type ServiceIncident,
 } from "@/lib/live-status"
 import { formatTimestamp, STATUS_LABEL, type BoardStatus } from "@/lib/status"
 import { cn } from "@/lib/utils"
@@ -84,7 +84,7 @@ function formatIncidentStatus(status: string) {
   return label.charAt(0).toUpperCase() + label.slice(1)
 }
 
-function IncidentItem({ incident }: { incident: ProviderIncident }) {
+function IncidentItem({ incident }: { incident: ServiceIncident }) {
   return (
     <li className="flex flex-col gap-1.5 rounded-lg border border-border bg-card px-4 py-3">
       <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
@@ -124,7 +124,7 @@ export async function generateMetadata({
   const { id } = await params
   const service = services.find((entry) => entry.id === id)
   if (!service) {
-    return { title: "Provider not found · Statussy" }
+    return { title: "Service not found · Statussy" }
   }
   return {
     title: `${service.name} status · Statussy`,
@@ -132,9 +132,9 @@ export async function generateMetadata({
   }
 }
 
-export default async function ProviderDetailPage({ params }: PageProps) {
+export default async function ServiceDetailPage({ params }: PageProps) {
   const { id } = await params
-  // Registry of known providers — same source as the board grid.
+  // Registry of known services — same source as the board grid.
   const service = services.find((entry) => entry.id === id)
   if (!service) {
     notFound()
@@ -142,7 +142,7 @@ export default async function ProviderDetailPage({ params }: PageProps) {
 
   // Status must reflect the DB at request time, never a build-time prerender.
   await connection()
-  const detail = await getProviderLiveDetail(id)
+  const detail = await getServiceLiveDetail(id)
   const snapshot = detail?.snapshot ?? null
 
   // Same fallback policy as the board: mock entry until a snapshot exists.
@@ -245,7 +245,7 @@ export default async function ProviderDetailPage({ params }: PageProps) {
             </ul>
           ) : (
             <p className="rounded-lg border border-dashed border-border px-4 py-6 text-center text-sm text-muted-foreground">
-              No components reported for this provider yet.
+              No components reported for this service yet.
             </p>
           )}
         </section>

@@ -1,11 +1,11 @@
 import type pg from "pg"
 
 /**
- * Static registry of the 10 AI providers on the Statussy board.
+ * Static registry of the 10 AI services on the Statussy board.
  * Mirrors the ids in the Next.js app's data/services.ts (and public/logos/{id}.svg).
- * fetcher_type stays 'none' until a fetcher lands for that provider.
+ * fetcher_type stays 'none' until a fetcher lands for that service.
  */
-export const PROVIDER_SEED = [
+export const SERVICE_SEED = [
   {
     id: "openai",
     name: "OpenAI",
@@ -58,10 +58,10 @@ export const PROVIDER_SEED = [
   },
 ] as const
 
-export async function seedProviders(pool: pg.Pool): Promise<void> {
-  for (const provider of PROVIDER_SEED) {
+export async function seedServices(pool: pg.Pool): Promise<void> {
+  for (const service of SERVICE_SEED) {
     await pool.query(
-      `INSERT INTO providers (id, name, category, status_url, fetcher_type)
+      `INSERT INTO services (id, name, category, status_url, fetcher_type)
        VALUES ($1, $2, 'ai', $3, $4)
        ON CONFLICT (id) DO UPDATE
          SET name = EXCLUDED.name,
@@ -69,10 +69,10 @@ export async function seedProviders(pool: pg.Pool): Promise<void> {
              fetcher_type = EXCLUDED.fetcher_type,
              updated_at = now()`,
       [
-        provider.id,
-        provider.name,
-        provider.statusUrl,
-        "fetcherType" in provider ? provider.fetcherType : "none",
+        service.id,
+        service.name,
+        service.statusUrl,
+        "fetcherType" in service ? service.fetcherType : "none",
       ],
     )
   }

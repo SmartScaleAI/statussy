@@ -2,8 +2,8 @@
 
 import { useActionState, useEffect, useRef } from "react"
 
-import { suggestProvider } from "@/app/actions/suggest-provider"
-import { initialSuggestProviderState } from "@/lib/suggest-provider"
+import { suggestService } from "@/app/actions/suggest-service"
+import { initialSuggestServiceState } from "@/lib/suggest-service"
 import { Button } from "@/components/ui/button"
 import {
   Field,
@@ -16,11 +16,11 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 
-export function SuggestProviderForm() {
+export function SuggestServiceForm() {
   const formRef = useRef<HTMLFormElement>(null)
   const [state, action, pending] = useActionState(
-    suggestProvider,
-    initialSuggestProviderState
+    suggestService,
+    initialSuggestServiceState
   )
 
   useEffect(() => {
@@ -36,7 +36,7 @@ export function SuggestProviderForm() {
       className="relative flex flex-col gap-3"
     >
       <FieldSet>
-        <FieldLegend>Suggest a Provider</FieldLegend>
+        <FieldLegend>Suggest a Service</FieldLegend>
         <FieldDescription>
           Know a service we should track? Name is required; email is
           optional.
@@ -63,7 +63,7 @@ export function SuggestProviderForm() {
               autoComplete="off"
               disabled={pending}
               aria-invalid={!!state.fieldErrors?.name || undefined}
-              placeholder="Provider name"
+              placeholder="Service name"
             />
             <FieldError>{state.fieldErrors?.name}</FieldError>
           </Field>

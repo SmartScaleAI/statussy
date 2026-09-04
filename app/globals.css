@@ -181,11 +181,11 @@
 }
 
 /* xAI mark is white-on-transparent; invert it on light card surfaces only. */
-.course-design-board img[data-provider="xai"] {
+.course-design-board img[data-service="xai"] {
   filter: invert(1);
 }
 
-.dark .course-design-board img[data-provider="xai"] {
+.dark .course-design-board img[data-service="xai"] {
   filter: none;
 }
 
@@ -350,7 +350,7 @@
   box-sizing: border-box;
 }
 
-/* Logo + title link to the provider deep dive (SMA-17). */
+/* Logo + title link to the service deep dive (SMA-17). */
 .course-design-board .card-body .card-detail-link {
   display: flex;
   flex-direction: column;

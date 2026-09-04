@@ -7,7 +7,7 @@
  * so incidents are always fetched from the dedicated endpoint.
  */
 
-export type ProviderStatus =
+export type ServiceStatus =
   | "operational"
   | "degraded"
   | "partial_outage"
@@ -39,8 +39,8 @@ export type StatuspageIncident = {
   resolved_at?: string | null
 }
 
-/** Statuspage page-level indicator -> our provider_status enum. */
-export function mapIndicator(indicator: string | undefined): ProviderStatus {
+/** Statuspage page-level indicator -> our service_status enum. */
+export function mapIndicator(indicator: string | undefined): ServiceStatus {
   switch (indicator) {
     case "none":
       return "operational"
@@ -57,8 +57,8 @@ export function mapIndicator(indicator: string | undefined): ProviderStatus {
   }
 }
 
-/** Statuspage component status -> our provider_status enum. */
-export function mapComponentStatus(status: string | undefined): ProviderStatus {
+/** Statuspage component status -> our service_status enum. */
+export function mapComponentStatus(status: string | undefined): ServiceStatus {
   switch (status) {
     case "operational":
       return "operational"
@@ -81,7 +81,7 @@ const OPEN_INCIDENT_STATUSES = new Set(["investigating", "identified", "monitori
 export type MappedComponent = {
   externalId: string
   name: string
-  status: ProviderStatus
+  status: ServiceStatus
   position: number | null
 }
 
@@ -98,8 +98,8 @@ export type MappedIncident = {
 /** Fetcher-specific parsed detail stored on each snapshot (jsonb column). */
 export type SnapshotDetail = { source: string } & Record<string, unknown>
 
-export type MappedProviderState = {
-  status: ProviderStatus
+export type MappedServiceState = {
+  status: ServiceStatus
   incidentTitle: string | null
   detail: SnapshotDetail
   components: MappedComponent[]
@@ -114,7 +114,7 @@ export function mapStatuspage(
   summary: StatuspageSummary,
   incidents: StatuspageIncident[],
   baseUrl: string,
-): MappedProviderState {
+): MappedServiceState {
   const components: MappedComponent[] = (summary.components ?? [])
     .filter((c) => c.id && c.name)
     .map((c) => ({
@@ -172,13 +172,13 @@ async function fetchJson<T>(url: string, options: FetchOptions): Promise<T> {
 }
 
 /**
- * Fetch and map live state for one Statuspage-compatible provider.
+ * Fetch and map live state for one Statuspage-compatible service.
  * Throws on network error, timeout, non-2xx, or unparseable payload.
  */
 export async function fetchStatuspageState(
   baseUrl: string,
   options: FetchOptions,
-): Promise<MappedProviderState> {
+): Promise<MappedServiceState> {
   const root = baseUrl.replace(/\/+$/, "")
   const summary = await fetchJson<StatuspageSummary>(`${root}/api/v2/summary.json`, options)
   if (!summary || typeof summary !== "object" || !summary.status) {

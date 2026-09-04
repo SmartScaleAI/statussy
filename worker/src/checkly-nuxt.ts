@@ -27,8 +27,8 @@ import type {
   FetchOptions,
   MappedComponent,
   MappedIncident,
-  MappedProviderState,
-  ProviderStatus,
+  MappedServiceState,
+  ServiceStatus,
 } from "./statuspage.js"
 
 /** Browser-like UA. Cloudflare in front of Checkly pages often 403s bot UAs. */
@@ -86,7 +86,7 @@ export type ChecklyPage = {
   activeMaintenance: ChecklyMaintenance[]
 }
 
-const SEVERITY_RANK: Record<ProviderStatus, number> = {
+const SEVERITY_RANK: Record<ServiceStatus, number> = {
   unknown: 0,
   operational: 1,
   maintenance: 2,
@@ -95,7 +95,7 @@ const SEVERITY_RANK: Record<ProviderStatus, number> = {
   major_outage: 5,
 }
 
-function worst(a: ProviderStatus, b: ProviderStatus): ProviderStatus {
+function worst(a: ServiceStatus, b: ServiceStatus): ServiceStatus {
   return SEVERITY_RANK[b] > SEVERITY_RANK[a] ? b : a
 }
 
@@ -111,8 +111,8 @@ function asNumber(value: unknown): number | null {
   return typeof value === "number" && Number.isFinite(value) ? value : null
 }
 
-/** Checkly incident severity → our provider_status enum. */
-export function mapChecklySeverity(severity: string | undefined | null): ProviderStatus {
+/** Checkly incident severity → our service_status enum. */
+export function mapChecklySeverity(severity: string | undefined | null): ServiceStatus {
   switch ((severity ?? "").toUpperCase()) {
     case "MINOR":
     case "MEDIUM":
@@ -441,8 +441,8 @@ function incidentUrl(pageUrl: string, incidentId: string): string {
 }
 
 /** Map a parsed Checkly page into our normalized snapshot shape. */
-export function mapChecklyNuxt(page: ChecklyPage, pageUrl: string): MappedProviderState {
-  const affectedStatus = new Map<string, ProviderStatus>()
+export function mapChecklyNuxt(page: ChecklyPage, pageUrl: string): MappedServiceState {
+  const affectedStatus = new Map<string, ServiceStatus>()
   for (const incident of page.incidents) {
     const status = mapChecklySeverity(incident.severity)
     for (const service of incident.services ?? []) {
@@ -484,11 +484,11 @@ export function mapChecklyNuxt(page: ChecklyPage, pageUrl: string): MappedProvid
     })
   }
 
-  const fromIncidents = page.incidents.reduce<ProviderStatus>(
+  const fromIncidents = page.incidents.reduce<ServiceStatus>(
     (acc, incident) => worst(acc, mapChecklySeverity(incident.severity)),
     "unknown",
   )
-  const fromComponents = components.reduce<ProviderStatus>(
+  const fromComponents = components.reduce<ServiceStatus>(
     (acc, component) => worst(acc, component.status),
     "unknown",
   )
@@ -529,7 +529,7 @@ export function mapChecklyNuxt(page: ChecklyPage, pageUrl: string): MappedProvid
 export async function fetchChecklyNuxtState(
   pageUrl: string,
   options: ChecklyFetchOptions,
-): Promise<MappedProviderState> {
+): Promise<MappedServiceState> {
   const root = pageUrl.replace(/\/+$/, "")
   const fetchImpl = options.fetchImpl ?? fetch
   const res = await fetchImpl(root + "/", {

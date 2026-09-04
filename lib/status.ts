@@ -104,8 +104,8 @@ export function formatCardUpdatedAt(iso: string) {
 }
 
 /**
- * Board payload: latest Postgres snapshot per provider (SMA-15/16 worker)
- * merged over the mock registry. Providers without a snapshot keep their
+ * Board payload: latest Postgres snapshot per service (SMA-15/16 worker)
+ * merged over the mock registry. Services without a snapshot keep their
  * prior mock entry — see the fallback policy in `lib/live-status.ts`.
  */
 export async function getStatusBoard() {
