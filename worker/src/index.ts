@@ -3,14 +3,17 @@
  *
  * On boot: applies migrations, seeds the static provider registry, then ticks
  * on a fixed interval (REFRESH_INTERVAL_SECONDS, default 300 = 5 minutes).
- * The tick is a no-op heartbeat for now — provider fetchers plug into
- * runTick() in later tickets. A tiny HTTP server exposes /healthz.
+ * Each tick fetches live status for providers with a fetcher (currently
+ * OpenAI via the Statuspage-compatible API, SMA-16) and writes snapshots,
+ * components, and incidents to Postgres. A tiny HTTP server exposes /healthz.
  */
 import { createServer } from "node:http"
 import { loadConfig } from "./config.js"
 import { createPool } from "./db.js"
 import { runMigrations } from "./migrate.js"
 import { seedProviders } from "./seed.js"
+import { fetchStatuspageState } from "./statuspage.js"
+import { markProviderStale, persistProviderState } from "./store.js"
 
 const config = loadConfig()
 const pool = createPool(config.databaseUrl)
@@ -35,16 +38,40 @@ console.log(
 await seedProviders(pool)
 console.log("[worker] provider registry seeded")
 
+// Providers fetched each tick. Other providers stay fetcher_type='none'
+// in the registry until their fetchers land (later tickets).
+const STATUSPAGE_PROVIDERS = [{ id: "openai", baseUrl: "https://status.openai.com" }] as const
+
+async function fetchProvider(provider: { id: string; baseUrl: string }): Promise<boolean> {
+  try {
+    const fetched = await fetchStatuspageState(provider.baseUrl, {
+      timeoutMs: config.fetchTimeoutMs,
+      userAgent: config.fetchUserAgent,
+    })
+    await persistProviderState(pool, provider.id, fetched)
+    console.log(
+      `[fetch] ${provider.id} ok status=${fetched.status} components=${fetched.components.length} incidents=${fetched.incidents.length}`,
+    )
+    return true
+  } catch (err) {
+    console.error(`[fetch] ${provider.id} failed: ${(err as Error).message}`)
+    // Keep last-known rows; just flag the latest snapshot as stale.
+    await markProviderStale(pool, provider.id).catch((staleErr: Error) => {
+      console.error(`[fetch] ${provider.id} could not mark stale: ${staleErr.message}`)
+    })
+    return false
+  }
+}
+
 async function runTick(): Promise<void> {
   const tickNumber = ++state.tickCount
   try {
-    // No-op job: prove DB connectivity and count registered providers.
-    // Provider fetchers (later tickets) replace this body.
-    const { rows } = await pool.query<{ count: string }>("SELECT count(*) FROM providers")
+    const results = await Promise.all(STATUSPAGE_PROVIDERS.map(fetchProvider))
+    const okCount = results.filter(Boolean).length
     state.lastTickAt = new Date()
-    state.lastTickOk = true
+    state.lastTickOk = okCount === results.length
     console.log(
-      `[tick] #${tickNumber} ok providers=${rows[0].count} at=${state.lastTickAt.toISOString()}`,
+      `[tick] #${tickNumber} done ok=${okCount}/${results.length} at=${state.lastTickAt.toISOString()}`,
     )
   } catch (err) {
     state.lastTickAt = new Date()

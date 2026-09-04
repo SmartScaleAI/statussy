@@ -3,10 +3,15 @@ import type pg from "pg"
 /**
  * Static registry of the 10 AI providers on the Statussy board.
  * Mirrors the ids in the Next.js app's data/services.ts (and public/logos/{id}.svg).
- * fetcher_type stays 'none' until fetchers land in later tickets.
+ * fetcher_type stays 'none' until a fetcher lands for that provider.
  */
 export const PROVIDER_SEED = [
-  { id: "openai", name: "OpenAI", statusUrl: "https://status.openai.com/" },
+  {
+    id: "openai",
+    name: "OpenAI",
+    statusUrl: "https://status.openai.com/",
+    fetcherType: "statuspage",
+  },
   { id: "anthropic", name: "Anthropic", statusUrl: "https://status.claude.com/" },
   { id: "google-gemini", name: "Google Gemini", statusUrl: "https://aistudio.google.com/status" },
   { id: "xai", name: "xAI", statusUrl: "https://status.x.ai/" },
@@ -22,12 +27,18 @@ export async function seedProviders(pool: pg.Pool): Promise<void> {
   for (const provider of PROVIDER_SEED) {
     await pool.query(
       `INSERT INTO providers (id, name, category, status_url, fetcher_type)
-       VALUES ($1, $2, 'ai', $3, 'none')
+       VALUES ($1, $2, 'ai', $3, $4)
        ON CONFLICT (id) DO UPDATE
          SET name = EXCLUDED.name,
              status_url = EXCLUDED.status_url,
+             fetcher_type = EXCLUDED.fetcher_type,
              updated_at = now()`,
-      [provider.id, provider.name, provider.statusUrl],
+      [
+        provider.id,
+        provider.name,
+        provider.statusUrl,
+        "fetcherType" in provider ? provider.fetcherType : "none",
+      ],
     )
   }
 }
