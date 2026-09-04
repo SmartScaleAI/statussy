@@ -2,21 +2,19 @@
 
 One static SVG per v0 provider. Filename = `Service.id` from `data/services.ts`.
 
-Marks are simplified official silhouettes (same paths as SMA-8) with brand fills chosen for a dark board. Paths are original traces, not copied from a CDN.
+Marks keep the SMA-8 paths and viewBoxes (same size/alignment). Fills use documented brand colors so they stay readable on the dark board. No animation, no CDN.
 
 | File                | Provider      | Fill                         | Source |
 | ------------------- | ------------- | ---------------------------- | ------ |
-| `openai.svg`        | OpenAI        | `#10A37F`                    | ChatGPT / OpenAI product green ([OpenAI brand](https://openai.com), commonly documented as ChatGPT green) |
-| `anthropic.svg`     | Anthropic     | `#D4A27F`                    | Claude warm sand from [Anthropic](https://www.anthropic.com) product UI |
-| `google-gemini.svg` | Google Gemini | `#4285F4` → `#9B72CB` → `#D96570` | Official Gemini sparkle gradient ([Google Gemini](https://gemini.google.com)) |
-| `xai.svg`           | xAI           | `#FFFFFF`                    | Official mark is monochrome; white on dark per [x.ai](https://x.ai) |
-| `mistral.svg`       | Mistral       | `#FA520F`                    | [Mistral](https://mistral.ai) brand orange (Simple Icons: `mistralai`) |
-| `groq.svg`          | Groq          | `#F55036`                    | [Groq](https://groq.com) brand orange (Simple Icons: `groq`) |
-| `perplexity.svg`    | Perplexity    | `#1FB8CD`                    | [Perplexity](https://www.perplexity.ai) teal (Simple Icons: `perplexity`) |
-| `deepseek.svg`      | DeepSeek      | `#4D6BFE`                    | [DeepSeek](https://www.deepseek.com) brand blue (Simple Icons: `deepseek`) |
-| `cohere.svg`        | Cohere        | `#D3FFCE`                    | [Cohere](https://cohere.com) mint (Simple Icons: `cohere`) |
-| `openrouter.svg`    | OpenRouter    | `#6566F1`                    | [OpenRouter](https://openrouter.ai) indigo (Simple Icons: `openrouter`) |
+| `openai.svg`        | OpenAI        | `#10A37F`                    | ChatGPT / OpenAI accent green ([openai.com/brand](https://openai.com/brand/)) — official lockup is black/white; green is the chromatic brand color that reads on dark |
+| `anthropic.svg`     | Anthropic     | `#D97757`                    | Claude Clay token from Anthropic’s public design system ([anthropic.com](https://www.anthropic.com)) |
+| `google-gemini.svg` | Google Gemini | `#4285F4 → #9B72CB → #D96570` | Official Gemini sparkle gradient ([design.google/library/gemini-ai-visual-design](https://design.google/library/gemini-ai-visual-design)); same path, static fill only |
+| `xai.svg`           | xAI           | `#FFFFFF`                    | Official geometric x/A/I mark from [x.ai](https://x.ai) (Wikimedia / brand path); white on dark, no chromatic primary |
+| `mistral.svg`       | Mistral       | `#FA520F`                    | [Simple Icons](https://simpleicons.org) `Mistral AI` hex, sourced from [chat.mistral.ai](https://chat.mistral.ai) |
+| `groq.svg`          | Groq          | `#F55036`                    | Groq primary orange in public brand guidelines |
+| `perplexity.svg`    | Perplexity    | `#1FB8CD`                    | [Simple Icons](https://simpleicons.org) `Perplexity` hex, sourced from [perplexity.ai](https://www.perplexity.ai) |
+| `deepseek.svg`      | DeepSeek      | `#4D6BFE`                    | Official whale-mark blue (commonly published as DeepSeek Blue; Simple Icons lists nearby `#5786FE` from [deepseek.com](https://www.deepseek.com)) |
+| `cohere.svg`        | Cohere        | `#FF7759`                    | Cohere Bittersweet accent from the Pentagram brand system — primary charcoal `#212121` fails on dark UI |
+| `openrouter.svg`    | OpenRouter    | `#94A3B8`                    | [Simple Icons](https://simpleicons.org) `OpenRouter` hex, verified from [openrouter.ai](https://openrouter.ai) favicon |
 
-Hex values for Groq, Perplexity, DeepSeek, Cohere, OpenRouter, and Mistral match [Simple Icons](https://simpleicons.org/) brand colors. Gemini uses Google’s published sparkle gradient instead of a single swatch. OpenAI and Anthropic use product brand tints that stay readable on dark UI (pure black official marks would not). xAI has no chromatic brand color; the official white mark is kept.
-
-Rendered by `components/provider-logo.tsx` at 24×24 (`size-6`) on each provider card.
+Rendered centered above the provider name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.
