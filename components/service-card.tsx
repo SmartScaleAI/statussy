@@ -1,8 +1,8 @@
 import CourseCard from "@/components/ui/course-design-cards"
 import {
-  formatCardDate,
   STATUS_HEALTH,
   STATUS_LABEL,
+  STATUS_SHORT,
   type Service,
   type ServiceStatus,
 } from "@/lib/status"
@@ -25,7 +25,6 @@ export function ServiceCard({ service }: { service: Service }) {
         data={{
           id: service.id,
           colorClass: STATUS_COLOR[service.status],
-          date: formatCardDate(service.updatedAt),
           title: service.name,
           description: service.incidentTitle ?? label,
           progressPercent: `${STATUS_HEALTH[service.status]}%`,
@@ -34,6 +33,7 @@ export function ServiceCard({ service }: { service: Service }) {
           imgAlt1: "",
           countdownText: "Official status",
           countdownHref: service.statusUrl,
+          statusLabel: STATUS_SHORT[service.status],
         }}
       />
     </li>

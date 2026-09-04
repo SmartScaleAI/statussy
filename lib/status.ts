@@ -19,6 +19,15 @@ export const STATUS_LABEL: Record<Service["status"], string> = {
   maintenance: "Maintenance",
 }
 
+/** Short card-header labels (dot + text). */
+export const STATUS_SHORT: Record<Service["status"], string> = {
+  operational: "Live",
+  degraded: "Degraded",
+  partial_outage: "Partial Outage",
+  major_outage: "Major Outage",
+  maintenance: "Maintenance",
+}
+
 export function isOperational(status: Service["status"]) {
   return status === "operational"
 }
@@ -50,16 +59,6 @@ export function formatTimestamp(iso: string) {
     minute: "2-digit",
     timeZone: "UTC",
     timeZoneName: "short",
-  }).format(new Date(iso))
-}
-
-/** Compact card header date from a real `updatedAt` — not a fake countdown. */
-export function formatCardDate(iso: string) {
-  return new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-    timeZone: "UTC",
   }).format(new Date(iso))
 }
 

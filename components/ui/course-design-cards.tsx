@@ -13,7 +13,7 @@ import React from "react"
 export interface CardData {
   id: number | string
   colorClass: string
-  date: string
+  date?: string
   title: string
   description: string
   progressPercent: string
@@ -24,6 +24,7 @@ export interface CardData {
   imgAlt2?: string
   countdownText: string
   countdownHref?: string
+  statusLabel?: string
 }
 
 interface CardProps {
@@ -60,12 +61,16 @@ const Card: React.FC<CardProps> = ({ data }) => {
     imgAlt2,
     countdownText,
     countdownHref,
+    statusLabel,
   } = data
 
   return (
     <div className={`card ${colorClass}`}>
       <div className="card-header">
-        <div className="date">{date}</div>
+        <div className="status-live">
+          <span className="status-dot" aria-hidden="true" />
+          {statusLabel ?? date}
+        </div>
         <EllipsisIcon />
       </div>
       <div className="card-body">

@@ -203,8 +203,48 @@
   right: 0;
 }
 
-.course-design-board .card-header .date {
+.course-design-board .card-header .status-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
   color: var(--color-gray-light);
+}
+
+.course-design-board .card-header .status-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--clr-green);
+  box-shadow: 0 0 0.55rem 0.12rem
+    color-mix(in srgb, var(--clr-green) 80%, transparent);
+}
+
+.course-design-board .card.green .status-dot {
+  background: var(--clr-green);
+  box-shadow: 0 0 0.55rem 0.12rem
+    color-mix(in srgb, var(--clr-green) 80%, transparent);
+}
+
+.course-design-board .card.orange .status-dot {
+  background: var(--clr-orange);
+  box-shadow: 0 0 0.55rem 0.12rem
+    color-mix(in srgb, var(--clr-orange) 80%, transparent);
+}
+
+.course-design-board .card.blue .status-dot {
+  background: var(--clr-blue);
+  box-shadow: 0 0 0.55rem 0.12rem
+    color-mix(in srgb, var(--clr-blue) 80%, transparent);
+}
+
+.course-design-board .card.red .status-dot {
+  background: var(--clr-red);
+  box-shadow: 0 0 0.55rem 0.12rem
+    color-mix(in srgb, var(--clr-red) 80%, transparent);
 }
 
 .course-design-board .card-header svg {
