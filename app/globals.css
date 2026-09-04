@@ -210,7 +210,33 @@
   font-size: 0.875rem;
   font-weight: 600;
   letter-spacing: 0.01em;
-  color: var(--color-gray-light);
+  color: var(--clr-green);
+  text-shadow: 0 0 0.35rem
+    color-mix(in srgb, var(--clr-green) 35%, transparent);
+}
+
+.course-design-board .card.green .status-live {
+  color: var(--clr-green);
+  text-shadow: 0 0 0.35rem
+    color-mix(in srgb, var(--clr-green) 35%, transparent);
+}
+
+.course-design-board .card.orange .status-live {
+  color: var(--clr-orange);
+  text-shadow: 0 0 0.35rem
+    color-mix(in srgb, var(--clr-orange) 35%, transparent);
+}
+
+.course-design-board .card.blue .status-live {
+  color: var(--clr-blue);
+  text-shadow: 0 0 0.35rem
+    color-mix(in srgb, var(--clr-blue) 35%, transparent);
+}
+
+.course-design-board .card.red .status-live {
+  color: var(--clr-red);
+  text-shadow: 0 0 0.35rem
+    color-mix(in srgb, var(--clr-red) 35%, transparent);
 }
 
 .course-design-board .card-header .status-dot {
