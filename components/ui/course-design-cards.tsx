@@ -3,9 +3,9 @@
  * https://21st.dev/@kristen17/components/course-design-cards
  * Source file: https://cdn.21st.dev/larsen66/course-design-cards/code.1753891438710.tsx
  *
- * Small Statussy adaptations (SMA-9): optional official-status href, progress
- * width from `progressPercent` instead of theme-hardcoded 90/30/50/20, no
- * fake “add teammate” control. Header menu replaced with a local favorite star.
+ * Small Statussy adaptations (SMA-9 / SMA-12): optional official-status href,
+ * no fake “add teammate” control. Header menu replaced with a local favorite
+ * star. Footer is a compact text link (underline on hover/press).
  */
 "use client"
 
@@ -23,7 +23,7 @@ export interface CardData {
   colorClass: string
   date?: string
   title: string
-  description: string
+  description?: string
   history?: ServiceStatus[]
   uptimeLabel?: string
   latencyLabel?: string
@@ -135,7 +135,7 @@ const Card: React.FC<CardProps> = ({ data }) => {
           <img className="card-logo" src={imgSrc1} alt={imgAlt1 || ""} />
         ) : null}
         <h3>{title}</h3>
-        <p>{description}</p>
+        {description ? <p>{description}</p> : null}
         {history && history.length > 0 ? (
           <div
             className="status-history"

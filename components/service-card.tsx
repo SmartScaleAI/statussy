@@ -4,7 +4,6 @@ import {
   formatMockLatency,
   formatCardUpdatedAt,
   getStatusHistory,
-  STATUS_LABEL,
   STATUS_SHORT,
   type Service,
   type ServiceStatus,
@@ -20,7 +19,6 @@ const STATUS_COLOR: Record<ServiceStatus, string> = {
 }
 
 export function ServiceCard({ service }: { service: Service }) {
-  const label = STATUS_LABEL[service.status]
   const history = getStatusHistory(service)
 
   return (
@@ -30,7 +28,6 @@ export function ServiceCard({ service }: { service: Service }) {
           id: service.id,
           colorClass: STATUS_COLOR[service.status],
           title: service.name,
-          description: service.incidentTitle ?? label,
           history,
           uptimeLabel: formatHistoryUptime(history),
           latencyLabel: formatMockLatency(service),
