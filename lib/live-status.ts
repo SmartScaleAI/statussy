@@ -129,8 +129,138 @@ export async function getLiveSnapshots(): Promise<Map<string, LiveSnapshot>> {
 }
 
 /** Stale when the worker flagged it or the snapshot is past the threshold. */
-export function isSnapshotStale(snapshot: LiveSnapshot, now = Date.now()) {
+export function isSnapshotStale(
+  snapshot: Pick<LiveSnapshot, "stale" | "fetchedAt">,
+  now = Date.now()
+) {
   return (
     snapshot.stale || now - snapshot.fetchedAt.getTime() > STALE_AFTER_MS
   )
+}
+
+export type ProviderComponent = {
+  id: number
+  name: string
+  status: LiveStatus
+}
+
+export type ProviderIncident = {
+  id: number
+  title: string
+  /** Vendor lifecycle state (investigating / identified / monitoring / ...). */
+  status: string
+  /** Vendor severity label (minor / major / critical / maintenance / ...). */
+  impact: string | null
+  url: string | null
+  startedAt: Date | null
+  updatedAt: Date
+}
+
+export type ProviderLiveDetail = {
+  /** Latest snapshot; null when the worker has not fetched this provider. */
+  snapshot: Pick<
+    LiveSnapshot,
+    "status" | "incidentTitle" | "stale" | "fetchedAt"
+  > | null
+  components: ProviderComponent[]
+  activeIncidents: ProviderIncident[]
+}
+
+type ComponentRow = {
+  id: string
+  name: string
+  status: string
+}
+
+type IncidentRow = {
+  id: string
+  title: string
+  status: string
+  impact: string | null
+  url: string | null
+  started_at: Date | null
+  updated_at: Date
+}
+
+type DetailSnapshotRow = Omit<SnapshotRow, "provider_id" | "up" | "total">
+
+/** Vendor lifecycle states that mean an incident is over even when the feed
+ *  omits `resolved_at`. */
+const CLOSED_INCIDENT_STATUSES = ["resolved", "completed", "postmortem"]
+
+/**
+ * Deep-dive read for `/providers/[id]` (SMA-17): latest snapshot, current
+ * components, and unresolved incidents for one provider. Returns null when no
+ * database is configured or the read fails, so the page can fall back to the
+ * mock registry entry — same policy as the board.
+ */
+export async function getProviderLiveDetail(
+  providerId: string
+): Promise<ProviderLiveDetail | null> {
+  const pool = getPool()
+  if (!pool) {
+    return null
+  }
+
+  try {
+    const [snapshotResult, componentsResult, incidentsResult] =
+      await Promise.all([
+        pool.query<DetailSnapshotRow>(
+          `SELECT status::text AS status, incident_title, stale, fetched_at
+           FROM provider_snapshots
+           WHERE provider_id = $1
+           ORDER BY fetched_at DESC, id DESC
+           LIMIT 1`,
+          [providerId]
+        ),
+        pool.query<ComponentRow>(
+          `SELECT id, name, status::text AS status
+           FROM components
+           WHERE provider_id = $1
+           ORDER BY position NULLS LAST, name, id`,
+          [providerId]
+        ),
+        pool.query<IncidentRow>(
+          `SELECT id, title, status, impact, url, started_at, updated_at
+           FROM incidents
+           WHERE provider_id = $1
+             AND resolved_at IS NULL
+             AND status != ALL($2::text[])
+           ORDER BY started_at DESC NULLS LAST, id DESC`,
+          [providerId, CLOSED_INCIDENT_STATUSES]
+        ),
+      ])
+
+    const snapshotRow = snapshotResult.rows.at(0)
+    return {
+      snapshot: snapshotRow
+        ? {
+            status: toLiveStatus(snapshotRow.status),
+            incidentTitle: snapshotRow.incident_title,
+            stale: snapshotRow.stale,
+            fetchedAt: snapshotRow.fetched_at,
+          }
+        : null,
+      components: componentsResult.rows.map((row) => ({
+        id: Number(row.id),
+        name: row.name,
+        status: toLiveStatus(row.status),
+      })),
+      activeIncidents: incidentsResult.rows.map((row) => ({
+        id: Number(row.id),
+        title: row.title,
+        status: row.status,
+        impact: row.impact,
+        url: row.url,
+        startedAt: row.started_at,
+        updatedAt: row.updated_at,
+      })),
+    }
+  } catch (err) {
+    console.error(
+      `[statussy] provider detail read failed for ${providerId}, using mock data`,
+      err
+    )
+    return null
+  }
 }
