@@ -161,8 +161,12 @@ const Card: React.FC<CardProps> = ({ data }) => {
       </div>
       <div className="card-footer">
         {updatedLabel ? (
-          <time className="updated-at" dateTime={updatedAt}>
-            Updated {updatedLabel}
+          <time
+            className="updated-at"
+            dateTime={updatedAt}
+            title={updatedAt}
+          >
+            {updatedLabel}
           </time>
         ) : (
           <span />

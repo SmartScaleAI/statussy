@@ -2,7 +2,7 @@ import CourseCard from "@/components/ui/course-design-cards"
 import {
   formatHistoryUptime,
   formatMockLatency,
-  formatTimestamp,
+  formatCardUpdatedAt,
   getStatusHistory,
   STATUS_LABEL,
   STATUS_SHORT,
@@ -40,7 +40,7 @@ export function ServiceCard({ service }: { service: Service }) {
           countdownHref: service.statusUrl,
           statusLabel: STATUS_SHORT[service.status],
           updatedAt: service.updatedAt,
-          updatedLabel: formatTimestamp(service.updatedAt),
+          updatedLabel: formatCardUpdatedAt(service.updatedAt),
         }}
       />
     </li>

@@ -166,7 +166,7 @@
   place-content: center;
   place-items: center;
   width: 100%;
-  min-height: 20rem;
+  min-height: 22rem;
   display: grid;
   position: relative;
   box-shadow: 0.063em 0.75em 1.563em #000000c7;
@@ -286,12 +286,16 @@
 
 .course-design-board .card-body {
   width: 100%;
-  padding: 0.7em 1.25em 0.5em 1.5em;
-  display: block;
+  padding: 0.15rem 1.35rem 0.2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  top: 2.65rem;
+  bottom: 3.85rem;
+  left: 0;
+  right: 0;
+  box-sizing: border-box;
 }
 
 .course-design-board .card-body .card-logo {
@@ -319,7 +323,9 @@
 }
 
 .course-design-board .card-body .status-history {
-  margin-top: 0.938rem;
+  margin-top: 0.7rem;
+  width: 100%;
+  flex-shrink: 0;
 }
 
 .course-design-board .card-body .status-sparkline-wrap {
@@ -386,7 +392,9 @@
   justify-content: space-between;
   gap: 0.5rem;
   margin-top: 0.4rem;
+  padding-bottom: 0.1rem;
   font-size: 0.7rem;
+  line-height: 1.25;
   color: var(--color-gray-light);
 }
 

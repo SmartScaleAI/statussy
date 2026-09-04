@@ -62,6 +62,17 @@ export function formatTimestamp(iso: string) {
   }).format(new Date(iso))
 }
 
+/** Compact card footer stamp — no “Updated” / timezone suffix. */
+export function formatCardUpdatedAt(iso: string) {
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    timeZone: "UTC",
+  }).format(new Date(iso))
+}
+
 /** Mock 30-day window (one tick per day) until live Statuspage history exists. */
 export const STATUS_HISTORY_DAYS = 30
 
