@@ -132,7 +132,12 @@ const Card: React.FC<CardProps> = ({ data }) => {
         {imgSrc1 ? (
           // Decorative when alt is empty — title is already on the card.
           // eslint-disable-next-line @next/next/no-img-element
-          <img className="card-logo" src={imgSrc1} alt={imgAlt1 || ""} />
+          <img
+            className="card-logo"
+            src={imgSrc1}
+            alt={imgAlt1 || ""}
+            data-provider={data.id}
+          />
         ) : null}
         <h3>{title}</h3>
         {description ? <p>{description}</p> : null}
