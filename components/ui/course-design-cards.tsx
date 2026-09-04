@@ -24,6 +24,7 @@ export interface CardData {
   description: string
   history?: ServiceStatus[]
   uptimeLabel?: string
+  latencyLabel?: string
   imgSrc1?: string
   imgAlt1?: string
   imgSrc2?: string
@@ -104,6 +105,7 @@ const Card: React.FC<CardProps> = ({ data }) => {
     description,
     history,
     uptimeLabel,
+    latencyLabel,
     imgSrc1,
     imgAlt1,
     imgSrc2,
@@ -132,9 +134,8 @@ const Card: React.FC<CardProps> = ({ data }) => {
           >
             <StatusSparkline fadeId={String(data.id)} history={history} />
             <div className="status-history-meta">
-              <span>{STATUS_HISTORY_DAYS} days ago</span>
               {uptimeLabel ? <span>{uptimeLabel}</span> : null}
-              <span>Today</span>
+              {latencyLabel ? <span>{latencyLabel}</span> : null}
             </div>
           </div>
         ) : null}

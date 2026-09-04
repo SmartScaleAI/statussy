@@ -123,7 +123,27 @@ export function formatHistoryUptime(ticks: Service["status"][]) {
   const up = ticks.filter((tick) => tick === "operational").length
   const pct = (up / ticks.length) * 100
   const digits = pct >= 99.5 ? 2 : 1
-  return `${pct.toFixed(digits)}% uptime`
+  return `${pct.toFixed(digits)}%`
+}
+
+/** Mock request latency until a live probe exists. Seeded from `service.id`. */
+export function formatMockLatency(service: Service) {
+  if (service.status === "major_outage") {
+    return "timeout"
+  }
+  if (service.status === "maintenance") {
+    return "—"
+  }
+
+  const next = rng(seedFromId(`latency:${service.id}`))
+  const ms =
+    service.status === "degraded"
+      ? 380 + Math.round(next() * 420)
+      : service.status === "partial_outage"
+        ? 900 + Math.round(next() * 700)
+        : 70 + Math.round(next() * 150)
+
+  return `${ms} ms`
 }
 
 /** Higher on the chart = healthier. SVG y still grows downward. */
