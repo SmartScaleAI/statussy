@@ -144,13 +144,13 @@
   --clr-green: #48aa4a;
   --clr-amber: #fdb203;
   --clr-red: #de4649;
-  --bg-dark: #1a1a1a; /* gray-100 */
-  --bg-footer: #0a0a0a; /* background-100 */
+  --bg-dark: #292929; /* gray-300 */
+  --bg-footer: #1f1f1f; /* gray-200 */
   --color-white: #ededed; /* gray-1000 */
   --color-gray-light: #8f8f8f; /* gray swatch */
   --color-gray-medium: #454545; /* gray-500 */
   --color-gray-dark: #2e2e2e; /* gray-400 */
-  --color-gray-very-dark: #1f1f1f; /* gray-200 */
+  --color-gray-very-dark: #1a1a1a; /* gray-100 */
 }
 
 .course-design-board a {
