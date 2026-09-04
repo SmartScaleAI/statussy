@@ -11,9 +11,9 @@ export default function HomePage() {
             <img
               src="/brand/logo.svg"
               alt=""
-              width={32}
-              height={32}
-              className="size-8"
+              width={24}
+              height={24}
+              className="size-[1em]"
             />
             Statussy
           </h1>
