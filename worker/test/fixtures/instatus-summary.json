@@ -1,0 +1,18 @@
+{
+  "page": {
+    "name": "Perplexity",
+    "url": "https://status.perplexity.com",
+    "status": "HASISSUES"
+  },
+  "activeIncidents": [
+    {
+      "id": "cm0incident0001aaaaaaaaaaa",
+      "name": "Elevated error rates on the API",
+      "started": "2026-09-04T12:00:00.000Z",
+      "status": "INVESTIGATING",
+      "impact": "PARTIALOUTAGE",
+      "url": "https://status.perplexity.com/incident/cm0incident0001aaaaaaaaaaa"
+    }
+  ],
+  "activeMaintenances": []
+}
