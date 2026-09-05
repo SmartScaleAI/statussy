@@ -3,12 +3,13 @@
  * https://21st.dev/@kristen17/components/course-design-cards
  * Source file: https://cdn.21st.dev/larsen66/course-design-cards/code.1753891438710.tsx
  *
- * Small Statussy adaptations (SMA-9 / SMA-12): optional official-status href,
- * no fake “add teammate” control. Header menu replaced with a local favorite
- * star. Footer is a compact text link (underline on hover/press).
+ * Small Statussy adaptations (SMA-9 / SMA-12): no fake “add teammate”
+ * control. Header menu replaced with a local favorite star.
  *
  * SMA-33: the whole card is the detail hit target (stretched overlay link).
- * Star + Official status sit above it and stopPropagation so they stay usable.
+ * Star sits above it and stopPropagation so it stays usable.
+ * SMA-36: shelf has no divider; “click to view” is affordance only
+ * (no outbound official-status link).
  */
 "use client"
 
@@ -38,7 +39,6 @@ export interface CardData {
   imgSrc2?: string
   imgAlt2?: string
   countdownText: string
-  countdownHref?: string
   /** Internal deep-dive route (SMA-17 / SMA-33); whole-card hit target. */
   detailHref?: string
   statusLabel?: string
@@ -81,7 +81,6 @@ const Card: React.FC<CardProps> = ({ data }) => {
     imgSrc1,
     imgAlt1,
     countdownText,
-    countdownHref,
     detailHref,
     statusLabel,
     updatedAt,
@@ -157,23 +156,10 @@ const Card: React.FC<CardProps> = ({ data }) => {
         ) : (
           <span />
         )}
-        {countdownHref ? (
-          <a
-            href={countdownHref}
-            className="btn-countdown"
-            target="_blank"
-            rel="noreferrer"
-            onClick={stopCardNavigation}
-          >
-            {countdownText}
-            <ArrowUpRightIcon aria-hidden="true" />
-          </a>
-        ) : (
-          <a href="#" className="btn-countdown" onClick={stopCardNavigation}>
-            {countdownText}
-            <ArrowUpRightIcon aria-hidden="true" />
-          </a>
-        )}
+        <span className="btn-countdown">
+          {countdownText}
+          <ArrowUpRightIcon aria-hidden="true" />
+        </span>
       </div>
     </div>
   )

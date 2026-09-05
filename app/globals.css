@@ -208,7 +208,7 @@
   box-shadow: var(--card-shadow);
 }
 
-/* Whole-card detail hit target (SMA-33). Star + Official status sit above it. */
+/* Whole-card detail hit target (SMA-33). Star sits above it. */
 .course-design-board .card-hit-target {
   position: absolute;
   inset: 0;
@@ -451,7 +451,6 @@
 }
 
 .course-design-board .card-footer {
-  border-top: 0.063rem solid var(--color-gray-dark);
   background: var(--bg-footer);
   border-bottom-right-radius: 1rem;
   border-bottom-left-radius: 1rem;
@@ -482,8 +481,7 @@
   font-size: 0.7rem;
   line-height: 1.25;
   text-decoration: none;
-  position: relative;
-  z-index: 2;
+  pointer-events: none;
 }
 
 .course-design-board .card-footer .btn-countdown svg {
@@ -491,10 +489,8 @@
   height: 0.75rem;
 }
 
-.course-design-board .card-footer .btn-countdown:hover,
-.course-design-board .card-footer .btn-countdown:active,
-.course-design-board .card-footer .btn-countdown:focus-visible {
-  background: none;
+.course-design-board .card:not(.plain):has(.card-hit-target):hover .btn-countdown,
+.course-design-board .card:not(.plain):has(.card-hit-target:focus-visible) .btn-countdown {
   color: var(--color-white);
   text-decoration: underline;
 }
