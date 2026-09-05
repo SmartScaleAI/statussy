@@ -5,6 +5,7 @@ import { StatusBoardGrid } from "@/components/status-board-grid"
 import { parseHealthLabel } from "@/lib/board-sort"
 import { getStatusBoard } from "@/lib/status-board"
 import type { BoardStatus } from "@/lib/status"
+import { boardPaperClassName, cn } from "@/lib/utils"
 
 function toSortFields(item: {
   id: string
@@ -34,7 +35,7 @@ export async function StatusBoard() {
           ))}
         </MyServices>
         <section
-          className="flex flex-col gap-8"
+          className={cn("flex flex-col gap-8", boardPaperClassName)}
           aria-labelledby="all-services-heading"
         >
           <StatusBoardGrid

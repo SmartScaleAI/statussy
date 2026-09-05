@@ -6,6 +6,7 @@ import { connection } from "next/server"
 
 import { SiteFooter } from "@/components/site-footer"
 import { SiteHeader } from "@/components/site-header"
+import { buttonVariants } from "@/components/ui/button"
 import { services } from "@/data/services"
 import {
   getServiceLiveDetail,
@@ -14,7 +15,7 @@ import {
   type ServiceIncident,
 } from "@/lib/live-status"
 import { formatTimestamp, STATUS_LABEL, type BoardStatus } from "@/lib/status"
-import { cn } from "@/lib/utils"
+import { boardPaperClassName, cn } from "@/lib/utils"
 
 type PageProps = {
   params: Promise<{ id: string }>
@@ -167,27 +168,44 @@ export default async function ServiceDetailPage({ params }: PageProps) {
           All services
         </Link>
 
-        <section className="flex flex-col gap-4" aria-label="Overall status">
-          <div className="flex items-center gap-4">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={`/logos/${service.id}.svg`}
-              alt=""
-              className={cn(
-                "size-10 shrink-0 object-contain",
-                // xAI mark is white-on-transparent; invert on light surfaces.
-                service.id === "xai" && "invert dark:invert-0"
-              )}
-            />
-            <div className="flex flex-col gap-1">
-              <h1 className="font-heading text-2xl font-semibold tracking-tight text-foreground">
-                {service.name}
-              </h1>
-              <div className="flex flex-wrap items-center gap-2">
-                <StatusChip status={status} />
-                {stale ? <StaleBadge /> : null}
+        <section
+          className={cn("flex flex-col gap-4", boardPaperClassName)}
+          aria-label="Overall status"
+        >
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex min-w-0 items-center gap-4">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={`/logos/${service.id}.svg`}
+                alt=""
+                className={cn(
+                  "size-10 shrink-0 object-contain",
+                  // xAI mark is white-on-transparent; invert on light surfaces.
+                  service.id === "xai" && "invert dark:invert-0"
+                )}
+              />
+              <div className="flex flex-col gap-1">
+                <h1 className="font-heading text-2xl font-semibold tracking-tight text-foreground">
+                  {service.name}
+                </h1>
+                <div className="flex flex-wrap items-center gap-2">
+                  <StatusChip status={status} />
+                  {stale ? <StaleBadge /> : null}
+                </div>
               </div>
             </div>
+            <a
+              href={service.statusUrl}
+              target="_blank"
+              rel="noreferrer"
+              className={buttonVariants({
+                variant: "default",
+                size: "default",
+              })}
+            >
+              Official status
+              <ArrowUpRightIcon data-icon="inline-end" aria-hidden="true" />
+            </a>
           </div>
           {incidentTitle ? (
             <p className="text-sm text-muted-foreground">{incidentTitle}</p>
@@ -195,20 +213,13 @@ export default async function ServiceDetailPage({ params }: PageProps) {
           <p className="text-xs text-muted-foreground">
             Updated{" "}
             <time dateTime={updatedAtIso}>{formatTimestamp(updatedAtIso)}</time>
-            {" · "}
-            <a
-              href={service.statusUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-0.5 text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
-            >
-              Official status page
-              <ArrowUpRightIcon aria-hidden="true" className="size-3" />
-            </a>
           </p>
         </section>
 
-        <section className="flex flex-col gap-3" aria-label="Active incidents">
+        <section
+          className={cn("flex flex-col gap-3", boardPaperClassName)}
+          aria-label="Active incidents"
+        >
           <h2 className="font-heading text-lg font-semibold tracking-tight text-foreground">
             Active incidents
           </h2>
@@ -219,13 +230,16 @@ export default async function ServiceDetailPage({ params }: PageProps) {
               ))}
             </ul>
           ) : (
-            <p className="rounded-lg border border-dashed border-border px-4 py-6 text-center text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               No active incidents.
             </p>
           )}
         </section>
 
-        <section className="flex flex-col gap-3" aria-label="Components">
+        <section
+          className={cn("flex flex-col gap-3", boardPaperClassName)}
+          aria-label="Components"
+        >
           <h2 className="font-heading text-lg font-semibold tracking-tight text-foreground">
             Components
           </h2>
@@ -244,7 +258,7 @@ export default async function ServiceDetailPage({ params }: PageProps) {
               ))}
             </ul>
           ) : (
-            <p className="rounded-lg border border-dashed border-border px-4 py-6 text-center text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               No components reported for this service yet.
             </p>
           )}
