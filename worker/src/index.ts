@@ -12,8 +12,16 @@
  * Wave B Statuspage services per SMA-41 — Fireworks, Cerebras, Replicate,
  * Runway, Ideogram, Stability; Together AI, Hugging Face, and Luma via Better
  * Stack `index.json`; Wave C Statuspage — ElevenLabs, MiniMax, Voyage, Black
- * Forest Labs, Cartesia, Kimi; fal via Instatus) and writes snapshots,
- * components, and incidents to Postgres.
+ * Forest Labs, Cartesia, Kimi; fal via Instatus; Cloud Wave A — Vercel,
+ * Cloudflare, Render, Fly.io, Netlify, DigitalOcean via Statuspage, Railway
+ * via api.railwaystatus.com, Google Cloud via incidents.json; Cloud Wave B —
+ * Linode and bunny.net via Statuspage, Heroku via Status API v4, Deno Deploy
+ * and Koyeb via Instatus, Modal via Better Stack, Firebase via
+ * status.firebase.google.com incidents.json; Cloud Wave C — Akamai,
+ * Scaleway, and Lambda via Statuspage, Northflank via Instatus, Vultr via
+ * status.json, Oracle Cloud via ocistatus status.json, Hetzner via the
+ * official page's __NEXT_DATA__. AWS, Azure, and Fastly are seeded without
+ * a fetcher) and writes snapshots, components, and incidents to Postgres.
  * A tiny HTTP server exposes /healthz.
  */
 import { createServer } from "node:http"
@@ -25,7 +33,16 @@ import { runMigrations } from "./migrate.js"
 import { fetchRssState } from "./rss.js"
 import { seedServices } from "./seed.js"
 import { fetchOnlineOrNotState } from "./onlineornot.js"
-import { fetchGoogleCloudGeminiState } from "./google-cloud.js"
+import {
+  fetchFirebaseState,
+  fetchGoogleCloudGeminiState,
+  fetchGoogleCloudPlatformState,
+} from "./google-cloud.js"
+import { fetchHerokuState } from "./heroku.js"
+import { fetchHetznerState } from "./hetzner.js"
+import { fetchOracleCloudState } from "./oracle-cloud.js"
+import { fetchRailwayState } from "./railway.js"
+import { fetchVultrState } from "./vultr.js"
 import { fetchBetterstackState } from "./betterstack.js"
 import { fetchStatuspageState } from "./statuspage.js"
 import {
@@ -69,7 +86,8 @@ type ServiceJob = {
   persistOptions?: PersistOptions
 }
 
-// All 26 board services are fetched each tick (Wave A + Wave B + Wave C).
+// Board services with a fetcher (26 AI + Cloud Waves A–C; AWS, Azure, and
+// Fastly are none).
 const statuspageJob = (id: string, baseUrl: string): ServiceJob => ({
   id,
   fetch: () => fetchStatuspageState(baseUrl, fetchOptions()),
@@ -161,6 +179,78 @@ const SERVICE_JOBS: ServiceJob[] = [
     // Luma is a Better Stack SPA, same index.json as Together / Hugging Face.
     id: "luma",
     fetch: () => fetchBetterstackState("https://status.lumalabs.ai", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  // Cloud Wave A — Statuspage-compatible hosts. Cloudflare's page-level
+  // indicator is the official rollup (a single POP in maintenance must not
+  // paint the card; mapStatuspage already uses status.indicator).
+  statuspageJob("vercel", "https://www.vercel-status.com"),
+  statuspageJob("cloudflare", "https://www.cloudflarestatus.com"),
+  statuspageJob("render", "https://status.render.com"),
+  statuspageJob("fly", "https://status.flyio.net"),
+  statuspageJob("netlify", "https://www.netlifystatus.com"),
+  statuspageJob("digitalocean", "https://status.digitalocean.com"),
+  {
+    id: "railway",
+    fetch: () => fetchRailwayState(fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  {
+    // Platform-wide GCP card. Informational notices stay off the rollup.
+    id: "google-cloud",
+    fetch: () => fetchGoogleCloudPlatformState(fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  // Cloud Wave B. Fastly has no public JSON and blocks the worker UA.
+  statuspageJob("linode", "https://status.linode.com"),
+  statuspageJob("bunny", "https://status.bunny.net"),
+  {
+    id: "heroku",
+    fetch: () => fetchHerokuState(fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  {
+    id: "deno",
+    fetch: () => fetchInstatusState("https://denostatus.com", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  {
+    id: "koyeb",
+    fetch: () => fetchInstatusState("https://status.koyeb.com", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  {
+    id: "modal",
+    fetch: () => fetchBetterstackState("https://status.modal.com", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  {
+    id: "firebase",
+    fetch: () => fetchFirebaseState(fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  // Cloud Wave C — Statuspage-compatible hosts plus custom official JSON.
+  statuspageJob("akamai", "https://www.akamaistatus.com"),
+  statuspageJob("scaleway", "https://status.scaleway.com"),
+  statuspageJob("lambda", "https://status.lambda.ai"),
+  {
+    id: "northflank",
+    fetch: () => fetchInstatusState("https://status.northflank.com", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  {
+    id: "vultr",
+    fetch: () => fetchVultrState(fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  {
+    // status.json only (no summary/incidents API; skip the 1.7MB component dump).
+    id: "oracle-cloud",
+    fetch: () => fetchOracleCloudState(fetchOptions()),
+  },
+  {
+    id: "hetzner",
+    fetch: () => fetchHetznerState(fetchOptions()),
     persistOptions: { resolveMissingIncidents: true },
   },
 ]

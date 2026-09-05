@@ -8,6 +8,7 @@ import {
   isGeminiProduct,
   isOpenIncident,
   mapGoogleCloud,
+  mapGoogleCloudPlatform,
   mapGoogleCloudImpact,
   mapGoogleCloudImpactLabel,
   parseProductsPayload,
@@ -146,6 +147,39 @@ test("mapGoogleCloud synthesizes Gemini components when the catalog is missing",
     state.components.find((c) => c.externalId === VERTEX_GEMINI_API_PRODUCT_ID)?.status,
     "partial_outage",
   )
+})
+
+test("mapGoogleCloudPlatform includes Compute Engine and ignores informational rollup", async () => {
+  const { incidents, products } = await loadFixtures()
+  const state = mapGoogleCloudPlatform(incidents, products)
+
+  assert.equal(state.status, "major_outage")
+  assert.equal(state.incidentTitle, "Compute Engine zone outage in us-central1-b.")
+  assert.equal(state.detail.openIncidentCount, 3)
+  assert.ok(state.incidents.some((incident) => incident.externalId === "open-compute"))
+  assert.ok(state.incidents.some((incident) => incident.externalId === "open-gemini-code-assist"))
+
+  const byName = new Map(state.components.map((component) => [component.name, component]))
+  assert.equal(byName.get("Google Compute Engine")?.status, "major_outage")
+  assert.equal(byName.get("Gemini on Agent Platform")?.status, "partial_outage")
+  assert.equal(byName.has("Gemini Code Assist"), false)
+  assert.equal(byName.has("Gemini Enterprise"), false)
+})
+
+test("mapGoogleCloudPlatform stays operational when only informational incidents are open", () => {
+  const incidents: GoogleCloudIncident[] = [
+    {
+      id: "info-only",
+      external_desc: "Docs update",
+      status_impact: "SERVICE_INFORMATION",
+      affected_products: [{ id: "L3ggmi3Jy4xJmgodFA9K", title: "Google Compute Engine" }],
+    },
+  ]
+  const state = mapGoogleCloudPlatform(incidents, [])
+  assert.equal(state.status, "operational")
+  assert.equal(state.incidentTitle, null)
+  assert.equal(state.incidents.length, 1)
+  assert.equal(state.components.length, 0)
 })
 
 test("mapGoogleCloud floors unknown open impact at degraded, not operational", () => {
