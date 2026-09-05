@@ -42,7 +42,10 @@
  * via Statuspage, LastPass via lastpass.statuspage.io (the public host
  * challenges /api/v2); Payments Wave A — Stripe via www.stripestatus.com
  * (the public host has no /api/v2), Square, Paddle, Chargebee, Recurly,
- * Klarna, Plaid, and GoCardless via Statuspage. AWS, Azure, Fastly, Replit,
+ * Klarna, Plaid, and GoCardless via Statuspage; Payments Wave B — Mollie
+ * via Instatus, Polar via Better Stack `index.json`, RevenueCat, Affirm,
+ * FastSpring, Whop, Wise, Authorize.net, Flutterwave, and Airwallex via
+ * Statuspage. AWS, Azure, Fastly, Replit,
  * Redis, Algolia, DataStax, Okta, PayPal, and Adyen are seeded without a
  * fetcher) and writes snapshots, components,
  * and incidents to Postgres.
@@ -449,6 +452,25 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("klarna", "https://status.klarna.com"),
   statuspageJob("plaid", "https://status.plaid.com"),
   statuspageJob("gocardless", "https://www.gocardless-status.com"),
+  // Payments Wave B. Mollie is Instatus; Polar is a Better Stack SPA.
+  {
+    id: "mollie",
+    fetch: () => fetchInstatusState("https://status.mollie.com", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  {
+    id: "polar",
+    fetch: () => fetchBetterstackState("https://status.polar.sh", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  statuspageJob("revenuecat", "https://status.revenuecat.com"),
+  statuspageJob("affirm", "https://status.affirm.com"),
+  statuspageJob("fastspring", "https://status.fastspring.com"),
+  statuspageJob("whop", "https://status.whop.com"),
+  statuspageJob("wise", "https://status.wise.com"),
+  statuspageJob("authorize-net", "https://status.authorize.net"),
+  statuspageJob("flutterwave", "https://status.flutterwave.com"),
+  statuspageJob("airwallex", "https://status.airwallex.com"),
 ]
 
 async function fetchService(service: ServiceJob): Promise<boolean> {

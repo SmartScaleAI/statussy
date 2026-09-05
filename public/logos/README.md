@@ -157,5 +157,15 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `klarna.svg` | Klarna | `#FFB3C7` | Simple Icons `klarna` |
 | `plaid.svg` | Plaid | `#FFFFFF` | Official lattice from [plaid.com](https://plaid.com/) `safari-pinned-tab.svg`; white so official black reads on dark |
 | `gocardless.svg` | GoCardless | Official yellow + `#1C1B18` | Official mark from the [gocardless.com](https://gocardless.com/) header lockup |
+| `mollie.svg` | Mollie | `#FFFFFF` | Official wordmark from [status.mollie.com](https://status.mollie.com/) (same path as [mollie/magento2](https://github.com/mollie/magento2/blob/master/mollie-logo.svg)); white so official black reads on dark |
+| `polar.svg` | Polar | `#FFFFFF` | Official mark from [polarsource/polar](https://github.com/polarsource/polar/blob/main/server/polar/invoice/invoice-logo.svg); white so official black reads on dark |
+| `revenuecat.svg` | RevenueCat | `#F2545B` / `#FDFEFF` | Official RC tile from [revenuecat.com/favicon/favicon.svg](https://www.revenuecat.com/favicon/favicon.svg) |
+| `affirm.svg` | Affirm | `#4A4AF4` | Official arc from [cdn-assets.affirm.com](https://cdn-assets.affirm.com/images/black_logo-white_bg.svg) (wordmark dropped) |
+| `fastspring.svg` | FastSpring | `#FFFFFF` | Official leaf from [fastspring.com safari-pinned-tab.svg](https://fastspring.com/wp-content/themes/fastspring-bamboo/images/favicons/safari-pinned-tab.svg); white so official black reads on dark |
+| `whop.svg` | Whop | `#FA4616` | Official brandmark from [brand.whop.com](https://brand.whop.com/images/logos/whop_brandmark_orange.svg) (Vermilion) |
+| `wise.svg` | Wise | `#9FE870` / `#163300` | Official mark from [Wise wise-mark.svg](https://dq8dwmysp7hk1.cloudfront.net/logos/wise-mark.svg) |
+| `authorize-net.svg` | Authorize.net | `#FFFFFF` / `#0075FF` / `#FFC300` | Official wordmark from the [authorize.net](https://www.authorize.net/content/dam/anet-redesign/anet-logo-footer.svg) footer lockup (Visa solution line dropped); white + official dots so the dark-footer lockup reads on dark |
+| `flutterwave.svg` | Flutterwave | `#009A46` / `#FF5805` / `#F5AFCB` / `#FF9B00` | Official arc mark from [flutterwave.com/images/logo/full.svg](https://flutterwave.com/images/logo/full.svg) (wordmark dropped) |
+| `airwallex.svg` | Airwallex | Official orange–red gradient | Official A from the [airwallex/airwallex-marketplace](https://github.com/airwallex/airwallex-marketplace/blob/master/plugins/airwallex-dev/assets/logo.svg) lockup (wordmark dropped) |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.
