@@ -14,8 +14,11 @@
  * Stack `index.json`; Wave C Statuspage — ElevenLabs, MiniMax, Voyage, Black
  * Forest Labs, Cartesia, Kimi; fal via Instatus; Cloud Wave A — Vercel,
  * Cloudflare, Render, Fly.io, Netlify, DigitalOcean via Statuspage, Railway
- * via api.railwaystatus.com, Google Cloud via incidents.json. AWS and Azure
- * are seeded without a fetcher) and writes snapshots, components, and
+ * via api.railwaystatus.com, Google Cloud via incidents.json; Cloud Wave B —
+ * Linode and bunny.net via Statuspage, Heroku via Status API v4, Deno Deploy
+ * and Koyeb via Instatus, Modal via Better Stack, Firebase via
+ * status.firebase.google.com incidents.json. AWS, Azure, and Fastly are
+ * seeded without a fetcher) and writes snapshots, components, and
  * incidents to Postgres.
  * A tiny HTTP server exposes /healthz.
  */
@@ -29,9 +32,11 @@ import { fetchRssState } from "./rss.js"
 import { seedServices } from "./seed.js"
 import { fetchOnlineOrNotState } from "./onlineornot.js"
 import {
+  fetchFirebaseState,
   fetchGoogleCloudGeminiState,
   fetchGoogleCloudPlatformState,
 } from "./google-cloud.js"
+import { fetchHerokuState } from "./heroku.js"
 import { fetchRailwayState } from "./railway.js"
 import { fetchBetterstackState } from "./betterstack.js"
 import { fetchStatuspageState } from "./statuspage.js"
@@ -76,7 +81,8 @@ type ServiceJob = {
   persistOptions?: PersistOptions
 }
 
-// Board services with a fetcher (26 AI + 8 Cloud Wave A; AWS/Azure are none).
+// Board services with a fetcher (26 AI + Cloud Wave A/B; AWS, Azure, and
+// Fastly are none).
 const statuspageJob = (id: string, baseUrl: string): ServiceJob => ({
   id,
   fetch: () => fetchStatuspageState(baseUrl, fetchOptions()),
@@ -188,6 +194,34 @@ const SERVICE_JOBS: ServiceJob[] = [
     // Platform-wide GCP card. Informational notices stay off the rollup.
     id: "google-cloud",
     fetch: () => fetchGoogleCloudPlatformState(fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  // Cloud Wave B. Fastly has no public JSON and blocks the worker UA.
+  statuspageJob("linode", "https://status.linode.com"),
+  statuspageJob("bunny", "https://status.bunny.net"),
+  {
+    id: "heroku",
+    fetch: () => fetchHerokuState(fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  {
+    id: "deno",
+    fetch: () => fetchInstatusState("https://denostatus.com", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  {
+    id: "koyeb",
+    fetch: () => fetchInstatusState("https://status.koyeb.com", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  {
+    id: "modal",
+    fetch: () => fetchBetterstackState("https://status.modal.com", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  {
+    id: "firebase",
+    fetch: () => fetchFirebaseState(fetchOptions()),
     persistOptions: { resolveMissingIncidents: true },
   },
 ]

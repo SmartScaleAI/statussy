@@ -2,7 +2,7 @@
 
 One static SVG per board service. Filename = `Service.id` from `data/services.ts`.
 
-Marks use the **official brand path** (Simple Icons when the slug is that brand; LobeHub traces of the official mark when Simple Icons does not carry it; Cartesia’s own `favicon.svg`). Fills keep official color when it reads on the dark board. Official black / near-black lockups are knocked out to white (or a documented chromatic token) so they stay visible. No animation, no CDN at runtime.
+**Rule for every new service:** use the official brand path. Do not draw a geometric stand-in. Prefer [Simple Icons](https://simpleicons.org) when the slug is that vendor; otherwise LobeHub traces of the official mark, Wikimedia, or the vendor’s own SVG (favicon / brand kit). Only draw a replica if no official path exists. Fills keep official color when it reads on the dark board. Official black / near-black lockups are knocked out to white (or a documented chromatic token). No animation, no CDN at runtime.
 
 | File | Service | Fill | Source |
 | --- | --- | --- | --- |
@@ -42,5 +42,13 @@ Marks use the **official brand path** (Simple Icons when the slug is that brand;
 | `google-cloud.svg` | Google Cloud | Official four-color | LobeHub `googlecloud-color` |
 | `aws.svg` | AWS | Wordmark `#FFFFFF` + smile `#F90` | Official AWS smile + wordmark (LobeHub `aws-color` paths); white letters on dark |
 | `azure.svg` | Azure | Official blues | LobeHub `azure-color` (official A-tile) |
+| `heroku.svg` | Heroku | `#430098` | Simple Icons `heroku` path; Heroku purple |
+| `linode.svg` | Linode | `#00A95C` | Simple Icons `linode` path; Linode green |
+| `fastly.svg` | Fastly | `#FF282D` | Simple Icons `fastly` |
+| `bunny.svg` | bunny.net | `#FFAA49` | Simple Icons `bunnydotnet` |
+| `deno.svg` | Deno Deploy | `#FFFFFF` | Simple Icons `denodeploy`; white so official `#002633` reads on dark |
+| `koyeb.svg` | Koyeb | `#FFFFFF` | Simple Icons `koyeb`; white so official `#121212` reads on dark |
+| `modal.svg` | Modal | `#7FEE64` | Simple Icons `modal` |
+| `firebase.svg` | Firebase | `#DD2C00` | Simple Icons `firebase` |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.

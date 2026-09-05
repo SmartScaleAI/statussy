@@ -25,6 +25,7 @@ import type {
 export const VERTEX_GEMINI_API_PRODUCT_ID = "Z0FZJAMvEB4j3NbCJs6B"
 
 export const GOOGLE_CLOUD_STATUS_ORIGIN = "https://status.cloud.google.com"
+export const FIREBASE_STATUS_ORIGIN = "https://status.firebase.google.com"
 export const GOOGLE_CLOUD_INCIDENTS_URL = `${GOOGLE_CLOUD_STATUS_ORIGIN}/incidents.json`
 export const GOOGLE_CLOUD_PRODUCTS_URL = `${GOOGLE_CLOUD_STATUS_ORIGIN}/products.json`
 
@@ -374,18 +375,20 @@ async function fetchJson<T>(url: string, options: FetchOptions): Promise<T> {
 
 async function fetchGoogleCloudPayloads(
   options: FetchOptions,
+  origin: string = GOOGLE_CLOUD_STATUS_ORIGIN,
 ): Promise<{ incidents: GoogleCloudIncident[]; products: GoogleCloudProduct[] }> {
-  const incidents = await fetchJson<unknown>(GOOGLE_CLOUD_INCIDENTS_URL, options)
+  const root = origin.replace(/\/+$/, "")
+  const incidents = await fetchJson<unknown>(`${root}/incidents.json`, options)
   if (!Array.isArray(incidents)) {
-    throw new Error(`Unexpected incidents.json payload from ${GOOGLE_CLOUD_STATUS_ORIGIN}`)
+    throw new Error(`Unexpected incidents.json payload from ${root}`)
   }
 
   let products: GoogleCloudProduct[] = []
   try {
-    const body = await fetchJson<unknown>(GOOGLE_CLOUD_PRODUCTS_URL, options)
+    const body = await fetchJson<unknown>(`${root}/products.json`, options)
     products = parseProductsPayload(body)
   } catch (err) {
-    console.warn(`[google_cloud] products fetch failed: ${(err as Error).message}`)
+    console.warn(`[google_cloud] products fetch failed for ${root}: ${(err as Error).message}`)
   }
 
   return { incidents: incidents as GoogleCloudIncident[], products }
@@ -412,6 +415,15 @@ export async function fetchGoogleCloudPlatformState(
   const { incidents, products } = await fetchGoogleCloudPayloads(options)
   return mapGoogleCloudPlatform(incidents, products, {
     pageUrl: GOOGLE_CLOUD_STATUS_ORIGIN,
+    maxIncidents: options.maxIncidents,
+  })
+}
+
+/** Firebase Hosting / BaaS card — same Cloud Status JSON, Firebase origin. */
+export async function fetchFirebaseState(options: FetchOptions): Promise<MappedServiceState> {
+  const { incidents, products } = await fetchGoogleCloudPayloads(options, FIREBASE_STATUS_ORIGIN)
+  return mapGoogleCloudPlatform(incidents, products, {
+    pageUrl: FIREBASE_STATUS_ORIGIN,
     maxIncidents: options.maxIncidents,
   })
 }

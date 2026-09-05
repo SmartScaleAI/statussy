@@ -1,7 +1,7 @@
 import type pg from "pg"
 
 /**
- * Static registry of board services (26 AI + Cloud Wave A).
+ * Static registry of board services (26 AI + Cloud Wave A + Cloud Wave B).
  * Mirrors the ids in the Next.js app's data/services.ts (and public/logos/{id}.svg).
  * Coding agents (Cursor, Windsurf, Devin, GitHub Copilot) are parked for a
  * future Developer category and must not be seeded here.
@@ -225,6 +225,62 @@ export const SERVICE_SEED = [
     category: "cloud",
     statusUrl: "https://azure.microsoft.com/status/",
     fetcherType: "none",
+  },
+  {
+    id: "heroku",
+    name: "Heroku",
+    category: "cloud",
+    statusUrl: "https://status.salesforce.com/products/Heroku",
+    fetcherType: "heroku",
+  },
+  {
+    id: "linode",
+    name: "Linode",
+    category: "cloud",
+    statusUrl: "https://status.linode.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "fastly",
+    name: "Fastly",
+    category: "cloud",
+    statusUrl: "https://www.fastlystatus.com/",
+    fetcherType: "none",
+  },
+  {
+    id: "bunny",
+    name: "bunny.net",
+    category: "cloud",
+    statusUrl: "https://status.bunny.net/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "deno",
+    name: "Deno Deploy",
+    category: "cloud",
+    statusUrl: "https://denostatus.com/",
+    fetcherType: "instatus",
+  },
+  {
+    id: "koyeb",
+    name: "Koyeb",
+    category: "cloud",
+    statusUrl: "https://status.koyeb.com/",
+    fetcherType: "instatus",
+  },
+  {
+    id: "modal",
+    name: "Modal",
+    category: "cloud",
+    statusUrl: "https://status.modal.com/",
+    fetcherType: "betterstack",
+  },
+  {
+    id: "firebase",
+    name: "Firebase",
+    category: "cloud",
+    statusUrl: "https://status.firebase.google.com/",
+    fetcherType: "google_cloud",
   },
 ] as const
 

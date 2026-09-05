@@ -2,7 +2,7 @@
 
 Glanceable “is anything down?” board for AI and Cloud services. A SmartScale app, separate from Zerro.
 
-The board reads **live status from Postgres** for the 36 catalog services (26 AI + Cloud Wave A). AI Wave A: OpenAI, Anthropic, Groq, Cohere, OpenRouter, Perplexity, xAI, DeepSeek, Google Gemini, Mistral; Wave B: Fireworks AI, Together AI, Cerebras, Hugging Face, Replicate, Runway, Ideogram, Stability AI; Wave C: fal, ElevenLabs, MiniMax, Voyage AI, Black Forest Labs, Cartesia, Kimi, Luma. Cloud Wave A: Vercel, Railway, Cloudflare, Render, Fly.io, Netlify, DigitalOcean, Google Cloud, AWS, Azure. The worker fetches every service that has a fetcher; AWS and Azure are seeded without one (custom dashboards, no public Statuspage JSON) and stay on mock until a dedicated Health fetcher exists. Nothing is scraped from the client. When a service has no snapshot yet, or the database is unreachable, the board still falls back to mock data.
+The board reads **live status from Postgres** for the 44 catalog services (26 AI + 10 Cloud Wave A + 8 Cloud Wave B). AI Wave A: OpenAI, Anthropic, Groq, Cohere, OpenRouter, Perplexity, xAI, DeepSeek, Google Gemini, Mistral; Wave B: Fireworks AI, Together AI, Cerebras, Hugging Face, Replicate, Runway, Ideogram, Stability AI; Wave C: fal, ElevenLabs, MiniMax, Voyage AI, Black Forest Labs, Cartesia, Kimi, Luma. Cloud Wave A: Vercel, Railway, Cloudflare, Render, Fly.io, Netlify, DigitalOcean, Google Cloud, AWS, Azure. Cloud Wave B: Heroku, Linode, Fastly, bunny.net, Deno Deploy, Koyeb, Modal, Firebase. The worker fetches every service that has a fetcher; AWS, Azure, and Fastly are seeded without one (custom dashboards or a status page that blocks programmatic access) and stay on mock until a dedicated fetcher exists. Nothing is scraped from the client. When a service has no snapshot yet, or the database is unreachable, the board still falls back to mock data.
 
 Coding agents (Cursor, Windsurf, Devin, GitHub Copilot) are parked for a future **Developer** category and are not on this board.
 
@@ -23,7 +23,7 @@ npm run build
 
 Live-data foundation for the board: a Railway Postgres database plus a small Node
 worker in [`worker/`](worker/). The worker owns the schema (`services`,
-`service_snapshots`, `components`, `incidents`, `service_suggestions`), seeds the 36 board services,
+`service_snapshots`, `components`, `incidents`, `service_suggestions`), seeds the 44 board services,
 and ticks on a configurable interval (default every 5 minutes). Each tick fetches
 live status for services with a fetcher — OpenAI, Anthropic, Groq, Cohere,
 Fireworks, Cerebras, Replicate, Runway, Ideogram, Stability, ElevenLabs,
@@ -38,8 +38,12 @@ loads — no Statuspage/RSS API; if that shape changes, follow up with a
 dedicated Better Stack fetcher), Cloud Wave A Statuspage hosts (Vercel,
 Cloudflare, Render, Fly.io, Netlify, DigitalOcean), Railway via
 `https://api.railwaystatus.com/status` (Railway documents this JSON as-is),
-and Google Cloud via the same `incidents.json` feed as Gemini (platform-wide;
-informational notices do not paint the card) — and upserts snapshot,
+Google Cloud via the same `incidents.json` feed as Gemini (platform-wide;
+informational notices do not paint the card), Cloud Wave B Statuspage hosts
+(Linode, bunny.net), Heroku via Status API v4 (`status.heroku.com/api/v4`;
+Salesforce Trust is the public card URL), Deno Deploy and Koyeb via Instatus,
+Modal via Better Stack `index.json`, and Firebase via
+`status.firebase.google.com/incidents.json` — and upserts snapshot,
 component, and incident rows. On a failed fetch the worker keeps last-known rows
 and flags the latest snapshot `stale`.
 
@@ -60,7 +64,7 @@ and flags the latest snapshot `stale`.
 cd worker
 npm install
 export DATABASE_URL=postgres://user:pass@localhost:5432/statussy
-npm run migrate   # apply migrations + seed the 36 services, then exit
+npm run migrate   # apply migrations + seed the 44 services, then exit
 npm run dev       # migrate, seed, tick on the interval, serve /healthz
 ```
 
@@ -157,8 +161,11 @@ its slot now holds the live Health chicklet.
 }
 ```
 
+3. Add a matching seed row in `worker/src/seed.ts` and a worker job when there is a fetcher.
+4. Add `public/logos/{id}.svg` using the **official brand path** — Simple Icons, LobeHub, Wikimedia, or the vendor’s own SVG. Do not draw a geometric stand-in. Only replica-draw if no official mark exists. Knock official black lockups out to white (or a documented chromatic token) so they read on the dark board. Record the source in [`public/logos/README.md`](public/logos/README.md).
+
 Non-operational services automatically float to the top of the board.
 
 ## Service logos
 
-Each card shows a static mark next to the last-updated time. Files live in [`public/logos/`](public/logos/) and are named `{service.id}.svg` (for example `public/logos/openai.svg`). They are served as-is from `/logos/{id}.svg` — no CDN and no animation. Fills use each service’s brand color (see [`public/logos/README.md`](public/logos/README.md) for hex values and sources).
+Each card shows a static mark next to the last-updated time. Files live in [`public/logos/`](public/logos/) and are named `{service.id}.svg` (for example `public/logos/openai.svg`). They are served as-is from `/logos/{id}.svg` — no CDN and no animation. **Always use the official logo path** (see the rule above and [`public/logos/README.md`](public/logos/README.md)).
