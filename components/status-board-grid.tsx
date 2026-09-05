@@ -16,11 +16,13 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group"
+import { StatusSummary } from "@/components/status-summary"
 import {
   ALL_CATEGORY,
   distinctCategories,
   filterBoardServices,
   formatCategoryLabel,
+  summarizeBoardItems,
   type BoardFilterItem,
 } from "@/lib/board-filter"
 import { cn } from "@/lib/utils"
@@ -36,12 +38,17 @@ export function StatusBoardGrid({
   const [category, setCategory] = useState(ALL_CATEGORY)
   const categories = useMemo(() => distinctCategories(items), [items])
   const options = useMemo(() => [ALL_CATEGORY, ...categories], [categories])
-  const visibleIds = useMemo(
-    () =>
-      new Set(
-        filterBoardServices(items, query, category).map((item) => item.id)
-      ),
+  const visibleItems = useMemo(
+    () => filterBoardServices(items, query, category),
     [items, query, category]
+  )
+  const summary = useMemo(
+    () => summarizeBoardItems(visibleItems),
+    [visibleItems]
+  )
+  const visibleIds = useMemo(
+    () => new Set(visibleItems.map((item) => item.id)),
+    [visibleItems]
   )
   const cards = Children.toArray(children).filter((child, index) => {
     const id = items[index]?.id
@@ -64,72 +71,87 @@ export function StatusBoardGrid({
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-3">
-        <div className="flex items-center gap-2">
-          <InputGroup className="h-10 min-w-0 flex-1">
-            <InputGroupInput
-              id="service-search"
-              type="search"
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder="Search services by name..."
-              aria-label="Search services by name"
-              className="h-10"
-            />
-            <InputGroupAddon align="inline-start">
-              <SearchIcon />
-            </InputGroupAddon>
-          </InputGroup>
-          <Button
-            type="button"
-            variant="outline"
-            size="icon"
-            aria-label="Sort"
-            className="size-10"
-          >
-            <ArrowUpDownIcon />
-          </Button>
-        </div>
-        <div
-          role="radiogroup"
-          aria-label="Filter by category"
-          className="flex flex-wrap items-center gap-1"
-          onKeyDown={onChicletKeyDown}
+        <h2
+          id="all-services-heading"
+          className="font-heading text-lg font-semibold tracking-tight text-foreground"
         >
-          {options.map((id) => {
-            const selected = category === id
-            return (
-              <Button
-                key={id}
-                type="button"
-                variant="ghost"
-                role="radio"
-                data-category={id}
-                aria-checked={selected}
-                tabIndex={selected ? 0 : -1}
-                onClick={() => setCategory(id)}
-                className={cn(
-                  "hover:bg-[var(--bg-footer)] dark:hover:bg-[var(--bg-footer)]",
-                  selected &&
-                    "border-[var(--color-gray-dark)] bg-[var(--bg-footer)] text-foreground"
-                )}
-              >
-                {formatCategoryLabel(id)}
-              </Button>
-            )
-          })}
-        </div>
+          All Services
+        </h2>
+        <StatusSummary
+          operational={summary.operational}
+          issues={summary.issues}
+          total={summary.total}
+        />
       </div>
-      {cards.length === 0 ? (
-        <p className="text-sm text-muted-foreground" role="status">
-          No services match.
-        </p>
-      ) : (
-        <ul className="grid grid-cols-1 gap-10 sm:grid-cols-2 xl:grid-cols-3">
-          {cards}
-        </ul>
-      )}
+      <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center gap-2">
+            <InputGroup className="h-10 min-w-0 flex-1">
+              <InputGroupInput
+                id="service-search"
+                type="search"
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder="Search services by name..."
+                aria-label="Search services by name"
+                className="h-10"
+              />
+              <InputGroupAddon align="inline-start">
+                <SearchIcon />
+              </InputGroupAddon>
+            </InputGroup>
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              aria-label="Sort"
+              className="size-10"
+            >
+              <ArrowUpDownIcon />
+            </Button>
+          </div>
+          <div
+            role="radiogroup"
+            aria-label="Filter by category"
+            className="flex flex-wrap items-center gap-1"
+            onKeyDown={onChicletKeyDown}
+          >
+            {options.map((id) => {
+              const selected = category === id
+              return (
+                <Button
+                  key={id}
+                  type="button"
+                  variant="ghost"
+                  role="radio"
+                  data-category={id}
+                  aria-checked={selected}
+                  tabIndex={selected ? 0 : -1}
+                  onClick={() => setCategory(id)}
+                  className={cn(
+                    "hover:bg-[var(--bg-footer)] dark:hover:bg-[var(--bg-footer)]",
+                    selected &&
+                      "border-[var(--color-gray-dark)] bg-[var(--bg-footer)] text-foreground"
+                  )}
+                >
+                  {formatCategoryLabel(id)}
+                </Button>
+              )
+            })}
+          </div>
+        </div>
+        {cards.length === 0 ? (
+          <p className="text-sm text-muted-foreground" role="status">
+            No services match.
+          </p>
+        ) : (
+          <ul className="grid grid-cols-1 gap-10 sm:grid-cols-2 xl:grid-cols-3">
+            {cards}
+          </ul>
+        )}
+      </div>
     </div>
   )
 }
