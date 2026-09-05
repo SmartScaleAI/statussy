@@ -1,0 +1,93 @@
+{
+  "data": {
+    "id": "197766",
+    "type": "status_page",
+    "attributes": {
+      "company_name": "Together AI",
+      "aggregate_state": "degraded",
+      "updated_at": "2026-09-05T01:17:24.754Z"
+    }
+  },
+  "included": [
+    {
+      "id": "231960",
+      "type": "status_page_section",
+      "attributes": { "name": "Website", "position": 1 }
+    },
+    {
+      "id": "8475065",
+      "type": "status_page_resource",
+      "attributes": {
+        "public_name": "Website",
+        "status": "operational",
+        "position": 1
+      }
+    },
+    {
+      "id": "8475066",
+      "type": "status_page_resource",
+      "attributes": {
+        "public_name": "API",
+        "status": "degraded",
+        "position": 2
+      }
+    },
+    {
+      "id": "8475067",
+      "type": "status_page_resource",
+      "attributes": {
+        "public_name": "Inference",
+        "status": "downtime",
+        "position": 3
+      }
+    },
+    {
+      "id": "8475068",
+      "type": "status_page_resource",
+      "attributes": {
+        "public_name": "Playground",
+        "status": "maintenance",
+        "position": 4
+      }
+    },
+    {
+      "id": "8475069",
+      "type": "status_page_resource",
+      "attributes": {
+        "public_name": "Billing",
+        "status": "something_new",
+        "position": 5
+      }
+    },
+    {
+      "id": "941900",
+      "type": "status_report",
+      "attributes": {
+        "title": "Elevated error rates on the API",
+        "report_type": "manual",
+        "starts_at": "2026-09-05T00:10:00.000Z",
+        "ends_at": null,
+        "aggregate_state": "investigating"
+      }
+    },
+    {
+      "id": "941865",
+      "type": "status_report",
+      "attributes": {
+        "title": "Scheduled network maintenance",
+        "report_type": "maintenance",
+        "starts_at": "2026-07-03T04:00:59.000Z",
+        "ends_at": "2026-07-03T06:59:00.000Z",
+        "aggregate_state": "resolved"
+      }
+    },
+    {
+      "id": "5326570",
+      "type": "status_update",
+      "attributes": {
+        "message": "Maintenance ended",
+        "published_at": "2026-07-03T06:59:00.000Z"
+      }
+    }
+  ]
+}

@@ -1,9 +1,11 @@
 import type pg from "pg"
 
 /**
- * Static registry of the 10 AI services on the Statussy board.
+ * Static registry of the 18 AI services on the Statussy board
+ * (Wave A: 10 live services; Wave B / SMA-41: 8 net-new).
  * Mirrors the ids in the Next.js app's data/services.ts (and public/logos/{id}.svg).
- * fetcher_type stays 'none' until a fetcher lands for that service.
+ * Coding agents (Cursor, Windsurf, Devin, GitHub Copilot) are parked for a
+ * future Developer category and must not be seeded here.
  */
 export const SERVICE_SEED = [
   {
@@ -55,6 +57,54 @@ export const SERVICE_SEED = [
     name: "OpenRouter",
     statusUrl: "https://status.openrouter.ai/",
     fetcherType: "onlineornot",
+  },
+  {
+    id: "fireworks",
+    name: "Fireworks AI",
+    statusUrl: "https://status.fireworks.ai/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "together",
+    name: "Together AI",
+    statusUrl: "https://status.together.ai/",
+    fetcherType: "betterstack",
+  },
+  {
+    id: "cerebras",
+    name: "Cerebras",
+    statusUrl: "https://status.cerebras.ai/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "huggingface",
+    name: "Hugging Face",
+    statusUrl: "https://status.huggingface.co/",
+    fetcherType: "betterstack",
+  },
+  {
+    id: "replicate",
+    name: "Replicate",
+    statusUrl: "https://status.replicate.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "runway",
+    name: "Runway",
+    statusUrl: "https://status.runwayml.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "ideogram",
+    name: "Ideogram",
+    statusUrl: "https://status.ideogram.ai/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "stability",
+    name: "Stability AI",
+    statusUrl: "https://status.stability.ai/",
+    fetcherType: "statuspage",
   },
 ] as const
 
