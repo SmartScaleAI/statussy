@@ -9,12 +9,15 @@
  * SMA-33: the whole card is the detail hit target (stretched overlay link).
  * Star + Official status sit above it and stopPropagation so they stay usable.
  * SMA-36: shelf has no divider; timestamps include a UTC suffix.
+ * SMA-37: star toggles localStorage favorites (`statussy:favoriteServiceIds`).
  */
 "use client"
 
 import { ArrowUpRightIcon, StarIcon } from "lucide-react"
 import Link from "next/link"
-import React, { useState, type MouseEvent } from "react"
+import React, { type MouseEvent } from "react"
+
+import { useFavoriteServices } from "@/components/favorite-services"
 
 function stopCardNavigation(event: MouseEvent) {
   event.stopPropagation()
@@ -50,8 +53,9 @@ interface CardProps {
   data: CardData
 }
 
-function FavoriteButton() {
-  const [favorited, setFavorited] = useState(false)
+function FavoriteButton({ serviceId }: { serviceId: string }) {
+  const { isFavorited, toggleFavorite } = useFavoriteServices()
+  const favorited = isFavorited(serviceId)
 
   return (
     <button
@@ -62,7 +66,7 @@ function FavoriteButton() {
       onClick={(event) => {
         event.preventDefault()
         stopCardNavigation(event)
-        setFavorited((on) => !on)
+        toggleFavorite(serviceId)
       }}
     >
       <StarIcon aria-hidden="true" fill={favorited ? "currentColor" : "none"} />
@@ -128,7 +132,7 @@ const Card: React.FC<CardProps> = ({ data }) => {
             </span>
           ) : null}
         </div>
-        <FavoriteButton />
+        <FavoriteButton serviceId={String(data.id)} />
       </div>
       <div className="card-body">
         <div className="card-identity">{identity}</div>
