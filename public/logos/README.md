@@ -337,5 +337,15 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `plausible.svg` | Plausible | `#5850EC` | Simple Icons `plausibleanalytics` |
 | `fathom.svg` | Fathom | `#9187FF` | Simple Icons `fathom` |
 | `matomo.svg` | Matomo | `#3152A0` | Simple Icons `matomo` |
+| `woopra.svg` | Woopra | `#FFFFFF` | Official mark from [woopra.com/favicon.svg](https://www.woopra.com/favicon.svg); white so official black reads on dark |
+| `treasuredata.svg` | Treasure Data | Official diamond gradient | Official symbol from [treasure.ai logo-symbol-only.svg](https://www.treasure.ai/hubfs/assets/images/logos/logo-symbol-only.svg) |
+| `appsflyer.svg` | AppsFlyer | `#FFFFFF` | Official shards from the [appsflyer.com](https://www.appsflyer.com/) lockup (wordmark dropped); black knocked to white |
+| `branch.svg` | Branch | `#FFFFFF` | Official glyph from [branch.io favicon-light.svg](https://www.branch.io/wp-content/themes/branch/assets/images/favicons/favicon-light.svg) |
+| `hightouch.svg` | Hightouch | `#3C34E5` | Official wordmark from [hightouch.com](https://hightouch.com/) Sanity `489x60.svg` |
+| `simpleanalytics.svg` | Simple Analytics | `#FF4F64` | Simple Icons `simpleanalytics` |
+| `countly.svg` | Countly | `#2CAE5C` | Official mark from [countly.com favcon.svg](https://countly.com/) |
+| `parsely.svg` | Parse.ly | `#5BA745` | Simple Icons `parsedotly` |
+| `umami.svg` | Umami | `#FFFFFF` | Simple Icons `umami`; white so official black reads on dark |
+| `goatcounter.svg` | GoatCounter | `#9A15A4` | Official mark from [arp242/goatcounter](https://github.com/arp242/goatcounter) `public/logo.svg` |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.
