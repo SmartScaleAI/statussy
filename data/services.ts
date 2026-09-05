@@ -27,6 +27,7 @@ export type ServiceCategory =
   | "email"
   | "design"
   | "infra"
+  | "flags"
 
 export type Service = {
   /** Matches a static mark at `public/logos/{id}.svg`. */
@@ -2478,5 +2479,90 @@ export const services: Service[] = [
     statusUrl: "https://www.infracost.io/",
     status: "operational",
     updatedAt: "2026-09-05T20:20:00.000Z",
+  },
+  // Flags Wave A — feature flags and experimentation the running
+  // app dies on. Split stays on Harness (status.split.io redirects).
+  // Amplitude / PostHog / Mixpanel wait (product analytics).
+  // Firebase Remote Config stays on Firebase. Vercel Flags stay
+  // on Vercel.
+  {
+    id: "launchdarkly",
+    name: "LaunchDarkly",
+    category: "flags",
+    statusUrl: "https://status.launchdarkly.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:30:00.000Z",
+  },
+  {
+    id: "optimizely",
+    name: "Optimizely",
+    category: "flags",
+    statusUrl: "https://status.optimizely.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:30:00.000Z",
+  },
+  {
+    id: "statsig",
+    name: "Statsig",
+    category: "flags",
+    statusUrl: "https://status.statsig.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:30:00.000Z",
+  },
+  {
+    id: "flagsmith",
+    name: "Flagsmith",
+    category: "flags",
+    statusUrl: "https://status.flagsmith.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:30:00.000Z",
+  },
+  {
+    id: "unleash",
+    name: "Unleash",
+    category: "flags",
+    statusUrl: "https://www.getunleash.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:30:00.000Z",
+  },
+  {
+    id: "configcat",
+    name: "ConfigCat",
+    category: "flags",
+    statusUrl: "https://status.configcat.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:30:00.000Z",
+  },
+  {
+    id: "growthbook",
+    name: "GrowthBook",
+    category: "flags",
+    statusUrl: "https://www.growthbook.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:30:00.000Z",
+  },
+  {
+    id: "devcycle",
+    name: "DevCycle",
+    category: "flags",
+    statusUrl: "https://status.devcycle.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:30:00.000Z",
+  },
+  {
+    id: "eppo",
+    name: "Eppo",
+    category: "flags",
+    statusUrl: "https://www.geteppo.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:30:00.000Z",
+  },
+  {
+    id: "vwo",
+    name: "VWO",
+    category: "flags",
+    statusUrl: "https://status.vwo.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:30:00.000Z",
   },
 ]
