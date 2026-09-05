@@ -512,7 +512,7 @@
 
 .course-design-board .card.green {
   background: radial-gradient(
-    at 100% 0,
+    at 0 0,
     color-mix(in srgb, var(--clr-green) var(--card-wash-green), transparent),
     var(--bg-footer) 47%,
     var(--bg-footer)
@@ -521,7 +521,7 @@
 
 .course-design-board .card.green:before {
   background: linear-gradient(
-      45deg,
+      135deg,
       var(--bg-dark),
       var(--bg-dark),
       var(--bg-dark),
@@ -533,7 +533,7 @@
 
 .course-design-board .card.blue {
   background: radial-gradient(
-    at 100% 0,
+    at 0 0,
     color-mix(in srgb, var(--clr-blue) var(--card-wash-blue), transparent),
     var(--bg-footer) 45%,
     var(--bg-footer)
@@ -542,7 +542,7 @@
 
 .course-design-board .card.blue:before {
   background: linear-gradient(
-      45deg,
+      135deg,
       var(--bg-dark),
       var(--bg-dark),
       var(--bg-dark),
@@ -554,7 +554,7 @@
 
 .course-design-board .card.amber {
   background: radial-gradient(
-    at 100% 0,
+    at 0 0,
     color-mix(in srgb, var(--clr-amber) var(--card-wash-amber), transparent),
     var(--bg-footer) 47%,
     var(--bg-footer)
@@ -563,7 +563,7 @@
 
 .course-design-board .card.amber:before {
   background: linear-gradient(
-      45deg,
+      135deg,
       var(--bg-dark),
       var(--bg-dark),
       var(--bg-dark),
@@ -575,7 +575,7 @@
 
 .course-design-board .card.red {
   background: radial-gradient(
-    at 100% 0,
+    at 0 0,
     color-mix(in srgb, var(--clr-red) var(--card-wash-red), transparent),
     var(--bg-footer) 47%,
     var(--bg-footer)
@@ -584,7 +584,7 @@
 
 .course-design-board .card.red:before {
   background: linear-gradient(
-      45deg,
+      135deg,
       var(--bg-dark),
       var(--bg-dark),
       var(--bg-dark),
