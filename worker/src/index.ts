@@ -28,6 +28,8 @@
  * Semaphore, Harness, Codefresh, crates.io, Expo, and Cloudsmith via
  * Statuspage; Data Wave A — Supabase, PlanetScale, Convex, Upstash,
  * Pinecone, MongoDB, CockroachDB, and Prisma via Statuspage, Neon via
+ * Status.io; Data Wave B — Snowflake, ClickHouse, Elastic, Aiven, InfluxDB,
+ * Couchbase, Confluent, Tinybird, and Zilliz via Statuspage, Databricks via
  * Status.io. AWS, Azure, Fastly, Replit, and Redis are seeded without a
  * fetcher) and writes snapshots, components, and incidents to Postgres.
  * A tiny HTTP server exposes /healthz.
@@ -49,6 +51,8 @@ import {
 import {
   fetchGitlabState,
   fetchStatusIoState,
+  DATABRICKS_STATUS_PAGE,
+  DATABRICKS_STATUS_PAGE_ID,
   NEON_STATUS_PAGE,
   NEON_STATUS_PAGE_ID,
 } from "./gitlab.js"
@@ -321,6 +325,26 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("mongodb", "https://status.mongodb.com"),
   statuspageJob("cockroach", "https://status.cockroachlabs.cloud"),
   statuspageJob("prisma", "https://www.prisma-status.com"),
+  // Data Wave B. Databricks is Status.io (one card; GCP/Azure pages stay here).
+  statuspageJob("snowflake", "https://status.snowflake.com"),
+  {
+    id: "databricks",
+    fetch: () =>
+      fetchStatusIoState(
+        DATABRICKS_STATUS_PAGE,
+        DATABRICKS_STATUS_PAGE_ID,
+        fetchOptions(),
+      ),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  statuspageJob("clickhouse", "https://status.clickhouse.com"),
+  statuspageJob("elastic", "https://status.elastic.co"),
+  statuspageJob("aiven", "https://status.aiven.io"),
+  statuspageJob("influxdb", "https://status.influxdata.com"),
+  statuspageJob("couchbase", "https://status.couchbase.com"),
+  statuspageJob("confluent", "https://status.confluent.cloud"),
+  statuspageJob("tinybird", "https://status.tinybird.co"),
+  statuspageJob("zilliz", "https://status.zilliz.com"),
 ]
 
 async function fetchService(service: ServiceJob): Promise<boolean> {

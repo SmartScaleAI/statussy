@@ -1,7 +1,7 @@
 import type pg from "pg"
 
 /**
- * Static registry of board services (26 AI + Cloud Waves A–C + Developer Waves A–C + Data Wave A).
+ * Static registry of board services (26 AI + Cloud Waves A–C + Developer Waves A–C + Data Waves A–B).
  * Mirrors the ids in the Next.js app's data/services.ts (and public/logos/{id}.svg).
  * Windsurf is the legacy Devin Desktop name and is not seeded separately.
  * GitHub Copilot is a GitHub component, not its own card.
@@ -609,6 +609,76 @@ export const SERVICE_SEED = [
     name: "Prisma",
     category: "data",
     statusUrl: "https://www.prisma-status.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "snowflake",
+    name: "Snowflake",
+    category: "data",
+    statusUrl: "https://status.snowflake.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "databricks",
+    name: "Databricks",
+    category: "data",
+    statusUrl: "https://status.databricks.com/",
+    fetcherType: "status_io",
+  },
+  {
+    id: "clickhouse",
+    name: "ClickHouse",
+    category: "data",
+    statusUrl: "https://status.clickhouse.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "elastic",
+    name: "Elastic",
+    category: "data",
+    statusUrl: "https://status.elastic.co/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "aiven",
+    name: "Aiven",
+    category: "data",
+    statusUrl: "https://status.aiven.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "influxdb",
+    name: "InfluxDB",
+    category: "data",
+    statusUrl: "https://status.influxdata.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "couchbase",
+    name: "Couchbase",
+    category: "data",
+    statusUrl: "https://status.couchbase.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "confluent",
+    name: "Confluent",
+    category: "data",
+    statusUrl: "https://status.confluent.cloud/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "tinybird",
+    name: "Tinybird",
+    category: "data",
+    statusUrl: "https://status.tinybird.co/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "zilliz",
+    name: "Zilliz",
+    category: "data",
+    statusUrl: "https://status.zilliz.com/",
     fetcherType: "statuspage",
   },
 ] as const

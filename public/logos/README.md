@@ -97,5 +97,15 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `mongodb.svg` | MongoDB | `#47A248` | Simple Icons `mongodb` |
 | `cockroach.svg` | CockroachDB | `#6933FF` | Simple Icons `cockroachlabs` |
 | `prisma.svg` | Prisma | `#FFFFFF` | Simple Icons `prisma`; white so official `#2D3748` reads on dark |
+| `snowflake.svg` | Snowflake | `#29B5E8` | Simple Icons `snowflake` |
+| `databricks.svg` | Databricks | `#FF3621` | Simple Icons `databricks` |
+| `clickhouse.svg` | ClickHouse | `#FFCC01` | Simple Icons `clickhouse` |
+| `elastic.svg` | Elastic | `#FFFFFF` | Simple Icons `elastic`; white so official `#005571` reads on dark |
+| `aiven.svg` | Aiven | `#FFFFFF` | Official bird from [aiven.io/favicon.svg](https://aiven.io/favicon.svg); black tile dropped so the mark reads on dark |
+| `influxdb.svg` | InfluxDB | `#22ADF6` | Simple Icons `influxdb` |
+| `couchbase.svg` | Couchbase | `#EA2328` | Simple Icons `couchbase` |
+| `confluent.svg` | Confluent | `#FFFFFF` | Official mark from the [confluent.io](https://www.confluent.io/) header lockup (wordmark dropped); white so official `#173361` reads on dark |
+| `tinybird.svg` | Tinybird | `#FFFFFF` / `#25283D` | Official mark from [cloud.tinybird.co/favicon.svg](https://cloud.tinybird.co/favicon.svg); light-scheme fills so the paper plane reads on dark |
+| `zilliz.svg` | Zilliz | Official gradient | Official mark from [zilliz.com/favicon.svg](https://zilliz.com/favicon.svg) |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.

@@ -21,6 +21,9 @@ export const GITLAB_STATUS_API = `https://api.status.io/1.0/status/${GITLAB_STAT
 export const NEON_STATUS_PAGE = "https://neonstatus.com"
 export const NEON_STATUS_PAGE_ID = "6878fc85709daa75be6c7e3c"
 
+export const DATABRICKS_STATUS_PAGE = "https://status.databricks.com"
+export const DATABRICKS_STATUS_PAGE_ID = "5cf02dde58a00904bda41926"
+
 export type StatusIoComponent = {
   id?: string
   name?: string

@@ -710,8 +710,7 @@ export const services: Service[] = [
   },
   // Data Wave A — stores and queues the app dies on. One card per vendor.
   // Auth / payments / observability / email stay on later chiclets.
-  // Warehouses (Snowflake, Databricks) wait for Wave B. Redis has no
-  // public JSON (custom status.redis.io page).
+  // Redis has no public JSON (custom status.redis.io page).
   {
     id: "supabase",
     name: "Supabase",
@@ -791,5 +790,87 @@ export const services: Service[] = [
     statusUrl: "https://www.prisma-status.com/",
     status: "operational",
     updatedAt: "2026-09-05T04:20:00.000Z",
+  },
+  // Data Wave B — warehouses, search, streaming, and managed data platforms.
+  // One card per vendor. Databricks GCP/Azure pages stay on this card.
+  {
+    id: "snowflake",
+    name: "Snowflake",
+    category: "data",
+    statusUrl: "https://status.snowflake.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:30:00.000Z",
+  },
+  {
+    id: "databricks",
+    name: "Databricks",
+    category: "data",
+    statusUrl: "https://status.databricks.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:30:00.000Z",
+  },
+  {
+    id: "clickhouse",
+    name: "ClickHouse",
+    category: "data",
+    statusUrl: "https://status.clickhouse.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:30:00.000Z",
+  },
+  {
+    id: "elastic",
+    name: "Elastic",
+    category: "data",
+    statusUrl: "https://status.elastic.co/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:30:00.000Z",
+  },
+  {
+    id: "aiven",
+    name: "Aiven",
+    category: "data",
+    statusUrl: "https://status.aiven.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:30:00.000Z",
+  },
+  {
+    id: "influxdb",
+    name: "InfluxDB",
+    category: "data",
+    statusUrl: "https://status.influxdata.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:30:00.000Z",
+  },
+  {
+    id: "couchbase",
+    name: "Couchbase",
+    category: "data",
+    statusUrl: "https://status.couchbase.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:30:00.000Z",
+  },
+  {
+    id: "confluent",
+    name: "Confluent",
+    category: "data",
+    statusUrl: "https://status.confluent.cloud/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:30:00.000Z",
+  },
+  {
+    id: "tinybird",
+    name: "Tinybird",
+    category: "data",
+    statusUrl: "https://status.tinybird.co/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:30:00.000Z",
+  },
+  {
+    id: "zilliz",
+    name: "Zilliz",
+    category: "data",
+    statusUrl: "https://status.zilliz.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:30:00.000Z",
   },
 ]
