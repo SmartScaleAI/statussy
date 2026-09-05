@@ -40,8 +40,11 @@
  * Stack `index.json`; Auth Wave C — LoginRadius, Scalekit, Transmit
  * Security, SecureAuth, Keeper, Yubico, Akeyless, SailPoint, and Delinea
  * via Statuspage, LastPass via lastpass.statuspage.io (the public host
- * challenges /api/v2). AWS, Azure, Fastly, Replit, Redis, Algolia, DataStax,
- * and Okta are seeded without a fetcher) and writes snapshots, components,
+ * challenges /api/v2); Payments Wave A — Stripe via www.stripestatus.com
+ * (the public host has no /api/v2), Square, Paddle, Chargebee, Recurly,
+ * Klarna, Plaid, and GoCardless via Statuspage. AWS, Azure, Fastly, Replit,
+ * Redis, Algolia, DataStax, Okta, PayPal, and Adyen are seeded without a
+ * fetcher) and writes snapshots, components,
  * and incidents to Postgres.
  * A tiny HTTP server exposes /healthz.
  */
@@ -436,6 +439,16 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("akeyless", "https://status.akeyless.io"),
   statuspageJob("sailpoint", "https://status.sailpoint.com"),
   statuspageJob("delinea", "https://status.delinea.com"),
+  // Payments Wave A. Stripe's public host has no /api/v2; hit the
+  // Statuspage host. PayPal and Adyen have no usable public JSON.
+  statuspageJob("stripe", "https://www.stripestatus.com"),
+  statuspageJob("square", "https://www.issquareup.com"),
+  statuspageJob("paddle", "https://paddlestatus.com"),
+  statuspageJob("chargebee", "https://status.chargebee.com"),
+  statuspageJob("recurly", "https://status.recurly.com"),
+  statuspageJob("klarna", "https://status.klarna.com"),
+  statuspageJob("plaid", "https://status.plaid.com"),
+  statuspageJob("gocardless", "https://www.gocardless-status.com"),
 ]
 
 async function fetchService(service: ServiceJob): Promise<boolean> {

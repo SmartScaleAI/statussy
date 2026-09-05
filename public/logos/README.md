@@ -147,5 +147,15 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `akeyless.svg` | Akeyless | `#01D9C1` | Official A from [akeyless.io](https://www.akeyless.io/) brand lockup (wordmark dropped) |
 | `sailpoint.svg` | SailPoint | Official sail colors | Official sail from [sailpoint.com/images/SailPoint-logo.svg](https://www.sailpoint.com/images/SailPoint-logo.svg) (wordmark dropped) |
 | `delinea.svg` | Delinea | `#00FF5A` | Official D from the [delinea.com](https://delinea.com/) wordmark lockup (wordmark dropped) |
+| `stripe.svg` | Stripe | `#635BFF` | Simple Icons `stripe` |
+| `paypal.svg` | PayPal | `#003087` | Simple Icons `paypal` |
+| `square.svg` | Square | `#FFFFFF` | Simple Icons `square`; white so official `#3E4348` reads on dark |
+| `adyen.svg` | Adyen | `#0ABF53` | Simple Icons `adyen` |
+| `paddle.svg` | Paddle | `#FFFFFF` | Simple Icons `paddle`; white so official black reads on dark |
+| `chargebee.svg` | Chargebee | `#FF3300` | Official mark from [chargebee.com brand icon](https://www.chargebee.com/static/resources/brand/chargebee-icon-orange.svg) |
+| `recurly.svg` | Recurly | `#FFFFFF` | Official R from the [recurly.com](https://recurly.com/) lockup (wordmark dropped); white so official black reads on dark |
+| `klarna.svg` | Klarna | `#FFB3C7` | Simple Icons `klarna` |
+| `plaid.svg` | Plaid | `#FFFFFF` | Official lattice from [plaid.com](https://plaid.com/) `safari-pinned-tab.svg`; white so official black reads on dark |
+| `gocardless.svg` | GoCardless | Official yellow + `#1C1B18` | Official mark from the [gocardless.com](https://gocardless.com/) header lockup |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.

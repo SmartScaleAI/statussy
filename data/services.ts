@@ -16,7 +16,13 @@ export const SERVICE_STATUSES = [
 
 export type ServiceStatus = (typeof SERVICE_STATUSES)[number]
 
-export type ServiceCategory = "ai" | "cloud" | "developer" | "data" | "auth"
+export type ServiceCategory =
+  | "ai"
+  | "cloud"
+  | "developer"
+  | "data"
+  | "auth"
+  | "payments"
 
 export type Service = {
   /** Matches a static mark at `public/logos/{id}.svg`. */
@@ -709,7 +715,7 @@ export const services: Service[] = [
     updatedAt: "2026-09-05T04:10:00.000Z",
   },
   // Data Wave A — stores and queues the app dies on. One card per vendor.
-  // Auth / payments / observability / email stay on later chiclets.
+  // Observability / email stay on later chiclets.
   // Redis has no public JSON (custom status.redis.io page).
   {
     id: "supabase",
@@ -1202,5 +1208,88 @@ export const services: Service[] = [
     statusUrl: "https://status.delinea.com/",
     status: "operational",
     updatedAt: "2026-09-05T05:40:00.000Z",
+  },
+  // Payments Wave A — processors and billing the checkout path dies on.
+  // One card per vendor. Braintree / Venmo stay on PayPal. PayPal and
+  // Adyen have no usable public JSON (custom pages).
+  {
+    id: "stripe",
+    name: "Stripe",
+    category: "payments",
+    statusUrl: "https://status.stripe.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T06:00:00.000Z",
+  },
+  {
+    id: "paypal",
+    name: "PayPal",
+    category: "payments",
+    statusUrl: "https://www.paypal-status.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T06:00:00.000Z",
+  },
+  {
+    id: "square",
+    name: "Square",
+    category: "payments",
+    statusUrl: "https://www.issquareup.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T06:00:00.000Z",
+  },
+  {
+    id: "adyen",
+    name: "Adyen",
+    category: "payments",
+    statusUrl: "https://status.adyen.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T06:00:00.000Z",
+  },
+  {
+    id: "paddle",
+    name: "Paddle",
+    category: "payments",
+    statusUrl: "https://paddlestatus.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T06:00:00.000Z",
+  },
+  {
+    id: "chargebee",
+    name: "Chargebee",
+    category: "payments",
+    statusUrl: "https://status.chargebee.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T06:00:00.000Z",
+  },
+  {
+    id: "recurly",
+    name: "Recurly",
+    category: "payments",
+    statusUrl: "https://status.recurly.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T06:00:00.000Z",
+  },
+  {
+    id: "klarna",
+    name: "Klarna",
+    category: "payments",
+    statusUrl: "https://status.klarna.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T06:00:00.000Z",
+  },
+  {
+    id: "plaid",
+    name: "Plaid",
+    category: "payments",
+    statusUrl: "https://status.plaid.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T06:00:00.000Z",
+  },
+  {
+    id: "gocardless",
+    name: "GoCardless",
+    category: "payments",
+    statusUrl: "https://www.gocardless-status.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T06:00:00.000Z",
   },
 ]
