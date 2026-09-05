@@ -1,7 +1,7 @@
 import type pg from "pg"
 
 /**
- * Static registry of board services (26 AI + Cloud Waves A–C + Developer Waves A–C + Data Waves A–C + Auth Wave A).
+ * Static registry of board services (26 AI + Cloud Waves A–C + Developer Waves A–C + Data Waves A–C + Auth Waves A–B).
  * Mirrors the ids in the Next.js app's data/services.ts (and public/logos/{id}.svg).
  * Windsurf is the legacy Devin Desktop name and is not seeded separately.
  * GitHub Copilot is a GitHub component, not its own card.
@@ -819,6 +819,76 @@ export const SERVICE_SEED = [
     name: "1Password",
     category: "auth",
     statusUrl: "https://status.1password.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "descope",
+    name: "Descope",
+    category: "auth",
+    statusUrl: "https://descopestatus.com/",
+    fetcherType: "instatus",
+  },
+  {
+    id: "duo",
+    name: "Duo",
+    category: "auth",
+    statusUrl: "https://status.duo.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "ping-identity",
+    name: "Ping Identity",
+    category: "auth",
+    statusUrl: "https://status.pingidentity.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "doppler",
+    name: "Doppler",
+    category: "auth",
+    statusUrl: "https://www.dopplerstatus.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "infisical",
+    name: "Infisical",
+    category: "auth",
+    statusUrl: "https://status.infisical.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "zitadel",
+    name: "Zitadel",
+    category: "auth",
+    statusUrl: "https://www.zitadelstatus.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "jumpcloud",
+    name: "JumpCloud",
+    category: "auth",
+    statusUrl: "https://status.jumpcloud.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "logto",
+    name: "Logto",
+    category: "auth",
+    statusUrl: "https://status.logto.io/",
+    fetcherType: "betterstack",
+  },
+  {
+    id: "magic",
+    name: "Magic",
+    category: "auth",
+    statusUrl: "https://status.magic.link/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "beyond-identity",
+    name: "Beyond Identity",
+    category: "auth",
+    statusUrl: "https://status.beyondidentity.com/",
     fetcherType: "statuspage",
   },
 ] as const

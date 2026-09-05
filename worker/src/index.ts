@@ -34,9 +34,12 @@
  * Statuspage, Turso, Qdrant, Meilisearch, and SurrealDB via Better Stack
  * `index.json`; Auth Wave A — Clerk, WorkOS, FusionAuth, Frontegg, and
  * 1Password via Statuspage, Auth0 via auth0.statuspage.io (custom domain
- * has no /api/v2), Stytch, Kinde, and PropelAuth via Instatus. AWS, Azure,
- * Fastly, Replit, Redis, Algolia, DataStax, and Okta are seeded without a
- * fetcher) and writes snapshots, components, and incidents to Postgres.
+ * has no /api/v2), Stytch, Kinde, and PropelAuth via Instatus; Auth Wave B
+ * — Duo, Ping Identity, Doppler, Infisical, Zitadel, JumpCloud, Magic, and
+ * Beyond Identity via Statuspage, Descope via Instatus, Logto via Better
+ * Stack `index.json`. AWS, Azure, Fastly, Replit, Redis, Algolia, DataStax,
+ * and Okta are seeded without a fetcher) and writes snapshots, components,
+ * and incidents to Postgres.
  * A tiny HTTP server exposes /healthz.
  */
 import { createServer } from "node:http"
@@ -110,8 +113,8 @@ type ServiceJob = {
 }
 
 // Board services with a fetcher (26 AI + Cloud Waves A–C + Developer Waves A–C
-// + Data Waves A–C + Auth Wave A; AWS, Azure, Fastly, Replit, Redis, Algolia,
-// DataStax, and Okta are none).
+// + Data Waves A–C + Auth Waves A–B; AWS, Azure, Fastly, Replit, Redis,
+// Algolia, DataStax, and Okta are none).
 const statuspageJob = (id: string, baseUrl: string): ServiceJob => ({
   id,
   fetch: () => fetchStatuspageState(baseUrl, fetchOptions()),
@@ -399,6 +402,25 @@ const SERVICE_JOBS: ServiceJob[] = [
     persistOptions: { resolveMissingIncidents: true },
   },
   statuspageJob("onepassword", "https://status.1password.com"),
+  // Auth Wave B.
+  {
+    id: "descope",
+    fetch: () => fetchInstatusState("https://descopestatus.com", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  statuspageJob("duo", "https://status.duo.com"),
+  statuspageJob("ping-identity", "https://status.pingidentity.com"),
+  statuspageJob("doppler", "https://www.dopplerstatus.com"),
+  statuspageJob("infisical", "https://status.infisical.com"),
+  statuspageJob("zitadel", "https://www.zitadelstatus.com"),
+  statuspageJob("jumpcloud", "https://status.jumpcloud.com"),
+  {
+    id: "logto",
+    fetch: () => fetchBetterstackState("https://status.logto.io", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  statuspageJob("magic", "https://status.magic.link"),
+  statuspageJob("beyond-identity", "https://status.beyondidentity.com"),
 ]
 
 async function fetchService(service: ServiceJob): Promise<boolean> {
