@@ -24,6 +24,7 @@ export type ServiceCategory =
   | "auth"
   | "payments"
   | "observability"
+  | "email"
 
 export type Service = {
   /** Matches a static mark at `public/logos/{id}.svg`. */
@@ -1711,5 +1712,260 @@ export const services: Service[] = [
     statusUrl: "https://status.embrace.io/",
     status: "operational",
     updatedAt: "2026-09-05T17:30:00.000Z",
+  },
+  // Email Wave A — transactional and marketing send, plus inbox APIs the
+  // notification path dies on. One card per vendor. SendGrid stays on
+  // Twilio (shared Statuspage). SES stays on AWS. Mandrill stays on
+  // Mailchimp. Gmail / Workspace stay off / on Google Cloud. Sinch owns
+  // Mailgun and Mailjet; they still have separate brands and status
+  // pages, so both cards stay. SparkPost stays on its own Statuspage
+  // (Bird acquired the brand).
+  {
+    id: "twilio",
+    name: "Twilio",
+    category: "email",
+    statusUrl: "https://status.twilio.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T17:50:00.000Z",
+  },
+  {
+    id: "mailgun",
+    name: "Mailgun",
+    category: "email",
+    statusUrl: "https://status.mailgun.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T17:50:00.000Z",
+  },
+  {
+    id: "resend",
+    name: "Resend",
+    category: "email",
+    statusUrl: "https://status.resend.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T17:50:00.000Z",
+  },
+  {
+    id: "klaviyo",
+    name: "Klaviyo",
+    category: "email",
+    statusUrl: "https://status.klaviyo.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T17:50:00.000Z",
+  },
+  {
+    id: "brevo",
+    name: "Brevo",
+    category: "email",
+    statusUrl: "https://status.brevo.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T17:50:00.000Z",
+  },
+  {
+    id: "customer-io",
+    name: "Customer.io",
+    category: "email",
+    statusUrl: "https://status.customer.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T17:50:00.000Z",
+  },
+  {
+    id: "sparkpost",
+    name: "SparkPost",
+    category: "email",
+    statusUrl: "https://status.sparkpost.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T17:50:00.000Z",
+  },
+  {
+    id: "braze",
+    name: "Braze",
+    category: "email",
+    statusUrl: "https://status.braze.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T17:50:00.000Z",
+  },
+  {
+    id: "loops",
+    name: "Loops",
+    category: "email",
+    statusUrl: "https://status.loops.so/",
+    status: "operational",
+    updatedAt: "2026-09-05T17:50:00.000Z",
+  },
+  {
+    id: "mailjet",
+    name: "Mailjet",
+    category: "email",
+    statusUrl: "https://status.mailjet.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T17:50:00.000Z",
+  },
+  // Email Wave B — more transactional / marketing send and inbox APIs.
+  // Courier waits (no official vector). Mandrill stays on Mailchimp.
+  // Kit is ConvertKit rebranded; do not use Simple Icons `kit` (kit.co).
+  {
+    id: "knock",
+    name: "Knock",
+    category: "email",
+    statusUrl: "https://status.knock.app/",
+    status: "operational",
+    updatedAt: "2026-09-05T18:00:00.000Z",
+  },
+  {
+    id: "iterable",
+    name: "Iterable",
+    category: "email",
+    statusUrl: "https://status.iterable.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T18:00:00.000Z",
+  },
+  {
+    id: "mailersend",
+    name: "MailerSend",
+    category: "email",
+    statusUrl: "https://status.mailersend.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T18:00:00.000Z",
+  },
+  {
+    id: "mailerlite",
+    name: "MailerLite",
+    category: "email",
+    statusUrl: "https://status.mailerlite.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T18:00:00.000Z",
+  },
+  {
+    id: "smtp2go",
+    name: "SMTP2GO",
+    category: "email",
+    statusUrl: "https://status.smtp2go.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T18:00:00.000Z",
+  },
+  {
+    id: "kit",
+    name: "Kit",
+    category: "email",
+    statusUrl: "https://status.kit.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T18:00:00.000Z",
+  },
+  {
+    id: "front",
+    name: "Front",
+    category: "email",
+    statusUrl: "https://www.frontstatus.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T18:00:00.000Z",
+  },
+  {
+    id: "omnisend",
+    name: "Omnisend",
+    category: "email",
+    statusUrl: "https://status.omnisend.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T18:00:00.000Z",
+  },
+  {
+    id: "postmark",
+    name: "Postmark",
+    category: "email",
+    statusUrl: "https://status.postmarkapp.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T18:00:00.000Z",
+  },
+  {
+    id: "mailchimp",
+    name: "Mailchimp",
+    category: "email",
+    statusUrl: "https://status.mailchimp.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T18:00:00.000Z",
+  },
+  // Email Wave C — remaining marketing send, inbox APIs, and
+  // transactional SMTP. Courier, Drip, AWeber, Constant Contact, and
+  // Beehiiv wait (no official vector, or the marketing site 403s).
+  // Mandrill stays on Mailchimp. Postmark stays its own card even
+  // though ActiveCampaign owns the brand.
+  {
+    id: "activecampaign",
+    name: "ActiveCampaign",
+    category: "email",
+    statusUrl: "https://status.activecampaign.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T18:10:00.000Z",
+  },
+  {
+    id: "getresponse",
+    name: "GetResponse",
+    category: "email",
+    statusUrl: "https://status.getresponse.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T18:10:00.000Z",
+  },
+  {
+    id: "campaign-monitor",
+    name: "Campaign Monitor",
+    category: "email",
+    statusUrl: "https://status.campaignmonitor.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T18:10:00.000Z",
+  },
+  {
+    id: "nylas",
+    name: "Nylas",
+    category: "email",
+    statusUrl: "https://status.nylas.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T18:10:00.000Z",
+  },
+  {
+    id: "emailoctopus",
+    name: "EmailOctopus",
+    category: "email",
+    statusUrl: "https://status.emailoctopus.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T18:10:00.000Z",
+  },
+  {
+    id: "onesignal",
+    name: "OneSignal",
+    category: "email",
+    statusUrl: "https://status.onesignal.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T18:10:00.000Z",
+  },
+  {
+    id: "hubspot",
+    name: "HubSpot",
+    category: "email",
+    statusUrl: "https://status.hubspot.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T18:10:00.000Z",
+  },
+  {
+    id: "help-scout",
+    name: "Help Scout",
+    category: "email",
+    statusUrl: "https://status.helpscout.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T18:10:00.000Z",
+  },
+  {
+    id: "mailtrap",
+    name: "Mailtrap",
+    category: "email",
+    statusUrl: "https://status.mailtrap.info/",
+    status: "operational",
+    updatedAt: "2026-09-05T18:10:00.000Z",
+  },
+  {
+    id: "substack",
+    name: "Substack",
+    category: "email",
+    statusUrl: "https://status.substack.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T18:10:00.000Z",
   },
 ]
