@@ -87,5 +87,35 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `crates.svg` | crates.io | `#FFFFFF` | Simple Icons `rust` (official Rust mark used by crates.io); white so official black reads on dark |
 | `expo.svg` | Expo | `#FFFFFF` | Simple Icons `expo`; white so official `#1C2024` reads on dark |
 | `cloudsmith.svg` | Cloudsmith | `#2A6FE1` | Simple Icons `cloudsmith` |
+| `supabase.svg` | Supabase | `#3FCF8E` | Simple Icons `supabase` |
+| `neon.svg` | Neon | `#34D59A` | Simple Icons `neon` |
+| `planetscale.svg` | PlanetScale | `#FFFFFF` | Simple Icons `planetscale`; white so official black reads on dark |
+| `convex.svg` | Convex | `#EE342F` | Simple Icons `convex` |
+| `upstash.svg` | Upstash | `#00E9A3` | Simple Icons `upstash` |
+| `redis.svg` | Redis | `#FF4438` | Simple Icons `redis` |
+| `pinecone.svg` | Pinecone | `#FFFFFF` | Official pinecone mark from the [pinecone.io](https://www.pinecone.io/) header lockup (wordmark dropped); white so official black reads on dark |
+| `mongodb.svg` | MongoDB | `#47A248` | Simple Icons `mongodb` |
+| `cockroach.svg` | CockroachDB | `#6933FF` | Simple Icons `cockroachlabs` |
+| `prisma.svg` | Prisma | `#FFFFFF` | Simple Icons `prisma`; white so official `#2D3748` reads on dark |
+| `snowflake.svg` | Snowflake | `#29B5E8` | Simple Icons `snowflake` |
+| `databricks.svg` | Databricks | `#FF3621` | Simple Icons `databricks` |
+| `clickhouse.svg` | ClickHouse | `#FFCC01` | Simple Icons `clickhouse` |
+| `elastic.svg` | Elastic | `#FFFFFF` | Simple Icons `elastic`; white so official `#005571` reads on dark |
+| `aiven.svg` | Aiven | `#FFFFFF` | Official bird from [aiven.io/favicon.svg](https://aiven.io/favicon.svg); black tile dropped so the mark reads on dark |
+| `influxdb.svg` | InfluxDB | `#22ADF6` | Simple Icons `influxdb` |
+| `couchbase.svg` | Couchbase | `#EA2328` | Simple Icons `couchbase` |
+| `confluent.svg` | Confluent | `#FFFFFF` | Official mark from the [confluent.io](https://www.confluent.io/) header lockup (wordmark dropped); white so official `#173361` reads on dark |
+| `tinybird.svg` | Tinybird | `#FFFFFF` / `#25283D` | Official mark from [cloud.tinybird.co/favicon.svg](https://cloud.tinybird.co/favicon.svg); light-scheme fills so the paper plane reads on dark |
+| `zilliz.svg` | Zilliz | Official gradient | Official mark from [zilliz.com/favicon.svg](https://zilliz.com/favicon.svg) |
+| `materialize.svg` | Materialize | `#7F4EFF` | Official mark from [materialize.com logomark](https://materialize.com/__static/01a06a7d-ac2a-4bf7-85bc-1c6f40465ed7/logos/logomark-purple.svg) |
+| `turso.svg` | Turso | `#4FF8D2` | Simple Icons `turso` |
+| `qdrant.svg` | Qdrant | `#DC244C` | Simple Icons `qdrant` |
+| `meilisearch.svg` | Meilisearch | `#FF5CAA` | Simple Icons `meilisearch` |
+| `algolia.svg` | Algolia | `#003DFF` | Simple Icons `algolia` |
+| `redpanda.svg` | Redpanda | `#E2401B` | Official panda mark from the [redpanda.com](https://www.redpanda.com/) header lockup (wordmark dropped) |
+| `surreal.svg` | SurrealDB | `#FF00A0` | Simple Icons `surrealdb` |
+| `yugabyte.svg` | Yugabyte | `#FF5F3B` | Official logomark from [docs.yugabyte.com/images/yugabytedb-logo.svg](https://docs.yugabyte.com/images/yugabytedb-logo.svg) (wordmark dropped) |
+| `tidb.svg` | TiDB | `#DC150B` | Simple Icons `tidb` |
+| `datastax.svg` | DataStax | `#FFFFFF` | Simple Icons `datastax`; white so official black reads on dark |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.

@@ -26,8 +26,14 @@
  * RubyGems, Maven Central, Postman, Augment, Factory, and Tabnine via
  * Statuspage, Zed via Instatus; Developer Wave C — Lovable, Bolt, Travis CI,
  * Semaphore, Harness, Codefresh, crates.io, Expo, and Cloudsmith via
- * Statuspage. AWS, Azure, Fastly, and Replit are seeded without a
- * fetcher) and writes snapshots, components, and incidents to Postgres.
+ * Statuspage; Data Wave A — Supabase, PlanetScale, Convex, Upstash,
+ * Pinecone, MongoDB, CockroachDB, and Prisma via Statuspage, Neon via
+ * Status.io; Data Wave B — Snowflake, ClickHouse, Elastic, Aiven, InfluxDB,
+ * Couchbase, Confluent, Tinybird, and Zilliz via Statuspage, Databricks via
+ * Status.io; Data Wave C — Materialize, Redpanda, Yugabyte, and TiDB via
+ * Statuspage, Turso, Qdrant, Meilisearch, and SurrealDB via Better Stack
+ * `index.json`. AWS, Azure, Fastly, Replit, Redis, Algolia, and DataStax
+ * are seeded without a fetcher) and writes snapshots, components, and incidents to Postgres.
  * A tiny HTTP server exposes /healthz.
  */
 import { createServer } from "node:http"
@@ -44,7 +50,14 @@ import {
   fetchGoogleCloudGeminiState,
   fetchGoogleCloudPlatformState,
 } from "./google-cloud.js"
-import { fetchGitlabState } from "./gitlab.js"
+import {
+  fetchGitlabState,
+  fetchStatusIoState,
+  DATABRICKS_STATUS_PAGE,
+  DATABRICKS_STATUS_PAGE_ID,
+  NEON_STATUS_PAGE,
+  NEON_STATUS_PAGE_ID,
+} from "./gitlab.js"
 import { fetchHerokuState } from "./heroku.js"
 import { fetchHetznerState } from "./hetzner.js"
 import { fetchOracleCloudState } from "./oracle-cloud.js"
@@ -93,8 +106,8 @@ type ServiceJob = {
   persistOptions?: PersistOptions
 }
 
-// Board services with a fetcher (26 AI + Cloud Waves A–C + Developer Waves A–C;
-// AWS, Azure, Fastly, and Replit are none).
+// Board services with a fetcher (26 AI + Cloud Waves A–C + Developer Waves A–C
+// + Data Wave A; AWS, Azure, Fastly, Replit, and Redis are none).
 const statuspageJob = (id: string, baseUrl: string): ServiceJob => ({
   id,
   fetch: () => fetchStatuspageState(baseUrl, fetchOptions()),
@@ -300,6 +313,65 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("crates", "https://status.crates.io"),
   statuspageJob("expo", "https://status.expo.dev"),
   statuspageJob("cloudsmith", "https://status.cloudsmith.com"),
+  // Data Wave A. Redis is none (custom status.redis.io page, no public JSON).
+  statuspageJob("supabase", "https://status.supabase.com"),
+  {
+    id: "neon",
+    fetch: () => fetchStatusIoState(NEON_STATUS_PAGE, NEON_STATUS_PAGE_ID, fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  statuspageJob("planetscale", "https://www.planetscalestatus.com"),
+  statuspageJob("convex", "https://status.convex.dev"),
+  statuspageJob("upstash", "https://status.upstash.com"),
+  statuspageJob("pinecone", "https://status.pinecone.io"),
+  statuspageJob("mongodb", "https://status.mongodb.com"),
+  statuspageJob("cockroach", "https://status.cockroachlabs.cloud"),
+  statuspageJob("prisma", "https://www.prisma-status.com"),
+  // Data Wave B. Databricks is Status.io (one card; GCP/Azure pages stay here).
+  statuspageJob("snowflake", "https://status.snowflake.com"),
+  {
+    id: "databricks",
+    fetch: () =>
+      fetchStatusIoState(
+        DATABRICKS_STATUS_PAGE,
+        DATABRICKS_STATUS_PAGE_ID,
+        fetchOptions(),
+      ),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  statuspageJob("clickhouse", "https://status.clickhouse.com"),
+  statuspageJob("elastic", "https://status.elastic.co"),
+  statuspageJob("aiven", "https://status.aiven.io"),
+  statuspageJob("influxdb", "https://status.influxdata.com"),
+  statuspageJob("couchbase", "https://status.couchbase.com"),
+  statuspageJob("confluent", "https://status.confluent.cloud"),
+  statuspageJob("tinybird", "https://status.tinybird.co"),
+  statuspageJob("zilliz", "https://status.zilliz.com"),
+  // Data Wave C. Algolia is a custom SPA; DataStax Statuspage is inactive.
+  statuspageJob("materialize", "https://status.materialize.com"),
+  {
+    id: "turso",
+    fetch: () => fetchBetterstackState("https://status.turso.tech", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  {
+    id: "qdrant",
+    fetch: () => fetchBetterstackState("https://status.qdrant.io", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  {
+    id: "meilisearch",
+    fetch: () => fetchBetterstackState("https://status.meilisearch.com", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  statuspageJob("redpanda", "https://status.redpanda.com"),
+  {
+    id: "surreal",
+    fetch: () => fetchBetterstackState("https://status.surrealdb.com", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  statuspageJob("yugabyte", "https://status.yugabyte.cloud"),
+  statuspageJob("tidb", "https://status.tidbcloud.com"),
 ]
 
 async function fetchService(service: ServiceJob): Promise<boolean> {

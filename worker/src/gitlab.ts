@@ -18,6 +18,12 @@ export const GITLAB_STATUS_PAGE = "https://status.gitlab.com"
 export const GITLAB_STATUS_PAGE_ID = "5b36dc6502d06804c08349f7"
 export const GITLAB_STATUS_API = `https://api.status.io/1.0/status/${GITLAB_STATUS_PAGE_ID}`
 
+export const NEON_STATUS_PAGE = "https://neonstatus.com"
+export const NEON_STATUS_PAGE_ID = "6878fc85709daa75be6c7e3c"
+
+export const DATABRICKS_STATUS_PAGE = "https://status.databricks.com"
+export const DATABRICKS_STATUS_PAGE_ID = "5cf02dde58a00904bda41926"
+
 export type StatusIoComponent = {
   id?: string
   name?: string
@@ -150,6 +156,8 @@ function isResolvedIncident(incident: StatusIoIncident): boolean {
 
 export type MapGitlabOptions = {
   maxIncidents?: number
+  pageUrl?: string
+  pageId?: string
 }
 
 /**
@@ -163,8 +171,10 @@ export function mapGitlab(
 ): MappedServiceState {
   const result = payload.result
   if (!result) {
-    throw new Error("GitLab Status.io payload was missing result")
+    throw new Error("Status.io payload was missing result")
   }
+  const pageUrl = options.pageUrl ?? GITLAB_STATUS_PAGE
+  const pageId = options.pageId ?? GITLAB_STATUS_PAGE_ID
 
   const components: MappedComponent[] = (result.status ?? [])
     .filter((component) => component.id && component.name)
@@ -197,7 +207,7 @@ export function mapGitlab(
       title: incident.name as string,
       status: resolved ? "resolved" : incidentState(incident),
       impact: incident.current_status ? incident.current_status.toLowerCase() : null,
-      url: `${GITLAB_STATUS_PAGE}/pages/incident/${GITLAB_STATUS_PAGE_ID}/${id}`,
+      url: `${pageUrl}/pages/incident/${pageId}/${id}`,
       startedAt: toIso(incident.datetime_open),
       resolvedAt: resolved ? toIso(incident.datetime_resolved) : null,
     }
@@ -215,7 +225,7 @@ export function mapGitlab(
         title,
         status: "in_progress",
         impact: "maintenance",
-        url: GITLAB_STATUS_PAGE,
+        url: pageUrl,
         startedAt: toIso(window.datetime_planned_start ?? window.datetime_open),
         resolvedAt: null,
       })
@@ -230,7 +240,7 @@ export function mapGitlab(
     incidentTitle: openTitle ?? maintenanceTitle,
     detail: {
       source: "status_io",
-      pageUrl: GITLAB_STATUS_PAGE,
+      pageUrl,
       overall: result.status_overall?.status ?? null,
       overallCode: result.status_overall?.status_code ?? null,
       activeMaintenanceCount: activeMaintenance.length,
@@ -253,13 +263,29 @@ async function fetchJson<T>(url: string, options: FetchOptions): Promise<T> {
 }
 
 /**
- * Fetch and map live GitLab.com state from the Status.io public API.
+ * Fetch and map a Status.io public status page.
  * Throws on network error, timeout, non-2xx, or unparseable payload.
  */
-export async function fetchGitlabState(options: FetchOptions): Promise<MappedServiceState> {
-  const payload = await fetchJson<StatusIoPayload>(GITLAB_STATUS_API, options)
+export async function fetchStatusIoState(
+  pageUrl: string,
+  pageId: string,
+  options: FetchOptions,
+): Promise<MappedServiceState> {
+  const api = `https://api.status.io/1.0/status/${pageId}`
+  const payload = await fetchJson<StatusIoPayload>(api, options)
   if (!payload?.result || !payload.result.status_overall) {
-    throw new Error(`Unexpected GitLab Status.io payload from ${GITLAB_STATUS_API}`)
+    throw new Error(`Unexpected Status.io payload from ${api}`)
   }
-  return mapGitlab(payload, { maxIncidents: options.maxIncidents })
+  return mapGitlab(payload, {
+    maxIncidents: options.maxIncidents,
+    pageUrl,
+    pageId,
+  })
+}
+
+/**
+ * Fetch and map live GitLab.com state from the Status.io public API.
+ */
+export async function fetchGitlabState(options: FetchOptions): Promise<MappedServiceState> {
+  return fetchStatusIoState(GITLAB_STATUS_PAGE, GITLAB_STATUS_PAGE_ID, options)
 }

@@ -1,13 +1,13 @@
 import type pg from "pg"
 
 /**
- * Static registry of board services (26 AI + Cloud Waves A–C + Developer Waves A–C).
+ * Static registry of board services (26 AI + Cloud Waves A–C + Developer Waves A–C + Data Waves A–C).
  * Mirrors the ids in the Next.js app's data/services.ts (and public/logos/{id}.svg).
  * Windsurf is the legacy Devin Desktop name and is not seeded separately.
  * GitHub Copilot is a GitHub component, not its own card.
  *
- * `category` defaults to `ai` when omitted. AWS, Azure, Fastly, and Replit
- * are `none` until a dedicated fetcher exists.
+ * `category` defaults to `ai` when omitted. AWS, Azure, Fastly, Replit,
+ * Redis, Algolia, and DataStax are `none` until a dedicated fetcher exists.
  */
 export const SERVICE_SEED = [
   {
@@ -540,6 +540,216 @@ export const SERVICE_SEED = [
     category: "developer",
     statusUrl: "https://status.cloudsmith.com/",
     fetcherType: "statuspage",
+  },
+  {
+    id: "supabase",
+    name: "Supabase",
+    category: "data",
+    statusUrl: "https://status.supabase.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "neon",
+    name: "Neon",
+    category: "data",
+    statusUrl: "https://neonstatus.com/",
+    fetcherType: "status_io",
+  },
+  {
+    id: "planetscale",
+    name: "PlanetScale",
+    category: "data",
+    statusUrl: "https://www.planetscalestatus.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "convex",
+    name: "Convex",
+    category: "data",
+    statusUrl: "https://status.convex.dev/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "upstash",
+    name: "Upstash",
+    category: "data",
+    statusUrl: "https://status.upstash.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "redis",
+    name: "Redis",
+    category: "data",
+    statusUrl: "https://status.redis.io/",
+    fetcherType: "none",
+  },
+  {
+    id: "pinecone",
+    name: "Pinecone",
+    category: "data",
+    statusUrl: "https://status.pinecone.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "mongodb",
+    name: "MongoDB",
+    category: "data",
+    statusUrl: "https://status.mongodb.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "cockroach",
+    name: "CockroachDB",
+    category: "data",
+    statusUrl: "https://status.cockroachlabs.cloud/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "prisma",
+    name: "Prisma",
+    category: "data",
+    statusUrl: "https://www.prisma-status.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "snowflake",
+    name: "Snowflake",
+    category: "data",
+    statusUrl: "https://status.snowflake.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "databricks",
+    name: "Databricks",
+    category: "data",
+    statusUrl: "https://status.databricks.com/",
+    fetcherType: "status_io",
+  },
+  {
+    id: "clickhouse",
+    name: "ClickHouse",
+    category: "data",
+    statusUrl: "https://status.clickhouse.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "elastic",
+    name: "Elastic",
+    category: "data",
+    statusUrl: "https://status.elastic.co/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "aiven",
+    name: "Aiven",
+    category: "data",
+    statusUrl: "https://status.aiven.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "influxdb",
+    name: "InfluxDB",
+    category: "data",
+    statusUrl: "https://status.influxdata.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "couchbase",
+    name: "Couchbase",
+    category: "data",
+    statusUrl: "https://status.couchbase.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "confluent",
+    name: "Confluent",
+    category: "data",
+    statusUrl: "https://status.confluent.cloud/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "tinybird",
+    name: "Tinybird",
+    category: "data",
+    statusUrl: "https://status.tinybird.co/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "zilliz",
+    name: "Zilliz",
+    category: "data",
+    statusUrl: "https://status.zilliz.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "materialize",
+    name: "Materialize",
+    category: "data",
+    statusUrl: "https://status.materialize.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "turso",
+    name: "Turso",
+    category: "data",
+    statusUrl: "https://status.turso.tech/",
+    fetcherType: "betterstack",
+  },
+  {
+    id: "qdrant",
+    name: "Qdrant",
+    category: "data",
+    statusUrl: "https://status.qdrant.io/",
+    fetcherType: "betterstack",
+  },
+  {
+    id: "meilisearch",
+    name: "Meilisearch",
+    category: "data",
+    statusUrl: "https://status.meilisearch.com/",
+    fetcherType: "betterstack",
+  },
+  {
+    id: "algolia",
+    name: "Algolia",
+    category: "data",
+    statusUrl: "https://status.algolia.com/",
+    fetcherType: "none",
+  },
+  {
+    id: "redpanda",
+    name: "Redpanda",
+    category: "data",
+    statusUrl: "https://status.redpanda.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "surreal",
+    name: "SurrealDB",
+    category: "data",
+    statusUrl: "https://status.surrealdb.com/",
+    fetcherType: "betterstack",
+  },
+  {
+    id: "yugabyte",
+    name: "Yugabyte",
+    category: "data",
+    statusUrl: "https://status.yugabyte.cloud/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "tidb",
+    name: "TiDB",
+    category: "data",
+    statusUrl: "https://status.tidbcloud.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "datastax",
+    name: "DataStax",
+    category: "data",
+    statusUrl: "https://status.datastax.com/",
+    fetcherType: "none",
   },
 ] as const
 
