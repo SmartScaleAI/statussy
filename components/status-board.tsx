@@ -6,7 +6,7 @@ import { StatusSummary } from "@/components/status-summary"
 import { getStatusBoard } from "@/lib/status-board"
 
 export async function StatusBoard() {
-  const { items, summary, refreshedAt } = await getStatusBoard()
+  const { items, summary } = await getStatusBoard()
 
   return (
     <FavoriteServicesProvider>
@@ -36,7 +36,6 @@ export async function StatusBoard() {
               operational={summary.operational}
               issues={summary.issues}
               total={summary.total}
-              refreshedAt={refreshedAt}
             />
           </div>
           <StatusBoardGrid

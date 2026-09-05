@@ -1,3 +1,4 @@
+import { cache } from "react"
 import { connection } from "next/server"
 
 import { LAST_REFRESHED_AT, services } from "@/data/services"
@@ -16,7 +17,7 @@ import {
  *
  * Kept out of `lib/status.ts` so card helpers stay client-safe (SMA-37).
  */
-export async function getStatusBoard() {
+export const getStatusBoard = cache(async function getStatusBoard() {
   // Status must reflect the DB at request time, never a build-time prerender.
   await connection()
   const snapshots = await getLiveSnapshots()
@@ -60,4 +61,4 @@ export async function getStatusBoard() {
     refreshedAt: refreshedAt ?? LAST_REFRESHED_AT,
     source: liveCount > 0 ? ("live" as const) : ("mock" as const),
   }
-}
+})
