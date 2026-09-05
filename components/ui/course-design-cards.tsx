@@ -3,12 +3,12 @@
  * https://21st.dev/@kristen17/components/course-design-cards
  * Source file: https://cdn.21st.dev/larsen66/course-design-cards/code.1753891438710.tsx
  *
- * Small Statussy adaptations (SMA-9 / SMA-12): optional official-status href,
- * no fake “add teammate” control. Header menu replaced with a local favorite
- * star. Footer is a compact text link (underline on hover/press).
+ * Small Statussy adaptations (SMA-9 / SMA-12): no fake “add teammate”
+ * control. Header menu replaced with a local favorite star.
  *
  * SMA-33: the whole card is the detail hit target (stretched overlay link).
  * Star + Official status sit above it and stopPropagation so they stay usable.
+ * SMA-36: shelf has no divider; timestamps include a UTC suffix.
  */
 "use client"
 

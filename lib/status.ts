@@ -92,15 +92,15 @@ export function formatTimestamp(iso: string) {
   }).format(new Date(iso))
 }
 
-/** Compact card footer stamp — no “Updated” / timezone suffix. */
+/** Compact card footer stamp with a UTC suffix (SMA-36). */
 export function formatCardUpdatedAt(iso: string) {
-  return new Intl.DateTimeFormat("en-US", {
+  return `${new Intl.DateTimeFormat("en-US", {
     month: "short",
     day: "numeric",
     hour: "numeric",
     minute: "2-digit",
     timeZone: "UTC",
-  }).format(new Date(iso))
+  }).format(new Date(iso))} UTC`
 }
 
 /**

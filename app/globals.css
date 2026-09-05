@@ -196,6 +196,10 @@
   display: inline-block;
 }
 
+.course-design-board ul.grid > li {
+  display: flex;
+}
+
 .course-design-board .card {
   isolation: isolate;
   z-index: 1;
@@ -206,6 +210,11 @@
   flex-direction: column;
   position: relative;
   box-shadow: var(--card-shadow);
+}
+
+.course-design-board .card:not(.plain) {
+  min-height: 14.5rem;
+  flex: 1 1 auto;
 }
 
 /* Whole-card detail hit target (SMA-33). Star + Official status sit above it. */
@@ -227,7 +236,7 @@
 .course-design-board .card:not(.plain):has(.card-hit-target):hover,
 .course-design-board .card:not(.plain):has(.card-hit-target:focus-visible) {
   z-index: 2;
-  transform: translateY(-0.35rem) scale(1.025);
+  transform: translateY(-0.12rem);
   box-shadow: var(--card-shadow-hover);
 }
 
@@ -385,10 +394,12 @@
 
 .course-design-board .card-body {
   width: 100%;
+  flex: 1 1 auto;
   padding: 0.5rem 1.35rem 0.75rem;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   position: relative;
   box-sizing: border-box;
 }
@@ -428,6 +439,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: center;
   gap: 0.4rem;
   margin-top: 0.7rem;
 }
@@ -451,7 +463,6 @@
 }
 
 .course-design-board .card-footer {
-  border-top: 0.063rem solid var(--color-gray-dark);
   background: var(--bg-footer);
   border-bottom-right-radius: 1rem;
   border-bottom-left-radius: 1rem;
@@ -501,7 +512,7 @@
 
 .course-design-board .card.green {
   background: radial-gradient(
-    at 100% 0,
+    at 0 0,
     color-mix(in srgb, var(--clr-green) var(--card-wash-green), transparent),
     var(--bg-footer) 47%,
     var(--bg-footer)
@@ -510,7 +521,7 @@
 
 .course-design-board .card.green:before {
   background: linear-gradient(
-      45deg,
+      to bottom right,
       var(--bg-dark),
       var(--bg-dark),
       var(--bg-dark),
@@ -522,7 +533,7 @@
 
 .course-design-board .card.blue {
   background: radial-gradient(
-    at 100% 0,
+    at 0 0,
     color-mix(in srgb, var(--clr-blue) var(--card-wash-blue), transparent),
     var(--bg-footer) 45%,
     var(--bg-footer)
@@ -531,7 +542,7 @@
 
 .course-design-board .card.blue:before {
   background: linear-gradient(
-      45deg,
+      to bottom right,
       var(--bg-dark),
       var(--bg-dark),
       var(--bg-dark),
@@ -543,7 +554,7 @@
 
 .course-design-board .card.amber {
   background: radial-gradient(
-    at 100% 0,
+    at 0 0,
     color-mix(in srgb, var(--clr-amber) var(--card-wash-amber), transparent),
     var(--bg-footer) 47%,
     var(--bg-footer)
@@ -552,7 +563,7 @@
 
 .course-design-board .card.amber:before {
   background: linear-gradient(
-      45deg,
+      to bottom right,
       var(--bg-dark),
       var(--bg-dark),
       var(--bg-dark),
@@ -564,7 +575,7 @@
 
 .course-design-board .card.red {
   background: radial-gradient(
-    at 100% 0,
+    at 0 0,
     color-mix(in srgb, var(--clr-red) var(--card-wash-red), transparent),
     var(--bg-footer) 47%,
     var(--bg-footer)
@@ -573,7 +584,7 @@
 
 .course-design-board .card.red:before {
   background: linear-gradient(
-      45deg,
+      to bottom right,
       var(--bg-dark),
       var(--bg-dark),
       var(--bg-dark),
