@@ -1,13 +1,6 @@
-import { ArrowUpDownIcon, FunnelIcon, SearchIcon } from "lucide-react"
-
 import { ServiceCard } from "@/components/service-card"
+import { StatusBoardGrid } from "@/components/status-board-grid"
 import { StatusSummary } from "@/components/status-summary"
-import { Button } from "@/components/ui/button"
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "@/components/ui/input-group"
 import { getStatusBoard } from "@/lib/status"
 
 export async function StatusBoard() {
@@ -32,45 +25,17 @@ export async function StatusBoard() {
           refreshedAt={refreshedAt}
         />
       </div>
-      <div className="flex flex-col gap-6">
-        <div className="flex items-center gap-2">
-          <InputGroup className="h-10 min-w-0 flex-1">
-            <InputGroupInput
-              id="service-search"
-              type="search"
-              placeholder="Search services by name..."
-              aria-label="Search services by name"
-              className="h-10"
-            />
-            <InputGroupAddon align="inline-start">
-              <SearchIcon />
-            </InputGroupAddon>
-          </InputGroup>
-          <Button
-            type="button"
-            variant="outline"
-            size="icon"
-            aria-label="Filters"
-            className="size-10"
-          >
-            <FunnelIcon />
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            size="icon"
-            aria-label="Sort"
-            className="size-10"
-          >
-            <ArrowUpDownIcon />
-          </Button>
-        </div>
-        <ul className="grid grid-cols-1 gap-10 sm:grid-cols-2 xl:grid-cols-3">
-          {items.map((service) => (
-            <ServiceCard key={service.id} service={service} />
-          ))}
-        </ul>
-      </div>
+      <StatusBoardGrid
+        items={items.map((item) => ({
+          id: item.id,
+          name: item.name,
+          category: item.category,
+        }))}
+      >
+        {items.map((service) => (
+          <ServiceCard key={service.id} service={service} />
+        ))}
+      </StatusBoardGrid>
     </section>
   )
 }
