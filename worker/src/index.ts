@@ -37,7 +37,10 @@
  * has no /api/v2), Stytch, Kinde, and PropelAuth via Instatus; Auth Wave B
  * — Duo, Ping Identity, Doppler, Infisical, Zitadel, JumpCloud, Magic, and
  * Beyond Identity via Statuspage, Descope via Instatus, Logto via Better
- * Stack `index.json`. AWS, Azure, Fastly, Replit, Redis, Algolia, DataStax,
+ * Stack `index.json`; Auth Wave C — LoginRadius, Scalekit, Transmit
+ * Security, SecureAuth, Keeper, Yubico, Akeyless, SailPoint, and Delinea
+ * via Statuspage, LastPass via lastpass.statuspage.io (the public host
+ * challenges /api/v2). AWS, Azure, Fastly, Replit, Redis, Algolia, DataStax,
  * and Okta are seeded without a fetcher) and writes snapshots, components,
  * and incidents to Postgres.
  * A tiny HTTP server exposes /healthz.
@@ -421,6 +424,18 @@ const SERVICE_JOBS: ServiceJob[] = [
   },
   statuspageJob("magic", "https://status.magic.link"),
   statuspageJob("beyond-identity", "https://status.beyondidentity.com"),
+  // Auth Wave C. LastPass's public host challenges /api/v2; hit the
+  // Statuspage host (same pattern as Auth0).
+  statuspageJob("loginradius", "https://status.loginradius.com"),
+  statuspageJob("scalekit", "https://scalekit.statuspage.io"),
+  statuspageJob("transmit-security", "https://status.transmitsecurity.io"),
+  statuspageJob("secureauth", "https://status.secureauth.com"),
+  statuspageJob("lastpass", "https://lastpass.statuspage.io"),
+  statuspageJob("keeper", "https://statuspage.keeper.io"),
+  statuspageJob("yubico", "https://status.yubico.com"),
+  statuspageJob("akeyless", "https://status.akeyless.io"),
+  statuspageJob("sailpoint", "https://status.sailpoint.com"),
+  statuspageJob("delinea", "https://status.delinea.com"),
 ]
 
 async function fetchService(service: ServiceJob): Promise<boolean> {

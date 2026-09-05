@@ -137,5 +137,15 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `logto.svg` | Logto | Official purple–pink gradient | Official mark from the [logto-io/logto](https://github.com/logto-io/logto) console logo (wordmark dropped) |
 | `magic.svg` | Magic | `#6851FF` | LobeHub `magic` (official interlocking-circle mark); Magic Labs brand purple |
 | `beyond-identity.svg` | Beyond Identity | `#FFFFFF` | Official chevrons from the [beyondidentity.com](https://www.beyondidentity.com/) header lockup (wordmark dropped); white so official `#222326` reads on dark |
+| `loginradius.svg` | LoginRadius | `#008ECF` / `#FFFFFF` | Official rings from the [LoginRadius/engineering-portal](https://github.com/LoginRadius/engineering-portal) `static/logo.svg` on-dark lockup (wordmark dropped) |
+| `scalekit.svg` | Scalekit | `#FFFFFF` | Official S from the [scalekit.com](https://www.scalekit.com/) header lockup (wordmark dropped); white so official `#0E1828` reads on dark |
+| `transmit-security.svg` | Transmit Security | Official reds + `#1C2745` | Official T from [transmitsecurity.com](https://www.transmitsecurity.com/) `transmit-main-logo` (wordmark dropped) |
+| `secureauth.svg` | SecureAuth | `#2898FF` | Official mark from [secureauth.com/secureauth-favicon.svg](https://www.secureauth.com/secureauth-favicon.svg) |
+| `lastpass.svg` | LastPass | `#D32D27` | Simple Icons `lastpass` |
+| `keeper.svg` | Keeper | `#FFC700` | Official shield from [keepersecurity.com](https://www.keepersecurity.com/) `keeper-logo-light` (wordmark dropped) |
+| `yubico.svg` | Yubico | `#84BD00` | Simple Icons `yubico` path; official Yubico green |
+| `akeyless.svg` | Akeyless | `#01D9C1` | Official A from [akeyless.io](https://www.akeyless.io/) brand lockup (wordmark dropped) |
+| `sailpoint.svg` | SailPoint | Official sail colors | Official sail from [sailpoint.com/images/SailPoint-logo.svg](https://www.sailpoint.com/images/SailPoint-logo.svg) (wordmark dropped) |
+| `delinea.svg` | Delinea | `#00FF5A` | Official D from the [delinea.com](https://delinea.com/) wordmark lockup (wordmark dropped) |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.
