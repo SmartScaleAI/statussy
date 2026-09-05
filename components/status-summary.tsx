@@ -6,7 +6,7 @@ type StatusSummaryProps = {
   operational: number
   issues: number
   total: number
-  /** Omit on My Stack so the board keeps a single refreshed clock. */
+  /** Omit on My Services so the board keeps a single refreshed clock. */
   refreshedAt?: string
 }
 
