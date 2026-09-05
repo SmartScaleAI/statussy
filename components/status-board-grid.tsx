@@ -111,7 +111,7 @@ export function StatusBoardGrid({
                 onClick={() => setCategory(id)}
                 className={cn(
                   selected &&
-                    "bg-foreground/20 text-foreground hover:bg-foreground/25"
+                    "bg-[var(--bg-footer)] text-foreground hover:bg-[var(--bg-footer)]"
                 )}
               >
                 {formatCategoryLabel(id)}
