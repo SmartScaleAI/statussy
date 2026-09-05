@@ -16,7 +16,7 @@ export const SERVICE_STATUSES = [
 
 export type ServiceStatus = (typeof SERVICE_STATUSES)[number]
 
-export type ServiceCategory = "ai" | "cloud" | "developer" | "data"
+export type ServiceCategory = "ai" | "cloud" | "developer" | "data" | "auth"
 
 export type Service = {
   /** Matches a static mark at `public/logos/{id}.svg`. */
@@ -955,5 +955,88 @@ export const services: Service[] = [
     statusUrl: "https://status.datastax.com/",
     status: "operational",
     updatedAt: "2026-09-05T04:40:00.000Z",
+  },
+  // Auth Wave A — identity and secrets the login path dies on. One card
+  // per vendor. Supabase Auth / Firebase Auth / Cognito stay on their
+  // Data / Cloud parents. Vault waits for Infra. Okta has no public JSON.
+  {
+    id: "auth0",
+    name: "Auth0",
+    category: "auth",
+    statusUrl: "https://status.auth0.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:50:00.000Z",
+  },
+  {
+    id: "clerk",
+    name: "Clerk",
+    category: "auth",
+    statusUrl: "https://status.clerk.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:50:00.000Z",
+  },
+  {
+    id: "workos",
+    name: "WorkOS",
+    category: "auth",
+    statusUrl: "https://status.workos.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:50:00.000Z",
+  },
+  {
+    id: "okta",
+    name: "Okta",
+    category: "auth",
+    statusUrl: "https://status.okta.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:50:00.000Z",
+  },
+  {
+    id: "stytch",
+    name: "Stytch",
+    category: "auth",
+    statusUrl: "https://status.stytch.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:50:00.000Z",
+  },
+  {
+    id: "kinde",
+    name: "Kinde",
+    category: "auth",
+    statusUrl: "https://status.kinde.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:50:00.000Z",
+  },
+  {
+    id: "fusionauth",
+    name: "FusionAuth",
+    category: "auth",
+    statusUrl: "https://status.fusionauth.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:50:00.000Z",
+  },
+  {
+    id: "frontegg",
+    name: "Frontegg",
+    category: "auth",
+    statusUrl: "https://status.frontegg.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:50:00.000Z",
+  },
+  {
+    id: "propelauth",
+    name: "PropelAuth",
+    category: "auth",
+    statusUrl: "https://status.propelauth.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:50:00.000Z",
+  },
+  {
+    id: "onepassword",
+    name: "1Password",
+    category: "auth",
+    statusUrl: "https://status.1password.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:50:00.000Z",
   },
 ]

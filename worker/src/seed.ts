@@ -1,13 +1,13 @@
 import type pg from "pg"
 
 /**
- * Static registry of board services (26 AI + Cloud Waves A–C + Developer Waves A–C + Data Waves A–C).
+ * Static registry of board services (26 AI + Cloud Waves A–C + Developer Waves A–C + Data Waves A–C + Auth Wave A).
  * Mirrors the ids in the Next.js app's data/services.ts (and public/logos/{id}.svg).
  * Windsurf is the legacy Devin Desktop name and is not seeded separately.
  * GitHub Copilot is a GitHub component, not its own card.
  *
  * `category` defaults to `ai` when omitted. AWS, Azure, Fastly, Replit,
- * Redis, Algolia, and DataStax are `none` until a dedicated fetcher exists.
+ * Redis, Algolia, DataStax, and Okta are `none` until a dedicated fetcher exists.
  */
 export const SERVICE_SEED = [
   {
@@ -750,6 +750,76 @@ export const SERVICE_SEED = [
     category: "data",
     statusUrl: "https://status.datastax.com/",
     fetcherType: "none",
+  },
+  {
+    id: "auth0",
+    name: "Auth0",
+    category: "auth",
+    statusUrl: "https://status.auth0.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "clerk",
+    name: "Clerk",
+    category: "auth",
+    statusUrl: "https://status.clerk.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "workos",
+    name: "WorkOS",
+    category: "auth",
+    statusUrl: "https://status.workos.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "okta",
+    name: "Okta",
+    category: "auth",
+    statusUrl: "https://status.okta.com/",
+    fetcherType: "none",
+  },
+  {
+    id: "stytch",
+    name: "Stytch",
+    category: "auth",
+    statusUrl: "https://status.stytch.com/",
+    fetcherType: "instatus",
+  },
+  {
+    id: "kinde",
+    name: "Kinde",
+    category: "auth",
+    statusUrl: "https://status.kinde.com/",
+    fetcherType: "instatus",
+  },
+  {
+    id: "fusionauth",
+    name: "FusionAuth",
+    category: "auth",
+    statusUrl: "https://status.fusionauth.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "frontegg",
+    name: "Frontegg",
+    category: "auth",
+    statusUrl: "https://status.frontegg.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "propelauth",
+    name: "PropelAuth",
+    category: "auth",
+    statusUrl: "https://status.propelauth.com/",
+    fetcherType: "instatus",
+  },
+  {
+    id: "onepassword",
+    name: "1Password",
+    category: "auth",
+    statusUrl: "https://status.1password.com/",
+    fetcherType: "statuspage",
   },
 ] as const
 

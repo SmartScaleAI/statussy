@@ -117,5 +117,15 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `yugabyte.svg` | Yugabyte | `#FF5F3B` | Official logomark from [docs.yugabyte.com/images/yugabytedb-logo.svg](https://docs.yugabyte.com/images/yugabytedb-logo.svg) (wordmark dropped) |
 | `tidb.svg` | TiDB | `#DC150B` | Simple Icons `tidb` |
 | `datastax.svg` | DataStax | `#FFFFFF` | Simple Icons `datastax`; white so official black reads on dark |
+| `auth0.svg` | Auth0 | `#EB5424` | Simple Icons `auth0` |
+| `clerk.svg` | Clerk | `#6C47FF` | Simple Icons `clerk` |
+| `workos.svg` | WorkOS | `#6363F1` | Official chevrons from the [workos.com](https://workos.com/) header lockup (wordmark dropped) |
+| `okta.svg` | Okta | `#007DC1` | Simple Icons `okta` |
+| `stytch.svg` | Stytch | `#B2D6DE` | Official mark from the Mintlify favicon; dark tile dropped |
+| `kinde.svg` | Kinde | `#FFFFFF` | Official K from [kinde.com/icon.svg](https://kinde.com/icon.svg); white tile dropped; black knocked to white |
+| `fusionauth.svg` | FusionAuth | `#F58320` | Simple Icons `fusionauth` |
+| `frontegg.svg` | Frontegg | `#FFFFFF` | Official mark from frontegg `ficon.svg`; dark rounded tile dropped; white paths |
+| `propelauth.svg` | PropelAuth | Official green gradient | Official mark from [propelauth.com/imgs/mark.svg](https://www.propelauth.com/imgs/mark.svg) |
+| `onepassword.svg` | 1Password | `#145FE4` | Simple Icons `1password` |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.
