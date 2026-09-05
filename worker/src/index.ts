@@ -82,7 +82,9 @@
  * Wave C — Bloomreach via Statuspage, Omniconvert via Better Stack
  * `index.json`; Analytics Wave A — Amplitude, Mixpanel via
  * www.mixpanelstatus.com, Segment, Heap, Pendo, and RudderStack via
- * Statuspage, Plausible via Better Stack `index.json`.
+ * Statuspage, Plausible via Better Stack `index.json`; Analytics
+ * Wave B — Woopra, Treasure Data via status.treasure.ai, AppsFlyer,
+ * Branch, and Hightouch via status.hightouch.io.
  * AWS, Azure, Fastly, Replit, Redis, Algolia, DataStax, Okta, PayPal,
  * Adyen, PagerDuty, Checkly, Postmark, Mailchimp, Campaign Monitor,
  * Mailtrap, Substack, Adobe, Sketch, Penpot, Rive, LottieFiles,
@@ -93,7 +95,8 @@
  * Unleash, ConfigCat, GrowthBook, Eppo, VWO, AB Tasty, Convert,
  * Flipt, Hypertune, GO Feature Flag, FeatBit, flagd, FeatureHub,
  * Bucketeer, Flipper Cloud, Confidence, Frosmo, Personyze,
- * Insider One, PostHog, Fathom, and Matomo are seeded
+ * Insider One, PostHog, Fathom, Matomo, Simple Analytics,
+ * Countly, Parse.ly, Umami, and GoatCounter are seeded
  * without a fetcher) and writes snapshots, components,
  * and incidents to Postgres.
  * A tiny HTTP server exposes /healthz.
@@ -737,6 +740,17 @@ const SERVICE_JOBS: ServiceJob[] = [
       fetchBetterstackState("https://status.plausible.io", fetchOptions()),
     persistOptions: { resolveMissingIncidents: true },
   },
+  // Analytics Wave B. Woopra / Treasure Data / AppsFlyer /
+  // Branch / Hightouch are Statuspage. Treasure Data's public
+  // host is status.treasure.ai. Hightouch is status.hightouch.io.
+  // Simple Analytics / Countly / Parse.ly / Umami / GoatCounter
+  // are none (no public JSON; Umami and GoatCounter have no
+  // incident board).
+  statuspageJob("woopra", "https://status.woopra.com"),
+  statuspageJob("treasuredata", "https://status.treasure.ai"),
+  statuspageJob("appsflyer", "https://status.appsflyer.com"),
+  statuspageJob("branch", "https://status.branch.io"),
+  statuspageJob("hightouch", "https://status.hightouch.io"),
 ]
 
 async function fetchService(service: ServiceJob): Promise<boolean> {

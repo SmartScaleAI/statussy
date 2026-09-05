@@ -4,7 +4,7 @@ import type pg from "pg"
  * Static registry of board services (26 AI + Cloud / Developer / Data /
  * Auth / Payments / Observability Waves A–C + Email Waves A–C +
  * Design Waves A–C + Infra Waves A–C + Flags Waves A–C +
- * Analytics Wave A).
+ * Analytics Waves A–B).
  * Mirrors the ids in the Next.js app's data/services.ts (and public/logos/{id}.svg).
  * Windsurf is the legacy Devin Desktop name and is not seeded separately.
  * GitHub Copilot is a GitHub component, not its own card.
@@ -19,8 +19,9 @@ import type pg from "pg"
  * Traefik, cert-manager, Infracost, Unleash, ConfigCat, GrowthBook,
  * Eppo, VWO, AB Tasty, Convert, Flipt, Hypertune, GO Feature Flag,
  * FeatBit, flagd, FeatureHub, Bucketeer, Flipper Cloud, Confidence,
- * Frosmo, Personyze, Insider One, PostHog, Fathom, and Matomo are
- * `none` until a dedicated fetcher exists.
+ * Frosmo, Personyze, Insider One, PostHog, Fathom, Matomo,
+ * Simple Analytics, Countly, Parse.ly, Umami, and GoatCounter
+ * are `none` until a dedicated fetcher exists.
  */
 export const SERVICE_SEED = [
   {
@@ -2337,6 +2338,82 @@ export const SERVICE_SEED = [
     name: "Matomo",
     category: "analytics",
     statusUrl: "https://status.matomo.cloud/",
+    fetcherType: "none",
+  },
+  // Analytics Wave B. Woopra / Treasure Data / AppsFlyer /
+  // Branch / Hightouch are Statuspage (Treasure Data via
+  // status.treasure.ai; Hightouch via status.hightouch.io).
+  // Simple Analytics / Countly / Parse.ly / Umami /
+  // GoatCounter are none (no public JSON; Umami and
+  // GoatCounter have no incident board).
+  {
+    id: "woopra",
+    name: "Woopra",
+    category: "analytics",
+    statusUrl: "https://status.woopra.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "treasuredata",
+    name: "Treasure Data",
+    category: "analytics",
+    statusUrl: "https://status.treasure.ai/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "appsflyer",
+    name: "AppsFlyer",
+    category: "analytics",
+    statusUrl: "https://status.appsflyer.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "branch",
+    name: "Branch",
+    category: "analytics",
+    statusUrl: "https://status.branch.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "hightouch",
+    name: "Hightouch",
+    category: "analytics",
+    statusUrl: "https://status.hightouch.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "simpleanalytics",
+    name: "Simple Analytics",
+    category: "analytics",
+    statusUrl: "https://status.simpleanalytics.com/",
+    fetcherType: "none",
+  },
+  {
+    id: "countly",
+    name: "Countly",
+    category: "analytics",
+    statusUrl: "https://status.count.ly/",
+    fetcherType: "none",
+  },
+  {
+    id: "parsely",
+    name: "Parse.ly",
+    category: "analytics",
+    statusUrl: "https://status.parsely.com/",
+    fetcherType: "none",
+  },
+  {
+    id: "umami",
+    name: "Umami",
+    category: "analytics",
+    statusUrl: "https://umami.is/",
+    fetcherType: "none",
+  },
+  {
+    id: "goatcounter",
+    name: "GoatCounter",
+    category: "analytics",
+    statusUrl: "https://www.goatcounter.com/",
     fetcherType: "none",
   },
 ] as const
