@@ -156,10 +156,17 @@ const Card: React.FC<CardProps> = ({ data }) => {
         ) : (
           <span />
         )}
-        <span className="btn-countdown">
-          {countdownText}
-          <ArrowUpRightIcon aria-hidden="true" />
-        </span>
+        {detailHref ? (
+          <Link href={detailHref} className="btn-countdown">
+            {countdownText}
+            <ArrowUpRightIcon aria-hidden="true" />
+          </Link>
+        ) : (
+          <span className="btn-countdown">
+            {countdownText}
+            <ArrowUpRightIcon aria-hidden="true" />
+          </span>
+        )}
       </div>
     </div>
   )

@@ -29,7 +29,7 @@ export function ServiceCard({ service }: { service: BoardService }) {
           imgSrc1: `/logos/${service.id}.svg`,
           imgAlt1: "",
           detailHref: `/services/${service.id}`,
-          countdownText: "click to view",
+          countdownText: "Click to View",
           statusLabel: STATUS_SHORT[service.status],
           updatedAt: service.updatedAt,
           updatedLabel: formatCardUpdatedAt(service.updatedAt),

@@ -481,7 +481,8 @@
   font-size: 0.7rem;
   line-height: 1.25;
   text-decoration: none;
-  pointer-events: none;
+  position: relative;
+  z-index: 2;
 }
 
 .course-design-board .card-footer .btn-countdown svg {
@@ -489,8 +490,10 @@
   height: 0.75rem;
 }
 
-.course-design-board .card:not(.plain):has(.card-hit-target):hover .btn-countdown,
-.course-design-board .card:not(.plain):has(.card-hit-target:focus-visible) .btn-countdown {
+.course-design-board .card-footer .btn-countdown:hover,
+.course-design-board .card-footer .btn-countdown:active,
+.course-design-board .card-footer .btn-countdown:focus-visible {
+  background: none;
   color: var(--color-white);
   text-decoration: underline;
 }
