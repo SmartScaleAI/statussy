@@ -65,7 +65,7 @@ export function MyServices({
         />
       </div>
       {empty ? (
-        <p className="pt-1 pb-20 text-sm text-muted-foreground" role="status">
+        <p className="pt-1 pb-10 text-sm text-muted-foreground" role="status">
           Star services below to pin them here.
         </p>
       ) : (
