@@ -2,7 +2,25 @@ import { FavoriteServicesProvider } from "@/components/favorite-services"
 import { MyServices } from "@/components/my-services"
 import { ServiceCard } from "@/components/service-card"
 import { StatusBoardGrid } from "@/components/status-board-grid"
+import { parseHealthLabel } from "@/lib/board-sort"
 import { getStatusBoard } from "@/lib/status-board"
+import type { BoardStatus } from "@/lib/status"
+
+function toSortFields(item: {
+  id: string
+  name: string
+  status: BoardStatus
+  healthLabel: string | null
+  incidentTitle?: string
+}) {
+  return {
+    id: item.id,
+    name: item.name,
+    status: item.status,
+    healthPct: parseHealthLabel(item.healthLabel),
+    hasActiveIncident: Boolean(item.incidentTitle),
+  }
+}
 
 export async function StatusBoard() {
   const { items } = await getStatusBoard()
@@ -10,12 +28,7 @@ export async function StatusBoard() {
   return (
     <FavoriteServicesProvider>
       <div className="course-design-board flex flex-col gap-8">
-        <MyServices
-          items={items.map((item) => ({
-            id: item.id,
-            status: item.status,
-          }))}
-        >
+        <MyServices items={items.map((item) => toSortFields(item))}>
           {items.map((service) => (
             <ServiceCard key={service.id} service={service} />
           ))}
@@ -26,10 +39,8 @@ export async function StatusBoard() {
         >
           <StatusBoardGrid
             items={items.map((item) => ({
-              id: item.id,
-              name: item.name,
+              ...toSortFields(item),
               category: item.category,
-              status: item.status,
             }))}
           >
             {items.map((service) => (
