@@ -236,7 +236,7 @@
 .course-design-board .card:not(.plain):has(.card-hit-target):hover,
 .course-design-board .card:not(.plain):has(.card-hit-target:focus-visible) {
   z-index: 2;
-  transform: translateY(-0.35rem) scale(1.025);
+  transform: translateY(-0.12rem);
   box-shadow: var(--card-shadow-hover);
 }
 
