@@ -167,5 +167,15 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `authorize-net.svg` | Authorize.net | `#FFFFFF` / `#0075FF` / `#FFC300` | Official wordmark from the [authorize.net](https://www.authorize.net/content/dam/anet-redesign/anet-logo-footer.svg) footer lockup (Visa solution line dropped); white + official dots so the dark-footer lockup reads on dark |
 | `flutterwave.svg` | Flutterwave | `#009A46` / `#FF5805` / `#F5AFCB` / `#FF9B00` | Official arc mark from [flutterwave.com/images/logo/full.svg](https://flutterwave.com/images/logo/full.svg) (wordmark dropped) |
 | `airwallex.svg` | Airwallex | Official orange–red gradient | Official A from the [airwallex/airwallex-marketplace](https://github.com/airwallex/airwallex-marketplace/blob/master/plugins/airwallex-dev/assets/logo.svg) lockup (wordmark dropped) |
+| `marqeta.svg` | Marqeta | `#FFFFFF` | Official M from the [marqeta.com](https://www.marqeta.com/) Contentful lockup (wordmark dropped); white so official `#272358` reads on dark |
+| `lithic.svg` | Lithic | `#F5F2F0` | Official parallelograms from [lithic-com/api-demo](https://github.com/lithic-com/api-demo/blob/master/public/Lithic-light-logo-mark.svg) (on-dark mark) |
+| `worldpay.svg` | Worldpay | `#FF1F3E` | Official wordmark from [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Worldpay_Logo.svg) (Worldpay, Inc.; public domain) |
+| `spreedly.svg` | Spreedly | `#2CD5C4` / `#0077C8` | Official knot from the [spreedly.com](https://www.spreedly.com/) header lockup (wordmark dropped) |
+| `finix.svg` | Finix | `#FFED36` / `#0D121A` | Official mark from [finix.com/favicon.svg](https://finix.com/favicon.svg) |
+| `mercado-pago.svg` | Mercado Pago | `#00B1EA` | Simple Icons `mercadopago` |
+| `ebanx.svg` | EBANX | Official stacked-card colors | Official mark from [ebanx.com/favicon.svg](https://www.ebanx.com/favicon.svg) |
+| `paysafe.svg` | Paysafe | `#5A28FF` | Simple Icons `paysafe` |
+| `recharge.svg` | Recharge | `#3901F1` | Official circle from [getrecharge.com recharge-full.svg](https://getrecharge.com/wp-content/uploads/2025/06/recharge-full.svg) (wordmark dropped) |
+| `maxio.svg` | Maxio | `#FFFFFF` | Official mark from [maxio.com mx-logo-svg.svg](https://www.maxio.com/wp-content/uploads/2026/04/mx-logo-svg.svg) (wordmark dropped); white so official black reads on dark |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.

@@ -45,7 +45,10 @@
  * Klarna, Plaid, and GoCardless via Statuspage; Payments Wave B — Mollie
  * via Instatus, Polar via Better Stack `index.json`, RevenueCat, Affirm,
  * FastSpring, Whop, Wise, Authorize.net, Flutterwave, and Airwallex via
- * Statuspage. AWS, Azure, Fastly, Replit,
+ * Statuspage; Payments Wave C — Marqeta, Lithic, Worldpay, Spreedly,
+ * Finix, Mercado Pago, EBANX, Paysafe, Recharge, and Maxio via
+ * Statuspage (Maxio's public host times out on /api/v2, so the fetcher
+ * hits maxio.statuspage.io). AWS, Azure, Fastly, Replit,
  * Redis, Algolia, DataStax, Okta, PayPal, and Adyen are seeded without a
  * fetcher) and writes snapshots, components,
  * and incidents to Postgres.
@@ -471,6 +474,18 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("authorize-net", "https://status.authorize.net"),
   statuspageJob("flutterwave", "https://status.flutterwave.com"),
   statuspageJob("airwallex", "https://status.airwallex.com"),
+  // Payments Wave C. Maxio's public host times out on /api/v2; hit the
+  // Statuspage host (same pattern as Stripe / Auth0 / Voyage).
+  statuspageJob("marqeta", "https://status.marqeta.com"),
+  statuspageJob("lithic", "https://status.lithic.com"),
+  statuspageJob("worldpay", "https://status.worldpay.com"),
+  statuspageJob("spreedly", "https://status.spreedly.com"),
+  statuspageJob("finix", "https://status.finix.com"),
+  statuspageJob("mercado-pago", "https://status.mercadopago.com"),
+  statuspageJob("ebanx", "https://status.ebanx.com"),
+  statuspageJob("paysafe", "https://status.paysafe.com"),
+  statuspageJob("recharge", "https://status.getrecharge.com"),
+  statuspageJob("maxio", "https://maxio.statuspage.io"),
 ]
 
 async function fetchService(service: ServiceJob): Promise<boolean> {
