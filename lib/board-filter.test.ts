@@ -6,12 +6,13 @@ import {
   distinctCategories,
   filterBoardServices,
   formatCategoryLabel,
+  summarizeBoardItems,
 } from "./board-filter.ts"
 
 const items = [
-  { name: "OpenAI", category: "ai" },
-  { name: "Anthropic", category: "ai" },
-  { name: "Vercel", category: "hosting" },
+  { name: "OpenAI", category: "ai", status: "operational" },
+  { name: "Anthropic", category: "ai", status: "degraded" },
+  { name: "Vercel", category: "hosting", status: "operational" },
 ]
 
 test("distinctCategories is sorted and unique, without All", () => {
@@ -60,4 +61,52 @@ test("search intersects with the active category", () => {
     aiThropic.map((item) => item.name),
     ["Anthropic"]
   )
+})
+
+test("search matches service name only (case-insensitive substring)", () => {
+  const withExtra = [
+    {
+      name: "OpenAI",
+      category: "ai",
+      status: "operational",
+      description: "anthropic competitor",
+      slug: "anthropic-rival",
+    },
+  ]
+
+  assert.deepEqual(filterBoardServices(withExtra, "anthropic", ALL_CATEGORY), [])
+  assert.deepEqual(
+    filterBoardServices(withExtra, "OPEN", ALL_CATEGORY).map((item) => item.name),
+    ["OpenAI"]
+  )
+})
+
+test("empty or whitespace query restores the category-scoped list", () => {
+  assert.deepEqual(
+    filterBoardServices(items, "   ", "ai").map((item) => item.name),
+    ["OpenAI", "Anthropic"]
+  )
+})
+
+test("summarizeBoardItems counts the visible filtered set", () => {
+  const visible = filterBoardServices(items, "open", ALL_CATEGORY)
+  assert.deepEqual(summarizeBoardItems(visible), {
+    total: 1,
+    operational: 1,
+    issues: 0,
+  })
+
+  const none = filterBoardServices(items, "zzz", ALL_CATEGORY)
+  assert.deepEqual(summarizeBoardItems(none), {
+    total: 0,
+    operational: 0,
+    issues: 0,
+  })
+
+  const ai = filterBoardServices(items, "", "ai")
+  assert.deepEqual(summarizeBoardItems(ai), {
+    total: 2,
+    operational: 1,
+    issues: 1,
+  })
 })

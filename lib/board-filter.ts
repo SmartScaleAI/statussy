@@ -5,6 +5,7 @@ export type BoardFilterItem = {
   id: string
   name: string
   category: string
+  status: string
 }
 
 /** Distinct registry categories, sorted, for the chiclet row (All is separate). */
@@ -41,4 +42,16 @@ export function filterBoardServices<
     }
     return true
   })
+}
+
+/** Metrics for the currently visible All Services set (search ∧ category). */
+export function summarizeBoardItems(items: { status: string }[]) {
+  const operational = items.filter(
+    (item) => item.status === "operational"
+  ).length
+  return {
+    total: items.length,
+    operational,
+    issues: items.length - operational,
+  }
 }
