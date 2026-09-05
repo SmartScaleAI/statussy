@@ -257,5 +257,15 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `lunacy.svg` | Lunacy | `#179DE3` | Simple Icons `lunacy` |
 | `photopea.svg` | Photopea | `#18A497` | Simple Icons `photopea` |
 | `blender.svg` | Blender | `#E87D0D` | Simple Icons `blender` |
+| `moqups.svg` | Moqups | `#006BE5` | Simple Icons `moqups` |
+| `proto-io.svg` | Proto.io | `#34A7C1` | Simple Icons `protodotio` |
+| `uxpin.svg` | UXPin | `#FFFFFF` | Official wordmark from [uxpin.com/images/uxpin-logo-new.svg](https://www.uxpin.com/images/uxpin-logo-new.svg) (tile dropped); white on-dark lockup |
+| `overflow.svg` | Overflow | `#FB5D2E` / `#16B4F2` / `#2C2C96` | Official mark from [overflow.io logo.svg](https://overflow.io/assets/public-site-v2/images/logo.svg) (wordmark dropped) |
+| `axure.svg` | Axure | `#74BB11` / `#009CD9` / `#EB2084` | Official A from [axure.com logo-black.svg](https://www.axure.com/images/2019/04/logo-black.svg) (wordmark dropped) |
+| `relume.svg` | Relume | `#FFFFFF` | Official hexagon from [relume.io relume-logo.svg](https://cdn.prod.website-files.com/6177739448baa66404ce1d9c/6a59a399fb4e8948af38850d_relume-logo.svg) (wordmark dropped); white so official `#101010` reads on dark |
+| `visily.svg` | Visily | Official blues / purple | Official flame from [Visily-logo.svg](https://d2kpe7grvhf8ri.cloudfront.net/website/images/Visily-logo.svg) (wordmark dropped) |
+| `plasmic.svg` | Plasmic | Official magenta–purple | Official mark from [plasmic.app/svg/logo.svg](https://www.plasmic.app/svg/logo.svg) |
+| `beautiful-ai.svg` | Beautiful.ai | `#FFFFFF` | Official wordmark from the [beautiful.ai](https://www.beautiful.ai/) header lockup; white so `currentColor` reads on dark |
+| `jitter.svg` | Jitter | `#FFFFFF` | Official wordmark from the [jitter.video](https://jitter.video/) header lockup; white so `currentColor` reads on dark |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.

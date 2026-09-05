@@ -3,7 +3,7 @@ import type pg from "pg"
 /**
  * Static registry of board services (26 AI + Cloud / Developer / Data /
  * Auth / Payments / Observability Waves A–C + Email Waves A–C +
- * Design Waves A–B).
+ * Design Waves A–C).
  * Mirrors the ids in the Next.js app's data/services.ts (and public/logos/{id}.svg).
  * Windsurf is the legacy Devin Desktop name and is not seeded separately.
  * GitHub Copilot is a GitHub component, not its own card.
@@ -11,8 +11,9 @@ import type pg from "pg"
  * `category` defaults to `ai` when omitted. AWS, Azure, Fastly, Replit,
  * Redis, Algolia, DataStax, Okta, PayPal, Adyen, PagerDuty, Checkly,
  * Postmark, Mailchimp, Campaign Monitor, Mailtrap, Substack, Adobe,
- * Sketch, Penpot, Rive, LottieFiles, Whimsical, Lunacy, Photopea, and
- * Blender are `none` until a dedicated fetcher exists.
+ * Sketch, Penpot, Rive, LottieFiles, Whimsical, Lunacy, Photopea,
+ * Blender, Moqups, Proto.io, UXPin, Overflow, Axure, Relume, Visily,
+ * and Plasmic are `none` until a dedicated fetcher exists.
  */
 export const SERVICE_SEED = [
   {
@@ -1741,6 +1742,78 @@ export const SERVICE_SEED = [
     category: "design",
     statusUrl: "https://status.blender.org/",
     fetcherType: "none",
+  },
+  // Design Wave C. Spline still waits. Zeplin / ProtoPie / Builder.io
+  // wait. Beautiful.ai and Jitter are Statuspage; the rest are none.
+  {
+    id: "moqups",
+    name: "Moqups",
+    category: "design",
+    statusUrl: "https://moqups.com/",
+    fetcherType: "none",
+  },
+  {
+    id: "proto-io",
+    name: "Proto.io",
+    category: "design",
+    statusUrl: "https://proto.io/",
+    fetcherType: "none",
+  },
+  {
+    id: "uxpin",
+    name: "UXPin",
+    category: "design",
+    statusUrl: "https://www.uxpin.com/",
+    fetcherType: "none",
+  },
+  {
+    id: "overflow",
+    name: "Overflow",
+    category: "design",
+    statusUrl: "https://overflow.io/",
+    fetcherType: "none",
+  },
+  {
+    id: "axure",
+    name: "Axure",
+    category: "design",
+    statusUrl: "https://www.axure.com/",
+    fetcherType: "none",
+  },
+  {
+    id: "relume",
+    name: "Relume",
+    category: "design",
+    statusUrl: "https://www.relume.io/",
+    fetcherType: "none",
+  },
+  {
+    id: "visily",
+    name: "Visily",
+    category: "design",
+    statusUrl: "https://www.visily.ai/",
+    fetcherType: "none",
+  },
+  {
+    id: "plasmic",
+    name: "Plasmic",
+    category: "design",
+    statusUrl: "https://www.plasmic.app/",
+    fetcherType: "none",
+  },
+  {
+    id: "beautiful-ai",
+    name: "Beautiful.ai",
+    category: "design",
+    statusUrl: "https://status.beautiful.ai/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "jitter",
+    name: "Jitter",
+    category: "design",
+    statusUrl: "https://jitter.statuspage.io/",
+    fetcherType: "statuspage",
   },
 ] as const
 

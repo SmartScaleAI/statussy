@@ -67,11 +67,13 @@
  * Nylas via status-v3.nylas.com (status.nylas.com redirects); Design
  * Wave A — Figma, Canva, Miro, Webflow, Lucid, Mural, and Frontify
  * via Statuspage, Framer via Better Stack `index.json`; Design Wave B
- * — Marvel, Balsamiq, and Anima via Statuspage.
+ * — Marvel, Balsamiq, and Anima via Statuspage; Design Wave C —
+ * Beautiful.ai and Jitter via Statuspage.
  * AWS, Azure, Fastly, Replit, Redis, Algolia, DataStax, Okta, PayPal,
  * Adyen, PagerDuty, Checkly, Postmark, Mailchimp, Campaign Monitor,
  * Mailtrap, Substack, Adobe, Sketch, Penpot, Rive, LottieFiles,
- * Whimsical, Lunacy, Photopea, and Blender are seeded without a
+ * Whimsical, Lunacy, Photopea, Blender, Moqups, Proto.io, UXPin,
+ * Overflow, Axure, Relume, Visily, and Plasmic are seeded without a
  * fetcher) and writes snapshots, components,
  * and incidents to Postgres.
  * A tiny HTTP server exposes /healthz.
@@ -150,10 +152,12 @@ type ServiceJob = {
 
 // Board services with a fetcher (26 AI + Cloud / Developer / Data / Auth /
 // Payments / Observability Waves A–C + Email Waves A–C + Design Waves
-// A–B; AWS, Azure, Fastly, Replit, Redis, Algolia, DataStax, Okta,
+// A–C; AWS, Azure, Fastly, Replit, Redis, Algolia, DataStax, Okta,
 // PayPal, Adyen, PagerDuty, Checkly, Postmark, Mailchimp, Campaign
 // Monitor, Mailtrap, Substack, Adobe, Sketch, Penpot, Rive,
-// LottieFiles, Whimsical, Lunacy, Photopea, and Blender are none).
+// LottieFiles, Whimsical, Lunacy, Photopea, Blender, Moqups,
+// Proto.io, UXPin, Overflow, Axure, Relume, Visily, and Plasmic
+// are none).
 const statuspageJob = (id: string, baseUrl: string): ServiceJob => ({
   id,
   fetch: () => fetchStatuspageState(baseUrl, fetchOptions()),
@@ -623,6 +627,10 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("marvel", "https://status.marvelapp.com"),
   statuspageJob("balsamiq", "https://status.balsamiq.com"),
   statuspageJob("anima", "https://status.animaapp.com"),
+  // Design Wave C. Spline still waits. Zeplin / ProtoPie / Builder.io
+  // wait. Jitter's public host has no /api/v2; hit jitter.statuspage.io.
+  statuspageJob("beautiful-ai", "https://status.beautiful.ai"),
+  statuspageJob("jitter", "https://jitter.statuspage.io"),
 ]
 
 async function fetchService(service: ServiceJob): Promise<boolean> {
