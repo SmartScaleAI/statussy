@@ -95,7 +95,12 @@
  * Security Wave C — HUMAN, Tailscale (Statuspage-compatible
  * incident.io page), Twingate, DigiCert, SecurityScorecard,
  * KnowBe4, Bugcrowd, and Sonar via Statuspage, Chainguard via
- * Better Stack `index.json`, Let's Encrypt via Status.io.
+ * Better Stack `index.json`, Let's Encrypt via Status.io;
+ * Support Wave A — Gorgias, Talkdesk, Aircall, LiveChat
+ * (Statuspage-compatible incident.io page), Kustomer, Dixa,
+ * Kayako, and Helpshift via Statuspage, Intercom via
+ * www.finstatus.com (the public intercomstatus.com host
+ * redirects /api/v2 to HTML), Zendesk via /api/ssp.
  * AWS, Azure, Fastly, Replit, Redis, Algolia, DataStax, Okta, PayPal,
  * Adyen, PagerDuty, Checkly, Postmark, Mailchimp, Campaign Monitor,
  * Mailtrap, Substack, Adobe, Sketch, Penpot, Rive, LottieFiles,
@@ -142,6 +147,7 @@ import {
   NEON_STATUS_PAGE_ID,
 } from "./gitlab.js"
 import { fetchHerokuState } from "./heroku.js"
+import { fetchZendeskState } from "./zendesk.js"
 import { fetchHetznerState } from "./hetzner.js"
 import { fetchOracleCloudState } from "./oracle-cloud.js"
 import { fetchRailwayState } from "./railway.js"
@@ -837,6 +843,29 @@ const SERVICE_JOBS: ServiceJob[] = [
       ),
     persistOptions: { resolveMissingIncidents: true },
   },
+  // Support Wave A. Gorgias / Talkdesk / Aircall / LiveChat /
+  // Kustomer / Dixa / Kayako / Helpshift are Statuspage
+  // (LiveChat's incident.io host exposes Statuspage-compatible
+  // /api/v2). Intercom is Statuspage-compatible on
+  // www.finstatus.com (intercomstatus.com redirects /api/v2).
+  // Zendesk is the public SSP JSON. Freshdesk waits
+  // (Freshstatus API is authenticated). ServiceNow waits (no
+  // public status JSON). Crisp waits (Vigil HTML). Zoho Desk
+  // waits (StatusIQ HTML).
+  {
+    id: "zendesk",
+    fetch: () => fetchZendeskState(fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  statuspageJob("intercom", "https://www.finstatus.com"),
+  statuspageJob("gorgias", "https://status.gorgias.com"),
+  statuspageJob("talkdesk", "https://status.talkdesk.com"),
+  statuspageJob("aircall", "https://status.aircall.com"),
+  statuspageJob("livechat", "https://status.livechat.com"),
+  statuspageJob("kustomer", "https://status.kustomer.com"),
+  statuspageJob("dixa", "https://status.dixa.io"),
+  statuspageJob("kayako", "https://status.kayako.com"),
+  statuspageJob("helpshift", "https://status.helpshift.com"),
 ]
 
 async function fetchService(service: ServiceJob): Promise<boolean> {

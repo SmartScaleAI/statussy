@@ -4,7 +4,7 @@ import type pg from "pg"
  * Static registry of board services (26 AI + Cloud / Developer / Data /
  * Auth / Payments / Observability Waves A–C + Email Waves A–C +
  * Design Waves A–C + Infra Waves A–C + Flags Waves A–C +
- * Analytics Waves A–C + Security Waves A–C).
+ * Analytics Waves A–C + Security Waves A–C + Support Wave A).
  * Mirrors the ids in the Next.js app's data/services.ts (and public/logos/{id}.svg).
  * Windsurf is the legacy Devin Desktop name and is not seeded separately.
  * GitHub Copilot is a GitHub component, not its own card.
@@ -2701,6 +2701,76 @@ export const SERVICE_SEED = [
     category: "security",
     statusUrl: "https://letsencrypt.status.io/",
     fetcherType: "status_io",
+  },
+  {
+    id: "zendesk",
+    name: "Zendesk",
+    category: "support",
+    statusUrl: "https://status.zendesk.com/",
+    fetcherType: "zendesk",
+  },
+  {
+    id: "intercom",
+    name: "Intercom",
+    category: "support",
+    statusUrl: "https://www.intercomstatus.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "gorgias",
+    name: "Gorgias",
+    category: "support",
+    statusUrl: "https://status.gorgias.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "talkdesk",
+    name: "Talkdesk",
+    category: "support",
+    statusUrl: "https://status.talkdesk.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "aircall",
+    name: "Aircall",
+    category: "support",
+    statusUrl: "https://status.aircall.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "livechat",
+    name: "LiveChat",
+    category: "support",
+    statusUrl: "https://status.livechat.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "kustomer",
+    name: "Kustomer",
+    category: "support",
+    statusUrl: "https://status.kustomer.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "dixa",
+    name: "Dixa",
+    category: "support",
+    statusUrl: "https://status.dixa.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "kayako",
+    name: "Kayako",
+    category: "support",
+    statusUrl: "https://status.kayako.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "helpshift",
+    name: "Helpshift",
+    category: "support",
+    statusUrl: "https://status.helpshift.com/",
+    fetcherType: "statuspage",
   },
 ] as const
 

@@ -387,5 +387,15 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `bugcrowd.svg` | Bugcrowd | `#F26822` | Simple Icons `bugcrowd` |
 | `sonar.svg` | Sonar | `#FD3456` | Simple Icons `sonar` |
 | `lets-encrypt.svg` | Let's Encrypt | `#003A70` + `#FFA400` | Official lock from [letsencrypt.org/images/le-logo-lockonly.svg](https://letsencrypt.org/images/le-logo-lockonly.svg) |
+| `zendesk.svg` | Zendesk | `#FFFFFF` | Simple Icons `zendesk`; official `#03363D` knocked to white |
+| `intercom.svg` | Intercom | `#6AFDEF` | Simple Icons `intercom` |
+| `gorgias.svg` | Gorgias | `#FFFFFF` | Official chat window from [gorgias.com Gorgias Logo - Black.svg](https://www.gorgias.com/) (wordmark dropped); official black knocked to white |
+| `talkdesk.svg` | Talkdesk | `#5405BD` | Official three-dot mark from [talkdesk.com talkdesk_logo-4.svg](https://www.talkdesk.com/) (wordmark dropped) |
+| `aircall.svg` | Aircall | `#00B388` | Simple Icons `aircall` |
+| `livechat.svg` | LiveChat | `#FF5100` | Simple Icons `livechat` |
+| `kustomer.svg` | Kustomer | `#FFFFFF` | Official smile from [kustomer.com/images/kustomer/kustomer-logo.svg](https://www.kustomer.com/images/kustomer/kustomer-logo.svg) (wordmark dropped); official `#292929` knocked to white |
+| `dixa.svg` | Dixa | `#FFFFFF` | Official mark from [dixa.com logo.svg](https://www.dixa.com/) (wordmark dropped); official `#171512` knocked to white |
+| `kayako.svg` | Kayako | `#FFFFFF` | Official K from [kayako.com kayako-one-logo-light.svg](https://kayako.com/) (wordmark dropped) |
+| `helpshift.svg` | Helpshift | `#0042FF` + white | Official mark from [helpshift.com Logo-Helpshift.svg](https://www.helpshift.com/) |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.

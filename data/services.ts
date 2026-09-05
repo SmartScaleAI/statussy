@@ -30,6 +30,7 @@ export type ServiceCategory =
   | "flags"
   | "analytics"
   | "security"
+  | "support"
 
 export type Service = {
   /** Matches a static mark at `public/logos/{id}.svg`. */
@@ -3246,5 +3247,93 @@ export const services: Service[] = [
     statusUrl: "https://letsencrypt.status.io/",
     status: "operational",
     updatedAt: "2026-09-05T23:45:00.000Z",
+  },
+  // Support Wave A — customer helpdesk / ticketing / live chat /
+  // contact-center SaaS that go dark. Help Scout / Front / HubSpot
+  // stay Email. PagerDuty / incident.io stay Observability. Linear
+  // stays Developer. Jira Service Management waits (one Atlassian
+  // status page). Salesforce Service Cloud waits (Tableau already
+  // stays on Salesforce). Freshdesk waits (Freshstatus JSON is
+  // authenticated). ServiceNow waits (no public status JSON).
+  // Crisp waits (Vigil HTML). Zoho Desk waits (StatusIQ HTML).
+  {
+    id: "zendesk",
+    name: "Zendesk",
+    category: "support",
+    statusUrl: "https://status.zendesk.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T00:00:00.000Z",
+  },
+  {
+    id: "intercom",
+    name: "Intercom",
+    category: "support",
+    statusUrl: "https://www.intercomstatus.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T00:00:00.000Z",
+  },
+  {
+    id: "gorgias",
+    name: "Gorgias",
+    category: "support",
+    statusUrl: "https://status.gorgias.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T00:00:00.000Z",
+  },
+  {
+    id: "talkdesk",
+    name: "Talkdesk",
+    category: "support",
+    statusUrl: "https://status.talkdesk.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T00:00:00.000Z",
+  },
+  {
+    id: "aircall",
+    name: "Aircall",
+    category: "support",
+    statusUrl: "https://status.aircall.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T00:00:00.000Z",
+  },
+  {
+    id: "livechat",
+    name: "LiveChat",
+    category: "support",
+    statusUrl: "https://status.livechat.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T00:00:00.000Z",
+  },
+  {
+    id: "kustomer",
+    name: "Kustomer",
+    category: "support",
+    statusUrl: "https://status.kustomer.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T00:00:00.000Z",
+  },
+  {
+    id: "dixa",
+    name: "Dixa",
+    category: "support",
+    statusUrl: "https://status.dixa.io/",
+    status: "operational",
+    updatedAt: "2026-09-06T00:00:00.000Z",
+  },
+  {
+    id: "kayako",
+    name: "Kayako",
+    category: "support",
+    statusUrl: "https://status.kayako.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T00:00:00.000Z",
+  },
+  {
+    id: "helpshift",
+    name: "Helpshift",
+    category: "support",
+    statusUrl: "https://status.helpshift.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T00:00:00.000Z",
   },
 ]
