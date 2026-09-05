@@ -1,13 +1,13 @@
 import type pg from "pg"
 
 /**
- * Static registry of board services (26 AI + Cloud Waves A–C).
+ * Static registry of board services (26 AI + Cloud Waves A–C + Developer Waves A–C).
  * Mirrors the ids in the Next.js app's data/services.ts (and public/logos/{id}.svg).
- * Coding agents (Cursor, Windsurf, Devin, GitHub Copilot) are parked for a
- * future Developer category and must not be seeded here.
+ * Windsurf is the legacy Devin Desktop name and is not seeded separately.
+ * GitHub Copilot is a GitHub component, not its own card.
  *
- * `category` defaults to `ai` when omitted. AWS and Azure are `none` until
- * a dedicated Health-dashboard fetcher exists.
+ * `category` defaults to `ai` when omitted. AWS, Azure, Fastly, and Replit
+ * are `none` until a dedicated fetcher exists.
  */
 export const SERVICE_SEED = [
   {
@@ -329,6 +329,216 @@ export const SERVICE_SEED = [
     name: "Lambda",
     category: "cloud",
     statusUrl: "https://status.lambda.ai/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "cursor",
+    name: "Cursor",
+    category: "developer",
+    statusUrl: "https://status.cursor.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "devin",
+    name: "Devin",
+    category: "developer",
+    statusUrl: "https://status.devin.ai/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "github",
+    name: "GitHub",
+    category: "developer",
+    statusUrl: "https://www.githubstatus.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "gitlab",
+    name: "GitLab",
+    category: "developer",
+    statusUrl: "https://status.gitlab.com/",
+    fetcherType: "status_io",
+  },
+  {
+    id: "circleci",
+    name: "CircleCI",
+    category: "developer",
+    statusUrl: "https://status.circleci.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "npm",
+    name: "npm",
+    category: "developer",
+    statusUrl: "https://status.npmjs.org/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "docker",
+    name: "Docker",
+    category: "developer",
+    statusUrl: "https://www.dockerstatus.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "linear",
+    name: "Linear",
+    category: "developer",
+    statusUrl: "https://linearstatus.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "sourcegraph",
+    name: "Sourcegraph",
+    category: "developer",
+    statusUrl: "https://sourcegraphstatus.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "warp",
+    name: "Warp",
+    category: "developer",
+    statusUrl: "https://status.warp.dev/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "bitbucket",
+    name: "Bitbucket",
+    category: "developer",
+    statusUrl: "https://bitbucket.status.atlassian.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "buildkite",
+    name: "Buildkite",
+    category: "developer",
+    statusUrl: "https://www.buildkitestatus.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "pypi",
+    name: "PyPI",
+    category: "developer",
+    statusUrl: "https://status.python.org/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "rubygems",
+    name: "RubyGems",
+    category: "developer",
+    statusUrl: "https://status.rubygems.org/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "maven",
+    name: "Maven Central",
+    category: "developer",
+    statusUrl: "https://status.maven.org/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "postman",
+    name: "Postman",
+    category: "developer",
+    statusUrl: "https://status.postman.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "augment",
+    name: "Augment",
+    category: "developer",
+    statusUrl: "https://status.augmentcode.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "factory",
+    name: "Factory",
+    category: "developer",
+    statusUrl: "https://status.factory.ai/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "tabnine",
+    name: "Tabnine",
+    category: "developer",
+    statusUrl: "https://status.tabnine.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "zed",
+    name: "Zed",
+    category: "developer",
+    statusUrl: "https://status.zed.dev/",
+    fetcherType: "instatus",
+  },
+  {
+    id: "lovable",
+    name: "Lovable",
+    category: "developer",
+    statusUrl: "https://status.lovable.dev/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "bolt",
+    name: "Bolt",
+    category: "developer",
+    statusUrl: "https://status.bolt.new/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "replit",
+    name: "Replit",
+    category: "developer",
+    statusUrl: "https://status.replit.com/",
+    fetcherType: "none",
+  },
+  {
+    id: "travis",
+    name: "Travis CI",
+    category: "developer",
+    statusUrl: "https://www.traviscistatus.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "semaphore",
+    name: "Semaphore",
+    category: "developer",
+    statusUrl: "https://status.semaphore.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "harness",
+    name: "Harness",
+    category: "developer",
+    statusUrl: "https://status.harness.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "codefresh",
+    name: "Codefresh",
+    category: "developer",
+    statusUrl: "https://status.codefresh.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "crates",
+    name: "crates.io",
+    category: "developer",
+    statusUrl: "https://status.crates.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "expo",
+    name: "Expo",
+    category: "developer",
+    statusUrl: "https://status.expo.dev/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "cloudsmith",
+    name: "Cloudsmith",
+    category: "developer",
+    statusUrl: "https://status.cloudsmith.com/",
     fetcherType: "statuspage",
   },
 ] as const

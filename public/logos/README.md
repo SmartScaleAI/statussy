@@ -57,5 +57,35 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `hetzner.svg` | Hetzner | `#D50C2D` | Simple Icons `hetzner` |
 | `northflank.svg` | Northflank | Official gradient | Official mark from [northflank.com/images/logo/logo.svg](https://northflank.com/images/logo/logo.svg) |
 | `lambda.svg` | Lambda | `#FFFFFF` | Official λ + frame from [lambda.ai favicon](https://lambda.ai/hubfs/favicon-48x48-1.svg); black tile dropped so the mark reads on dark |
+| `cursor.svg` | Cursor | `#FFFFFF` | Simple Icons `cursor` path; white so official black reads on dark |
+| `devin.svg` | Devin | `#FFFFFF` | LobeHub `devin` (official stacked-facet mark); white on dark |
+| `github.svg` | GitHub | `#FFFFFF` | Simple Icons `github`; white so official `#181717` reads on dark |
+| `gitlab.svg` | GitLab | `#FC6D26` | Simple Icons `gitlab` |
+| `circleci.svg` | CircleCI | `#FFFFFF` | Simple Icons `circleci`; white so official `#343434` reads on dark |
+| `npm.svg` | npm | `#CB3837` | Simple Icons `npm` |
+| `docker.svg` | Docker | `#2496ED` | Simple Icons `docker` |
+| `linear.svg` | Linear | `#5E6AD2` | Simple Icons `linear` |
+| `sourcegraph.svg` | Sourcegraph | `#FF5543` | Official mark from [sourcegraph.com/.assets/img/sourcegraph-mark.svg](https://sourcegraph.com/.assets/img/sourcegraph-mark.svg) |
+| `warp.svg` | Warp | `#01A4FF` | Simple Icons `warp` |
+| `bitbucket.svg` | Bitbucket | `#0052CC` | Simple Icons `bitbucket` |
+| `buildkite.svg` | Buildkite | `#14CC80` | Simple Icons `buildkite` |
+| `pypi.svg` | PyPI | `#3775A9` | Simple Icons `pypi` (PyPI mark, not the Python language logo) |
+| `rubygems.svg` | RubyGems | `#E9573F` | Simple Icons `rubygems` |
+| `maven.svg` | Maven Central | `#C71A36` | Simple Icons `apachemaven` |
+| `postman.svg` | Postman | `#FF6C37` | Simple Icons `postman` |
+| `augment.svg` | Augment | `#FFFFFF` | Official mark from [augmentcode.com/favicon.svg](https://www.augmentcode.com/favicon.svg); white so official black reads on dark |
+| `factory.svg` | Factory | `#FFFFFF` | Official mark from [Factory-AI/factory `docs/favicon.svg`](https://github.com/Factory-AI/factory/blob/main/docs/favicon.svg); white tile dropped so the mark reads on dark |
+| `tabnine.svg` | Tabnine | `#FF2D2D` | Official hex mark from [tabnine/skills](https://github.com/tabnine/skills/blob/main/plugins/cursor/tabnine/assets/logo.svg) |
+| `zed.svg` | Zed | `#084CCF` | Simple Icons `zedindustries` |
+| `lovable.svg` | Lovable | Official L-shape gradient | Official mark from [lovable.dev/favicon.svg](https://lovable.dev/favicon.svg) |
+| `bolt.svg` | Bolt | `#1389FD` | Official lightning from [StackBlitz brand kit](https://developer.stackblitz.com/public/img/logo/readme) `stackblitz-bolt-blue` |
+| `replit.svg` | Replit | `#F26207` | Simple Icons `replit` |
+| `travis.svg` | Travis CI | `#3EAAAF` | Simple Icons `travisci` |
+| `semaphore.svg` | Semaphore | `#19A974` | Simple Icons `semaphoreci` |
+| `harness.svg` | Harness | `#00ABE4` | Official diamond from [harness.io/press-kit](https://www.harness.io/press-kit) lockup (wordmark dropped) |
+| `codefresh.svg` | Codefresh | `#08B1AB` | Simple Icons `codefresh` |
+| `crates.svg` | crates.io | `#FFFFFF` | Simple Icons `rust` (official Rust mark used by crates.io); white so official black reads on dark |
+| `expo.svg` | Expo | `#FFFFFF` | Simple Icons `expo`; white so official `#1C2024` reads on dark |
+| `cloudsmith.svg` | Cloudsmith | `#2A6FE1` | Simple Icons `cloudsmith` |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.

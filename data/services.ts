@@ -16,7 +16,7 @@ export const SERVICE_STATUSES = [
 
 export type ServiceStatus = (typeof SERVICE_STATUSES)[number]
 
-export type ServiceCategory = "ai" | "cloud"
+export type ServiceCategory = "ai" | "cloud" | "developer"
 
 export type Service = {
   /** Matches a static mark at `public/logos/{id}.svg`. */
@@ -117,8 +117,7 @@ export const services: Service[] = [
     incidentTitle: "Scheduled edge routing window",
     updatedAt: "2026-09-03T18:00:00.000Z",
   },
-  // Wave B (SMA-41). Coding agents (Cursor, Windsurf, Devin, GitHub Copilot)
-  // stay parked for a future Developer category.
+  // Wave B (SMA-41). Coding agents live under Developer, not AI.
   {
     id: "fireworks",
     name: "Fireworks AI",
@@ -457,5 +456,256 @@ export const services: Service[] = [
     statusUrl: "https://status.lambda.ai/",
     status: "operational",
     updatedAt: "2026-09-05T03:30:00.000Z",
+  },
+  // Developer Wave A — where you write, review, and ship code. One card per
+  // vendor: GitHub includes Copilot / Actions / Codespaces; Devin covers
+  // Desktop + Cloud (Windsurf is the legacy name). Codex / Claude Code /
+  // Amazon Q stay on their AI / Cloud parents.
+  {
+    id: "cursor",
+    name: "Cursor",
+    category: "developer",
+    statusUrl: "https://status.cursor.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T03:45:00.000Z",
+  },
+  {
+    id: "devin",
+    name: "Devin",
+    category: "developer",
+    statusUrl: "https://status.devin.ai/",
+    status: "operational",
+    updatedAt: "2026-09-05T03:45:00.000Z",
+  },
+  {
+    id: "github",
+    name: "GitHub",
+    category: "developer",
+    statusUrl: "https://www.githubstatus.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T03:45:00.000Z",
+  },
+  {
+    id: "gitlab",
+    name: "GitLab",
+    category: "developer",
+    statusUrl: "https://status.gitlab.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T03:45:00.000Z",
+  },
+  {
+    id: "circleci",
+    name: "CircleCI",
+    category: "developer",
+    statusUrl: "https://status.circleci.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T03:45:00.000Z",
+  },
+  {
+    id: "npm",
+    name: "npm",
+    category: "developer",
+    statusUrl: "https://status.npmjs.org/",
+    status: "operational",
+    updatedAt: "2026-09-05T03:45:00.000Z",
+  },
+  {
+    id: "docker",
+    name: "Docker",
+    category: "developer",
+    statusUrl: "https://www.dockerstatus.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T03:45:00.000Z",
+  },
+  {
+    id: "linear",
+    name: "Linear",
+    category: "developer",
+    statusUrl: "https://linearstatus.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T03:45:00.000Z",
+  },
+  {
+    id: "sourcegraph",
+    name: "Sourcegraph",
+    category: "developer",
+    statusUrl: "https://sourcegraphstatus.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T03:45:00.000Z",
+  },
+  {
+    id: "warp",
+    name: "Warp",
+    category: "developer",
+    statusUrl: "https://status.warp.dev/",
+    status: "operational",
+    updatedAt: "2026-09-05T03:45:00.000Z",
+  },
+  // Developer Wave B — more forges, registries, API tooling, and coding
+  // agents. Codex / Claude Code / Gemini CLI / Amazon Q stay on their AI /
+  // Cloud parents. GitHub Copilot stays a GitHub component.
+  {
+    id: "bitbucket",
+    name: "Bitbucket",
+    category: "developer",
+    statusUrl: "https://bitbucket.status.atlassian.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:00:00.000Z",
+  },
+  {
+    id: "buildkite",
+    name: "Buildkite",
+    category: "developer",
+    statusUrl: "https://www.buildkitestatus.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:00:00.000Z",
+  },
+  {
+    id: "pypi",
+    name: "PyPI",
+    category: "developer",
+    statusUrl: "https://status.python.org/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:00:00.000Z",
+  },
+  {
+    id: "rubygems",
+    name: "RubyGems",
+    category: "developer",
+    statusUrl: "https://status.rubygems.org/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:00:00.000Z",
+  },
+  {
+    id: "maven",
+    name: "Maven Central",
+    category: "developer",
+    statusUrl: "https://status.maven.org/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:00:00.000Z",
+  },
+  {
+    id: "postman",
+    name: "Postman",
+    category: "developer",
+    statusUrl: "https://status.postman.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:00:00.000Z",
+  },
+  {
+    id: "augment",
+    name: "Augment",
+    category: "developer",
+    statusUrl: "https://status.augmentcode.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:00:00.000Z",
+  },
+  {
+    id: "factory",
+    name: "Factory",
+    category: "developer",
+    statusUrl: "https://status.factory.ai/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:00:00.000Z",
+  },
+  {
+    id: "tabnine",
+    name: "Tabnine",
+    category: "developer",
+    statusUrl: "https://status.tabnine.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:00:00.000Z",
+  },
+  {
+    id: "zed",
+    name: "Zed",
+    category: "developer",
+    statusUrl: "https://status.zed.dev/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:00:00.000Z",
+  },
+  // Developer Wave C — remaining coding environments, CI, and registries.
+  // Windsurf stays on Devin. JetBrains has no public JSON. HashiCorp /
+  // Pulumi wait for an Infra chiclet. Replit is seeded without a fetcher
+  // (Cloudflare challenges the Statuspage JSON).
+  {
+    id: "lovable",
+    name: "Lovable",
+    category: "developer",
+    statusUrl: "https://status.lovable.dev/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:10:00.000Z",
+  },
+  {
+    id: "bolt",
+    name: "Bolt",
+    category: "developer",
+    statusUrl: "https://status.bolt.new/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:10:00.000Z",
+  },
+  {
+    id: "replit",
+    name: "Replit",
+    category: "developer",
+    statusUrl: "https://status.replit.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:10:00.000Z",
+  },
+  {
+    id: "travis",
+    name: "Travis CI",
+    category: "developer",
+    statusUrl: "https://www.traviscistatus.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:10:00.000Z",
+  },
+  {
+    id: "semaphore",
+    name: "Semaphore",
+    category: "developer",
+    statusUrl: "https://status.semaphore.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:10:00.000Z",
+  },
+  {
+    id: "harness",
+    name: "Harness",
+    category: "developer",
+    statusUrl: "https://status.harness.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:10:00.000Z",
+  },
+  {
+    id: "codefresh",
+    name: "Codefresh",
+    category: "developer",
+    statusUrl: "https://status.codefresh.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:10:00.000Z",
+  },
+  {
+    id: "crates",
+    name: "crates.io",
+    category: "developer",
+    statusUrl: "https://status.crates.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:10:00.000Z",
+  },
+  {
+    id: "expo",
+    name: "Expo",
+    category: "developer",
+    statusUrl: "https://status.expo.dev/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:10:00.000Z",
+  },
+  {
+    id: "cloudsmith",
+    name: "Cloudsmith",
+    category: "developer",
+    statusUrl: "https://status.cloudsmith.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:10:00.000Z",
   },
 ]

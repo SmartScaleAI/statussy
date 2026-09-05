@@ -20,8 +20,14 @@
  * status.firebase.google.com incidents.json; Cloud Wave C — Akamai,
  * Scaleway, and Lambda via Statuspage, Northflank via Instatus, Vultr via
  * status.json, Oracle Cloud via ocistatus status.json, Hetzner via the
- * official page's __NEXT_DATA__. AWS, Azure, and Fastly are seeded without
- * a fetcher) and writes snapshots, components, and incidents to Postgres.
+ * official page's __NEXT_DATA__; Developer Wave A — Cursor, Devin, GitHub,
+ * CircleCI, npm, Docker, Linear, Sourcegraph, and Warp via Statuspage,
+ * GitLab via Status.io; Developer Wave B — Bitbucket, Buildkite, PyPI,
+ * RubyGems, Maven Central, Postman, Augment, Factory, and Tabnine via
+ * Statuspage, Zed via Instatus; Developer Wave C — Lovable, Bolt, Travis CI,
+ * Semaphore, Harness, Codefresh, crates.io, Expo, and Cloudsmith via
+ * Statuspage. AWS, Azure, Fastly, and Replit are seeded without a
+ * fetcher) and writes snapshots, components, and incidents to Postgres.
  * A tiny HTTP server exposes /healthz.
  */
 import { createServer } from "node:http"
@@ -38,6 +44,7 @@ import {
   fetchGoogleCloudGeminiState,
   fetchGoogleCloudPlatformState,
 } from "./google-cloud.js"
+import { fetchGitlabState } from "./gitlab.js"
 import { fetchHerokuState } from "./heroku.js"
 import { fetchHetznerState } from "./hetzner.js"
 import { fetchOracleCloudState } from "./oracle-cloud.js"
@@ -86,8 +93,8 @@ type ServiceJob = {
   persistOptions?: PersistOptions
 }
 
-// Board services with a fetcher (26 AI + Cloud Waves A–C; AWS, Azure, and
-// Fastly are none).
+// Board services with a fetcher (26 AI + Cloud Waves A–C + Developer Waves A–C;
+// AWS, Azure, Fastly, and Replit are none).
 const statuspageJob = (id: string, baseUrl: string): ServiceJob => ({
   id,
   fetch: () => fetchStatuspageState(baseUrl, fetchOptions()),
@@ -253,6 +260,46 @@ const SERVICE_JOBS: ServiceJob[] = [
     fetch: () => fetchHetznerState(fetchOptions()),
     persistOptions: { resolveMissingIncidents: true },
   },
+  // Developer Wave A. Copilot / Actions / Codespaces stay GitHub components.
+  statuspageJob("cursor", "https://status.cursor.com"),
+  statuspageJob("devin", "https://status.devin.ai"),
+  statuspageJob("github", "https://www.githubstatus.com"),
+  {
+    id: "gitlab",
+    fetch: () => fetchGitlabState(fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  statuspageJob("circleci", "https://status.circleci.com"),
+  statuspageJob("npm", "https://status.npmjs.org"),
+  statuspageJob("docker", "https://www.dockerstatus.com"),
+  statuspageJob("linear", "https://linearstatus.com"),
+  statuspageJob("sourcegraph", "https://sourcegraphstatus.com"),
+  statuspageJob("warp", "https://status.warp.dev"),
+  // Developer Wave B. More forges, registries, API tooling, and coding agents.
+  statuspageJob("bitbucket", "https://bitbucket.status.atlassian.com"),
+  statuspageJob("buildkite", "https://www.buildkitestatus.com"),
+  statuspageJob("pypi", "https://status.python.org"),
+  statuspageJob("rubygems", "https://status.rubygems.org"),
+  statuspageJob("maven", "https://status.maven.org"),
+  statuspageJob("postman", "https://status.postman.com"),
+  statuspageJob("augment", "https://status.augmentcode.com"),
+  statuspageJob("factory", "https://status.factory.ai"),
+  statuspageJob("tabnine", "https://status.tabnine.com"),
+  {
+    id: "zed",
+    fetch: () => fetchInstatusState("https://status.zed.dev", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  // Developer Wave C. Replit is none (Cloudflare challenges status.replit.com).
+  statuspageJob("lovable", "https://status.lovable.dev"),
+  statuspageJob("bolt", "https://status.bolt.new"),
+  statuspageJob("travis", "https://www.traviscistatus.com"),
+  statuspageJob("semaphore", "https://status.semaphore.io"),
+  statuspageJob("harness", "https://status.harness.io"),
+  statuspageJob("codefresh", "https://status.codefresh.io"),
+  statuspageJob("crates", "https://status.crates.io"),
+  statuspageJob("expo", "https://status.expo.dev"),
+  statuspageJob("cloudsmith", "https://status.cloudsmith.com"),
 ]
 
 async function fetchService(service: ServiceJob): Promise<boolean> {
