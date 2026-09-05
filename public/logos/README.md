@@ -217,5 +217,15 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `braze.svg` | Braze | `#D82028` | Official B from the [braze.com](https://www.braze.com/) wordmark |
 | `loops.svg` | Loops | `#FC5200` | Simple Icons `loops` |
 | `mailjet.svg` | Mailjet | `#B7A8FF` / `#000000` | Official mark from [mailjet.com](https://www.mailjet.com/) `logo-mailjet-sinch.svg` (Sinch wordmark dropped) |
+| `knock.svg` | Knock | `#FFFFFF` / `#E95744` | Official K + orange dot from [knock.app/favicon/favicon.svg](https://knock.app/favicon/favicon.svg) (tile dropped); white so official `#262626` reads on dark |
+| `iterable.svg` | Iterable | `#FFFAF6` | Official waves from [iterable.com iterable-logo-light.svg](https://iterable.com/wp-content/uploads/2026/04/iterable-logo-light.svg) (wordmark dropped) |
+| `mailersend.svg` | MailerSend | `#4E48E0` / `#1C81C1` / `#5CC4CD` | Official symbol from [mailersend.com/favicon/favicon.svg](https://www.mailersend.com/favicon/favicon.svg) |
+| `mailerlite.svg` | MailerLite | `#FFFFFF` | Official safari-pinned-tab from [mailerlite.com](https://www.mailerlite.com/site/themes/new/img/favicons/safari-pinned-tab.svg); white so official black reads on dark. Not the MailerSend crystal |
+| `smtp2go.svg` | SMTP2GO | `#ABD3FF` | Official plane from [smtp2go.com logo.svg](https://www.smtp2go.com/wp-content/themes/smtp2go/images/logo.svg) (wordmark dropped) |
+| `kit.svg` | Kit | `#FFFFFF` | Official K cropped from [kit.com/brand](https://kit.com/brand) `kit-logo-soft-black.svg`; white so official `#1E1E1E` reads on dark. Not Simple Icons `kit` (kit.co) |
+| `front.svg` | Front | `#FFFFFF` | Official F + circle from [front.com/assets/front.svg](https://front.com/assets/front.svg) (press wordmark cropped); white so official `#001B38` reads on dark |
+| `omnisend.svg` | Omnisend | `#FFFFFF` | Official mark from [omnisend.com omnisend_logo_dark.svg](https://www.omnisend.com/wp-content/themes/omnisend-v2/assets/img/omnisend_logo_dark.svg) (wordmark dropped); white so official `#1E2423` reads on dark |
+| `postmark.svg` | Postmark | `#FFDE00` / `#000000` | Official stamp from [postmarkapp.com logo-stamp-simple.svg](https://postmarkapp.com/images/logo-stamp-simple.svg) |
+| `mailchimp.svg` | Mailchimp | `#FFE01B` | Simple Icons `mailchimp` |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.

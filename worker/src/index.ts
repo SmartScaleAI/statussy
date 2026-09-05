@@ -59,9 +59,12 @@
  * redirects /api/v2); Email Wave A — Twilio, Mailgun, Klaviyo, Brevo,
  * SparkPost, Braze, Loops, and Mailjet via Statuspage, Resend via
  * resend-status.com (status.resend.com redirects), Customer.io via
- * customerio.statuspage.io (the public host has no /api/v2).
+ * customerio.statuspage.io (the public host has no /api/v2); Email
+ * Wave B — Knock, Iterable, MailerSend, MailerLite, Kit, Front, and
+ * Omnisend via Statuspage, SMTP2GO via smtp2gostatus.com (the public
+ * host redirects /api/v2).
  * AWS, Azure, Fastly, Replit, Redis, Algolia, DataStax, Okta, PayPal,
- * Adyen, PagerDuty, and Checkly are seeded without a
+ * Adyen, PagerDuty, Checkly, Postmark, and Mailchimp are seeded without a
  * fetcher) and writes snapshots, components,
  * and incidents to Postgres.
  * A tiny HTTP server exposes /healthz.
@@ -139,9 +142,9 @@ type ServiceJob = {
 }
 
 // Board services with a fetcher (26 AI + Cloud / Developer / Data / Auth /
-// Payments / Observability Waves A–C + Email Wave A; AWS, Azure, Fastly,
-// Replit, Redis, Algolia, DataStax, Okta, PayPal, Adyen, PagerDuty, and
-// Checkly are none).
+// Payments / Observability Waves A–C + Email Waves A–B; AWS, Azure, Fastly,
+// Replit, Redis, Algolia, DataStax, Okta, PayPal, Adyen, PagerDuty, Checkly,
+// Postmark, and Mailchimp are none).
 const statuspageJob = (id: string, baseUrl: string): ServiceJob => ({
   id,
   fetch: () => fetchStatuspageState(baseUrl, fetchOptions()),
@@ -565,6 +568,17 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("braze", "https://status.braze.com"),
   statuspageJob("loops", "https://status.loops.so"),
   statuspageJob("mailjet", "https://status.mailjet.com"),
+  // Email Wave B. Courier waits (no official vector). Mandrill stays
+  // on Mailchimp. SMTP2GO's public host redirects; hit smtp2gostatus.com.
+  // Postmark and Mailchimp are custom pages with no /api/v2.
+  statuspageJob("knock", "https://status.knock.app"),
+  statuspageJob("iterable", "https://status.iterable.com"),
+  statuspageJob("mailersend", "https://status.mailersend.com"),
+  statuspageJob("mailerlite", "https://status.mailerlite.com"),
+  statuspageJob("smtp2go", "https://smtp2gostatus.com"),
+  statuspageJob("kit", "https://status.kit.com"),
+  statuspageJob("front", "https://www.frontstatus.com"),
+  statuspageJob("omnisend", "https://status.omnisend.com"),
 ]
 
 async function fetchService(service: ServiceJob): Promise<boolean> {

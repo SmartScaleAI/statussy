@@ -2,14 +2,14 @@ import type pg from "pg"
 
 /**
  * Static registry of board services (26 AI + Cloud / Developer / Data /
- * Auth / Payments / Observability Waves A–C + Email Wave A).
+ * Auth / Payments / Observability Waves A–C + Email Waves A–B).
  * Mirrors the ids in the Next.js app's data/services.ts (and public/logos/{id}.svg).
  * Windsurf is the legacy Devin Desktop name and is not seeded separately.
  * GitHub Copilot is a GitHub component, not its own card.
  *
  * `category` defaults to `ai` when omitted. AWS, Azure, Fastly, Replit,
- * Redis, Algolia, DataStax, Okta, PayPal, Adyen, PagerDuty, and Checkly
- * are `none` until a dedicated fetcher exists.
+ * Redis, Algolia, DataStax, Okta, PayPal, Adyen, PagerDuty, Checkly,
+ * Postmark, and Mailchimp are `none` until a dedicated fetcher exists.
  */
 export const SERVICE_SEED = [
   {
@@ -1452,6 +1452,76 @@ export const SERVICE_SEED = [
     category: "email",
     statusUrl: "https://status.mailjet.com/",
     fetcherType: "statuspage",
+  },
+  {
+    id: "knock",
+    name: "Knock",
+    category: "email",
+    statusUrl: "https://status.knock.app/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "iterable",
+    name: "Iterable",
+    category: "email",
+    statusUrl: "https://status.iterable.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "mailersend",
+    name: "MailerSend",
+    category: "email",
+    statusUrl: "https://status.mailersend.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "mailerlite",
+    name: "MailerLite",
+    category: "email",
+    statusUrl: "https://status.mailerlite.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "smtp2go",
+    name: "SMTP2GO",
+    category: "email",
+    statusUrl: "https://status.smtp2go.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "kit",
+    name: "Kit",
+    category: "email",
+    statusUrl: "https://status.kit.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "front",
+    name: "Front",
+    category: "email",
+    statusUrl: "https://www.frontstatus.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "omnisend",
+    name: "Omnisend",
+    category: "email",
+    statusUrl: "https://status.omnisend.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "postmark",
+    name: "Postmark",
+    category: "email",
+    statusUrl: "https://status.postmarkapp.com/",
+    fetcherType: "none",
+  },
+  {
+    id: "mailchimp",
+    name: "Mailchimp",
+    category: "email",
+    statusUrl: "https://status.mailchimp.com/",
+    fetcherType: "none",
   },
 ] as const
 
