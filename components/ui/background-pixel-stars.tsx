@@ -7,7 +7,7 @@
 
 import { memo, useCallback, useEffect, useRef } from "react"
 
-// 16-bit color palette (reduced color options)
+// 16-bit color palette (reduced color options) — 21st.dev dark preview
 const STAR_COLORS = [
   "#FFFFFF", // White
   "#FFFFAA", // Light yellow
@@ -16,6 +16,17 @@ const STAR_COLORS = [
   "#AAFFAA", // Light green
   "#FFAAFF", // Light purple
   "#AAFFFF", // Light cyan
+] as const
+
+/** Same hues, darker ink so sparse pixels read on the light paper grid. */
+const LIGHT_STAR_COLORS = [
+  "#171717",
+  "#a16207",
+  "#2563eb",
+  "#dc2626",
+  "#15803d",
+  "#7c3aed",
+  "#0e7490",
 ] as const
 
 // Configuration constants
@@ -68,8 +79,12 @@ type StartPoint = {
 }
 
 export const BackgroundPixelStars = memo(
-  () => {
+  ({ scheme = "dark" }: { scheme?: "dark" | "light" }) => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null)
+    const starColors = scheme === "light" ? LIGHT_STAR_COLORS : STAR_COLORS
+    const shootingStarFill = scheme === "light" ? "#171717" : "#ffffff"
+    const shootingStarTrail =
+      scheme === "light" ? "37, 99, 235" : "180, 242, 255"
     const animationFrameRef = useRef<number | null>(null)
 
     // State references
@@ -125,13 +140,13 @@ export const BackgroundPixelStars = memo(
           Math.floor(Math.random() * (canvas.width / pixelSize)) * pixelSize
         const gridY =
           Math.floor(Math.random() * (canvas.height / pixelSize)) * pixelSize
-        const colorIndex = Math.floor(Math.random() * STAR_COLORS.length)
+        const colorIndex = Math.floor(Math.random() * starColors.length)
         const baseOpacity = Math.random() * 0.5 + 0.5
 
         backgroundStarsRef.current.push({
           x: gridX,
           y: gridY,
-          color: STAR_COLORS[colorIndex]!,
+          color: starColors[colorIndex]!,
           baseOpacity,
           currentOpacity: baseOpacity,
           twinkle: shouldTwinkle,
@@ -142,7 +157,7 @@ export const BackgroundPixelStars = memo(
           twinkleTimer: 0,
         })
       }
-    }, [])
+    }, [starColors])
 
     // Regenerate a portion of background stars
     const regenerateBackgroundStars = useCallback((): void => {
@@ -165,13 +180,13 @@ export const BackgroundPixelStars = memo(
           Math.floor(Math.random() * (canvas.width / pixelSize)) * pixelSize
         const gridY =
           Math.floor(Math.random() * (canvas.height / pixelSize)) * pixelSize
-        const colorIndex = Math.floor(Math.random() * STAR_COLORS.length)
+        const colorIndex = Math.floor(Math.random() * starColors.length)
         const baseOpacity = Math.random() * 0.5 + 0.5
 
         backgroundStarsRef.current[randomIndex] = {
           x: gridX,
           y: gridY,
-          color: STAR_COLORS[colorIndex]!,
+          color: starColors[colorIndex]!,
           baseOpacity,
           currentOpacity: baseOpacity,
           twinkle: shouldTwinkle,
@@ -182,7 +197,7 @@ export const BackgroundPixelStars = memo(
           twinkleTimer: 0,
         }
       }
-    }, [])
+    }, [starColors])
 
     // Main animation loop
     const animateCanvas = useCallback(
@@ -297,7 +312,7 @@ export const BackgroundPixelStars = memo(
               ctx.rotate((star.angle * Math.PI) / 180)
               ctx.translate(-point.x, -point.y)
 
-              ctx.fillStyle = `rgba(180, 242, 255, ${point.opacity})`
+              ctx.fillStyle = `rgba(${shootingStarTrail}, ${point.opacity})`
               ctx.fillRect(
                 point.x,
                 point.y,
@@ -317,7 +332,7 @@ export const BackgroundPixelStars = memo(
             ctx.rotate((star.angle * Math.PI) / 180)
             ctx.translate(-star.x, -star.y)
 
-            ctx.fillStyle = "#ffffff"
+            ctx.fillStyle = shootingStarFill
             ctx.globalAlpha = 1.0
 
             for (let y = 0; y < starHeight; y++) {
@@ -340,7 +355,7 @@ export const BackgroundPixelStars = memo(
 
         animationFrameRef.current = requestAnimationFrame(animateCanvas)
       },
-      [frameInterval]
+      [frameInterval, shootingStarFill, shootingStarTrail]
     )
 
     // Initialize the component
