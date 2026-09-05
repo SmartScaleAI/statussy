@@ -87,7 +87,9 @@
  * Branch, and Hightouch via status.hightouch.io; Analytics
  * Wave C — Singular, Airbridge, Lytics via
  * lytics.statuspage.io, Polytomic, Baremetrics, Quantcast,
- * Metabase, and Hex via Statuspage.
+ * Metabase, and Hex via Statuspage; Security Wave A — Snyk,
+ * Wiz, SentinelOne, Semgrep, Veracode, Tenable, Qualys, Vanta,
+ * Rapid7, and Socket via Statuspage.
  * AWS, Azure, Fastly, Replit, Redis, Algolia, DataStax, Okta, PayPal,
  * Adyen, PagerDuty, Checkly, Postmark, Mailchimp, Campaign Monitor,
  * Mailtrap, Substack, Adobe, Sketch, Penpot, Rive, LottieFiles,
@@ -769,6 +771,20 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("quantcast", "https://status.quantcast.com"),
   statuspageJob("metabase", "https://status.metabase.com"),
   statuspageJob("hex", "https://status.hex.tech"),
+  // Security Wave A. Snyk / Wiz / SentinelOne / Semgrep /
+  // Veracode / Tenable / Qualys / Vanta / Rapid7 / Socket are
+  // Statuspage. CrowdStrike and Drata wait (no reachable public
+  // status JSON / no official SVG).
+  statuspageJob("snyk", "https://status.snyk.io"),
+  statuspageJob("wiz", "https://status.wiz.io"),
+  statuspageJob("sentinelone", "https://status.sentinelone.com"),
+  statuspageJob("semgrep", "https://status.semgrep.dev"),
+  statuspageJob("veracode", "https://status.veracode.com"),
+  statuspageJob("tenable", "https://status.tenable.com"),
+  statuspageJob("qualys", "https://status.qualys.com"),
+  statuspageJob("vanta", "https://status.vanta.com"),
+  statuspageJob("rapid7", "https://status.rapid7.com"),
+  statuspageJob("socket", "https://status.socket.dev"),
 ]
 
 async function fetchService(service: ServiceJob): Promise<boolean> {

@@ -37,6 +37,7 @@ test("formatCategoryLabel: All + short codes uppercase", () => {
   assert.equal(formatCategoryLabel("infra"), "Infra")
   assert.equal(formatCategoryLabel("flags"), "Flags")
   assert.equal(formatCategoryLabel("analytics"), "Analytics")
+  assert.equal(formatCategoryLabel("security"), "Security")
   assert.equal(formatCategoryLabel("hosting"), "Hosting")
 })
 

@@ -357,5 +357,15 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `quantcast.svg` | Quantcast | `#F6F6EE` | Official marque from [quantcast.com Quantcast_Marque_Grey.svg](https://static.quantcast.com/marketing-site/Quantcast_Marque_Grey.svg) |
 | `metabase.svg` | Metabase | `#509EE3` | Simple Icons `metabase` |
 | `hex.svg` | Hex | `#F5C0C0` | Official HEX letters from [hex.tech/favicon.svg](https://hex.tech/favicon.svg); dark tile dropped |
+| `snyk.svg` | Snyk | `#4C4A73` | Simple Icons `snyk` |
+| `wiz.svg` | Wiz | `#FFFFFF` | Official star from [wiz.io logo_sprite.svg](https://www.wiz.io/images/logo_sprite.svg) `#wiz-star`; white so official currentColor reads on dark |
+| `sentinelone.svg` | SentinelOne | `#6100FF` | Official mark from the [status.sentinelone.com](https://status.sentinelone.com/) Statuspage logo blob |
+| `semgrep.svg` | Semgrep | `#13BF95` | Official mark from [semgrep.dev/favicon.svg](https://semgrep.dev/build/assets/favicon-CIx-xpG_.svg) |
+| `veracode.svg` | Veracode | `#FFFFFF` + `#00B9FF`→`#0065DD` | Official symbol from [veracode.com VER-Symbol-Full-Reversed.svg](https://www.veracode.com/); near-black polygon knocked to white |
+| `tenable.svg` | Tenable | `#E7FF00` + `#1E2426` | Official favicon from [tenable.com tenable-favicon.svg](https://www.tenable.com/) |
+| `qualys.svg` | Qualys | `#ED2E26` | Simple Icons `qualys` |
+| `vanta.svg` | Vanta | `#FFFFFF` | Official V from [vanta.com vanta-logo.svg](https://www.vanta.com/) (wordmark dropped); official `#240642` knocked to white |
+| `rapid7.svg` | Rapid7 | `#E85E26` | Official R from [rapid7.com/rapid7-logo.svg](https://www.rapid7.com/rapid7-logo.svg) (wordmark dropped) |
+| `socket.svg` | Socket | `#C93CD7` | Simple Icons `socket` |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.

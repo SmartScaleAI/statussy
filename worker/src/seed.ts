@@ -4,7 +4,7 @@ import type pg from "pg"
  * Static registry of board services (26 AI + Cloud / Developer / Data /
  * Auth / Payments / Observability Waves A–C + Email Waves A–C +
  * Design Waves A–C + Infra Waves A–C + Flags Waves A–C +
- * Analytics Waves A–C).
+ * Analytics Waves A–C + Security Wave A).
  * Mirrors the ids in the Next.js app's data/services.ts (and public/logos/{id}.svg).
  * Windsurf is the legacy Devin Desktop name and is not seeded separately.
  * GitHub Copilot is a GitHub component, not its own card.
@@ -2490,6 +2490,76 @@ export const SERVICE_SEED = [
     name: "Hex",
     category: "analytics",
     statusUrl: "https://status.hex.tech/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "snyk",
+    name: "Snyk",
+    category: "security",
+    statusUrl: "https://status.snyk.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "wiz",
+    name: "Wiz",
+    category: "security",
+    statusUrl: "https://status.wiz.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "sentinelone",
+    name: "SentinelOne",
+    category: "security",
+    statusUrl: "https://status.sentinelone.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "semgrep",
+    name: "Semgrep",
+    category: "security",
+    statusUrl: "https://status.semgrep.dev/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "veracode",
+    name: "Veracode",
+    category: "security",
+    statusUrl: "https://status.veracode.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "tenable",
+    name: "Tenable",
+    category: "security",
+    statusUrl: "https://status.tenable.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "qualys",
+    name: "Qualys",
+    category: "security",
+    statusUrl: "https://status.qualys.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "vanta",
+    name: "Vanta",
+    category: "security",
+    statusUrl: "https://status.vanta.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "rapid7",
+    name: "Rapid7",
+    category: "security",
+    statusUrl: "https://status.rapid7.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "socket",
+    name: "Socket",
+    category: "security",
+    statusUrl: "https://status.socket.dev/",
     fetcherType: "statuspage",
   },
 ] as const

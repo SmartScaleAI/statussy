@@ -29,6 +29,7 @@ export type ServiceCategory =
   | "infra"
   | "flags"
   | "analytics"
+  | "security"
 
 export type Service = {
   /** Matches a static mark at `public/logos/{id}.svg`. */
@@ -2988,5 +2989,94 @@ export const services: Service[] = [
     statusUrl: "https://status.hex.tech/",
     status: "operational",
     updatedAt: "2026-09-05T21:45:00.000Z",
+  },
+  // Security Wave A — scanners / CNAPP / EDR / vuln / compliance /
+  // supply chain that go dark. Identity / secrets / PAM stay Auth.
+  // Vault / cert-manager stay Infra. Cloudflare / AWS / Azure /
+  // Fastly / Akamai security products stay on those Cloud cards.
+  // GitHub Advanced Security / Dependabot stay GitHub; GitLab SAST
+  // stays GitLab. Splunk / Datadog Security / Elastic Security stay
+  // Observability. Prisma Cloud waits (Prisma is Data). CrowdStrike
+  // waits (no reachable public status JSON). Drata waits (no
+  // official SVG).
+  {
+    id: "snyk",
+    name: "Snyk",
+    category: "security",
+    statusUrl: "https://status.snyk.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T22:00:00.000Z",
+  },
+  {
+    id: "wiz",
+    name: "Wiz",
+    category: "security",
+    statusUrl: "https://status.wiz.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T22:00:00.000Z",
+  },
+  {
+    id: "sentinelone",
+    name: "SentinelOne",
+    category: "security",
+    statusUrl: "https://status.sentinelone.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T22:00:00.000Z",
+  },
+  {
+    id: "semgrep",
+    name: "Semgrep",
+    category: "security",
+    statusUrl: "https://status.semgrep.dev/",
+    status: "operational",
+    updatedAt: "2026-09-05T22:00:00.000Z",
+  },
+  {
+    id: "veracode",
+    name: "Veracode",
+    category: "security",
+    statusUrl: "https://status.veracode.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T22:00:00.000Z",
+  },
+  {
+    id: "tenable",
+    name: "Tenable",
+    category: "security",
+    statusUrl: "https://status.tenable.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T22:00:00.000Z",
+  },
+  {
+    id: "qualys",
+    name: "Qualys",
+    category: "security",
+    statusUrl: "https://status.qualys.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T22:00:00.000Z",
+  },
+  {
+    id: "vanta",
+    name: "Vanta",
+    category: "security",
+    statusUrl: "https://status.vanta.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T22:00:00.000Z",
+  },
+  {
+    id: "rapid7",
+    name: "Rapid7",
+    category: "security",
+    statusUrl: "https://status.rapid7.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T22:00:00.000Z",
+  },
+  {
+    id: "socket",
+    name: "Socket",
+    category: "security",
+    statusUrl: "https://status.socket.dev/",
+    status: "operational",
+    updatedAt: "2026-09-05T22:00:00.000Z",
   },
 ]
