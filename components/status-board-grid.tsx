@@ -100,24 +100,21 @@ export function StatusBoardGrid({
           {options.map((id) => {
             const selected = category === id
             return (
-              <button
+              <Button
                 key={id}
                 type="button"
+                variant="ghost"
                 role="radio"
                 data-category={id}
                 aria-checked={selected}
                 tabIndex={selected ? 0 : -1}
                 onClick={() => setCategory(id)}
                 className={cn(
-                  "rounded-full px-3 py-1 text-sm transition-colors outline-none",
-                  "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
-                  selected
-                    ? "bg-foreground font-medium text-background ring-2 ring-[var(--clr-blue)]"
-                    : "text-muted-foreground hover:text-foreground"
+                  selected && "bg-muted text-foreground dark:bg-muted/50"
                 )}
               >
                 {formatCategoryLabel(id)}
-              </button>
+              </Button>
             )
           })}
         </div>
