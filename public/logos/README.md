@@ -317,5 +317,15 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `reflag.svg` | Reflag | `#FFFFFF` | Official favicon from [reflag.com](https://reflag.com/) |
 | `go-feature-flag.svg` | GO Feature Flag | Official illustrated mark | Official SVG from [thomaspoignant/go-feature-flag](https://github.com/thomaspoignant/go-feature-flag/blob/main/gofeatureflag.svg) |
 | `featbit.svg` | FeatBit | `#FFFFFF` | Official mark from [featbit/featbit](https://github.com/featbit/featbit) |
+| `flagd.svg` | flagd | `#FFFFFF` | Official mark from [flagd.dev](https://flagd.dev/assets/logo-white.svg) |
+| `featurehub.svg` | FeatureHub | Official flower + `#FFFFFF` wordmark | Official lockup from [cncf/landscape](https://github.com/cncf/landscape/blob/master/hosted_logos/featurehub.svg); navy wordmark knocked to white |
+| `bucketeer.svg` | Bucketeer | Official `#5D3597` / `#DE0B99` | Official bucket mark from [cncf/landscape](https://github.com/cncf/landscape/blob/master/hosted_logos/bucketeer.svg) (wordmark dropped) |
+| `flipper.svg` | Flipper Cloud | `#FFFFFF` + `#1AB6FF` | Official wordmark from [flippercloud.io](https://www.flippercloud.io/); dark letters knocked to white |
+| `confidence.svg` | Confidence | `#FFFFFF` | Official icon from [confidence.spotify.com](https://confidence.spotify.com/icon.svg); dark tile dropped |
+| `frosmo.svg` | Frosmo | Official cheetah + `#FFFFFF` wordmark | Official lockup from [frosmo.com](https://frosmo.com/wp-content/themes/frosmo/assets/images/frosmo-icon.svg); black wordmark knocked to white |
+| `omniconvert.svg` | Omniconvert | Official `#5AA5FB` / `#2084F9` + `#FFFFFF` | Official Nexus lockup from [omniconvert.com](https://www.omniconvert.com/); black wordmark knocked to white |
+| `personyze.svg` | Personyze | Official `#E54944` + `#7B93C9` | Official icon from [personyze.com](https://counter2.personyze.com/images/logo-icon.svg); white tile dropped, near-black navy knocked to a lighter token |
+| `insider.svg` | Insider One | Official `#E92E2F` / `#FF6126` + `#FFFFFF` | Official header lockup from [insiderone.com](https://www.insiderone.com/); cream wordmark knocked to white |
+| `bloomreach.svg` | Bloomreach | Official `#FFD500` + `#1A1A1A` | Official icon from [bloomreach.com](https://www.bloomreach.com/wp-content/themes/hello-theme-child-master/assets/img/bloomreach-logo-icon.svg) |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.

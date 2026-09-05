@@ -78,7 +78,9 @@
  * LaunchDarkly, Optimizely, Statsig, and Flagsmith via Statuspage,
  * DevCycle via Status.io; Flags Wave B — CloudBees via
  * cloudbeesstatus.com, Kameleoon via kameleoon.statuspage.io,
- * Monetate via monetate.statuspage.io, Reflag via Instatus.
+ * Monetate via monetate.statuspage.io, Reflag via Instatus; Flags
+ * Wave C — Bloomreach via Statuspage, Omniconvert via Better Stack
+ * `index.json`.
  * AWS, Azure, Fastly, Replit, Redis, Algolia, DataStax, Okta, PayPal,
  * Adyen, PagerDuty, Checkly, Postmark, Mailchimp, Campaign Monitor,
  * Mailtrap, Substack, Adobe, Sketch, Penpot, Rive, LottieFiles,
@@ -87,7 +89,9 @@
  * CD, Flux, Terragrunt, Env0, Salt, Rancher, Vagrant, Helm, Istio,
  * Linkerd, Cilium, OPA, Kyverno, Traefik, cert-manager, Infracost,
  * Unleash, ConfigCat, GrowthBook, Eppo, VWO, AB Tasty, Convert,
- * Flipt, Hypertune, GO Feature Flag, and FeatBit are seeded
+ * Flipt, Hypertune, GO Feature Flag, FeatBit, flagd, FeatureHub,
+ * Bucketeer, Flipper Cloud, Confidence, Frosmo, Personyze, and
+ * Insider One are seeded
  * without a fetcher) and writes snapshots, components,
  * and incidents to Postgres.
  * A tiny HTTP server exposes /healthz.
@@ -699,6 +703,19 @@ const SERVICE_JOBS: ServiceJob[] = [
     id: "reflag",
     fetch: () =>
       fetchInstatusState("https://status.reflag.com", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  // Flags Wave C. Bloomreach is Statuspage. Omniconvert is Better
+  // Stack. flagd / FeatureHub / Bucketeer / Flipper Cloud /
+  // Confidence / Frosmo / Personyze / Insider One are none.
+  statuspageJob("bloomreach", "https://status.bloomreach.com"),
+  {
+    id: "omniconvert",
+    fetch: () =>
+      fetchBetterstackState(
+        "https://status.web.omniconvert.com",
+        fetchOptions(),
+      ),
     persistOptions: { resolveMissingIncidents: true },
   },
 ]

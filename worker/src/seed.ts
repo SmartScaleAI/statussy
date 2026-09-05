@@ -3,7 +3,7 @@ import type pg from "pg"
 /**
  * Static registry of board services (26 AI + Cloud / Developer / Data /
  * Auth / Payments / Observability Waves A–C + Email Waves A–C +
- * Design Waves A–C + Infra Waves A–C + Flags Waves A–B).
+ * Design Waves A–C + Infra Waves A–C + Flags Waves A–C).
  * Mirrors the ids in the Next.js app's data/services.ts (and public/logos/{id}.svg).
  * Windsurf is the legacy Devin Desktop name and is not seeded separately.
  * GitHub Copilot is a GitHub component, not its own card.
@@ -17,7 +17,9 @@ import type pg from "pg"
  * Rancher, Vagrant, Helm, Istio, Linkerd, Cilium, OPA, Kyverno,
  * Traefik, cert-manager, Infracost, Unleash, ConfigCat, GrowthBook,
  * Eppo, VWO, AB Tasty, Convert, Flipt, Hypertune, GO Feature Flag,
- * and FeatBit are `none` until a dedicated fetcher exists.
+ * FeatBit, flagd, FeatureHub, Bucketeer, Flipper Cloud, Confidence,
+ * Frosmo, Personyze, and Insider One are `none` until a dedicated
+ * fetcher exists.
  */
 export const SERVICE_SEED = [
   {
@@ -2186,6 +2188,80 @@ export const SERVICE_SEED = [
     category: "flags",
     statusUrl: "https://www.featbit.co/",
     fetcherType: "none",
+  },
+  // Flags Wave C. Bloomreach is Statuspage. Omniconvert is Better
+  // Stack. flagd / FeatureHub / Bucketeer / Flipper Cloud /
+  // Confidence / Frosmo / Personyze / Insider One are none (no
+  // public JSON; Flipper's Honeybadger page has an empty Atom feed).
+  {
+    id: "flagd",
+    name: "flagd",
+    category: "flags",
+    statusUrl: "https://flagd.dev/",
+    fetcherType: "none",
+  },
+  {
+    id: "featurehub",
+    name: "FeatureHub",
+    category: "flags",
+    statusUrl: "https://www.featurehub.io/",
+    fetcherType: "none",
+  },
+  {
+    id: "bucketeer",
+    name: "Bucketeer",
+    category: "flags",
+    statusUrl: "https://bucketeer.io/",
+    fetcherType: "none",
+  },
+  {
+    id: "flipper",
+    name: "Flipper Cloud",
+    category: "flags",
+    statusUrl: "https://status.flippercloud.io/",
+    fetcherType: "none",
+  },
+  {
+    id: "confidence",
+    name: "Confidence",
+    category: "flags",
+    statusUrl: "https://confidence.spotify.com/",
+    fetcherType: "none",
+  },
+  {
+    id: "frosmo",
+    name: "Frosmo",
+    category: "flags",
+    statusUrl: "https://frosmo.com/",
+    fetcherType: "none",
+  },
+  {
+    id: "omniconvert",
+    name: "Omniconvert",
+    category: "flags",
+    statusUrl: "https://status.web.omniconvert.com/",
+    fetcherType: "betterstack",
+  },
+  {
+    id: "personyze",
+    name: "Personyze",
+    category: "flags",
+    statusUrl: "https://www.personyze.com/",
+    fetcherType: "none",
+  },
+  {
+    id: "insider",
+    name: "Insider One",
+    category: "flags",
+    statusUrl: "https://www.insiderone.com/",
+    fetcherType: "none",
+  },
+  {
+    id: "bloomreach",
+    name: "Bloomreach",
+    category: "flags",
+    statusUrl: "https://status.bloomreach.com/",
+    fetcherType: "statuspage",
   },
 ] as const
 
