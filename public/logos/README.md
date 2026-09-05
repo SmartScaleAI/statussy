@@ -237,5 +237,15 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `help-scout.svg` | Help Scout | `#1292EE` | Simple Icons `helpscout` |
 | `mailtrap.svg` | Mailtrap | `#22D172` | Simple Icons `mailtrap` |
 | `substack.svg` | Substack | `#FF6719` | Simple Icons `substack` |
+| `figma.svg` | Figma | `#F24E1E` | Simple Icons `figma` |
+| `canva.svg` | Canva | `#00C4CC` | Simple Icons `canva` |
+| `adobe.svg` | Adobe | `#FF0000` | Simple Icons `adobe` |
+| `sketch.svg` | Sketch | `#F7B500` | Simple Icons `sketch` |
+| `framer.svg` | Framer | `#0055FF` | Simple Icons `framer` |
+| `miro.svg` | Miro | `#FFFFFF` | Simple Icons `miro`; white so official `#050038` reads on dark |
+| `webflow.svg` | Webflow | `#146EF5` | Simple Icons `webflow` |
+| `lucid.svg` | Lucid | `#FFFFFF` | Simple Icons `lucid`; white so official `#282C33` reads on dark |
+| `mural.svg` | Mural | `#FF4B4B` | Simple Icons `mural` |
+| `frontify.svg` | Frontify | `#FFFFFF` | Simple Icons `frontify`; white so official `#2D3232` reads on dark |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.

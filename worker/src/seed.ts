@@ -2,15 +2,16 @@ import type pg from "pg"
 
 /**
  * Static registry of board services (26 AI + Cloud / Developer / Data /
- * Auth / Payments / Observability Waves A–C + Email Waves A–C).
+ * Auth / Payments / Observability Waves A–C + Email Waves A–C +
+ * Design Wave A).
  * Mirrors the ids in the Next.js app's data/services.ts (and public/logos/{id}.svg).
  * Windsurf is the legacy Devin Desktop name and is not seeded separately.
  * GitHub Copilot is a GitHub component, not its own card.
  *
  * `category` defaults to `ai` when omitted. AWS, Azure, Fastly, Replit,
  * Redis, Algolia, DataStax, Okta, PayPal, Adyen, PagerDuty, Checkly,
- * Postmark, Mailchimp, Campaign Monitor, Mailtrap, and Substack are
- * `none` until a dedicated fetcher exists.
+ * Postmark, Mailchimp, Campaign Monitor, Mailtrap, Substack, Adobe,
+ * and Sketch are `none` until a dedicated fetcher exists.
  */
 export const SERVICE_SEED = [
   {
@@ -1593,6 +1594,79 @@ export const SERVICE_SEED = [
     category: "email",
     statusUrl: "https://status.substack.com/",
     fetcherType: "none",
+  },
+  // Design Wave A. FigJam / Dev Mode stay on Figma. Photoshop /
+  // Illustrator / XD stay on Adobe. Lucidspark stays on Lucid. Spline
+  // waits (no official vector). Adobe and Sketch are none.
+  {
+    id: "figma",
+    name: "Figma",
+    category: "design",
+    statusUrl: "https://status.figma.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "canva",
+    name: "Canva",
+    category: "design",
+    statusUrl: "https://www.canvastatus.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "adobe",
+    name: "Adobe",
+    category: "design",
+    statusUrl: "https://status.adobe.com/",
+    fetcherType: "none",
+  },
+  {
+    id: "sketch",
+    name: "Sketch",
+    category: "design",
+    statusUrl: "https://status.sketch.com/",
+    fetcherType: "none",
+  },
+  {
+    id: "framer",
+    name: "Framer",
+    category: "design",
+    statusUrl: "https://www.framerstatus.com/",
+    fetcherType: "betterstack",
+  },
+  {
+    id: "miro",
+    name: "Miro",
+    category: "design",
+    statusUrl: "https://status.miro.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "webflow",
+    name: "Webflow",
+    category: "design",
+    statusUrl: "https://status.webflow.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "lucid",
+    name: "Lucid",
+    category: "design",
+    statusUrl: "https://status.lucid.co/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "mural",
+    name: "Mural",
+    category: "design",
+    statusUrl: "https://status.mural.co/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "frontify",
+    name: "Frontify",
+    category: "design",
+    statusUrl: "https://status.frontify.com/",
+    fetcherType: "statuspage",
   },
 ] as const
 

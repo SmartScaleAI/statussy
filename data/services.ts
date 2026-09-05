@@ -25,6 +25,7 @@ export type ServiceCategory =
   | "payments"
   | "observability"
   | "email"
+  | "design"
 
 export type Service = {
   /** Matches a static mark at `public/logos/{id}.svg`. */
@@ -1967,5 +1968,90 @@ export const services: Service[] = [
     statusUrl: "https://status.substack.com/",
     status: "operational",
     updatedAt: "2026-09-05T18:10:00.000Z",
+  },
+  // Design Wave A — where you draw the product and the assets the UI
+  // ships from. One card per vendor. FigJam / Dev Mode / Figma Slides
+  // stay on Figma. Photoshop / Illustrator / XD / Express stay on
+  // Adobe. Lucidspark stays on Lucid. Spline waits (no official
+  // vector). Penpot, Marvel, Rive, and LottieFiles wait.
+  {
+    id: "figma",
+    name: "Figma",
+    category: "design",
+    statusUrl: "https://status.figma.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T19:00:00.000Z",
+  },
+  {
+    id: "canva",
+    name: "Canva",
+    category: "design",
+    statusUrl: "https://www.canvastatus.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T19:00:00.000Z",
+  },
+  {
+    id: "adobe",
+    name: "Adobe",
+    category: "design",
+    statusUrl: "https://status.adobe.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T19:00:00.000Z",
+  },
+  {
+    id: "sketch",
+    name: "Sketch",
+    category: "design",
+    statusUrl: "https://status.sketch.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T19:00:00.000Z",
+  },
+  {
+    id: "framer",
+    name: "Framer",
+    category: "design",
+    statusUrl: "https://www.framerstatus.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T19:00:00.000Z",
+  },
+  {
+    id: "miro",
+    name: "Miro",
+    category: "design",
+    statusUrl: "https://status.miro.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T19:00:00.000Z",
+  },
+  {
+    id: "webflow",
+    name: "Webflow",
+    category: "design",
+    statusUrl: "https://status.webflow.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T19:00:00.000Z",
+  },
+  {
+    id: "lucid",
+    name: "Lucid",
+    category: "design",
+    statusUrl: "https://status.lucid.co/",
+    status: "operational",
+    updatedAt: "2026-09-05T19:00:00.000Z",
+  },
+  {
+    id: "mural",
+    name: "Mural",
+    category: "design",
+    statusUrl: "https://status.mural.co/",
+    status: "operational",
+    updatedAt: "2026-09-05T19:00:00.000Z",
+  },
+  {
+    id: "frontify",
+    name: "Frontify",
+    category: "design",
+    statusUrl: "https://status.frontify.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T19:00:00.000Z",
   },
 ]
