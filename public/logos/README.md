@@ -87,5 +87,15 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `crates.svg` | crates.io | `#FFFFFF` | Simple Icons `rust` (official Rust mark used by crates.io); white so official black reads on dark |
 | `expo.svg` | Expo | `#FFFFFF` | Simple Icons `expo`; white so official `#1C2024` reads on dark |
 | `cloudsmith.svg` | Cloudsmith | `#2A6FE1` | Simple Icons `cloudsmith` |
+| `supabase.svg` | Supabase | `#3FCF8E` | Simple Icons `supabase` |
+| `neon.svg` | Neon | `#34D59A` | Simple Icons `neon` |
+| `planetscale.svg` | PlanetScale | `#FFFFFF` | Simple Icons `planetscale`; white so official black reads on dark |
+| `convex.svg` | Convex | `#EE342F` | Simple Icons `convex` |
+| `upstash.svg` | Upstash | `#00E9A3` | Simple Icons `upstash` |
+| `redis.svg` | Redis | `#FF4438` | Simple Icons `redis` |
+| `pinecone.svg` | Pinecone | `#FFFFFF` | Official pinecone mark from the [pinecone.io](https://www.pinecone.io/) header lockup (wordmark dropped); white so official black reads on dark |
+| `mongodb.svg` | MongoDB | `#47A248` | Simple Icons `mongodb` |
+| `cockroach.svg` | CockroachDB | `#6933FF` | Simple Icons `cockroachlabs` |
+| `prisma.svg` | Prisma | `#FFFFFF` | Simple Icons `prisma`; white so official `#2D3748` reads on dark |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.

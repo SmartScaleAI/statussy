@@ -16,7 +16,7 @@ export const SERVICE_STATUSES = [
 
 export type ServiceStatus = (typeof SERVICE_STATUSES)[number]
 
-export type ServiceCategory = "ai" | "cloud" | "developer"
+export type ServiceCategory = "ai" | "cloud" | "developer" | "data"
 
 export type Service = {
   /** Matches a static mark at `public/logos/{id}.svg`. */
@@ -707,5 +707,89 @@ export const services: Service[] = [
     statusUrl: "https://status.cloudsmith.com/",
     status: "operational",
     updatedAt: "2026-09-05T04:10:00.000Z",
+  },
+  // Data Wave A — stores and queues the app dies on. One card per vendor.
+  // Auth / payments / observability / email stay on later chiclets.
+  // Warehouses (Snowflake, Databricks) wait for Wave B. Redis has no
+  // public JSON (custom status.redis.io page).
+  {
+    id: "supabase",
+    name: "Supabase",
+    category: "data",
+    statusUrl: "https://status.supabase.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:20:00.000Z",
+  },
+  {
+    id: "neon",
+    name: "Neon",
+    category: "data",
+    statusUrl: "https://neonstatus.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:20:00.000Z",
+  },
+  {
+    id: "planetscale",
+    name: "PlanetScale",
+    category: "data",
+    statusUrl: "https://www.planetscalestatus.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:20:00.000Z",
+  },
+  {
+    id: "convex",
+    name: "Convex",
+    category: "data",
+    statusUrl: "https://status.convex.dev/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:20:00.000Z",
+  },
+  {
+    id: "upstash",
+    name: "Upstash",
+    category: "data",
+    statusUrl: "https://status.upstash.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:20:00.000Z",
+  },
+  {
+    id: "redis",
+    name: "Redis",
+    category: "data",
+    statusUrl: "https://status.redis.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:20:00.000Z",
+  },
+  {
+    id: "pinecone",
+    name: "Pinecone",
+    category: "data",
+    statusUrl: "https://status.pinecone.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:20:00.000Z",
+  },
+  {
+    id: "mongodb",
+    name: "MongoDB",
+    category: "data",
+    statusUrl: "https://status.mongodb.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:20:00.000Z",
+  },
+  {
+    id: "cockroach",
+    name: "CockroachDB",
+    category: "data",
+    statusUrl: "https://status.cockroachlabs.cloud/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:20:00.000Z",
+  },
+  {
+    id: "prisma",
+    name: "Prisma",
+    category: "data",
+    statusUrl: "https://www.prisma-status.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T04:20:00.000Z",
   },
 ]

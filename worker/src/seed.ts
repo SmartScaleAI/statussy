@@ -1,13 +1,13 @@
 import type pg from "pg"
 
 /**
- * Static registry of board services (26 AI + Cloud Waves A–C + Developer Waves A–C).
+ * Static registry of board services (26 AI + Cloud Waves A–C + Developer Waves A–C + Data Wave A).
  * Mirrors the ids in the Next.js app's data/services.ts (and public/logos/{id}.svg).
  * Windsurf is the legacy Devin Desktop name and is not seeded separately.
  * GitHub Copilot is a GitHub component, not its own card.
  *
- * `category` defaults to `ai` when omitted. AWS, Azure, Fastly, and Replit
- * are `none` until a dedicated fetcher exists.
+ * `category` defaults to `ai` when omitted. AWS, Azure, Fastly, Replit, and
+ * Redis are `none` until a dedicated fetcher exists.
  */
 export const SERVICE_SEED = [
   {
@@ -539,6 +539,76 @@ export const SERVICE_SEED = [
     name: "Cloudsmith",
     category: "developer",
     statusUrl: "https://status.cloudsmith.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "supabase",
+    name: "Supabase",
+    category: "data",
+    statusUrl: "https://status.supabase.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "neon",
+    name: "Neon",
+    category: "data",
+    statusUrl: "https://neonstatus.com/",
+    fetcherType: "status_io",
+  },
+  {
+    id: "planetscale",
+    name: "PlanetScale",
+    category: "data",
+    statusUrl: "https://www.planetscalestatus.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "convex",
+    name: "Convex",
+    category: "data",
+    statusUrl: "https://status.convex.dev/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "upstash",
+    name: "Upstash",
+    category: "data",
+    statusUrl: "https://status.upstash.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "redis",
+    name: "Redis",
+    category: "data",
+    statusUrl: "https://status.redis.io/",
+    fetcherType: "none",
+  },
+  {
+    id: "pinecone",
+    name: "Pinecone",
+    category: "data",
+    statusUrl: "https://status.pinecone.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "mongodb",
+    name: "MongoDB",
+    category: "data",
+    statusUrl: "https://status.mongodb.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "cockroach",
+    name: "CockroachDB",
+    category: "data",
+    statusUrl: "https://status.cockroachlabs.cloud/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "prisma",
+    name: "Prisma",
+    category: "data",
+    statusUrl: "https://www.prisma-status.com/",
     fetcherType: "statuspage",
   },
 ] as const

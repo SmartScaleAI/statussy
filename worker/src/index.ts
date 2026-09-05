@@ -26,7 +26,9 @@
  * RubyGems, Maven Central, Postman, Augment, Factory, and Tabnine via
  * Statuspage, Zed via Instatus; Developer Wave C — Lovable, Bolt, Travis CI,
  * Semaphore, Harness, Codefresh, crates.io, Expo, and Cloudsmith via
- * Statuspage. AWS, Azure, Fastly, and Replit are seeded without a
+ * Statuspage; Data Wave A — Supabase, PlanetScale, Convex, Upstash,
+ * Pinecone, MongoDB, CockroachDB, and Prisma via Statuspage, Neon via
+ * Status.io. AWS, Azure, Fastly, Replit, and Redis are seeded without a
  * fetcher) and writes snapshots, components, and incidents to Postgres.
  * A tiny HTTP server exposes /healthz.
  */
@@ -44,7 +46,12 @@ import {
   fetchGoogleCloudGeminiState,
   fetchGoogleCloudPlatformState,
 } from "./google-cloud.js"
-import { fetchGitlabState } from "./gitlab.js"
+import {
+  fetchGitlabState,
+  fetchStatusIoState,
+  NEON_STATUS_PAGE,
+  NEON_STATUS_PAGE_ID,
+} from "./gitlab.js"
 import { fetchHerokuState } from "./heroku.js"
 import { fetchHetznerState } from "./hetzner.js"
 import { fetchOracleCloudState } from "./oracle-cloud.js"
@@ -93,8 +100,8 @@ type ServiceJob = {
   persistOptions?: PersistOptions
 }
 
-// Board services with a fetcher (26 AI + Cloud Waves A–C + Developer Waves A–C;
-// AWS, Azure, Fastly, and Replit are none).
+// Board services with a fetcher (26 AI + Cloud Waves A–C + Developer Waves A–C
+// + Data Wave A; AWS, Azure, Fastly, Replit, and Redis are none).
 const statuspageJob = (id: string, baseUrl: string): ServiceJob => ({
   id,
   fetch: () => fetchStatuspageState(baseUrl, fetchOptions()),
@@ -300,6 +307,20 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("crates", "https://status.crates.io"),
   statuspageJob("expo", "https://status.expo.dev"),
   statuspageJob("cloudsmith", "https://status.cloudsmith.com"),
+  // Data Wave A. Redis is none (custom status.redis.io page, no public JSON).
+  statuspageJob("supabase", "https://status.supabase.com"),
+  {
+    id: "neon",
+    fetch: () => fetchStatusIoState(NEON_STATUS_PAGE, NEON_STATUS_PAGE_ID, fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  statuspageJob("planetscale", "https://www.planetscalestatus.com"),
+  statuspageJob("convex", "https://status.convex.dev"),
+  statuspageJob("upstash", "https://status.upstash.com"),
+  statuspageJob("pinecone", "https://status.pinecone.io"),
+  statuspageJob("mongodb", "https://status.mongodb.com"),
+  statuspageJob("cockroach", "https://status.cockroachlabs.cloud"),
+  statuspageJob("prisma", "https://www.prisma-status.com"),
 ]
 
 async function fetchService(service: ServiceJob): Promise<boolean> {
