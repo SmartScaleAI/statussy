@@ -347,5 +347,15 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `parsely.svg` | Parse.ly | `#5BA745` | Simple Icons `parsedotly` |
 | `umami.svg` | Umami | `#FFFFFF` | Simple Icons `umami`; white so official black reads on dark |
 | `goatcounter.svg` | GoatCounter | `#9A15A4` | Official mark from [arp242/goatcounter](https://github.com/arp242/goatcounter) `public/logo.svg` |
+| `singular.svg` | Singular | `#3088F4` | Official swirl from [singular.net singular-logo.svg](https://www.singular.net/wp-content/uploads/2026/04/singular-logo.svg) (wordmark dropped) |
+| `airbridge.svg` | Airbridge | `#FFFFFF` | Official A from [airbridge.io airbridge-logo.svg](https://www.airbridge.io/images/airbridge-logo.svg) (wordmark dropped); white so official currentColor reads on dark |
+| `kissmetrics.svg` | Kissmetrics | `#4651FF` | Official icon from [kissmetrics.io/logo-icon.svg](https://www.kissmetrics.io/logo-icon.svg) |
+| `lytics.svg` | Lytics | Official `#794CFF` / `#3885D0` / `#28AEB9`–`#18D6A3` | Official strokes from [lytics.com lytics-logo.svg](https://www.lytics.com/wp-content/uploads/2021/03/lytics-logo.svg) (wordmark dropped) |
+| `polytomic.svg` | Polytomic | `#0BD9A5` | Official mark from [polytomic.com/favicon.svg](https://www.polytomic.com/favicon.svg) |
+| `baremetrics.svg` | Baremetrics | `#6078FF` | Simple Icons `baremetrics` |
+| `chartmogul.svg` | ChartMogul | Official `#1E8FFB` + `#FFFFFF` | Official icon from [chartmogul.com/-/brand/icon-blue.svg](https://www.chartmogul.com/-/brand/icon-blue.svg) |
+| `quantcast.svg` | Quantcast | `#F6F6EE` | Official marque from [quantcast.com Quantcast_Marque_Grey.svg](https://static.quantcast.com/marketing-site/Quantcast_Marque_Grey.svg) |
+| `metabase.svg` | Metabase | `#509EE3` | Simple Icons `metabase` |
+| `hex.svg` | Hex | `#F5C0C0` | Official HEX letters from [hex.tech/favicon.svg](https://hex.tech/favicon.svg); dark tile dropped |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.

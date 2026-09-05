@@ -4,7 +4,7 @@ import type pg from "pg"
  * Static registry of board services (26 AI + Cloud / Developer / Data /
  * Auth / Payments / Observability Waves A–C + Email Waves A–C +
  * Design Waves A–C + Infra Waves A–C + Flags Waves A–C +
- * Analytics Waves A–B).
+ * Analytics Waves A–C).
  * Mirrors the ids in the Next.js app's data/services.ts (and public/logos/{id}.svg).
  * Windsurf is the legacy Devin Desktop name and is not seeded separately.
  * GitHub Copilot is a GitHub component, not its own card.
@@ -20,7 +20,8 @@ import type pg from "pg"
  * Eppo, VWO, AB Tasty, Convert, Flipt, Hypertune, GO Feature Flag,
  * FeatBit, flagd, FeatureHub, Bucketeer, Flipper Cloud, Confidence,
  * Frosmo, Personyze, Insider One, PostHog, Fathom, Matomo,
- * Simple Analytics, Countly, Parse.ly, Umami, and GoatCounter
+ * Simple Analytics, Countly, Parse.ly, Umami, GoatCounter,
+ * Kissmetrics, and ChartMogul
  * are `none` until a dedicated fetcher exists.
  */
 export const SERVICE_SEED = [
@@ -2415,6 +2416,81 @@ export const SERVICE_SEED = [
     category: "analytics",
     statusUrl: "https://www.goatcounter.com/",
     fetcherType: "none",
+  },
+  // Analytics Wave C. Singular / Airbridge / Lytics /
+  // Polytomic / Baremetrics / Quantcast / Metabase / Hex
+  // are Statuspage (Lytics via lytics.statuspage.io).
+  // Kissmetrics / ChartMogul are none (custom HTML /
+  // Statuspal; no public JSON).
+  {
+    id: "singular",
+    name: "Singular",
+    category: "analytics",
+    statusUrl: "https://status.singular.net/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "airbridge",
+    name: "Airbridge",
+    category: "analytics",
+    statusUrl: "https://status.airbridge.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "kissmetrics",
+    name: "Kissmetrics",
+    category: "analytics",
+    statusUrl: "https://status.kissmetrics.io/",
+    fetcherType: "none",
+  },
+  {
+    id: "lytics",
+    name: "Lytics",
+    category: "analytics",
+    statusUrl: "https://lytics.statuspage.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "polytomic",
+    name: "Polytomic",
+    category: "analytics",
+    statusUrl: "https://status.polytomic.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "baremetrics",
+    name: "Baremetrics",
+    category: "analytics",
+    statusUrl: "https://status.baremetrics.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "chartmogul",
+    name: "ChartMogul",
+    category: "analytics",
+    statusUrl: "https://status.chartmogul.com/",
+    fetcherType: "none",
+  },
+  {
+    id: "quantcast",
+    name: "Quantcast",
+    category: "analytics",
+    statusUrl: "https://status.quantcast.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "metabase",
+    name: "Metabase",
+    category: "analytics",
+    statusUrl: "https://status.metabase.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "hex",
+    name: "Hex",
+    category: "analytics",
+    statusUrl: "https://status.hex.tech/",
+    fetcherType: "statuspage",
   },
 ] as const
 
