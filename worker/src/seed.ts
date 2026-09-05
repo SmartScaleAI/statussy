@@ -228,8 +228,10 @@ export const SERVICE_SEED = [
   },
 ] as const
 
-function seedCategory(service: { category?: string }): string {
-  return service.category ?? "ai"
+function seedCategory(service: { id: string }): string {
+  return "category" in service && typeof service.category === "string"
+    ? service.category
+    : "ai"
 }
 
 export async function seedServices(pool: pg.Pool): Promise<void> {
