@@ -8,7 +8,7 @@ import { StatusSummary } from "@/components/status-summary"
 import { sortBoardServices, type BoardSortItem } from "@/lib/board-sort"
 import { selectFavoriteServices } from "@/lib/favorite-services"
 import { summarizeServices, type BoardStatus } from "@/lib/status"
-import { cn } from "@/lib/utils"
+import { boardPaperClassName, cn } from "@/lib/utils"
 
 export type MyServiceItem = BoardSortItem & {
   status: BoardStatus
@@ -45,7 +45,11 @@ export function MyServices({
 
   return (
     <section
-      className={cn("flex flex-col", empty ? "gap-3" : "gap-8")}
+      className={cn(
+        "flex flex-col",
+        boardPaperClassName,
+        empty ? "gap-3" : "gap-8"
+      )}
       aria-labelledby="my-services-heading"
     >
       <div className="flex flex-col gap-3">
@@ -62,7 +66,7 @@ export function MyServices({
         />
       </div>
       {empty ? (
-        <p className="pt-1 pb-10 text-sm text-muted-foreground" role="status">
+        <p className="pt-1 text-sm text-muted-foreground" role="status">
           Star services below to pin them here.
         </p>
       ) : (
