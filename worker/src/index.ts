@@ -10,8 +10,10 @@
  * SMA-22; Mistral via its Checkly/Nuxt `__NUXT_DATA__` HTML payload,
  * SMA-25; Google Gemini via Google Cloud Status incidents.json, SMA-26;
  * Wave B Statuspage services per SMA-41 — Fireworks, Cerebras, Replicate,
- * Runway, Ideogram, Stability; Together AI and Hugging Face via Better Stack
- * `index.json`) and writes snapshots, components, and incidents to Postgres.
+ * Runway, Ideogram, Stability; Together AI, Hugging Face, and Luma via Better
+ * Stack `index.json`; Wave C Statuspage — ElevenLabs, MiniMax, Voyage, Black
+ * Forest Labs, Cartesia, Kimi; fal via Instatus) and writes snapshots,
+ * components, and incidents to Postgres.
  * A tiny HTTP server exposes /healthz.
  */
 import { createServer } from "node:http"
@@ -67,7 +69,7 @@ type ServiceJob = {
   persistOptions?: PersistOptions
 }
 
-// All 18 board services are fetched each tick (Wave A + Wave B).
+// All 26 board services are fetched each tick (Wave A + Wave B + Wave C).
 const statuspageJob = (id: string, baseUrl: string): ServiceJob => ({
   id,
   fetch: () => fetchStatuspageState(baseUrl, fetchOptions()),
@@ -139,6 +141,26 @@ const SERVICE_JOBS: ServiceJob[] = [
   {
     id: "huggingface",
     fetch: () => fetchBetterstackState("https://status.huggingface.co", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  // Wave C — Statuspage-compatible pages. Voyage's custom domain times out on
+  // /api/v2, so the fetcher hits the Statuspage host directly.
+  statuspageJob("elevenlabs", "https://status.elevenlabs.io"),
+  statuspageJob("minimax", "https://status.minimax.io"),
+  statuspageJob("voyage", "https://voyageai-status.statuspage.io"),
+  statuspageJob("bfl", "https://status.bfl.ml"),
+  statuspageJob("cartesia", "https://status.cartesia.ai"),
+  statuspageJob("kimi", "https://status.moonshot.cn"),
+  {
+    // fal is Instatus (summary.json + components.json), same dialect as Perplexity.
+    id: "fal",
+    fetch: () => fetchInstatusState("https://status.fal.ai", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  {
+    // Luma is a Better Stack SPA, same index.json as Together / Hugging Face.
+    id: "luma",
+    fetch: () => fetchBetterstackState("https://status.lumalabs.ai", fetchOptions()),
     persistOptions: { resolveMissingIncidents: true },
   },
 ]

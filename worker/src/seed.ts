@@ -1,8 +1,8 @@
 import type pg from "pg"
 
 /**
- * Static registry of the 18 AI services on the Statussy board
- * (Wave A: 10 live services; Wave B / SMA-41: 8 net-new).
+ * Static registry of the 26 AI services on the Statussy board
+ * (Wave A: 10; Wave B / SMA-41: 8; Wave C: 8 stack-used AI products).
  * Mirrors the ids in the Next.js app's data/services.ts (and public/logos/{id}.svg).
  * Coding agents (Cursor, Windsurf, Devin, GitHub Copilot) are parked for a
  * future Developer category and must not be seeded here.
@@ -105,6 +105,54 @@ export const SERVICE_SEED = [
     name: "Stability AI",
     statusUrl: "https://status.stability.ai/",
     fetcherType: "statuspage",
+  },
+  {
+    id: "fal",
+    name: "fal",
+    statusUrl: "https://status.fal.ai/",
+    fetcherType: "instatus",
+  },
+  {
+    id: "elevenlabs",
+    name: "ElevenLabs",
+    statusUrl: "https://status.elevenlabs.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "minimax",
+    name: "MiniMax",
+    statusUrl: "https://status.minimax.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "voyage",
+    name: "Voyage AI",
+    statusUrl: "https://status.voyageai.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "bfl",
+    name: "Black Forest Labs",
+    statusUrl: "https://status.bfl.ml/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "cartesia",
+    name: "Cartesia",
+    statusUrl: "https://status.cartesia.ai/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "kimi",
+    name: "Kimi",
+    statusUrl: "https://status.moonshot.cn/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "luma",
+    name: "Luma",
+    statusUrl: "https://status.lumalabs.ai/",
+    fetcherType: "betterstack",
   },
 ] as const
 

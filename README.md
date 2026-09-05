@@ -2,7 +2,7 @@
 
 Glanceable “is anything down?” board for AI services. A SmartScale app, separate from Zerro.
 
-The board reads **live status from Postgres** for all 18 AI services the worker fetches (Wave A: OpenAI, Anthropic, Groq, Cohere, OpenRouter, Perplexity, xAI, DeepSeek, Google Gemini, Mistral; Wave B: Fireworks AI, Together AI, Cerebras, Hugging Face, Replicate, Runway, Ideogram, Stability AI). Nothing is scraped from the client. When a service has no snapshot yet, or the database is unreachable, the board still falls back to mock data.
+The board reads **live status from Postgres** for all 26 AI services the worker fetches (Wave A: OpenAI, Anthropic, Groq, Cohere, OpenRouter, Perplexity, xAI, DeepSeek, Google Gemini, Mistral; Wave B: Fireworks AI, Together AI, Cerebras, Hugging Face, Replicate, Runway, Ideogram, Stability AI; Wave C: fal, ElevenLabs, MiniMax, Voyage AI, Black Forest Labs, Cartesia, Kimi, Luma). Nothing is scraped from the client. When a service has no snapshot yet, or the database is unreachable, the board still falls back to mock data.
 
 Coding agents (Cursor, Windsurf, Devin, GitHub Copilot) are parked for a future **Developer** category and are not on this board.
 
@@ -23,16 +23,17 @@ npm run build
 
 Live-data foundation for the board: a Railway Postgres database plus a small Node
 worker in [`worker/`](worker/). The worker owns the schema (`services`,
-`service_snapshots`, `components`, `incidents`, `service_suggestions`), seeds the 18 board services,
+`service_snapshots`, `components`, `incidents`, `service_suggestions`), seeds the 26 board services,
 and ticks on a configurable interval (default every 5 minutes). Each tick fetches
 live status for services with a fetcher — OpenAI, Anthropic, Groq, Cohere,
-Fireworks, Cerebras, Replicate, Runway, Ideogram, and Stability via the
-Statuspage-compatible API, OpenRouter via OnlineOrNot, Perplexity via
+Fireworks, Cerebras, Replicate, Runway, Ideogram, Stability, ElevenLabs,
+MiniMax, Voyage, Black Forest Labs, Cartesia, and Kimi via the
+Statuspage-compatible API, OpenRouter via OnlineOrNot, Perplexity and fal via
 Instatus, xAI and DeepSeek via their RSS/Atom feeds, Google Gemini via Google
 Cloud Status `incidents.json`, Mistral via its Checkly/Nuxt status page
 (`__NUXT_DATA__` embedded in `https://status.mistral.ai/` HTML; there is no
-public JSON API, and Cloudflare may challenge the fetch), and Together AI plus
-Hugging Face via Better Stack `index.json` (the undocumented JSON the SPA
+public JSON API, and Cloudflare may challenge the fetch), and Together AI,
+Hugging Face, and Luma via Better Stack `index.json` (the undocumented JSON the SPA
 loads — no Statuspage/RSS API; if that shape changes, follow up with a
 dedicated Better Stack fetcher) — and upserts snapshot,
 component, and incident rows. On a failed fetch the worker keeps last-known rows
@@ -55,7 +56,7 @@ and flags the latest snapshot `stale`.
 cd worker
 npm install
 export DATABASE_URL=postgres://user:pass@localhost:5432/statussy
-npm run migrate   # apply migrations + seed the 18 services, then exit
+npm run migrate   # apply migrations + seed the 26 services, then exit
 npm run dev       # migrate, seed, tick on the interval, serve /healthz
 ```
 
@@ -120,7 +121,7 @@ registry in [`data/services.ts`](data/services.ts).
 
 Fallback policy (SMA-18):
 
-- **Service has snapshots** (all 18 fetched services): the card shows the live overall
+- **Service has snapshots** (all 26 fetched services): the card shows the live overall
   status, the snapshot's incident title / fetch time, and a **Health**
   chicklet from current `components` rows (operational count ÷ total — a live
   snapshot, not historical uptime or a vendor SLA). Services with no

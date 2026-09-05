@@ -24,5 +24,13 @@ Marks keep the SMA-8 paths and viewBoxes (same size/alignment). Fills use docume
 | `runway.svg`        | Runway        | `#4F46E5`                    | Simple R mark; indigo stand-in (official lockup is black/white) |
 | `ideogram.svg`      | Ideogram      | `#E11D8F`                    | Simple I / spark mark; Ideogram magenta from [ideogram.ai](https://ideogram.ai) |
 | `stability.svg`     | Stability AI  | `#7C3AED`                    | Simple hex mark; Stability purple from [stability.ai](https://stability.ai) |
+| `fal.svg`           | fal           | `#22C55E`                    | Simple chevron mark; green stand-in for [fal.ai](https://fal.ai) |
+| `elevenlabs.svg`    | ElevenLabs    | `#A78BFA`                    | Two-bar 11 mark; violet stand-in (official lockup is black/white) |
+| `minimax.svg`       | MiniMax       | `#EF4444`                    | Simple M mark; MiniMax red from [minimax.io](https://www.minimax.io) |
+| `voyage.svg`        | Voyage AI     | `#2563EB`                    | Simple V mark; Voyage blue from [voyageai.com](https://www.voyageai.com) |
+| `bfl.svg`           | Black Forest Labs | `#F59E0B`                | Simple hex mark; amber stand-in for FLUX / [bfl.ai](https://bfl.ai) |
+| `cartesia.svg`      | Cartesia      | `#14B8A6`                    | Simple C / waveform mark; teal from [cartesia.ai](https://cartesia.ai) |
+| `kimi.svg`          | Kimi          | `#38BDF8`                    | Simple K mark; Moonshot sky from [kimi.com](https://www.kimi.com) |
+| `luma.svg`          | Luma          | `#E879F9`                    | Simple ring mark; Luma pink from [lumalabs.ai](https://lumalabs.ai) |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.
