@@ -8,8 +8,12 @@
  * Statuspage-compatible API; OpenRouter via OnlineOrNot, SMA-21; Perplexity
  * via Instatus, SMA-20; xAI and DeepSeek via their RSS/Atom status feeds,
  * SMA-22; Mistral via its Checkly/Nuxt `__NUXT_DATA__` HTML payload,
- * SMA-25; Google Gemini via Google Cloud Status incidents.json, SMA-26)
- * and writes snapshots, components, and incidents to Postgres.
+ * SMA-25; Google Gemini via Google Cloud Status incidents.json, SMA-26;
+ * Wave B Statuspage services per SMA-41 — Fireworks, Cerebras, Replicate,
+ * Runway, Ideogram, Stability; Together AI, Hugging Face, and Luma via Better
+ * Stack `index.json`; Wave C Statuspage — ElevenLabs, MiniMax, Voyage, Black
+ * Forest Labs, Cartesia, Kimi; fal via Instatus) and writes snapshots,
+ * components, and incidents to Postgres.
  * A tiny HTTP server exposes /healthz.
  */
 import { createServer } from "node:http"
@@ -22,6 +26,7 @@ import { fetchRssState } from "./rss.js"
 import { seedServices } from "./seed.js"
 import { fetchOnlineOrNotState } from "./onlineornot.js"
 import { fetchGoogleCloudGeminiState } from "./google-cloud.js"
+import { fetchBetterstackState } from "./betterstack.js"
 import { fetchStatuspageState } from "./statuspage.js"
 import {
   markServiceStale,
@@ -64,7 +69,7 @@ type ServiceJob = {
   persistOptions?: PersistOptions
 }
 
-// All 10 board services are fetched each tick.
+// All 26 board services are fetched each tick (Wave A + Wave B + Wave C).
 const statuspageJob = (id: string, baseUrl: string): ServiceJob => ({
   id,
   fetch: () => fetchStatuspageState(baseUrl, fetchOptions()),
@@ -116,6 +121,46 @@ const SERVICE_JOBS: ServiceJob[] = [
     // persist time. Parse/CF failures mark the latest snapshot stale.
     id: "mistral",
     fetch: () => fetchChecklyNuxtState("https://status.mistral.ai", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  // SMA-41 Wave B — Statuspage-compatible pages.
+  statuspageJob("fireworks", "https://status.fireworks.ai"),
+  statuspageJob("cerebras", "https://status.cerebras.ai"),
+  statuspageJob("replicate", "https://status.replicate.com"),
+  statuspageJob("runway", "https://status.runwayml.com"),
+  statuspageJob("ideogram", "https://status.ideogram.ai"),
+  statuspageJob("stability", "https://status.stability.ai"),
+  {
+    // SMA-41: Together + Hugging Face are Better Stack SPAs. The public
+    // `index.json` the SPA loads is undocumented; persist treats dropped
+    // reports as resolved.
+    id: "together",
+    fetch: () => fetchBetterstackState("https://status.together.ai", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  {
+    id: "huggingface",
+    fetch: () => fetchBetterstackState("https://status.huggingface.co", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  // Wave C — Statuspage-compatible pages. Voyage's custom domain times out on
+  // /api/v2, so the fetcher hits the Statuspage host directly.
+  statuspageJob("elevenlabs", "https://status.elevenlabs.io"),
+  statuspageJob("minimax", "https://status.minimax.io"),
+  statuspageJob("voyage", "https://voyageai-status.statuspage.io"),
+  statuspageJob("bfl", "https://status.bfl.ml"),
+  statuspageJob("cartesia", "https://status.cartesia.ai"),
+  statuspageJob("kimi", "https://status.moonshot.cn"),
+  {
+    // fal is Instatus (summary.json + components.json), same dialect as Perplexity.
+    id: "fal",
+    fetch: () => fetchInstatusState("https://status.fal.ai", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  {
+    // Luma is a Better Stack SPA, same index.json as Together / Hugging Face.
+    id: "luma",
+    fetch: () => fetchBetterstackState("https://status.lumalabs.ai", fetchOptions()),
     persistOptions: { resolveMissingIncidents: true },
   },
 ]
