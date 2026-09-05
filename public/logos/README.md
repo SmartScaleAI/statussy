@@ -297,5 +297,15 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `traefik.svg` | Traefik | `#24A1C1` | Simple Icons `traefikproxy` |
 | `cert-manager.svg` | cert-manager | Official CNCF `#326CE5` + white | Official icon from [cncf/artwork](https://github.com/cncf/artwork/blob/master/projects/cert-manager/icon/color/cert-manager-icon-color.svg) |
 | `infracost.svg` | Infracost | `#DB44B8` | Simple Icons `infracost` |
+| `launchdarkly.svg` | LaunchDarkly | `#FFFFFF` | Official star path; black lockup knocked out |
+| `optimizely.svg` | Optimizely | Official `#0D3A29` / `#ABFF44` | Official favicon mark |
+| `statsig.svg` | Statsig | `#EAECEE` | Official favicon chevrons; dark tile dropped |
+| `flagsmith.svg` | Flagsmith | `#FFFFFF` | Official white wordmark from [flagsmith.com](https://www.flagsmith.com/) |
+| `unleash.svg` | Unleash | Official `#1A4049` / white / `#817AFE` | Official glyph from [getunleash.io](https://www.getunleash.io/) |
+| `configcat.svg` | ConfigCat | `#FFFFFF` + `#ed1c24` | Official lockup; black wordmark knocked out, cat stays red |
+| `growthbook.svg` | GrowthBook | `#FFFFFF` + official `#029DD1` / `#0047BD` / `#4817A1` | Official white wordmark + icon from [growthbook.io](https://www.growthbook.io/) |
+| `devcycle.svg` | DevCycle | `#2E4AEF` | Official `icon.svg` |
+| `eppo.svg` | Eppo | `#FFFFFF` | Official lockup; `#2C1912` / black knocked out |
+| `vwo.svg` | VWO | Official `#BF3078` / `#802050` / `#26134D` | Official color wordmark |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.

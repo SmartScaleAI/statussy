@@ -27,6 +27,9 @@ export const DATABRICKS_STATUS_PAGE_ID = "5cf02dde58a00904bda41926"
 export const DYNATRACE_STATUS_PAGE = "https://status.dynatrace.com"
 export const DYNATRACE_STATUS_PAGE_ID = "546d8cb6af8407b6730000cb"
 
+export const DEVCYCLE_STATUS_PAGE = "https://status.devcycle.com"
+export const DEVCYCLE_STATUS_PAGE_ID = "6a28108059348e05f706f393" // Flags Wave A; status.devcycle.com → Status.io
+
 export type StatusIoComponent = {
   id?: string
   name?: string

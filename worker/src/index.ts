@@ -74,15 +74,17 @@
  * (status.spacelift.io has no DNS), Crossplane via Upbound
  * Statuspage; Infra Wave B — Puppet via puppet.statuspage.io
  * (status.puppet.com has no DNS), Scalr via status.scalr.io; Infra
- * Wave C — Teleport via status.goteleport.com.
+ * Wave C — Teleport via status.goteleport.com; Flags Wave A —
+ * LaunchDarkly, Optimizely, Statsig, and Flagsmith via Statuspage,
+ * DevCycle via Status.io.
  * AWS, Azure, Fastly, Replit, Redis, Algolia, DataStax, Okta, PayPal,
  * Adyen, PagerDuty, Checkly, Postmark, Mailchimp, Campaign Monitor,
  * Mailtrap, Substack, Adobe, Sketch, Penpot, Rive, LottieFiles,
  * Whimsical, Lunacy, Photopea, Blender, Moqups, Proto.io, UXPin,
  * Overflow, Axure, Relume, Visily, Plasmic, OpenTofu, Ansible, Argo
  * CD, Flux, Terragrunt, Env0, Salt, Rancher, Vagrant, Helm, Istio,
- * Linkerd, Cilium, OPA, Kyverno, Traefik, cert-manager, and
- * Infracost are seeded
+ * Linkerd, Cilium, OPA, Kyverno, Traefik, cert-manager, Infracost,
+ * Unleash, ConfigCat, GrowthBook, Eppo, and VWO are seeded
  * without a fetcher) and writes snapshots, components,
  * and incidents to Postgres.
  * A tiny HTTP server exposes /healthz.
@@ -106,6 +108,8 @@ import {
   fetchStatusIoState,
   DATABRICKS_STATUS_PAGE,
   DATABRICKS_STATUS_PAGE_ID,
+  DEVCYCLE_STATUS_PAGE,
+  DEVCYCLE_STATUS_PAGE_ID,
   DYNATRACE_STATUS_PAGE,
   DYNATRACE_STATUS_PAGE_ID,
   NEON_STATUS_PAGE,
@@ -664,6 +668,24 @@ const SERVICE_JOBS: ServiceJob[] = [
   // Cilium / OPA / Kyverno / Traefik / cert-manager / Infracost
   // are none.
   statuspageJob("teleport", "https://status.goteleport.com"),
+  // Flags Wave A. LaunchDarkly / Optimizely / Statsig / Flagsmith
+  // are Statuspage. DevCycle is Status.io (status.devcycle.com →
+  // Status.io). Unleash / ConfigCat / GrowthBook / Eppo / VWO
+  // are none (no public JSON).
+  statuspageJob("launchdarkly", "https://status.launchdarkly.com"),
+  statuspageJob("optimizely", "https://status.optimizely.com"),
+  statuspageJob("statsig", "https://status.statsig.com"),
+  statuspageJob("flagsmith", "https://status.flagsmith.com"),
+  {
+    id: "devcycle",
+    fetch: () =>
+      fetchStatusIoState(
+        DEVCYCLE_STATUS_PAGE,
+        DEVCYCLE_STATUS_PAGE_ID,
+        fetchOptions(),
+      ),
+    persistOptions: { resolveMissingIncidents: true },
+  },
 ]
 
 async function fetchService(service: ServiceJob): Promise<boolean> {

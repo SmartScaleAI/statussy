@@ -3,7 +3,7 @@ import type pg from "pg"
 /**
  * Static registry of board services (26 AI + Cloud / Developer / Data /
  * Auth / Payments / Observability Waves A–C + Email Waves A–C +
- * Design Waves A–C + Infra Waves A–C).
+ * Design Waves A–C + Infra Waves A–C + Flags Wave A).
  * Mirrors the ids in the Next.js app's data/services.ts (and public/logos/{id}.svg).
  * Windsurf is the legacy Devin Desktop name and is not seeded separately.
  * GitHub Copilot is a GitHub component, not its own card.
@@ -15,8 +15,8 @@ import type pg from "pg"
  * Blender, Moqups, Proto.io, UXPin, Overflow, Axure, Relume, Visily,
  * Plasmic, OpenTofu, Ansible, Argo CD, Flux, Terragrunt, Env0, Salt,
  * Rancher, Vagrant, Helm, Istio, Linkerd, Cilium, OPA, Kyverno,
- * Traefik, cert-manager, and Infracost are `none` until a dedicated
- * fetcher exists.
+ * Traefik, cert-manager, Infracost, Unleash, ConfigCat, GrowthBook,
+ * Eppo, and VWO are `none` until a dedicated fetcher exists.
  */
 export const SERVICE_SEED = [
   {
@@ -2036,6 +2036,79 @@ export const SERVICE_SEED = [
     name: "Infracost",
     category: "infra",
     statusUrl: "https://www.infracost.io/",
+    fetcherType: "none",
+  },
+  // Flags Wave A. LaunchDarkly / Optimizely / Statsig / Flagsmith
+  // are Statuspage. DevCycle is Status.io. Unleash / ConfigCat /
+  // GrowthBook / Eppo / VWO are none (no public JSON).
+  {
+    id: "launchdarkly",
+    name: "LaunchDarkly",
+    category: "flags",
+    statusUrl: "https://status.launchdarkly.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "optimizely",
+    name: "Optimizely",
+    category: "flags",
+    statusUrl: "https://status.optimizely.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "statsig",
+    name: "Statsig",
+    category: "flags",
+    statusUrl: "https://status.statsig.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "flagsmith",
+    name: "Flagsmith",
+    category: "flags",
+    statusUrl: "https://status.flagsmith.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "unleash",
+    name: "Unleash",
+    category: "flags",
+    statusUrl: "https://www.getunleash.io/",
+    fetcherType: "none",
+  },
+  {
+    id: "configcat",
+    name: "ConfigCat",
+    category: "flags",
+    statusUrl: "https://status.configcat.com/",
+    fetcherType: "none",
+  },
+  {
+    id: "growthbook",
+    name: "GrowthBook",
+    category: "flags",
+    statusUrl: "https://www.growthbook.io/",
+    fetcherType: "none",
+  },
+  {
+    id: "devcycle",
+    name: "DevCycle",
+    category: "flags",
+    statusUrl: "https://status.devcycle.com/",
+    fetcherType: "status_io",
+  },
+  {
+    id: "eppo",
+    name: "Eppo",
+    category: "flags",
+    statusUrl: "https://www.geteppo.com/",
+    fetcherType: "none",
+  },
+  {
+    id: "vwo",
+    name: "VWO",
+    category: "flags",
+    statusUrl: "https://status.vwo.com/",
     fetcherType: "none",
   },
 ] as const
