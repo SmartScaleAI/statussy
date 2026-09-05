@@ -84,7 +84,10 @@
  * www.mixpanelstatus.com, Segment, Heap, Pendo, and RudderStack via
  * Statuspage, Plausible via Better Stack `index.json`; Analytics
  * Wave B — Woopra, Treasure Data via status.treasure.ai, AppsFlyer,
- * Branch, and Hightouch via status.hightouch.io.
+ * Branch, and Hightouch via status.hightouch.io; Analytics
+ * Wave C — Singular, Airbridge, Lytics via
+ * lytics.statuspage.io, Polytomic, Baremetrics, Quantcast,
+ * Metabase, and Hex via Statuspage.
  * AWS, Azure, Fastly, Replit, Redis, Algolia, DataStax, Okta, PayPal,
  * Adyen, PagerDuty, Checkly, Postmark, Mailchimp, Campaign Monitor,
  * Mailtrap, Substack, Adobe, Sketch, Penpot, Rive, LottieFiles,
@@ -96,7 +99,8 @@
  * Flipt, Hypertune, GO Feature Flag, FeatBit, flagd, FeatureHub,
  * Bucketeer, Flipper Cloud, Confidence, Frosmo, Personyze,
  * Insider One, PostHog, Fathom, Matomo, Simple Analytics,
- * Countly, Parse.ly, Umami, and GoatCounter are seeded
+ * Countly, Parse.ly, Umami, GoatCounter, Kissmetrics, and
+ * ChartMogul are seeded
  * without a fetcher) and writes snapshots, components,
  * and incidents to Postgres.
  * A tiny HTTP server exposes /healthz.
@@ -751,6 +755,20 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("appsflyer", "https://status.appsflyer.com"),
   statuspageJob("branch", "https://status.branch.io"),
   statuspageJob("hightouch", "https://status.hightouch.io"),
+  // Analytics Wave C. Singular / Airbridge / Lytics /
+  // Polytomic / Baremetrics / Quantcast / Metabase / Hex
+  // are Statuspage. Lytics is lytics.statuspage.io
+  // (status.lytics.com has no DNS). Kissmetrics /
+  // ChartMogul are none (Kissmetrics is custom HTML;
+  // ChartMogul is Statuspal HTML).
+  statuspageJob("singular", "https://status.singular.net"),
+  statuspageJob("airbridge", "https://status.airbridge.io"),
+  statuspageJob("lytics", "https://lytics.statuspage.io"),
+  statuspageJob("polytomic", "https://status.polytomic.com"),
+  statuspageJob("baremetrics", "https://status.baremetrics.com"),
+  statuspageJob("quantcast", "https://status.quantcast.com"),
+  statuspageJob("metabase", "https://status.metabase.com"),
+  statuspageJob("hex", "https://status.hex.tech"),
 ]
 
 async function fetchService(service: ServiceJob): Promise<boolean> {
