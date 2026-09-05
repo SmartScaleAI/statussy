@@ -32,8 +32,17 @@
  * Couchbase, Confluent, Tinybird, and Zilliz via Statuspage, Databricks via
  * Status.io; Data Wave C — Materialize, Redpanda, Yugabyte, and TiDB via
  * Statuspage, Turso, Qdrant, Meilisearch, and SurrealDB via Better Stack
- * `index.json`. AWS, Azure, Fastly, Replit, Redis, Algolia, and DataStax
- * are seeded without a fetcher) and writes snapshots, components, and incidents to Postgres.
+ * `index.json`; Auth Wave A — Clerk, WorkOS, FusionAuth, Frontegg, and
+ * 1Password via Statuspage, Auth0 via auth0.statuspage.io (custom domain
+ * has no /api/v2), Stytch, Kinde, and PropelAuth via Instatus; Auth Wave B
+ * — Duo, Ping Identity, Doppler, Infisical, Zitadel, JumpCloud, Magic, and
+ * Beyond Identity via Statuspage, Descope via Instatus, Logto via Better
+ * Stack `index.json`; Auth Wave C — LoginRadius, Scalekit, Transmit
+ * Security, SecureAuth, Keeper, Yubico, Akeyless, SailPoint, and Delinea
+ * via Statuspage, LastPass via lastpass.statuspage.io (the public host
+ * challenges /api/v2). AWS, Azure, Fastly, Replit, Redis, Algolia, DataStax,
+ * and Okta are seeded without a fetcher) and writes snapshots, components,
+ * and incidents to Postgres.
  * A tiny HTTP server exposes /healthz.
  */
 import { createServer } from "node:http"
@@ -107,7 +116,8 @@ type ServiceJob = {
 }
 
 // Board services with a fetcher (26 AI + Cloud Waves A–C + Developer Waves A–C
-// + Data Wave A; AWS, Azure, Fastly, Replit, and Redis are none).
+// + Data Waves A–C + Auth Waves A–B; AWS, Azure, Fastly, Replit, Redis,
+// Algolia, DataStax, and Okta are none).
 const statuspageJob = (id: string, baseUrl: string): ServiceJob => ({
   id,
   fetch: () => fetchStatuspageState(baseUrl, fetchOptions()),
@@ -372,6 +382,60 @@ const SERVICE_JOBS: ServiceJob[] = [
   },
   statuspageJob("yugabyte", "https://status.yugabyte.cloud"),
   statuspageJob("tidb", "https://status.tidbcloud.com"),
+  // Auth Wave A. Auth0's public host has no /api/v2; hit the Statuspage host.
+  // Okta status.okta.com returns 401 for JSON (same pattern as Fastly).
+  statuspageJob("auth0", "https://auth0.statuspage.io"),
+  statuspageJob("clerk", "https://status.clerk.com"),
+  statuspageJob("workos", "https://status.workos.com"),
+  {
+    id: "stytch",
+    fetch: () => fetchInstatusState("https://status.stytch.com", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  {
+    id: "kinde",
+    fetch: () => fetchInstatusState("https://status.kinde.com", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  statuspageJob("fusionauth", "https://status.fusionauth.io"),
+  statuspageJob("frontegg", "https://status.frontegg.com"),
+  {
+    id: "propelauth",
+    fetch: () => fetchInstatusState("https://status.propelauth.com", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  statuspageJob("onepassword", "https://status.1password.com"),
+  // Auth Wave B.
+  {
+    id: "descope",
+    fetch: () => fetchInstatusState("https://descopestatus.com", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  statuspageJob("duo", "https://status.duo.com"),
+  statuspageJob("ping-identity", "https://status.pingidentity.com"),
+  statuspageJob("doppler", "https://www.dopplerstatus.com"),
+  statuspageJob("infisical", "https://status.infisical.com"),
+  statuspageJob("zitadel", "https://www.zitadelstatus.com"),
+  statuspageJob("jumpcloud", "https://status.jumpcloud.com"),
+  {
+    id: "logto",
+    fetch: () => fetchBetterstackState("https://status.logto.io", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  statuspageJob("magic", "https://status.magic.link"),
+  statuspageJob("beyond-identity", "https://status.beyondidentity.com"),
+  // Auth Wave C. LastPass's public host challenges /api/v2; hit the
+  // Statuspage host (same pattern as Auth0).
+  statuspageJob("loginradius", "https://status.loginradius.com"),
+  statuspageJob("scalekit", "https://scalekit.statuspage.io"),
+  statuspageJob("transmit-security", "https://status.transmitsecurity.io"),
+  statuspageJob("secureauth", "https://status.secureauth.com"),
+  statuspageJob("lastpass", "https://lastpass.statuspage.io"),
+  statuspageJob("keeper", "https://statuspage.keeper.io"),
+  statuspageJob("yubico", "https://status.yubico.com"),
+  statuspageJob("akeyless", "https://status.akeyless.io"),
+  statuspageJob("sailpoint", "https://status.sailpoint.com"),
+  statuspageJob("delinea", "https://status.delinea.com"),
 ]
 
 async function fetchService(service: ServiceJob): Promise<boolean> {

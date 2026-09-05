@@ -1,10 +1,10 @@
 # Statussy
 
-Glanceable “is anything down?” board for AI, Cloud, Developer, and Data services. A SmartScale app, separate from Zerro.
+Glanceable “is anything down?” board for AI, Cloud, Developer, Data, and Auth services. A SmartScale app, separate from Zerro.
 
-The board reads **live status from Postgres** for the 111 catalog services (26 AI + 25 Cloud + 30 Developer + 30 Data). AI Wave A: OpenAI, Anthropic, Groq, Cohere, OpenRouter, Perplexity, xAI, DeepSeek, Google Gemini, Mistral; Wave B: Fireworks AI, Together AI, Cerebras, Hugging Face, Replicate, Runway, Ideogram, Stability AI; Wave C: fal, ElevenLabs, MiniMax, Voyage AI, Black Forest Labs, Cartesia, Kimi, Luma. Cloud Wave A: Vercel, Railway, Cloudflare, Render, Fly.io, Netlify, DigitalOcean, Google Cloud, AWS, Azure. Cloud Wave B: Heroku, Linode, Fastly, bunny.net, Deno Deploy, Koyeb, Modal, Firebase. Cloud Wave C: Akamai, Vultr, Scaleway, Oracle Cloud, Hetzner, Northflank, Lambda. Developer Wave A: Cursor, Devin, GitHub, GitLab, CircleCI, npm, Docker, Linear, Sourcegraph, Warp. Developer Wave B: Bitbucket, Buildkite, PyPI, RubyGems, Maven Central, Postman, Augment, Factory, Tabnine, Zed. Developer Wave C: Lovable, Bolt, Replit, Travis CI, Semaphore, Harness, Codefresh, crates.io, Expo, Cloudsmith. Data Wave A: Supabase, Neon, PlanetScale, Convex, Upstash, Redis, Pinecone, MongoDB, CockroachDB, Prisma. Data Wave B: Snowflake, Databricks, ClickHouse, Elastic, Aiven, InfluxDB, Couchbase, Confluent, Tinybird, Zilliz. Data Wave C: Materialize, Turso, Qdrant, Meilisearch, Algolia, Redpanda, SurrealDB, Yugabyte, TiDB, DataStax. The worker fetches every service that has a fetcher; AWS, Azure, Fastly, Replit, Redis, Algolia, and DataStax are seeded without one (custom dashboards or a status page that blocks programmatic access) and stay on mock until a dedicated fetcher exists. Nothing is scraped from the client. When a service has no snapshot yet, or the database is unreachable, the board still falls back to mock data.
+The board reads **live status from Postgres** for the 141 catalog services (26 AI + 25 Cloud + 30 Developer + 30 Data + 30 Auth). AI Wave A: OpenAI, Anthropic, Groq, Cohere, OpenRouter, Perplexity, xAI, DeepSeek, Google Gemini, Mistral; Wave B: Fireworks AI, Together AI, Cerebras, Hugging Face, Replicate, Runway, Ideogram, Stability AI; Wave C: fal, ElevenLabs, MiniMax, Voyage AI, Black Forest Labs, Cartesia, Kimi, Luma. Cloud Wave A: Vercel, Railway, Cloudflare, Render, Fly.io, Netlify, DigitalOcean, Google Cloud, AWS, Azure. Cloud Wave B: Heroku, Linode, Fastly, bunny.net, Deno Deploy, Koyeb, Modal, Firebase. Cloud Wave C: Akamai, Vultr, Scaleway, Oracle Cloud, Hetzner, Northflank, Lambda. Developer Wave A: Cursor, Devin, GitHub, GitLab, CircleCI, npm, Docker, Linear, Sourcegraph, Warp. Developer Wave B: Bitbucket, Buildkite, PyPI, RubyGems, Maven Central, Postman, Augment, Factory, Tabnine, Zed. Developer Wave C: Lovable, Bolt, Replit, Travis CI, Semaphore, Harness, Codefresh, crates.io, Expo, Cloudsmith. Data Wave A: Supabase, Neon, PlanetScale, Convex, Upstash, Redis, Pinecone, MongoDB, CockroachDB, Prisma. Data Wave B: Snowflake, Databricks, ClickHouse, Elastic, Aiven, InfluxDB, Couchbase, Confluent, Tinybird, Zilliz. Data Wave C: Materialize, Turso, Qdrant, Meilisearch, Algolia, Redpanda, SurrealDB, Yugabyte, TiDB, DataStax. Auth Wave A: Auth0, Clerk, WorkOS, Okta, Stytch, Kinde, FusionAuth, Frontegg, PropelAuth, 1Password. Auth Wave B: Descope, Duo, Ping Identity, Doppler, Infisical, Zitadel, JumpCloud, Logto, Magic, Beyond Identity. Auth Wave C: LoginRadius, Scalekit, Transmit Security, SecureAuth, LastPass, Keeper, Yubico, Akeyless, SailPoint, Delinea. The worker fetches every service that has a fetcher; AWS, Azure, Fastly, Replit, Redis, Algolia, DataStax, and Okta are seeded without one (custom dashboards or a status page that blocks programmatic access) and stay on mock until a dedicated fetcher exists. Nothing is scraped from the client. When a service has no snapshot yet, or the database is unreachable, the board still falls back to mock data.
 
-GitHub is one card (Copilot, Actions, and Codespaces are components). Devin covers Desktop and Cloud; Windsurf is the legacy name and is not a separate card. Codex / Claude Code / Amazon Q stay on their AI / Cloud parents.
+GitHub is one card (Copilot, Actions, and Codespaces are components). Devin covers Desktop and Cloud; Windsurf is the legacy name and is not a separate card. Codex / Claude Code / Amazon Q stay on their AI / Cloud parents. Auth0 and Okta are separate cards; Supabase Auth, Firebase Auth, and Cognito stay on their Data / Cloud parents. Vault waits for Infra.
 
 ## Run
 
@@ -23,7 +23,7 @@ npm run build
 
 Live-data foundation for the board: a Railway Postgres database plus a small Node
 worker in [`worker/`](worker/). The worker owns the schema (`services`,
-`service_snapshots`, `components`, `incidents`, `service_suggestions`), seeds the 111 board services,
+`service_snapshots`, `components`, `incidents`, `service_suggestions`), seeds the 141 board services,
 and ticks on a configurable interval (default every 5 minutes). Each tick fetches
 live status for services with a fetcher — OpenAI, Anthropic, Groq, Cohere,
 Fireworks, Cerebras, Replicate, Runway, Ideogram, Stability, ElevenLabs,
@@ -62,7 +62,15 @@ Data Wave B Statuspage hosts (Snowflake, ClickHouse, Elastic, Aiven,
 InfluxDB, Couchbase, Confluent, Tinybird, Zilliz), Databricks via
 Status.io, Data Wave C Statuspage hosts (Materialize, Redpanda, Yugabyte,
 TiDB), and Turso, Qdrant, Meilisearch, and SurrealDB via Better Stack
-`index.json`
+`index.json`, Auth Wave A Statuspage hosts (Clerk, WorkOS, FusionAuth,
+Frontegg, 1Password), Auth0 via `https://auth0.statuspage.io` (the public
+host has no `/api/v2`), Stytch, Kinde, and PropelAuth via Instatus,
+Auth Wave B Statuspage hosts (Duo, Ping Identity, Doppler, Infisical,
+Zitadel, JumpCloud, Magic, Beyond Identity), Descope via Instatus,
+Logto via Better Stack `index.json`, Auth Wave C Statuspage hosts
+(LoginRadius, Scalekit, Transmit Security, SecureAuth, Keeper, Yubico,
+Akeyless, SailPoint, Delinea), and LastPass via `https://lastpass.statuspage.io`
+(the public host challenges `/api/v2`)
 — and upserts snapshot,
 component, and incident rows. On a failed fetch the worker keeps last-known rows
 and flags the latest snapshot `stale`.
@@ -84,7 +92,7 @@ and flags the latest snapshot `stale`.
 cd worker
 npm install
 export DATABASE_URL=postgres://user:pass@localhost:5432/statussy
-npm run migrate   # apply migrations + seed the 111 services, then exit
+npm run migrate   # apply migrations + seed the 141 services, then exit
 npm run dev       # migrate, seed, tick on the interval, serve /healthz
 ```
 
@@ -173,7 +181,7 @@ its slot now holds the live Health chicklet.
 {
   id: "service-id",
   name: "Service Name",
-  category: "ai", // or "cloud" | "developer" | "data"
+  category: "ai", // or "cloud" | "developer" | "data" | "auth"
   statusUrl: "https://status.example.com/",
   status: "operational", // operational | degraded | partial_outage | major_outage | maintenance
   incidentTitle: "Optional short incident title",

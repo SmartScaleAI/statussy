@@ -1,13 +1,13 @@
 import type pg from "pg"
 
 /**
- * Static registry of board services (26 AI + Cloud Waves A–C + Developer Waves A–C + Data Waves A–C).
+ * Static registry of board services (26 AI + Cloud Waves A–C + Developer Waves A–C + Data Waves A–C + Auth Waves A–B).
  * Mirrors the ids in the Next.js app's data/services.ts (and public/logos/{id}.svg).
  * Windsurf is the legacy Devin Desktop name and is not seeded separately.
  * GitHub Copilot is a GitHub component, not its own card.
  *
  * `category` defaults to `ai` when omitted. AWS, Azure, Fastly, Replit,
- * Redis, Algolia, and DataStax are `none` until a dedicated fetcher exists.
+ * Redis, Algolia, DataStax, and Okta are `none` until a dedicated fetcher exists.
  */
 export const SERVICE_SEED = [
   {
@@ -750,6 +750,216 @@ export const SERVICE_SEED = [
     category: "data",
     statusUrl: "https://status.datastax.com/",
     fetcherType: "none",
+  },
+  {
+    id: "auth0",
+    name: "Auth0",
+    category: "auth",
+    statusUrl: "https://status.auth0.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "clerk",
+    name: "Clerk",
+    category: "auth",
+    statusUrl: "https://status.clerk.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "workos",
+    name: "WorkOS",
+    category: "auth",
+    statusUrl: "https://status.workos.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "okta",
+    name: "Okta",
+    category: "auth",
+    statusUrl: "https://status.okta.com/",
+    fetcherType: "none",
+  },
+  {
+    id: "stytch",
+    name: "Stytch",
+    category: "auth",
+    statusUrl: "https://status.stytch.com/",
+    fetcherType: "instatus",
+  },
+  {
+    id: "kinde",
+    name: "Kinde",
+    category: "auth",
+    statusUrl: "https://status.kinde.com/",
+    fetcherType: "instatus",
+  },
+  {
+    id: "fusionauth",
+    name: "FusionAuth",
+    category: "auth",
+    statusUrl: "https://status.fusionauth.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "frontegg",
+    name: "Frontegg",
+    category: "auth",
+    statusUrl: "https://status.frontegg.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "propelauth",
+    name: "PropelAuth",
+    category: "auth",
+    statusUrl: "https://status.propelauth.com/",
+    fetcherType: "instatus",
+  },
+  {
+    id: "onepassword",
+    name: "1Password",
+    category: "auth",
+    statusUrl: "https://status.1password.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "descope",
+    name: "Descope",
+    category: "auth",
+    statusUrl: "https://descopestatus.com/",
+    fetcherType: "instatus",
+  },
+  {
+    id: "duo",
+    name: "Duo",
+    category: "auth",
+    statusUrl: "https://status.duo.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "ping-identity",
+    name: "Ping Identity",
+    category: "auth",
+    statusUrl: "https://status.pingidentity.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "doppler",
+    name: "Doppler",
+    category: "auth",
+    statusUrl: "https://www.dopplerstatus.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "infisical",
+    name: "Infisical",
+    category: "auth",
+    statusUrl: "https://status.infisical.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "zitadel",
+    name: "Zitadel",
+    category: "auth",
+    statusUrl: "https://www.zitadelstatus.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "jumpcloud",
+    name: "JumpCloud",
+    category: "auth",
+    statusUrl: "https://status.jumpcloud.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "logto",
+    name: "Logto",
+    category: "auth",
+    statusUrl: "https://status.logto.io/",
+    fetcherType: "betterstack",
+  },
+  {
+    id: "magic",
+    name: "Magic",
+    category: "auth",
+    statusUrl: "https://status.magic.link/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "beyond-identity",
+    name: "Beyond Identity",
+    category: "auth",
+    statusUrl: "https://status.beyondidentity.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "loginradius",
+    name: "LoginRadius",
+    category: "auth",
+    statusUrl: "https://status.loginradius.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "scalekit",
+    name: "Scalekit",
+    category: "auth",
+    statusUrl: "https://scalekit.statuspage.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "transmit-security",
+    name: "Transmit Security",
+    category: "auth",
+    statusUrl: "https://status.transmitsecurity.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "secureauth",
+    name: "SecureAuth",
+    category: "auth",
+    statusUrl: "https://status.secureauth.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "lastpass",
+    name: "LastPass",
+    category: "auth",
+    statusUrl: "https://status.lastpass.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "keeper",
+    name: "Keeper",
+    category: "auth",
+    statusUrl: "https://statuspage.keeper.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "yubico",
+    name: "Yubico",
+    category: "auth",
+    statusUrl: "https://status.yubico.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "akeyless",
+    name: "Akeyless",
+    category: "auth",
+    statusUrl: "https://status.akeyless.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "sailpoint",
+    name: "SailPoint",
+    category: "auth",
+    statusUrl: "https://status.sailpoint.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "delinea",
+    name: "Delinea",
+    category: "auth",
+    statusUrl: "https://status.delinea.com/",
+    fetcherType: "statuspage",
   },
 ] as const
 

@@ -117,5 +117,35 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `yugabyte.svg` | Yugabyte | `#FF5F3B` | Official logomark from [docs.yugabyte.com/images/yugabytedb-logo.svg](https://docs.yugabyte.com/images/yugabytedb-logo.svg) (wordmark dropped) |
 | `tidb.svg` | TiDB | `#DC150B` | Simple Icons `tidb` |
 | `datastax.svg` | DataStax | `#FFFFFF` | Simple Icons `datastax`; white so official black reads on dark |
+| `auth0.svg` | Auth0 | `#EB5424` | Simple Icons `auth0` |
+| `clerk.svg` | Clerk | `#6C47FF` | Simple Icons `clerk` |
+| `workos.svg` | WorkOS | `#6363F1` | Official chevrons from the [workos.com](https://workos.com/) header lockup (wordmark dropped) |
+| `okta.svg` | Okta | `#007DC1` | Simple Icons `okta` |
+| `stytch.svg` | Stytch | `#B2D6DE` | Official mark from the Mintlify favicon; dark tile dropped |
+| `kinde.svg` | Kinde | `#FFFFFF` | Official K from [kinde.com/icon.svg](https://kinde.com/icon.svg); white tile dropped; black knocked to white |
+| `fusionauth.svg` | FusionAuth | `#F58320` | Simple Icons `fusionauth` |
+| `frontegg.svg` | Frontegg | `#FFFFFF` | Official mark from frontegg `ficon.svg`; dark rounded tile dropped; white paths |
+| `propelauth.svg` | PropelAuth | Official green gradient | Official mark from [propelauth.com/imgs/mark.svg](https://www.propelauth.com/imgs/mark.svg) |
+| `onepassword.svg` | 1Password | `#145FE4` | Simple Icons `1password` |
+| `descope.svg` | Descope | Official cyan–green gradient | Official mark from [descope.com/logo.svg](https://www.descope.com/logo.svg) |
+| `duo.svg` | Duo | `#74BF4B` | Official geometric DUO from [duo.com/images/duo-logo.svg](https://duo.com/images/duo-logo.svg) (Cisco wordmark dropped) |
+| `ping-identity.svg` | Ping Identity | `#D20E0F` | Official red tile from the [pingidentity.com](https://www.pingidentity.com/) header lockup (wordmark dropped) |
+| `doppler.svg` | Doppler | `#F1F0EC` | Official mark from the [doppler.com](https://www.doppler.com/) Sanity brand asset |
+| `infisical.svg` | Infisical | `#FFFFFF` | Official infinity from [infisical.com/images/v2/infisical-logo.svg](https://infisical.com/images/v2/infisical-logo.svg) (wordmark dropped); white so official `#0D0F12` reads on dark |
+| `zitadel.svg` | Zitadel | `#FFFFFF` | Official hexagon from the [zitadel.com](https://zitadel.com/) header lockup (wordmark dropped); white so official `#ccc` reads on dark |
+| `jumpcloud.svg` | JumpCloud | `#FFFFFF` | Official cloud from the [jumpcloud.com](https://jumpcloud.com/) header lockup (wordmark dropped); white so official `#002B49` reads on dark |
+| `logto.svg` | Logto | Official purple–pink gradient | Official mark from the [logto-io/logto](https://github.com/logto-io/logto) console logo (wordmark dropped) |
+| `magic.svg` | Magic | `#6851FF` | LobeHub `magic` (official interlocking-circle mark); Magic Labs brand purple |
+| `beyond-identity.svg` | Beyond Identity | `#FFFFFF` | Official chevrons from the [beyondidentity.com](https://www.beyondidentity.com/) header lockup (wordmark dropped); white so official `#222326` reads on dark |
+| `loginradius.svg` | LoginRadius | `#008ECF` / `#FFFFFF` | Official rings from the [LoginRadius/engineering-portal](https://github.com/LoginRadius/engineering-portal) `static/logo.svg` on-dark lockup (wordmark dropped) |
+| `scalekit.svg` | Scalekit | `#FFFFFF` | Official S from the [scalekit.com](https://www.scalekit.com/) header lockup (wordmark dropped); white so official `#0E1828` reads on dark |
+| `transmit-security.svg` | Transmit Security | Official reds + `#1C2745` | Official T from [transmitsecurity.com](https://www.transmitsecurity.com/) `transmit-main-logo` (wordmark dropped) |
+| `secureauth.svg` | SecureAuth | `#2898FF` | Official mark from [secureauth.com/secureauth-favicon.svg](https://www.secureauth.com/secureauth-favicon.svg) |
+| `lastpass.svg` | LastPass | `#D32D27` | Simple Icons `lastpass` |
+| `keeper.svg` | Keeper | `#FFC700` | Official shield from [keepersecurity.com](https://www.keepersecurity.com/) `keeper-logo-light` (wordmark dropped) |
+| `yubico.svg` | Yubico | `#84BD00` | Simple Icons `yubico` path; official Yubico green |
+| `akeyless.svg` | Akeyless | `#01D9C1` | Official A from [akeyless.io](https://www.akeyless.io/) brand lockup (wordmark dropped) |
+| `sailpoint.svg` | SailPoint | Official sail colors | Official sail from [sailpoint.com/images/SailPoint-logo.svg](https://www.sailpoint.com/images/SailPoint-logo.svg) (wordmark dropped) |
+| `delinea.svg` | Delinea | `#00FF5A` | Official D from the [delinea.com](https://delinea.com/) wordmark lockup (wordmark dropped) |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.
