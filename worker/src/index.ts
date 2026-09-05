@@ -48,8 +48,17 @@
  * Statuspage; Payments Wave C — Marqeta, Lithic, Worldpay, Spreedly,
  * Finix, Mercado Pago, EBANX, Paysafe, Recharge, and Maxio via
  * Statuspage (Maxio's public host times out on /api/v2, so the fetcher
- * hits maxio.statuspage.io). AWS, Azure, Fastly, Replit,
- * Redis, Algolia, DataStax, Okta, PayPal, and Adyen are seeded without a
+ * hits maxio.statuspage.io); Observability Wave A — Datadog, Sentry,
+ * Grafana, New Relic, Honeycomb, Splunk, and Axiom via Statuspage,
+ * Dynatrace via Status.io, Better Stack via Better Stack `index.json`;
+ * Observability Wave B — Sumo Logic, Coralogix, Rollbar, Bugsnag
+ * (bugsnag.status.smartbear.com), incident.io, Mezmo, Airbrake, Cribl,
+ * and logz.io via Statuspage; Observability Wave C — Lumigo, Netdata,
+ * Scout, Logit.io, Nobl9, Catchpoint, VictoriaMetrics, Langfuse, and
+ * Embrace via Statuspage, Dash0 via dash0status.com (the public host
+ * redirects /api/v2).
+ * AWS, Azure, Fastly, Replit, Redis, Algolia, DataStax, Okta, PayPal,
+ * Adyen, PagerDuty, and Checkly are seeded without a
  * fetcher) and writes snapshots, components,
  * and incidents to Postgres.
  * A tiny HTTP server exposes /healthz.
@@ -73,6 +82,8 @@ import {
   fetchStatusIoState,
   DATABRICKS_STATUS_PAGE,
   DATABRICKS_STATUS_PAGE_ID,
+  DYNATRACE_STATUS_PAGE,
+  DYNATRACE_STATUS_PAGE_ID,
   NEON_STATUS_PAGE,
   NEON_STATUS_PAGE_ID,
 } from "./gitlab.js"
@@ -124,9 +135,10 @@ type ServiceJob = {
   persistOptions?: PersistOptions
 }
 
-// Board services with a fetcher (26 AI + Cloud Waves A–C + Developer Waves A–C
-// + Data Waves A–C + Auth Waves A–B; AWS, Azure, Fastly, Replit, Redis,
-// Algolia, DataStax, and Okta are none).
+// Board services with a fetcher (26 AI + Cloud / Developer / Data / Auth /
+// Payments Waves A–C + Observability Waves A–C; AWS, Azure, Fastly, Replit,
+// Redis, Algolia, DataStax, Okta, PayPal, Adyen, PagerDuty, and Checkly
+// are none).
 const statuspageJob = (id: string, baseUrl: string): ServiceJob => ({
   id,
   fetch: () => fetchStatuspageState(baseUrl, fetchOptions()),
@@ -486,6 +498,57 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("paysafe", "https://status.paysafe.com"),
   statuspageJob("recharge", "https://status.getrecharge.com"),
   statuspageJob("maxio", "https://maxio.statuspage.io"),
+  // Observability Wave A. PagerDuty is none (custom page, no public JSON).
+  // Splunk's public status.splunk.com is marketing HTML; the live Cloud
+  // Platform page is Statuspage. Dynatrace is Status.io
+  // (status.dynatrace.com → dynatrace.status.io).
+  statuspageJob("datadog", "https://status.datadoghq.com"),
+  statuspageJob("sentry", "https://status.sentry.io"),
+  statuspageJob("grafana", "https://status.grafana.com"),
+  statuspageJob("new-relic", "https://status.newrelic.com"),
+  statuspageJob("honeycomb", "https://status.honeycomb.io"),
+  statuspageJob("splunk", "https://status.splunkcloud.com"),
+  {
+    id: "dynatrace",
+    fetch: () =>
+      fetchStatusIoState(
+        DYNATRACE_STATUS_PAGE,
+        DYNATRACE_STATUS_PAGE_ID,
+        fetchOptions(),
+      ),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  {
+    id: "better-stack",
+    fetch: () =>
+      fetchBetterstackState("https://status.betterstack.com", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  statuspageJob("axiom", "https://status.axiom.co"),
+  // Observability Wave B. Checkly is none (own Nuxt page, no public JSON).
+  // Bugsnag's public host redirects; hit the SmartBear Statuspage host.
+  statuspageJob("sumo-logic", "https://status.sumologic.com"),
+  statuspageJob("coralogix", "https://status.coralogix.com"),
+  statuspageJob("rollbar", "https://status.rollbar.com"),
+  statuspageJob("bugsnag", "https://bugsnag.status.smartbear.com"),
+  statuspageJob("incident-io", "https://status.incident.io"),
+  statuspageJob("mezmo", "https://status.mezmo.com"),
+  statuspageJob("airbrake", "https://status.airbrake.io"),
+  statuspageJob("cribl", "https://status.cribl.cloud"),
+  statuspageJob("logz", "https://status.logz.io"),
+  // Observability Wave C. Dash0's public host redirects /api/v2; hit
+  // dash0status.com. Langfuse and Embrace expose Statuspage-compatible
+  // /api/v2 on Instatus-hosted pages.
+  statuspageJob("lumigo", "https://status.lumigo.io"),
+  statuspageJob("netdata", "https://status.netdata.cloud"),
+  statuspageJob("scout", "https://status.scoutapm.com"),
+  statuspageJob("logit", "https://status.logit.io"),
+  statuspageJob("nobl9", "https://status.nobl9.com"),
+  statuspageJob("catchpoint", "https://status.catchpoint.com"),
+  statuspageJob("victoria-metrics", "https://status.victoriametrics.com"),
+  statuspageJob("langfuse", "https://status.langfuse.com"),
+  statuspageJob("dash0", "https://dash0status.com"),
+  statuspageJob("embrace", "https://status.embrace.io"),
 ]
 
 async function fetchService(service: ServiceJob): Promise<boolean> {

@@ -23,6 +23,7 @@ export type ServiceCategory =
   | "data"
   | "auth"
   | "payments"
+  | "observability"
 
 export type Service = {
   /** Matches a static mark at `public/logos/{id}.svg`. */
@@ -715,7 +716,7 @@ export const services: Service[] = [
     updatedAt: "2026-09-05T04:10:00.000Z",
   },
   // Data Wave A — stores and queues the app dies on. One card per vendor.
-  // Observability / email stay on later chiclets.
+  // Email stays on a later chiclet.
   // Redis has no public JSON (custom status.redis.io page).
   {
     id: "supabase",
@@ -1456,5 +1457,259 @@ export const services: Service[] = [
     statusUrl: "https://maxio.statuspage.io/",
     status: "operational",
     updatedAt: "2026-09-05T06:45:00.000Z",
+  },
+  // Observability Wave A — monitoring, APM, logs, traces, error tracking,
+  // and on-call the app dies on. One card per vendor. CloudWatch / Azure
+  // Monitor / GCP Operations stay on their Cloud parents. Elastic
+  // Observability stays on Elastic. Opsgenie waits (Atlassian). PagerDuty
+  // has no public JSON (custom page).
+  {
+    id: "datadog",
+    name: "Datadog",
+    category: "observability",
+    statusUrl: "https://status.datadoghq.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T15:10:00.000Z",
+  },
+  {
+    id: "sentry",
+    name: "Sentry",
+    category: "observability",
+    statusUrl: "https://status.sentry.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T15:10:00.000Z",
+  },
+  {
+    id: "grafana",
+    name: "Grafana",
+    category: "observability",
+    statusUrl: "https://status.grafana.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T15:10:00.000Z",
+  },
+  {
+    id: "pagerduty",
+    name: "PagerDuty",
+    category: "observability",
+    statusUrl: "https://status.pagerduty.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T15:10:00.000Z",
+  },
+  {
+    id: "new-relic",
+    name: "New Relic",
+    category: "observability",
+    statusUrl: "https://status.newrelic.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T15:10:00.000Z",
+  },
+  {
+    id: "honeycomb",
+    name: "Honeycomb",
+    category: "observability",
+    statusUrl: "https://status.honeycomb.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T15:10:00.000Z",
+  },
+  {
+    id: "splunk",
+    name: "Splunk",
+    category: "observability",
+    statusUrl: "https://status.splunkcloud.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T15:10:00.000Z",
+  },
+  {
+    id: "dynatrace",
+    name: "Dynatrace",
+    category: "observability",
+    statusUrl: "https://status.dynatrace.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T15:10:00.000Z",
+  },
+  {
+    id: "better-stack",
+    name: "Better Stack",
+    category: "observability",
+    statusUrl: "https://status.betterstack.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T15:10:00.000Z",
+  },
+  {
+    id: "axiom",
+    name: "Axiom",
+    category: "observability",
+    statusUrl: "https://status.axiom.co/",
+    status: "operational",
+    updatedAt: "2026-09-05T15:10:00.000Z",
+  },
+  // Observability Wave B — more logs, error tracking, incident command,
+  // synthetics, and telemetry pipelines. Observe stays on Snowflake.
+  // Splunk On-Call stays on Splunk. Checkly has no public JSON (own Nuxt
+  // page).
+  {
+    id: "sumo-logic",
+    name: "Sumo Logic",
+    category: "observability",
+    statusUrl: "https://status.sumologic.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T15:20:00.000Z",
+  },
+  {
+    id: "coralogix",
+    name: "Coralogix",
+    category: "observability",
+    statusUrl: "https://status.coralogix.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T15:20:00.000Z",
+  },
+  {
+    id: "rollbar",
+    name: "Rollbar",
+    category: "observability",
+    statusUrl: "https://status.rollbar.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T15:20:00.000Z",
+  },
+  {
+    id: "bugsnag",
+    name: "Bugsnag",
+    category: "observability",
+    statusUrl: "https://status.bugsnag.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T15:20:00.000Z",
+  },
+  {
+    id: "incident-io",
+    name: "incident.io",
+    category: "observability",
+    statusUrl: "https://status.incident.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T15:20:00.000Z",
+  },
+  {
+    id: "mezmo",
+    name: "Mezmo",
+    category: "observability",
+    statusUrl: "https://status.mezmo.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T15:20:00.000Z",
+  },
+  {
+    id: "airbrake",
+    name: "Airbrake",
+    category: "observability",
+    statusUrl: "https://status.airbrake.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T15:20:00.000Z",
+  },
+  {
+    id: "checkly",
+    name: "Checkly",
+    category: "observability",
+    statusUrl: "https://status.checklyhq.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T15:20:00.000Z",
+  },
+  {
+    id: "cribl",
+    name: "Cribl",
+    category: "observability",
+    statusUrl: "https://status.cribl.cloud/",
+    status: "operational",
+    updatedAt: "2026-09-05T15:20:00.000Z",
+  },
+  {
+    id: "logz",
+    name: "logz.io",
+    category: "observability",
+    statusUrl: "https://status.logz.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T15:20:00.000Z",
+  },
+  // Observability Wave C — more APM, infra monitoring, logs, SLOs,
+  // synthetics, metrics, LLM traces, OTEL, and mobile observability.
+  // xMatters stays on Everbridge. ThousandEyes stays off (Cisco; no
+  // official SVG). SolarWinds / Pingdom / Loggly / Papertrail stay
+  // parked (no public JSON).
+  {
+    id: "lumigo",
+    name: "Lumigo",
+    category: "observability",
+    statusUrl: "https://status.lumigo.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T17:30:00.000Z",
+  },
+  {
+    id: "netdata",
+    name: "Netdata",
+    category: "observability",
+    statusUrl: "https://status.netdata.cloud/",
+    status: "operational",
+    updatedAt: "2026-09-05T17:30:00.000Z",
+  },
+  {
+    id: "scout",
+    name: "Scout",
+    category: "observability",
+    statusUrl: "https://status.scoutapm.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T17:30:00.000Z",
+  },
+  {
+    id: "logit",
+    name: "Logit.io",
+    category: "observability",
+    statusUrl: "https://status.logit.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T17:30:00.000Z",
+  },
+  {
+    id: "nobl9",
+    name: "Nobl9",
+    category: "observability",
+    statusUrl: "https://status.nobl9.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T17:30:00.000Z",
+  },
+  {
+    id: "catchpoint",
+    name: "Catchpoint",
+    category: "observability",
+    statusUrl: "https://status.catchpoint.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T17:30:00.000Z",
+  },
+  {
+    id: "victoria-metrics",
+    name: "VictoriaMetrics",
+    category: "observability",
+    statusUrl: "https://status.victoriametrics.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T17:30:00.000Z",
+  },
+  {
+    id: "langfuse",
+    name: "Langfuse",
+    category: "observability",
+    statusUrl: "https://status.langfuse.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T17:30:00.000Z",
+  },
+  {
+    id: "dash0",
+    name: "Dash0",
+    category: "observability",
+    statusUrl: "https://status.dash0.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T17:30:00.000Z",
+  },
+  {
+    id: "embrace",
+    name: "Embrace",
+    category: "observability",
+    statusUrl: "https://status.embrace.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T17:30:00.000Z",
   },
 ]
