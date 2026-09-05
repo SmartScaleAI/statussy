@@ -367,5 +367,15 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `vanta.svg` | Vanta | `#FFFFFF` | Official V from [vanta.com vanta-logo.svg](https://www.vanta.com/) (wordmark dropped); official `#240642` knocked to white |
 | `rapid7.svg` | Rapid7 | `#E85E26` | Official R from [rapid7.com/rapid7-logo.svg](https://www.rapid7.com/rapid7-logo.svg) (wordmark dropped) |
 | `socket.svg` | Socket | `#C93CD7` | Simple Icons `socket` |
+| `aqua.svg` | Aqua | `#1904DA` | Simple Icons `aqua` |
+| `orca.svg` | Orca | `#FFFFFF` + `#0080FF` | Official o + sonar rings from [orca.security orca-security-logo-2025.svg](https://orca.security/) `#o`; official `#101921` knocked to white |
+| `sysdig.svg` | Sysdig | `#00CBE2` | Official S from the [sysdig.com](https://sysdig.com/) homepage `nav-logo_vector` |
+| `gitguardian.svg` | GitGuardian | `#F7FAFF` | Official shield/face from the [gitguardian.com](https://www.gitguardian.com/) lockup (wordmark dropped) |
+| `secureframe.svg` | Secureframe | `#0FD082` | Official mark from [secureframe.com sf-logo-2.svg](https://secureframe.com/) |
+| `palo-alto.svg` | Palo Alto Networks | `#F04E23` | Simple Icons `paloaltonetworks` |
+| `imperva.svg` | Imperva | `#FFFFFF` + `#285AE6` | Official lockup from [imperva.com logo.svg](https://www.imperva.com/); black squares knocked to white |
+| `upwind.svg` | Upwind | `#FFFFFF` + `#F2583C`→`#9214C4`→`#1E71ED` | Official U from [upwind.io dark-u-logo.svg](https://www.upwind.io/); official `#18202D` knocked to white |
+| `fossa.svg` | FOSSA | `#289E6D` | Simple Icons `fossa` |
+| `mend.svg` | Mend | `#073C8C` + `#55C6C2` | Official M waves from [mend.io Mend-io-logo-color-32px-2.svg](https://www.mend.io/) |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.

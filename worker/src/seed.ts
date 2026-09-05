@@ -4,7 +4,7 @@ import type pg from "pg"
  * Static registry of board services (26 AI + Cloud / Developer / Data /
  * Auth / Payments / Observability Waves A–C + Email Waves A–C +
  * Design Waves A–C + Infra Waves A–C + Flags Waves A–C +
- * Analytics Waves A–C + Security Wave A).
+ * Analytics Waves A–C + Security Waves A–B).
  * Mirrors the ids in the Next.js app's data/services.ts (and public/logos/{id}.svg).
  * Windsurf is the legacy Devin Desktop name and is not seeded separately.
  * GitHub Copilot is a GitHub component, not its own card.
@@ -2560,6 +2560,76 @@ export const SERVICE_SEED = [
     name: "Socket",
     category: "security",
     statusUrl: "https://status.socket.dev/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "aqua",
+    name: "Aqua",
+    category: "security",
+    statusUrl: "https://status.aquasec.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "orca",
+    name: "Orca",
+    category: "security",
+    statusUrl: "https://status.orcasecurity.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "sysdig",
+    name: "Sysdig",
+    category: "security",
+    statusUrl: "https://status.sysdigcloud.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "gitguardian",
+    name: "GitGuardian",
+    category: "security",
+    statusUrl: "https://status.gitguardian.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "secureframe",
+    name: "Secureframe",
+    category: "security",
+    statusUrl: "https://status.secureframe.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "palo-alto",
+    name: "Palo Alto Networks",
+    category: "security",
+    statusUrl: "https://status.paloaltonetworks.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "imperva",
+    name: "Imperva",
+    category: "security",
+    statusUrl: "https://status.imperva.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "upwind",
+    name: "Upwind",
+    category: "security",
+    statusUrl: "https://status.upwind.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "fossa",
+    name: "FOSSA",
+    category: "security",
+    statusUrl: "https://status.fossa.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "mend",
+    name: "Mend",
+    category: "security",
+    statusUrl: "https://status.mend.io/",
     fetcherType: "statuspage",
   },
 ] as const

@@ -89,7 +89,9 @@
  * lytics.statuspage.io, Polytomic, Baremetrics, Quantcast,
  * Metabase, and Hex via Statuspage; Security Wave A — Snyk,
  * Wiz, SentinelOne, Semgrep, Veracode, Tenable, Qualys, Vanta,
- * Rapid7, and Socket via Statuspage.
+ * Rapid7, and Socket via Statuspage; Security Wave B —
+ * Aqua, Orca, Sysdig, GitGuardian, Secureframe, Palo Alto
+ * Networks, Imperva, Upwind, FOSSA, and Mend via Statuspage.
  * AWS, Azure, Fastly, Replit, Redis, Algolia, DataStax, Okta, PayPal,
  * Adyen, PagerDuty, Checkly, Postmark, Mailchimp, Campaign Monitor,
  * Mailtrap, Substack, Adobe, Sketch, Penpot, Rive, LottieFiles,
@@ -785,6 +787,20 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("vanta", "https://status.vanta.com"),
   statuspageJob("rapid7", "https://status.rapid7.com"),
   statuspageJob("socket", "https://status.socket.dev"),
+  // Security Wave B. Aqua / Orca / Sysdig / GitGuardian /
+  // Secureframe / Palo Alto Networks / Imperva / Upwind /
+  // FOSSA / Mend are Statuspage. Sprinto waits (no official
+  // SVG). Endor waits (no isolated official mark).
+  statuspageJob("aqua", "https://status.aquasec.com"),
+  statuspageJob("orca", "https://status.orcasecurity.io"),
+  statuspageJob("sysdig", "https://status.sysdigcloud.com"),
+  statuspageJob("gitguardian", "https://status.gitguardian.com"),
+  statuspageJob("secureframe", "https://status.secureframe.com"),
+  statuspageJob("palo-alto", "https://status.paloaltonetworks.com"),
+  statuspageJob("imperva", "https://status.imperva.com"),
+  statuspageJob("upwind", "https://status.upwind.io"),
+  statuspageJob("fossa", "https://status.fossa.com"),
+  statuspageJob("mend", "https://status.mend.io"),
 ]
 
 async function fetchService(service: ServiceJob): Promise<boolean> {
