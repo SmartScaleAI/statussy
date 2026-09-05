@@ -57,5 +57,15 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `hetzner.svg` | Hetzner | `#D50C2D` | Simple Icons `hetzner` |
 | `northflank.svg` | Northflank | Official gradient | Official mark from [northflank.com/images/logo/logo.svg](https://northflank.com/images/logo/logo.svg) |
 | `lambda.svg` | Lambda | `#FFFFFF` | Official λ + frame from [lambda.ai favicon](https://lambda.ai/hubfs/favicon-48x48-1.svg); black tile dropped so the mark reads on dark |
+| `cursor.svg` | Cursor | `#FFFFFF` | Simple Icons `cursor` path; white so official black reads on dark |
+| `devin.svg` | Devin | `#FFFFFF` | LobeHub `devin` (official stacked-facet mark); white on dark |
+| `github.svg` | GitHub | `#FFFFFF` | Simple Icons `github`; white so official `#181717` reads on dark |
+| `gitlab.svg` | GitLab | `#FC6D26` | Simple Icons `gitlab` |
+| `circleci.svg` | CircleCI | `#FFFFFF` | Simple Icons `circleci`; white so official `#343434` reads on dark |
+| `npm.svg` | npm | `#CB3837` | Simple Icons `npm` |
+| `docker.svg` | Docker | `#2496ED` | Simple Icons `docker` |
+| `linear.svg` | Linear | `#5E6AD2` | Simple Icons `linear` |
+| `sourcegraph.svg` | Sourcegraph | `#FF5543` | Official mark from [sourcegraph.com/.assets/img/sourcegraph-mark.svg](https://sourcegraph.com/.assets/img/sourcegraph-mark.svg) |
+| `warp.svg` | Warp | `#01A4FF` | Simple Icons `warp` |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.

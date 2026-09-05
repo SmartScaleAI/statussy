@@ -1,10 +1,10 @@
 import type pg from "pg"
 
 /**
- * Static registry of board services (26 AI + Cloud Waves A–C).
+ * Static registry of board services (26 AI + Cloud Waves A–C + Developer Wave A).
  * Mirrors the ids in the Next.js app's data/services.ts (and public/logos/{id}.svg).
- * Coding agents (Cursor, Windsurf, Devin, GitHub Copilot) are parked for a
- * future Developer category and must not be seeded here.
+ * Windsurf is the legacy Devin Desktop name and is not seeded separately.
+ * GitHub Copilot is a GitHub component, not its own card.
  *
  * `category` defaults to `ai` when omitted. AWS and Azure are `none` until
  * a dedicated Health-dashboard fetcher exists.
@@ -329,6 +329,76 @@ export const SERVICE_SEED = [
     name: "Lambda",
     category: "cloud",
     statusUrl: "https://status.lambda.ai/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "cursor",
+    name: "Cursor",
+    category: "developer",
+    statusUrl: "https://status.cursor.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "devin",
+    name: "Devin",
+    category: "developer",
+    statusUrl: "https://status.devin.ai/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "github",
+    name: "GitHub",
+    category: "developer",
+    statusUrl: "https://www.githubstatus.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "gitlab",
+    name: "GitLab",
+    category: "developer",
+    statusUrl: "https://status.gitlab.com/",
+    fetcherType: "status_io",
+  },
+  {
+    id: "circleci",
+    name: "CircleCI",
+    category: "developer",
+    statusUrl: "https://status.circleci.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "npm",
+    name: "npm",
+    category: "developer",
+    statusUrl: "https://status.npmjs.org/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "docker",
+    name: "Docker",
+    category: "developer",
+    statusUrl: "https://www.dockerstatus.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "linear",
+    name: "Linear",
+    category: "developer",
+    statusUrl: "https://linearstatus.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "sourcegraph",
+    name: "Sourcegraph",
+    category: "developer",
+    statusUrl: "https://sourcegraphstatus.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "warp",
+    name: "Warp",
+    category: "developer",
+    statusUrl: "https://status.warp.dev/",
     fetcherType: "statuspage",
   },
 ] as const

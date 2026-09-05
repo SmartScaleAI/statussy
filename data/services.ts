@@ -16,7 +16,7 @@ export const SERVICE_STATUSES = [
 
 export type ServiceStatus = (typeof SERVICE_STATUSES)[number]
 
-export type ServiceCategory = "ai" | "cloud"
+export type ServiceCategory = "ai" | "cloud" | "developer"
 
 export type Service = {
   /** Matches a static mark at `public/logos/{id}.svg`. */
@@ -117,8 +117,7 @@ export const services: Service[] = [
     incidentTitle: "Scheduled edge routing window",
     updatedAt: "2026-09-03T18:00:00.000Z",
   },
-  // Wave B (SMA-41). Coding agents (Cursor, Windsurf, Devin, GitHub Copilot)
-  // stay parked for a future Developer category.
+  // Wave B (SMA-41). Coding agents live under Developer, not AI.
   {
     id: "fireworks",
     name: "Fireworks AI",
@@ -457,5 +456,89 @@ export const services: Service[] = [
     statusUrl: "https://status.lambda.ai/",
     status: "operational",
     updatedAt: "2026-09-05T03:30:00.000Z",
+  },
+  // Developer Wave A — where you write, review, and ship code. One card per
+  // vendor: GitHub includes Copilot / Actions / Codespaces; Devin covers
+  // Desktop + Cloud (Windsurf is the legacy name). Codex / Claude Code /
+  // Amazon Q stay on their AI / Cloud parents.
+  {
+    id: "cursor",
+    name: "Cursor",
+    category: "developer",
+    statusUrl: "https://status.cursor.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T03:45:00.000Z",
+  },
+  {
+    id: "devin",
+    name: "Devin",
+    category: "developer",
+    statusUrl: "https://status.devin.ai/",
+    status: "operational",
+    updatedAt: "2026-09-05T03:45:00.000Z",
+  },
+  {
+    id: "github",
+    name: "GitHub",
+    category: "developer",
+    statusUrl: "https://www.githubstatus.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T03:45:00.000Z",
+  },
+  {
+    id: "gitlab",
+    name: "GitLab",
+    category: "developer",
+    statusUrl: "https://status.gitlab.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T03:45:00.000Z",
+  },
+  {
+    id: "circleci",
+    name: "CircleCI",
+    category: "developer",
+    statusUrl: "https://status.circleci.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T03:45:00.000Z",
+  },
+  {
+    id: "npm",
+    name: "npm",
+    category: "developer",
+    statusUrl: "https://status.npmjs.org/",
+    status: "operational",
+    updatedAt: "2026-09-05T03:45:00.000Z",
+  },
+  {
+    id: "docker",
+    name: "Docker",
+    category: "developer",
+    statusUrl: "https://www.dockerstatus.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T03:45:00.000Z",
+  },
+  {
+    id: "linear",
+    name: "Linear",
+    category: "developer",
+    statusUrl: "https://linearstatus.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T03:45:00.000Z",
+  },
+  {
+    id: "sourcegraph",
+    name: "Sourcegraph",
+    category: "developer",
+    statusUrl: "https://sourcegraphstatus.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T03:45:00.000Z",
+  },
+  {
+    id: "warp",
+    name: "Warp",
+    category: "developer",
+    statusUrl: "https://status.warp.dev/",
+    status: "operational",
+    updatedAt: "2026-09-05T03:45:00.000Z",
   },
 ]

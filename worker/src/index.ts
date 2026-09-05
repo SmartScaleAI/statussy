@@ -20,8 +20,10 @@
  * status.firebase.google.com incidents.json; Cloud Wave C — Akamai,
  * Scaleway, and Lambda via Statuspage, Northflank via Instatus, Vultr via
  * status.json, Oracle Cloud via ocistatus status.json, Hetzner via the
- * official page's __NEXT_DATA__. AWS, Azure, and Fastly are seeded without
- * a fetcher) and writes snapshots, components, and incidents to Postgres.
+ * official page's __NEXT_DATA__; Developer Wave A — Cursor, Devin, GitHub,
+ * CircleCI, npm, Docker, Linear, Sourcegraph, and Warp via Statuspage,
+ * GitLab via Status.io. AWS, Azure, and Fastly are seeded without a
+ * fetcher) and writes snapshots, components, and incidents to Postgres.
  * A tiny HTTP server exposes /healthz.
  */
 import { createServer } from "node:http"
@@ -38,6 +40,7 @@ import {
   fetchGoogleCloudGeminiState,
   fetchGoogleCloudPlatformState,
 } from "./google-cloud.js"
+import { fetchGitlabState } from "./gitlab.js"
 import { fetchHerokuState } from "./heroku.js"
 import { fetchHetznerState } from "./hetzner.js"
 import { fetchOracleCloudState } from "./oracle-cloud.js"
@@ -86,8 +89,8 @@ type ServiceJob = {
   persistOptions?: PersistOptions
 }
 
-// Board services with a fetcher (26 AI + Cloud Waves A–C; AWS, Azure, and
-// Fastly are none).
+// Board services with a fetcher (26 AI + Cloud Waves A–C + Developer Wave A;
+// AWS, Azure, and Fastly are none).
 const statuspageJob = (id: string, baseUrl: string): ServiceJob => ({
   id,
   fetch: () => fetchStatuspageState(baseUrl, fetchOptions()),
@@ -253,6 +256,21 @@ const SERVICE_JOBS: ServiceJob[] = [
     fetch: () => fetchHetznerState(fetchOptions()),
     persistOptions: { resolveMissingIncidents: true },
   },
+  // Developer Wave A. Copilot / Actions / Codespaces stay GitHub components.
+  statuspageJob("cursor", "https://status.cursor.com"),
+  statuspageJob("devin", "https://status.devin.ai"),
+  statuspageJob("github", "https://www.githubstatus.com"),
+  {
+    id: "gitlab",
+    fetch: () => fetchGitlabState(fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  statuspageJob("circleci", "https://status.circleci.com"),
+  statuspageJob("npm", "https://status.npmjs.org"),
+  statuspageJob("docker", "https://www.dockerstatus.com"),
+  statuspageJob("linear", "https://linearstatus.com"),
+  statuspageJob("sourcegraph", "https://sourcegraphstatus.com"),
+  statuspageJob("warp", "https://status.warp.dev"),
 ]
 
 async function fetchService(service: ServiceJob): Promise<boolean> {
