@@ -2,14 +2,15 @@ import type pg from "pg"
 
 /**
  * Static registry of board services (26 AI + Cloud / Developer / Data /
- * Auth / Payments / Observability Waves A–C + Email Waves A–B).
+ * Auth / Payments / Observability Waves A–C + Email Waves A–C).
  * Mirrors the ids in the Next.js app's data/services.ts (and public/logos/{id}.svg).
  * Windsurf is the legacy Devin Desktop name and is not seeded separately.
  * GitHub Copilot is a GitHub component, not its own card.
  *
  * `category` defaults to `ai` when omitted. AWS, Azure, Fastly, Replit,
  * Redis, Algolia, DataStax, Okta, PayPal, Adyen, PagerDuty, Checkly,
- * Postmark, and Mailchimp are `none` until a dedicated fetcher exists.
+ * Postmark, Mailchimp, Campaign Monitor, Mailtrap, and Substack are
+ * `none` until a dedicated fetcher exists.
  */
 export const SERVICE_SEED = [
   {
@@ -1521,6 +1522,76 @@ export const SERVICE_SEED = [
     name: "Mailchimp",
     category: "email",
     statusUrl: "https://status.mailchimp.com/",
+    fetcherType: "none",
+  },
+  {
+    id: "activecampaign",
+    name: "ActiveCampaign",
+    category: "email",
+    statusUrl: "https://status.activecampaign.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "getresponse",
+    name: "GetResponse",
+    category: "email",
+    statusUrl: "https://status.getresponse.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "campaign-monitor",
+    name: "Campaign Monitor",
+    category: "email",
+    statusUrl: "https://status.campaignmonitor.com/",
+    fetcherType: "none",
+  },
+  {
+    id: "nylas",
+    name: "Nylas",
+    category: "email",
+    statusUrl: "https://status.nylas.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "emailoctopus",
+    name: "EmailOctopus",
+    category: "email",
+    statusUrl: "https://status.emailoctopus.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "onesignal",
+    name: "OneSignal",
+    category: "email",
+    statusUrl: "https://status.onesignal.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "hubspot",
+    name: "HubSpot",
+    category: "email",
+    statusUrl: "https://status.hubspot.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "help-scout",
+    name: "Help Scout",
+    category: "email",
+    statusUrl: "https://status.helpscout.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "mailtrap",
+    name: "Mailtrap",
+    category: "email",
+    statusUrl: "https://status.mailtrap.info/",
+    fetcherType: "none",
+  },
+  {
+    id: "substack",
+    name: "Substack",
+    category: "email",
+    statusUrl: "https://status.substack.com/",
     fetcherType: "none",
   },
 ] as const

@@ -62,9 +62,12 @@
  * customerio.statuspage.io (the public host has no /api/v2); Email
  * Wave B — Knock, Iterable, MailerSend, MailerLite, Kit, Front, and
  * Omnisend via Statuspage, SMTP2GO via smtp2gostatus.com (the public
- * host redirects /api/v2).
+ * host redirects /api/v2); Email Wave C — ActiveCampaign, GetResponse,
+ * EmailOctopus, OneSignal, HubSpot, and Help Scout via Statuspage,
+ * Nylas via status-v3.nylas.com (status.nylas.com redirects).
  * AWS, Azure, Fastly, Replit, Redis, Algolia, DataStax, Okta, PayPal,
- * Adyen, PagerDuty, Checkly, Postmark, and Mailchimp are seeded without a
+ * Adyen, PagerDuty, Checkly, Postmark, Mailchimp, Campaign Monitor,
+ * Mailtrap, and Substack are seeded without a
  * fetcher) and writes snapshots, components,
  * and incidents to Postgres.
  * A tiny HTTP server exposes /healthz.
@@ -142,9 +145,9 @@ type ServiceJob = {
 }
 
 // Board services with a fetcher (26 AI + Cloud / Developer / Data / Auth /
-// Payments / Observability Waves A–C + Email Waves A–B; AWS, Azure, Fastly,
+// Payments / Observability Waves A–C + Email Waves A–C; AWS, Azure, Fastly,
 // Replit, Redis, Algolia, DataStax, Okta, PayPal, Adyen, PagerDuty, Checkly,
-// Postmark, and Mailchimp are none).
+// Postmark, Mailchimp, Campaign Monitor, Mailtrap, and Substack are none).
 const statuspageJob = (id: string, baseUrl: string): ServiceJob => ({
   id,
   fetch: () => fetchStatuspageState(baseUrl, fetchOptions()),
@@ -579,6 +582,17 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("kit", "https://status.kit.com"),
   statuspageJob("front", "https://www.frontstatus.com"),
   statuspageJob("omnisend", "https://status.omnisend.com"),
+  // Email Wave C. Courier / Drip / AWeber / Constant Contact / Beehiiv
+  // wait (no official vector). Nylas's public host redirects; hit
+  // status-v3.nylas.com. Campaign Monitor 403s /api/v2. Mailtrap and
+  // Substack are custom pages with no Statuspage /api/v2.
+  statuspageJob("activecampaign", "https://status.activecampaign.com"),
+  statuspageJob("getresponse", "https://status.getresponse.com"),
+  statuspageJob("nylas", "https://status-v3.nylas.com"),
+  statuspageJob("emailoctopus", "https://status.emailoctopus.com"),
+  statuspageJob("onesignal", "https://status.onesignal.com"),
+  statuspageJob("hubspot", "https://status.hubspot.com"),
+  statuspageJob("help-scout", "https://status.helpscout.com"),
 ]
 
 async function fetchService(service: ServiceJob): Promise<boolean> {

@@ -227,5 +227,15 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `omnisend.svg` | Omnisend | `#FFFFFF` | Official mark from [omnisend.com omnisend_logo_dark.svg](https://www.omnisend.com/wp-content/themes/omnisend-v2/assets/img/omnisend_logo_dark.svg) (wordmark dropped); white so official `#1E2423` reads on dark |
 | `postmark.svg` | Postmark | `#FFDE00` / `#000000` | Official stamp from [postmarkapp.com logo-stamp-simple.svg](https://postmarkapp.com/images/logo-stamp-simple.svg) |
 | `mailchimp.svg` | Mailchimp | `#FFE01B` | Simple Icons `mailchimp` |
+| `activecampaign.svg` | ActiveCampaign | `#004CFF` | Official glyph from the [activecampaign.com/brand](https://www.activecampaign.com/brand) `ActiveCampaign-Logos.zip` |
+| `getresponse.svg` | GetResponse | `#00AEEF` / `#FFFFFF` | Official mark from [getresponse.com brand-assets](https://www.getresponse.com/about/brand-assets) `mini-logo.svg` |
+| `campaign-monitor.svg` | Campaign Monitor | `#7856FF` | Official marque from [campaignmonitor.com cm-marque.svg](https://www.campaignmonitor.com/wp-content/themes/cm-theme/assets/ico/cm-marque.svg) |
+| `nylas.svg` | Nylas | `#4169E1` | Official N cropped from [nylas.com main-logo.svg](https://www.nylas.com/wp-content/uploads/main-logo.svg) (wordmark dropped) |
+| `emailoctopus.svg` | EmailOctopus | `#6E54D7` | Official mark from [emailoctopus.com/icon.svg](https://emailoctopus.com/icon.svg) |
+| `onesignal.svg` | OneSignal | `#FFFFFF` | Official mark from [onesignal.com/favicon.svg](https://onesignal.com/favicon.svg); white so official `#051B2C` reads on dark |
+| `hubspot.svg` | HubSpot | `#FF7A59` | Simple Icons `hubspot` |
+| `help-scout.svg` | Help Scout | `#1292EE` | Simple Icons `helpscout` |
+| `mailtrap.svg` | Mailtrap | `#22D172` | Simple Icons `mailtrap` |
+| `substack.svg` | Substack | `#FF6719` | Simple Icons `substack` |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.
