@@ -46,18 +46,12 @@ export function StatusSummary({
             </>
           )}
         </p>
-<<<<<<< HEAD
         {refreshedAt ? (
           <p className="text-xs text-muted-foreground">
             Refreshed{" "}
             <time dateTime={refreshedAt}>{formatTimestamp(refreshedAt)}</time>
           </p>
         ) : null}
-=======
-        <p className="text-xs text-muted-foreground">
-          Refreshed <time dateTime={refreshedAt}>{refreshedLabel}</time>
-        </p>
->>>>>>> 2da6f5a (SMA-39: Prettier formatting for search filter files)
       </div>
       <Separator />
     </div>
