@@ -22,7 +22,9 @@
  * status.json, Oracle Cloud via ocistatus status.json, Hetzner via the
  * official page's __NEXT_DATA__; Developer Wave A — Cursor, Devin, GitHub,
  * CircleCI, npm, Docker, Linear, Sourcegraph, and Warp via Statuspage,
- * GitLab via Status.io. AWS, Azure, and Fastly are seeded without a
+ * GitLab via Status.io; Developer Wave B — Bitbucket, Buildkite, PyPI,
+ * RubyGems, Maven Central, Postman, Augment, Factory, and Tabnine via
+ * Statuspage, Zed via Instatus. AWS, Azure, and Fastly are seeded without a
  * fetcher) and writes snapshots, components, and incidents to Postgres.
  * A tiny HTTP server exposes /healthz.
  */
@@ -89,7 +91,7 @@ type ServiceJob = {
   persistOptions?: PersistOptions
 }
 
-// Board services with a fetcher (26 AI + Cloud Waves A–C + Developer Wave A;
+// Board services with a fetcher (26 AI + Cloud Waves A–C + Developer Waves A–B;
 // AWS, Azure, and Fastly are none).
 const statuspageJob = (id: string, baseUrl: string): ServiceJob => ({
   id,
@@ -271,6 +273,21 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("linear", "https://linearstatus.com"),
   statuspageJob("sourcegraph", "https://sourcegraphstatus.com"),
   statuspageJob("warp", "https://status.warp.dev"),
+  // Developer Wave B. More forges, registries, API tooling, and coding agents.
+  statuspageJob("bitbucket", "https://bitbucket.status.atlassian.com"),
+  statuspageJob("buildkite", "https://www.buildkitestatus.com"),
+  statuspageJob("pypi", "https://status.python.org"),
+  statuspageJob("rubygems", "https://status.rubygems.org"),
+  statuspageJob("maven", "https://status.maven.org"),
+  statuspageJob("postman", "https://status.postman.com"),
+  statuspageJob("augment", "https://status.augmentcode.com"),
+  statuspageJob("factory", "https://status.factory.ai"),
+  statuspageJob("tabnine", "https://status.tabnine.com"),
+  {
+    id: "zed",
+    fetch: () => fetchInstatusState("https://status.zed.dev", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
 ]
 
 async function fetchService(service: ServiceJob): Promise<boolean> {

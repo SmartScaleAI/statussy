@@ -2,7 +2,7 @@
 
 Glanceable “is anything down?” board for AI, Cloud, and Developer services. A SmartScale app, separate from Zerro.
 
-The board reads **live status from Postgres** for the 61 catalog services (26 AI + 25 Cloud + 10 Developer Wave A). AI Wave A: OpenAI, Anthropic, Groq, Cohere, OpenRouter, Perplexity, xAI, DeepSeek, Google Gemini, Mistral; Wave B: Fireworks AI, Together AI, Cerebras, Hugging Face, Replicate, Runway, Ideogram, Stability AI; Wave C: fal, ElevenLabs, MiniMax, Voyage AI, Black Forest Labs, Cartesia, Kimi, Luma. Cloud Wave A: Vercel, Railway, Cloudflare, Render, Fly.io, Netlify, DigitalOcean, Google Cloud, AWS, Azure. Cloud Wave B: Heroku, Linode, Fastly, bunny.net, Deno Deploy, Koyeb, Modal, Firebase. Cloud Wave C: Akamai, Vultr, Scaleway, Oracle Cloud, Hetzner, Northflank, Lambda. Developer Wave A: Cursor, Devin, GitHub, GitLab, CircleCI, npm, Docker, Linear, Sourcegraph, Warp. The worker fetches every service that has a fetcher; AWS, Azure, and Fastly are seeded without one (custom dashboards or a status page that blocks programmatic access) and stay on mock until a dedicated fetcher exists. Nothing is scraped from the client. When a service has no snapshot yet, or the database is unreachable, the board still falls back to mock data.
+The board reads **live status from Postgres** for the 71 catalog services (26 AI + 25 Cloud + 20 Developer). AI Wave A: OpenAI, Anthropic, Groq, Cohere, OpenRouter, Perplexity, xAI, DeepSeek, Google Gemini, Mistral; Wave B: Fireworks AI, Together AI, Cerebras, Hugging Face, Replicate, Runway, Ideogram, Stability AI; Wave C: fal, ElevenLabs, MiniMax, Voyage AI, Black Forest Labs, Cartesia, Kimi, Luma. Cloud Wave A: Vercel, Railway, Cloudflare, Render, Fly.io, Netlify, DigitalOcean, Google Cloud, AWS, Azure. Cloud Wave B: Heroku, Linode, Fastly, bunny.net, Deno Deploy, Koyeb, Modal, Firebase. Cloud Wave C: Akamai, Vultr, Scaleway, Oracle Cloud, Hetzner, Northflank, Lambda. Developer Wave A: Cursor, Devin, GitHub, GitLab, CircleCI, npm, Docker, Linear, Sourcegraph, Warp. Developer Wave B: Bitbucket, Buildkite, PyPI, RubyGems, Maven Central, Postman, Augment, Factory, Tabnine, Zed. The worker fetches every service that has a fetcher; AWS, Azure, and Fastly are seeded without one (custom dashboards or a status page that blocks programmatic access) and stay on mock until a dedicated fetcher exists. Nothing is scraped from the client. When a service has no snapshot yet, or the database is unreachable, the board still falls back to mock data.
 
 GitHub is one card (Copilot, Actions, and Codespaces are components). Devin covers Desktop and Cloud; Windsurf is the legacy name and is not a separate card. Codex / Claude Code / Amazon Q stay on their AI / Cloud parents.
 
@@ -23,7 +23,7 @@ npm run build
 
 Live-data foundation for the board: a Railway Postgres database plus a small Node
 worker in [`worker/`](worker/). The worker owns the schema (`services`,
-`service_snapshots`, `components`, `incidents`, `service_suggestions`), seeds the 61 board services,
+`service_snapshots`, `components`, `incidents`, `service_suggestions`), seeds the 71 board services,
 and ticks on a configurable interval (default every 5 minutes). Each tick fetches
 live status for services with a fetcher — OpenAI, Anthropic, Groq, Cohere,
 Fireworks, Cerebras, Replicate, Runway, Ideogram, Stability, ElevenLabs,
@@ -51,8 +51,10 @@ the components dump is not persisted), and Hetzner via `__NEXT_DATA__`
 embedded in `https://status.hetzner.com/en` (informational notices and
 future maintenance do not paint the card), Developer Wave A Statuspage hosts
 (Cursor, Devin, GitHub, CircleCI, npm, Docker, Linear, Sourcegraph, Warp),
-and GitLab via Status.io (`api.status.io/1.0/status/{pageId}`; upcoming
-maintenance does not paint the card) — and upserts snapshot,
+GitLab via Status.io (`api.status.io/1.0/status/{pageId}`; upcoming
+maintenance does not paint the card), Developer Wave B Statuspage hosts
+(Bitbucket, Buildkite, PyPI, RubyGems, Maven Central, Postman, Augment,
+Factory, Tabnine), and Zed via Instatus — and upserts snapshot,
 component, and incident rows. On a failed fetch the worker keeps last-known rows
 and flags the latest snapshot `stale`.
 
@@ -73,7 +75,7 @@ and flags the latest snapshot `stale`.
 cd worker
 npm install
 export DATABASE_URL=postgres://user:pass@localhost:5432/statussy
-npm run migrate   # apply migrations + seed the 61 services, then exit
+npm run migrate   # apply migrations + seed the 71 services, then exit
 npm run dev       # migrate, seed, tick on the interval, serve /healthz
 ```
 

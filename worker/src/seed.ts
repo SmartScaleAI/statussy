@@ -1,7 +1,7 @@
 import type pg from "pg"
 
 /**
- * Static registry of board services (26 AI + Cloud Waves A–C + Developer Wave A).
+ * Static registry of board services (26 AI + Cloud Waves A–C + Developer Waves A–B).
  * Mirrors the ids in the Next.js app's data/services.ts (and public/logos/{id}.svg).
  * Windsurf is the legacy Devin Desktop name and is not seeded separately.
  * GitHub Copilot is a GitHub component, not its own card.
@@ -400,6 +400,76 @@ export const SERVICE_SEED = [
     category: "developer",
     statusUrl: "https://status.warp.dev/",
     fetcherType: "statuspage",
+  },
+  {
+    id: "bitbucket",
+    name: "Bitbucket",
+    category: "developer",
+    statusUrl: "https://bitbucket.status.atlassian.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "buildkite",
+    name: "Buildkite",
+    category: "developer",
+    statusUrl: "https://www.buildkitestatus.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "pypi",
+    name: "PyPI",
+    category: "developer",
+    statusUrl: "https://status.python.org/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "rubygems",
+    name: "RubyGems",
+    category: "developer",
+    statusUrl: "https://status.rubygems.org/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "maven",
+    name: "Maven Central",
+    category: "developer",
+    statusUrl: "https://status.maven.org/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "postman",
+    name: "Postman",
+    category: "developer",
+    statusUrl: "https://status.postman.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "augment",
+    name: "Augment",
+    category: "developer",
+    statusUrl: "https://status.augmentcode.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "factory",
+    name: "Factory",
+    category: "developer",
+    statusUrl: "https://status.factory.ai/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "tabnine",
+    name: "Tabnine",
+    category: "developer",
+    statusUrl: "https://status.tabnine.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "zed",
+    name: "Zed",
+    category: "developer",
+    statusUrl: "https://status.zed.dev/",
+    fetcherType: "instatus",
   },
 ] as const
 

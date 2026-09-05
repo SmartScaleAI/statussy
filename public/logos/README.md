@@ -67,5 +67,15 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `linear.svg` | Linear | `#5E6AD2` | Simple Icons `linear` |
 | `sourcegraph.svg` | Sourcegraph | `#FF5543` | Official mark from [sourcegraph.com/.assets/img/sourcegraph-mark.svg](https://sourcegraph.com/.assets/img/sourcegraph-mark.svg) |
 | `warp.svg` | Warp | `#01A4FF` | Simple Icons `warp` |
+| `bitbucket.svg` | Bitbucket | `#0052CC` | Simple Icons `bitbucket` |
+| `buildkite.svg` | Buildkite | `#14CC80` | Simple Icons `buildkite` |
+| `pypi.svg` | PyPI | `#3775A9` | Simple Icons `pypi` (PyPI mark, not the Python language logo) |
+| `rubygems.svg` | RubyGems | `#E9573F` | Simple Icons `rubygems` |
+| `maven.svg` | Maven Central | `#C71A36` | Simple Icons `apachemaven` |
+| `postman.svg` | Postman | `#FF6C37` | Simple Icons `postman` |
+| `augment.svg` | Augment | `#FFFFFF` | Official mark from [augmentcode.com/favicon.svg](https://www.augmentcode.com/favicon.svg); white so official black reads on dark |
+| `factory.svg` | Factory | `#FFFFFF` | Official mark from [Factory-AI/factory `docs/favicon.svg`](https://github.com/Factory-AI/factory/blob/main/docs/favicon.svg); white tile dropped so the mark reads on dark |
+| `tabnine.svg` | Tabnine | `#FF2D2D` | Official hex mark from [tabnine/skills](https://github.com/tabnine/skills/blob/main/plugins/cursor/tabnine/assets/logo.svg) |
+| `zed.svg` | Zed | `#084CCF` | Simple Icons `zedindustries` |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.
