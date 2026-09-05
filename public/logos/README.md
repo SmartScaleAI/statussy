@@ -197,5 +197,15 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `checkly.svg` | Checkly | `#0075FF` / `#002652` | Official mark from [checklyhq.com/logos/checkly/checkly.svg](https://www.checklyhq.com/logos/checkly/checkly.svg) |
 | `cribl.svg` | Cribl | `#00CCCC` | Official mark from [cribl.io cribl-logo.svg](https://images.ctfassets.net/xnqwd8kotbaj/3etrKzhi0UCCFPdBY4JADk/66e1ff433356b509dca22e9a28d41687/cribl-logo.svg) (wordmark dropped) |
 | `logz.svg` | logz.io | `#FFFFFF` | Official hex from [logz.io logo.svg](https://dytvr9ot2sszz.cloudfront.net/wp-content/uploads/2025/08/logo.svg) (wordmark dropped); white so official `#112031` reads on dark |
+| `lumigo.svg` | Lumigo | Official gold–red gradient | Official mark from [lumigo.io lumigo-logo-white.svg](https://lumigo.io/wp-content/themes/lumigo/images/v6/lumigo-logo-white.svg) (wordmark dropped) |
+| `netdata.svg` | Netdata | `#00AB44` | Simple Icons `netdata` |
+| `scout.svg` | Scout | `#FFFFFF` | Official mark from [scoutapm.com scout-icon-dark.svg](https://www.scoutapm.com/assets/images/logos/scout-icon-dark.svg); white so official `#070A18` reads on dark |
+| `logit.svg` | Logit.io | `#32A843` / `#3D646B` / `#254045` | Official mark from [logit.io/images/logitlogo.svg](https://logit.io/images/logitlogo.svg) (wordmark dropped) |
+| `nobl9.svg` | Nobl9 | `#FFFFFF` / `#1EB8D1` | Official n9 from [nobl9.com nobl9-logo-square-light.svg](https://www.nobl9.com/hubfs/Nobl9%20Logos/nobl9-logo-square-light.svg); black letter remapped to white |
+| `catchpoint.svg` | Catchpoint | `#1478C2` | Official C-of-dots from [catchpoint.com Catchpoint Logo Corporate Horizontal RBG.svg](https://www.catchpoint.com/catchpoint-logo) (wordmark dropped) |
+| `victoria-metrics.svg` | VictoriaMetrics | `#621773` | Simple Icons `victoriametrics` |
+| `langfuse.svg` | Langfuse | `#FF5D5F` / `#4E9CFF` | [LobeHub](https://github.com/lobehub/lobe-icons) `langfuse-color` (official mark + colors) |
+| `dash0.svg` | Dash0 | `#FF8A67` / `#FA4A4D` | Official mark from [dash0.com/shared/logo_colors.svg](https://www.dash0.com/shared/logo_colors.svg) |
+| `embrace.svg` | Embrace | `#EEFF04` | Official brackets from [embrace.io logo-yellow.svg](https://embrace.io/wp-content/themes/embraceio/library/images/logo-yellow.svg) (wordmark dropped) |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.

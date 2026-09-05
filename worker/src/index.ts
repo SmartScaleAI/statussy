@@ -53,7 +53,10 @@
  * Dynatrace via Status.io, Better Stack via Better Stack `index.json`;
  * Observability Wave B — Sumo Logic, Coralogix, Rollbar, Bugsnag
  * (bugsnag.status.smartbear.com), incident.io, Mezmo, Airbrake, Cribl,
- * and logz.io via Statuspage.
+ * and logz.io via Statuspage; Observability Wave C — Lumigo, Netdata,
+ * Scout, Logit.io, Nobl9, Catchpoint, VictoriaMetrics, Langfuse, and
+ * Embrace via Statuspage, Dash0 via dash0status.com (the public host
+ * redirects /api/v2).
  * AWS, Azure, Fastly, Replit, Redis, Algolia, DataStax, Okta, PayPal,
  * Adyen, PagerDuty, and Checkly are seeded without a
  * fetcher) and writes snapshots, components,
@@ -133,7 +136,7 @@ type ServiceJob = {
 }
 
 // Board services with a fetcher (26 AI + Cloud / Developer / Data / Auth /
-// Payments Waves A–C + Observability Waves A–B; AWS, Azure, Fastly, Replit,
+// Payments Waves A–C + Observability Waves A–C; AWS, Azure, Fastly, Replit,
 // Redis, Algolia, DataStax, Okta, PayPal, Adyen, PagerDuty, and Checkly
 // are none).
 const statuspageJob = (id: string, baseUrl: string): ServiceJob => ({
@@ -533,6 +536,19 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("airbrake", "https://status.airbrake.io"),
   statuspageJob("cribl", "https://status.cribl.cloud"),
   statuspageJob("logz", "https://status.logz.io"),
+  // Observability Wave C. Dash0's public host redirects /api/v2; hit
+  // dash0status.com. Langfuse and Embrace expose Statuspage-compatible
+  // /api/v2 on Instatus-hosted pages.
+  statuspageJob("lumigo", "https://status.lumigo.io"),
+  statuspageJob("netdata", "https://status.netdata.cloud"),
+  statuspageJob("scout", "https://status.scoutapm.com"),
+  statuspageJob("logit", "https://status.logit.io"),
+  statuspageJob("nobl9", "https://status.nobl9.com"),
+  statuspageJob("catchpoint", "https://status.catchpoint.com"),
+  statuspageJob("victoria-metrics", "https://status.victoriametrics.com"),
+  statuspageJob("langfuse", "https://status.langfuse.com"),
+  statuspageJob("dash0", "https://dash0status.com"),
+  statuspageJob("embrace", "https://status.embrace.io"),
 ]
 
 async function fetchService(service: ServiceJob): Promise<boolean> {

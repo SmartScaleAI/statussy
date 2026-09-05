@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19 19" role="img" aria-hidden="true">
+  <title>Dash0</title>
+  <path fill="#FF8A67" fill-rule="evenodd" d="M7 10C7 13.3137 3.86599 16 0 16L0 4C3.86599 4 7 6.68629 7 10ZM7 10C7 6.68629 9.6863 4 13 4C16.3137 4 19 6.68629 19 10C19 13.3137 16.3137 16 13 16C9.6863 16 7 13.3137 7 10Z"/>
+  <radialGradient id="dash0" cx="10.5419" cy="23.8" r="37.876986" fx="10.5419" fy="23.8" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FA4A4D"/>
+    <stop offset="1" stop-color="#FA4A4D" stop-opacity="0"/>
+  </radialGradient>
+  <path fill="url(#dash0)" fill-rule="evenodd" d="M7 10C7 13.3137 3.86599 16 0 16L0 4C3.86599 4 7 6.68629 7 10ZM7 10C7 6.68629 9.6863 4 13 4C16.3137 4 19 6.68629 19 10C19 13.3137 16.3137 16 13 16C9.6863 16 7 13.3137 7 10Z"/>
+</svg>
