@@ -74,9 +74,14 @@ test("search matches service name only (case-insensitive substring)", () => {
     },
   ]
 
-  assert.deepEqual(filterBoardServices(withExtra, "anthropic", ALL_CATEGORY), [])
   assert.deepEqual(
-    filterBoardServices(withExtra, "OPEN", ALL_CATEGORY).map((item) => item.name),
+    filterBoardServices(withExtra, "anthropic", ALL_CATEGORY),
+    []
+  )
+  assert.deepEqual(
+    filterBoardServices(withExtra, "OPEN", ALL_CATEGORY).map(
+      (item) => item.name
+    ),
     ["OpenAI"]
   )
 })
