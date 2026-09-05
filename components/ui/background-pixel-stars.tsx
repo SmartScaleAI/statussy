@@ -10,12 +10,9 @@ import { memo, useCallback, useEffect, useRef } from "react"
 // 16-bit color palette (reduced color options)
 const STAR_COLORS = [
   "#FFFFFF", // White
-  "#FFFFAA", // Light yellow
-  "#AAAAFF", // Light blue
-  "#FFAAAA", // Light red
-  "#AAFFAA", // Light green
-  "#FFAAFF", // Light purple
-  "#AAFFFF", // Light cyan
+  "#FFFF00", // Yellow
+  "#0000FF", // Blue
+  "#FF0000", // Red
 ] as const
 
 // Configuration constants
