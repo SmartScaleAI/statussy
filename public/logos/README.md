@@ -177,5 +177,15 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `paysafe.svg` | Paysafe | `#5A28FF` | Simple Icons `paysafe` |
 | `recharge.svg` | Recharge | `#3901F1` | Official circle from [getrecharge.com recharge-full.svg](https://getrecharge.com/wp-content/uploads/2025/06/recharge-full.svg) (wordmark dropped) |
 | `maxio.svg` | Maxio | `#FFFFFF` | Official mark from [maxio.com mx-logo-svg.svg](https://www.maxio.com/wp-content/uploads/2026/04/mx-logo-svg.svg) (wordmark dropped); white so official black reads on dark |
+| `datadog.svg` | Datadog | `#632CA6` | Simple Icons `datadog` |
+| `sentry.svg` | Sentry | `#FFFFFF` | Simple Icons `sentry`; white so official `#362D59` reads on dark |
+| `grafana.svg` | Grafana | `#F46800` | Simple Icons `grafana` |
+| `pagerduty.svg` | PagerDuty | `#06AC38` | Simple Icons `pagerduty` |
+| `new-relic.svg` | New Relic | `#1CE783` | Simple Icons `newrelic` |
+| `honeycomb.svg` | Honeycomb | `#FFB000` / `#64BA00` / `#F96E10` / `#0298EC` | Official hex cluster from [docs.honeycomb.io](https://docs.honeycomb.io/) `logos/dark.svg` (wordmark dropped) |
+| `splunk.svg` | Splunk | `#FFFFFF` | Simple Icons `splunk`; white so official black reads on dark |
+| `dynatrace.svg` | Dynatrace | `#1496FF` | Simple Icons `dynatrace` |
+| `better-stack.svg` | Better Stack | `#FFFFFF` | Simple Icons `betterstack`; white so official black reads on dark |
+| `axiom.svg` | Axiom | `#FFFFFF` | Official A from [axiom.co/logo/axiom-wordmark.svg](https://axiom.co/logo/axiom-wordmark.svg) (wordmark dropped) |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.

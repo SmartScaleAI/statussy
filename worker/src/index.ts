@@ -48,8 +48,11 @@
  * Statuspage; Payments Wave C — Marqeta, Lithic, Worldpay, Spreedly,
  * Finix, Mercado Pago, EBANX, Paysafe, Recharge, and Maxio via
  * Statuspage (Maxio's public host times out on /api/v2, so the fetcher
- * hits maxio.statuspage.io). AWS, Azure, Fastly, Replit,
- * Redis, Algolia, DataStax, Okta, PayPal, and Adyen are seeded without a
+ * hits maxio.statuspage.io); Observability Wave A — Datadog, Sentry,
+ * Grafana, New Relic, Honeycomb, Splunk, and Axiom via Statuspage,
+ * Dynatrace via Status.io, Better Stack via Better Stack `index.json`.
+ * AWS, Azure, Fastly, Replit, Redis, Algolia, DataStax, Okta, PayPal,
+ * Adyen, and PagerDuty are seeded without a
  * fetcher) and writes snapshots, components,
  * and incidents to Postgres.
  * A tiny HTTP server exposes /healthz.
@@ -73,6 +76,8 @@ import {
   fetchStatusIoState,
   DATABRICKS_STATUS_PAGE,
   DATABRICKS_STATUS_PAGE_ID,
+  DYNATRACE_STATUS_PAGE,
+  DYNATRACE_STATUS_PAGE_ID,
   NEON_STATUS_PAGE,
   NEON_STATUS_PAGE_ID,
 } from "./gitlab.js"
@@ -124,9 +129,9 @@ type ServiceJob = {
   persistOptions?: PersistOptions
 }
 
-// Board services with a fetcher (26 AI + Cloud Waves A–C + Developer Waves A–C
-// + Data Waves A–C + Auth Waves A–B; AWS, Azure, Fastly, Replit, Redis,
-// Algolia, DataStax, and Okta are none).
+// Board services with a fetcher (26 AI + Cloud / Developer / Data / Auth /
+// Payments Waves A–C + Observability Wave A; AWS, Azure, Fastly, Replit,
+// Redis, Algolia, DataStax, Okta, PayPal, Adyen, and PagerDuty are none).
 const statuspageJob = (id: string, baseUrl: string): ServiceJob => ({
   id,
   fetch: () => fetchStatuspageState(baseUrl, fetchOptions()),
@@ -486,6 +491,33 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("paysafe", "https://status.paysafe.com"),
   statuspageJob("recharge", "https://status.getrecharge.com"),
   statuspageJob("maxio", "https://maxio.statuspage.io"),
+  // Observability Wave A. PagerDuty is none (custom page, no public JSON).
+  // Splunk's public status.splunk.com is marketing HTML; the live Cloud
+  // Platform page is Statuspage. Dynatrace is Status.io
+  // (status.dynatrace.com → dynatrace.status.io).
+  statuspageJob("datadog", "https://status.datadoghq.com"),
+  statuspageJob("sentry", "https://status.sentry.io"),
+  statuspageJob("grafana", "https://status.grafana.com"),
+  statuspageJob("new-relic", "https://status.newrelic.com"),
+  statuspageJob("honeycomb", "https://status.honeycomb.io"),
+  statuspageJob("splunk", "https://status.splunkcloud.com"),
+  {
+    id: "dynatrace",
+    fetch: () =>
+      fetchStatusIoState(
+        DYNATRACE_STATUS_PAGE,
+        DYNATRACE_STATUS_PAGE_ID,
+        fetchOptions(),
+      ),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  {
+    id: "better-stack",
+    fetch: () =>
+      fetchBetterstackState("https://status.betterstack.com", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  statuspageJob("axiom", "https://status.axiom.co"),
 ]
 
 async function fetchService(service: ServiceJob): Promise<boolean> {

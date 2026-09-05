@@ -7,7 +7,8 @@ import type pg from "pg"
  * GitHub Copilot is a GitHub component, not its own card.
  *
  * `category` defaults to `ai` when omitted. AWS, Azure, Fastly, Replit,
- * Redis, Algolia, DataStax, and Okta are `none` until a dedicated fetcher exists.
+ * Redis, Algolia, DataStax, Okta, PayPal, Adyen, and PagerDuty are `none`
+ * until a dedicated fetcher exists.
  */
 export const SERVICE_SEED = [
   {
@@ -1169,6 +1170,76 @@ export const SERVICE_SEED = [
     name: "Maxio",
     category: "payments",
     statusUrl: "https://maxio.statuspage.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "datadog",
+    name: "Datadog",
+    category: "observability",
+    statusUrl: "https://status.datadoghq.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "sentry",
+    name: "Sentry",
+    category: "observability",
+    statusUrl: "https://status.sentry.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "grafana",
+    name: "Grafana",
+    category: "observability",
+    statusUrl: "https://status.grafana.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "pagerduty",
+    name: "PagerDuty",
+    category: "observability",
+    statusUrl: "https://status.pagerduty.com/",
+    fetcherType: "none",
+  },
+  {
+    id: "new-relic",
+    name: "New Relic",
+    category: "observability",
+    statusUrl: "https://status.newrelic.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "honeycomb",
+    name: "Honeycomb",
+    category: "observability",
+    statusUrl: "https://status.honeycomb.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "splunk",
+    name: "Splunk",
+    category: "observability",
+    statusUrl: "https://status.splunkcloud.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "dynatrace",
+    name: "Dynatrace",
+    category: "observability",
+    statusUrl: "https://status.dynatrace.com/",
+    fetcherType: "status_io",
+  },
+  {
+    id: "better-stack",
+    name: "Better Stack",
+    category: "observability",
+    statusUrl: "https://status.betterstack.com/",
+    fetcherType: "betterstack",
+  },
+  {
+    id: "axiom",
+    name: "Axiom",
+    category: "observability",
+    statusUrl: "https://status.axiom.co/",
     fetcherType: "statuspage",
   },
 ] as const

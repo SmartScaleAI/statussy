@@ -23,6 +23,7 @@ export type ServiceCategory =
   | "data"
   | "auth"
   | "payments"
+  | "observability"
 
 export type Service = {
   /** Matches a static mark at `public/logos/{id}.svg`. */
@@ -715,7 +716,7 @@ export const services: Service[] = [
     updatedAt: "2026-09-05T04:10:00.000Z",
   },
   // Data Wave A — stores and queues the app dies on. One card per vendor.
-  // Observability / email stay on later chiclets.
+  // Email stays on a later chiclet.
   // Redis has no public JSON (custom status.redis.io page).
   {
     id: "supabase",
@@ -1456,5 +1457,91 @@ export const services: Service[] = [
     statusUrl: "https://maxio.statuspage.io/",
     status: "operational",
     updatedAt: "2026-09-05T06:45:00.000Z",
+  },
+  // Observability Wave A — monitoring, APM, logs, traces, error tracking,
+  // and on-call the app dies on. One card per vendor. CloudWatch / Azure
+  // Monitor / GCP Operations stay on their Cloud parents. Elastic
+  // Observability stays on Elastic. Opsgenie waits (Atlassian). Checkly's
+  // own Nuxt page has no public JSON. PagerDuty has no public JSON
+  // (custom page).
+  {
+    id: "datadog",
+    name: "Datadog",
+    category: "observability",
+    statusUrl: "https://status.datadoghq.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T15:10:00.000Z",
+  },
+  {
+    id: "sentry",
+    name: "Sentry",
+    category: "observability",
+    statusUrl: "https://status.sentry.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T15:10:00.000Z",
+  },
+  {
+    id: "grafana",
+    name: "Grafana",
+    category: "observability",
+    statusUrl: "https://status.grafana.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T15:10:00.000Z",
+  },
+  {
+    id: "pagerduty",
+    name: "PagerDuty",
+    category: "observability",
+    statusUrl: "https://status.pagerduty.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T15:10:00.000Z",
+  },
+  {
+    id: "new-relic",
+    name: "New Relic",
+    category: "observability",
+    statusUrl: "https://status.newrelic.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T15:10:00.000Z",
+  },
+  {
+    id: "honeycomb",
+    name: "Honeycomb",
+    category: "observability",
+    statusUrl: "https://status.honeycomb.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T15:10:00.000Z",
+  },
+  {
+    id: "splunk",
+    name: "Splunk",
+    category: "observability",
+    statusUrl: "https://status.splunkcloud.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T15:10:00.000Z",
+  },
+  {
+    id: "dynatrace",
+    name: "Dynatrace",
+    category: "observability",
+    statusUrl: "https://status.dynatrace.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T15:10:00.000Z",
+  },
+  {
+    id: "better-stack",
+    name: "Better Stack",
+    category: "observability",
+    statusUrl: "https://status.betterstack.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T15:10:00.000Z",
+  },
+  {
+    id: "axiom",
+    name: "Axiom",
+    category: "observability",
+    statusUrl: "https://status.axiom.co/",
+    status: "operational",
+    updatedAt: "2026-09-05T15:10:00.000Z",
   },
 ]

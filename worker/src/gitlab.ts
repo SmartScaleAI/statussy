@@ -24,6 +24,9 @@ export const NEON_STATUS_PAGE_ID = "6878fc85709daa75be6c7e3c"
 export const DATABRICKS_STATUS_PAGE = "https://status.databricks.com"
 export const DATABRICKS_STATUS_PAGE_ID = "5cf02dde58a00904bda41926"
 
+export const DYNATRACE_STATUS_PAGE = "https://status.dynatrace.com"
+export const DYNATRACE_STATUS_PAGE_ID = "546d8cb6af8407b6730000cb"
+
 export type StatusIoComponent = {
   id?: string
   name?: string
