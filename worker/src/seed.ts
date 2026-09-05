@@ -4,7 +4,7 @@ import type pg from "pg"
  * Static registry of board services (26 AI + Cloud / Developer / Data /
  * Auth / Payments / Observability Waves A–C + Email Waves A–C +
  * Design Waves A–C + Infra Waves A–C + Flags Waves A–C +
- * Analytics Waves A–C + Security Waves A–B).
+ * Analytics Waves A–C + Security Waves A–C).
  * Mirrors the ids in the Next.js app's data/services.ts (and public/logos/{id}.svg).
  * Windsurf is the legacy Devin Desktop name and is not seeded separately.
  * GitHub Copilot is a GitHub component, not its own card.
@@ -2631,6 +2631,76 @@ export const SERVICE_SEED = [
     category: "security",
     statusUrl: "https://status.mend.io/",
     fetcherType: "statuspage",
+  },
+  {
+    id: "human",
+    name: "HUMAN",
+    category: "security",
+    statusUrl: "https://status.humansecurity.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "tailscale",
+    name: "Tailscale",
+    category: "security",
+    statusUrl: "https://status.tailscale.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "twingate",
+    name: "Twingate",
+    category: "security",
+    statusUrl: "https://status.twingate.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "digicert",
+    name: "DigiCert",
+    category: "security",
+    statusUrl: "https://status.digicert.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "securityscorecard",
+    name: "SecurityScorecard",
+    category: "security",
+    statusUrl: "https://status.securityscorecard.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "knowbe4",
+    name: "KnowBe4",
+    category: "security",
+    statusUrl: "https://status.knowbe4.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "chainguard",
+    name: "Chainguard",
+    category: "security",
+    statusUrl: "https://status.chainguard.dev/",
+    fetcherType: "betterstack",
+  },
+  {
+    id: "bugcrowd",
+    name: "Bugcrowd",
+    category: "security",
+    statusUrl: "https://www.bugcrowdstatus.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "sonar",
+    name: "Sonar",
+    category: "security",
+    statusUrl: "https://status.sonarqube.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "lets-encrypt",
+    name: "Let's Encrypt",
+    category: "security",
+    statusUrl: "https://letsencrypt.status.io/",
+    fetcherType: "status_io",
   },
 ] as const
 

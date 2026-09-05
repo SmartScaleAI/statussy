@@ -91,7 +91,11 @@
  * Wiz, SentinelOne, Semgrep, Veracode, Tenable, Qualys, Vanta,
  * Rapid7, and Socket via Statuspage; Security Wave B —
  * Aqua, Orca, Sysdig, GitGuardian, Secureframe, Palo Alto
- * Networks, Imperva, Upwind, FOSSA, and Mend via Statuspage.
+ * Networks, Imperva, Upwind, FOSSA, and Mend via Statuspage;
+ * Security Wave C — HUMAN, Tailscale (Statuspage-compatible
+ * incident.io page), Twingate, DigiCert, SecurityScorecard,
+ * KnowBe4, Bugcrowd, and Sonar via Statuspage, Chainguard via
+ * Better Stack `index.json`, Let's Encrypt via Status.io.
  * AWS, Azure, Fastly, Replit, Redis, Algolia, DataStax, Okta, PayPal,
  * Adyen, PagerDuty, Checkly, Postmark, Mailchimp, Campaign Monitor,
  * Mailtrap, Substack, Adobe, Sketch, Penpot, Rive, LottieFiles,
@@ -132,6 +136,8 @@ import {
   DEVCYCLE_STATUS_PAGE_ID,
   DYNATRACE_STATUS_PAGE,
   DYNATRACE_STATUS_PAGE_ID,
+  LETSENCRYPT_STATUS_PAGE,
+  LETSENCRYPT_STATUS_PAGE_ID,
   NEON_STATUS_PAGE,
   NEON_STATUS_PAGE_ID,
 } from "./gitlab.js"
@@ -801,6 +807,36 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("upwind", "https://status.upwind.io"),
   statuspageJob("fossa", "https://status.fossa.com"),
   statuspageJob("mend", "https://status.mend.io"),
+  // Security Wave C. HUMAN / Tailscale / Twingate / DigiCert /
+  // SecurityScorecard / KnowBe4 / Bugcrowd / Sonar are
+  // Statuspage (Tailscale's incident.io host exposes
+  // Statuspage-compatible /api/v2). Chainguard is Better Stack.
+  // Let's Encrypt is Status.io. Abnormal waits (PNG-only).
+  // Recorded Future waits (no official SVG).
+  statuspageJob("human", "https://status.humansecurity.com"),
+  statuspageJob("tailscale", "https://status.tailscale.com"),
+  statuspageJob("twingate", "https://status.twingate.com"),
+  statuspageJob("digicert", "https://status.digicert.com"),
+  statuspageJob("securityscorecard", "https://status.securityscorecard.com"),
+  statuspageJob("knowbe4", "https://status.knowbe4.com"),
+  {
+    id: "chainguard",
+    fetch: () =>
+      fetchBetterstackState("https://status.chainguard.dev", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  statuspageJob("bugcrowd", "https://www.bugcrowdstatus.com"),
+  statuspageJob("sonar", "https://status.sonarqube.com"),
+  {
+    id: "lets-encrypt",
+    fetch: () =>
+      fetchStatusIoState(
+        LETSENCRYPT_STATUS_PAGE,
+        LETSENCRYPT_STATUS_PAGE_ID,
+        fetchOptions(),
+      ),
+    persistOptions: { resolveMissingIncidents: true },
+  },
 ]
 
 async function fetchService(service: ServiceJob): Promise<boolean> {

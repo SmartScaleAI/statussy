@@ -377,5 +377,15 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `upwind.svg` | Upwind | `#FFFFFF` + `#F2583C`→`#9214C4`→`#1E71ED` | Official U from [upwind.io dark-u-logo.svg](https://www.upwind.io/); official `#18202D` knocked to white |
 | `fossa.svg` | FOSSA | `#289E6D` | Simple Icons `fossa` |
 | `mend.svg` | Mend | `#073C8C` + `#55C6C2` | Official M waves from [mend.io Mend-io-logo-color-32px-2.svg](https://www.mend.io/) |
+| `human.svg` | HUMAN | `#FFFFFF` | Official mark from [docs.humansecurity.com logo-light.svg](https://docs.humansecurity.com/) (wordmark dropped); official black knocked to white |
+| `tailscale.svg` | Tailscale | `#FFFFFF` | Simple Icons `tailscale`; official `#242424` knocked to white |
+| `twingate.svg` | Twingate | `#FFFFFF` | Official triangles from the [twingate.com](https://www.twingate.com/) homepage lockup (wordmark dropped) |
+| `digicert.svg` | DigiCert | `#0174C3` | Official d from [digicert.com/icon.svg](https://www.digicert.com/icon.svg); circular tile dropped |
+| `securityscorecard.svg` | SecurityScorecard | `#7033FD` | Simple Icons `securityscorecard` |
+| `knowbe4.svg` | KnowBe4 | `#FFFFFF` | Official K from [knowbe4.com knowbe4-logo-blk-orange-cropped-rgb_fixed.svg](https://www.knowbe4.com/) (wordmark dropped); official `#121921` knocked to white |
+| `chainguard.svg` | Chainguard | `#4445E7` | Simple Icons `chainguard` |
+| `bugcrowd.svg` | Bugcrowd | `#F26822` | Simple Icons `bugcrowd` |
+| `sonar.svg` | Sonar | `#FD3456` | Simple Icons `sonar` |
+| `lets-encrypt.svg` | Let's Encrypt | `#003A70` + `#FFA400` | Official lock from [letsencrypt.org/images/le-logo-lockonly.svg](https://letsencrypt.org/images/le-logo-lockonly.svg) |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.
