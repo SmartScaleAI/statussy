@@ -208,7 +208,7 @@
   box-shadow: var(--card-shadow);
 }
 
-/* Whole-card detail hit target (SMA-33). Star sits above it. */
+/* Whole-card detail hit target (SMA-33). Star + Official status sit above it. */
 .course-design-board .card-hit-target {
   position: absolute;
   inset: 0;

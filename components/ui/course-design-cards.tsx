@@ -7,9 +7,8 @@
  * control. Header menu replaced with a local favorite star.
  *
  * SMA-33: the whole card is the detail hit target (stretched overlay link).
- * Star sits above it and stopPropagation so it stays usable.
- * SMA-36: shelf has no divider; “click to view” is affordance only
- * (no outbound official-status link).
+ * Star + Official status sit above it and stopPropagation so they stay usable.
+ * SMA-36: shelf has no divider; timestamps include a UTC suffix.
  */
 "use client"
 
@@ -39,6 +38,7 @@ export interface CardData {
   imgSrc2?: string
   imgAlt2?: string
   countdownText: string
+  countdownHref?: string
   /** Internal deep-dive route (SMA-17 / SMA-33); whole-card hit target. */
   detailHref?: string
   statusLabel?: string
@@ -81,6 +81,7 @@ const Card: React.FC<CardProps> = ({ data }) => {
     imgSrc1,
     imgAlt1,
     countdownText,
+    countdownHref,
     detailHref,
     statusLabel,
     updatedAt,
@@ -156,16 +157,22 @@ const Card: React.FC<CardProps> = ({ data }) => {
         ) : (
           <span />
         )}
-        {detailHref ? (
-          <Link href={detailHref} className="btn-countdown">
+        {countdownHref ? (
+          <a
+            href={countdownHref}
+            className="btn-countdown"
+            target="_blank"
+            rel="noreferrer"
+            onClick={stopCardNavigation}
+          >
             {countdownText}
             <ArrowUpRightIcon aria-hidden="true" />
-          </Link>
+          </a>
         ) : (
-          <span className="btn-countdown">
+          <a href="#" className="btn-countdown" onClick={stopCardNavigation}>
             {countdownText}
             <ArrowUpRightIcon aria-hidden="true" />
-          </span>
+          </a>
         )}
       </div>
     </div>
