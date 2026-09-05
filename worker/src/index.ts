@@ -24,7 +24,9 @@
  * CircleCI, npm, Docker, Linear, Sourcegraph, and Warp via Statuspage,
  * GitLab via Status.io; Developer Wave B — Bitbucket, Buildkite, PyPI,
  * RubyGems, Maven Central, Postman, Augment, Factory, and Tabnine via
- * Statuspage, Zed via Instatus. AWS, Azure, and Fastly are seeded without a
+ * Statuspage, Zed via Instatus; Developer Wave C — Lovable, Bolt, Travis CI,
+ * Semaphore, Harness, Codefresh, crates.io, Expo, and Cloudsmith via
+ * Statuspage. AWS, Azure, Fastly, and Replit are seeded without a
  * fetcher) and writes snapshots, components, and incidents to Postgres.
  * A tiny HTTP server exposes /healthz.
  */
@@ -91,8 +93,8 @@ type ServiceJob = {
   persistOptions?: PersistOptions
 }
 
-// Board services with a fetcher (26 AI + Cloud Waves A–C + Developer Waves A–B;
-// AWS, Azure, and Fastly are none).
+// Board services with a fetcher (26 AI + Cloud Waves A–C + Developer Waves A–C;
+// AWS, Azure, Fastly, and Replit are none).
 const statuspageJob = (id: string, baseUrl: string): ServiceJob => ({
   id,
   fetch: () => fetchStatuspageState(baseUrl, fetchOptions()),
@@ -288,6 +290,16 @@ const SERVICE_JOBS: ServiceJob[] = [
     fetch: () => fetchInstatusState("https://status.zed.dev", fetchOptions()),
     persistOptions: { resolveMissingIncidents: true },
   },
+  // Developer Wave C. Replit is none (Cloudflare challenges status.replit.com).
+  statuspageJob("lovable", "https://status.lovable.dev"),
+  statuspageJob("bolt", "https://status.bolt.new"),
+  statuspageJob("travis", "https://www.traviscistatus.com"),
+  statuspageJob("semaphore", "https://status.semaphore.io"),
+  statuspageJob("harness", "https://status.harness.io"),
+  statuspageJob("codefresh", "https://status.codefresh.io"),
+  statuspageJob("crates", "https://status.crates.io"),
+  statuspageJob("expo", "https://status.expo.dev"),
+  statuspageJob("cloudsmith", "https://status.cloudsmith.com"),
 ]
 
 async function fetchService(service: ServiceJob): Promise<boolean> {

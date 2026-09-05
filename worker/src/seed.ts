@@ -1,13 +1,13 @@
 import type pg from "pg"
 
 /**
- * Static registry of board services (26 AI + Cloud Waves A–C + Developer Waves A–B).
+ * Static registry of board services (26 AI + Cloud Waves A–C + Developer Waves A–C).
  * Mirrors the ids in the Next.js app's data/services.ts (and public/logos/{id}.svg).
  * Windsurf is the legacy Devin Desktop name and is not seeded separately.
  * GitHub Copilot is a GitHub component, not its own card.
  *
- * `category` defaults to `ai` when omitted. AWS and Azure are `none` until
- * a dedicated Health-dashboard fetcher exists.
+ * `category` defaults to `ai` when omitted. AWS, Azure, Fastly, and Replit
+ * are `none` until a dedicated fetcher exists.
  */
 export const SERVICE_SEED = [
   {
@@ -470,6 +470,76 @@ export const SERVICE_SEED = [
     category: "developer",
     statusUrl: "https://status.zed.dev/",
     fetcherType: "instatus",
+  },
+  {
+    id: "lovable",
+    name: "Lovable",
+    category: "developer",
+    statusUrl: "https://status.lovable.dev/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "bolt",
+    name: "Bolt",
+    category: "developer",
+    statusUrl: "https://status.bolt.new/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "replit",
+    name: "Replit",
+    category: "developer",
+    statusUrl: "https://status.replit.com/",
+    fetcherType: "none",
+  },
+  {
+    id: "travis",
+    name: "Travis CI",
+    category: "developer",
+    statusUrl: "https://www.traviscistatus.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "semaphore",
+    name: "Semaphore",
+    category: "developer",
+    statusUrl: "https://status.semaphore.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "harness",
+    name: "Harness",
+    category: "developer",
+    statusUrl: "https://status.harness.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "codefresh",
+    name: "Codefresh",
+    category: "developer",
+    statusUrl: "https://status.codefresh.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "crates",
+    name: "crates.io",
+    category: "developer",
+    statusUrl: "https://status.crates.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "expo",
+    name: "Expo",
+    category: "developer",
+    statusUrl: "https://status.expo.dev/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "cloudsmith",
+    name: "Cloudsmith",
+    category: "developer",
+    statusUrl: "https://status.cloudsmith.com/",
+    fetcherType: "statuspage",
   },
 ] as const
 

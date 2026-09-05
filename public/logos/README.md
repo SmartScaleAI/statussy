@@ -77,5 +77,15 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `factory.svg` | Factory | `#FFFFFF` | Official mark from [Factory-AI/factory `docs/favicon.svg`](https://github.com/Factory-AI/factory/blob/main/docs/favicon.svg); white tile dropped so the mark reads on dark |
 | `tabnine.svg` | Tabnine | `#FF2D2D` | Official hex mark from [tabnine/skills](https://github.com/tabnine/skills/blob/main/plugins/cursor/tabnine/assets/logo.svg) |
 | `zed.svg` | Zed | `#084CCF` | Simple Icons `zedindustries` |
+| `lovable.svg` | Lovable | Official L-shape gradient | Official mark from [lovable.dev/favicon.svg](https://lovable.dev/favicon.svg) |
+| `bolt.svg` | Bolt | `#1389FD` | Official lightning from [StackBlitz brand kit](https://developer.stackblitz.com/public/img/logo/readme) `stackblitz-bolt-blue` |
+| `replit.svg` | Replit | `#F26207` | Simple Icons `replit` |
+| `travis.svg` | Travis CI | `#3EAAAF` | Simple Icons `travisci` |
+| `semaphore.svg` | Semaphore | `#19A974` | Simple Icons `semaphoreci` |
+| `harness.svg` | Harness | `#00ABE4` | Official diamond from [harness.io/press-kit](https://www.harness.io/press-kit) lockup (wordmark dropped) |
+| `codefresh.svg` | Codefresh | `#08B1AB` | Simple Icons `codefresh` |
+| `crates.svg` | crates.io | `#FFFFFF` | Simple Icons `rust` (official Rust mark used by crates.io); white so official black reads on dark |
+| `expo.svg` | Expo | `#FFFFFF` | Simple Icons `expo`; white so official `#1C2024` reads on dark |
+| `cloudsmith.svg` | Cloudsmith | `#2A6FE1` | Simple Icons `cloudsmith` |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.
