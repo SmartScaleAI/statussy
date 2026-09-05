@@ -3,7 +3,7 @@ import type pg from "pg"
 /**
  * Static registry of board services (26 AI + Cloud / Developer / Data /
  * Auth / Payments / Observability Waves A–C + Email Waves A–C +
- * Design Waves A–C + Infra Waves A–C + Flags Wave A).
+ * Design Waves A–C + Infra Waves A–C + Flags Waves A–B).
  * Mirrors the ids in the Next.js app's data/services.ts (and public/logos/{id}.svg).
  * Windsurf is the legacy Devin Desktop name and is not seeded separately.
  * GitHub Copilot is a GitHub component, not its own card.
@@ -16,7 +16,8 @@ import type pg from "pg"
  * Plasmic, OpenTofu, Ansible, Argo CD, Flux, Terragrunt, Env0, Salt,
  * Rancher, Vagrant, Helm, Istio, Linkerd, Cilium, OPA, Kyverno,
  * Traefik, cert-manager, Infracost, Unleash, ConfigCat, GrowthBook,
- * Eppo, and VWO are `none` until a dedicated fetcher exists.
+ * Eppo, VWO, AB Tasty, Convert, Flipt, Hypertune, GO Feature Flag,
+ * and FeatBit are `none` until a dedicated fetcher exists.
  */
 export const SERVICE_SEED = [
   {
@@ -2109,6 +2110,81 @@ export const SERVICE_SEED = [
     name: "VWO",
     category: "flags",
     statusUrl: "https://status.vwo.com/",
+    fetcherType: "none",
+  },
+  // Flags Wave B. CloudBees / Kameleoon / Monetate are Statuspage
+  // (Kameleoon and Monetate public hosts have no DNS). Reflag is
+  // Instatus. AB Tasty / Convert / Flipt / Hypertune / GO Feature
+  // Flag / FeatBit are none (no public JSON; convert.statuspage.io
+  // is an unrelated example page).
+  {
+    id: "cloudbees",
+    name: "CloudBees",
+    category: "flags",
+    statusUrl: "https://www.cloudbeesstatus.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "ab-tasty",
+    name: "AB Tasty",
+    category: "flags",
+    statusUrl: "https://status.abtasty.com/",
+    fetcherType: "none",
+  },
+  {
+    id: "kameleoon",
+    name: "Kameleoon",
+    category: "flags",
+    statusUrl: "https://kameleoon.statuspage.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "convert",
+    name: "Convert",
+    category: "flags",
+    statusUrl: "https://status.convert.com/",
+    fetcherType: "none",
+  },
+  {
+    id: "monetate",
+    name: "Monetate",
+    category: "flags",
+    statusUrl: "https://monetate.statuspage.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "flipt",
+    name: "Flipt",
+    category: "flags",
+    statusUrl: "https://www.flipt.io/",
+    fetcherType: "none",
+  },
+  {
+    id: "hypertune",
+    name: "Hypertune",
+    category: "flags",
+    statusUrl: "https://www.hypertune.com/",
+    fetcherType: "none",
+  },
+  {
+    id: "reflag",
+    name: "Reflag",
+    category: "flags",
+    statusUrl: "https://status.reflag.com/",
+    fetcherType: "instatus",
+  },
+  {
+    id: "go-feature-flag",
+    name: "GO Feature Flag",
+    category: "flags",
+    statusUrl: "https://gofeatureflag.org/",
+    fetcherType: "none",
+  },
+  {
+    id: "featbit",
+    name: "FeatBit",
+    category: "flags",
+    statusUrl: "https://www.featbit.co/",
     fetcherType: "none",
   },
 ] as const

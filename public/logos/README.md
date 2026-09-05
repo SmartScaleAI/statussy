@@ -307,5 +307,15 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `devcycle.svg` | DevCycle | `#2E4AEF` | Official `icon.svg` |
 | `eppo.svg` | Eppo | `#FFFFFF` | Official lockup; `#2C1912` / black knocked out |
 | `vwo.svg` | VWO | Official `#BF3078` / `#802050` / `#26134D` | Official color wordmark |
+| `cloudbees.svg` | CloudBees | `#1997B5` | Simple Icons `cloudbees` |
+| `ab-tasty.svg` | AB Tasty | `#3100BE` | Official wordmark from [abtasty.com](https://www.abtasty.com/) via Wikimedia |
+| `kameleoon.svg` | Kameleoon | `#FFFFFF` | Official glyph from [kameleoon.com](https://www.kameleoon.com/) |
+| `convert.svg` | Convert | `#FFFFFF` | Official header wordmark from [convert.com](https://www.convert.com/) |
+| `monetate.svg` | Monetate | Official `#F74BB3` + `#FFFFFF` | Official wordmark from [monetate.com](https://www.monetate.com/) |
+| `flipt.svg` | Flipt | Official `#7C3AED` / `#C4B5FD` / `#A78BFA` / `#8B5CF6` / `#6D28D9` / `#5B21B6` + `#FFFFFF` | Official mark from [flipt.io](https://www.flipt.io/flipt.svg); wordmark knocked to white |
+| `hypertune.svg` | Hypertune | `#FFFFFF` | Official lockup from [hypertune.com](https://www.hypertune.com/); dark tile dropped, wordmark knocked to white |
+| `reflag.svg` | Reflag | `#FFFFFF` | Official favicon from [reflag.com](https://reflag.com/) |
+| `go-feature-flag.svg` | GO Feature Flag | Official illustrated mark | Official SVG from [thomaspoignant/go-feature-flag](https://github.com/thomaspoignant/go-feature-flag/blob/main/gofeatureflag.svg) |
+| `featbit.svg` | FeatBit | `#FFFFFF` | Official mark from [featbit/featbit](https://github.com/featbit/featbit) |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.
