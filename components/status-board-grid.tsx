@@ -110,7 +110,8 @@ export function StatusBoardGrid({
                 tabIndex={selected ? 0 : -1}
                 onClick={() => setCategory(id)}
                 className={cn(
-                  selected && "bg-muted text-foreground dark:bg-muted/50"
+                  selected &&
+                    "bg-foreground/20 text-foreground hover:bg-foreground/25"
                 )}
               >
                 {formatCategoryLabel(id)}
