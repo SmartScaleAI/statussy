@@ -196,6 +196,10 @@
   display: inline-block;
 }
 
+.course-design-board ul.grid > li {
+  display: flex;
+}
+
 .course-design-board .card {
   isolation: isolate;
   z-index: 1;
@@ -206,6 +210,11 @@
   flex-direction: column;
   position: relative;
   box-shadow: var(--card-shadow);
+}
+
+.course-design-board .card:not(.plain) {
+  min-height: 14.5rem;
+  flex: 1 1 auto;
 }
 
 /* Whole-card detail hit target (SMA-33). Star + Official status sit above it. */
@@ -385,10 +394,12 @@
 
 .course-design-board .card-body {
   width: 100%;
+  flex: 1 1 auto;
   padding: 0.5rem 1.35rem 0.75rem;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   position: relative;
   box-sizing: border-box;
 }
@@ -428,6 +439,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: center;
   gap: 0.4rem;
   margin-top: 0.7rem;
 }
