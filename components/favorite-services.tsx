@@ -4,9 +4,8 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
-  useState,
+  useSyncExternalStore,
   type ReactNode,
 } from "react"
 
@@ -26,33 +25,65 @@ type FavoriteServicesContextValue = {
 const FavoriteServicesContext =
   createContext<FavoriteServicesContextValue | null>(null)
 
-export function FavoriteServicesProvider({ children }: { children: ReactNode }) {
-  const [favoriteIds, setFavoriteIds] = useState<string[]>([])
+const listeners = new Set<() => void>()
 
-  useEffect(() => {
-    setFavoriteIds(
-      parseFavoriteServiceIds(
-        window.localStorage.getItem(FAVORITE_SERVICE_IDS_KEY)
-      )
-    )
-  }, [])
+function emitFavoriteChange() {
+  for (const listener of listeners) {
+    listener()
+  }
+}
+
+function subscribeFavoriteIds(listener: () => void) {
+  listeners.add(listener)
+  const onStorage = (event: StorageEvent) => {
+    if (event.key === null || event.key === FAVORITE_SERVICE_IDS_KEY) {
+      listener()
+    }
+  }
+  window.addEventListener("storage", onStorage)
+  return () => {
+    listeners.delete(listener)
+    window.removeEventListener("storage", onStorage)
+  }
+}
+
+function getFavoriteIdsSnapshot() {
+  try {
+    return window.localStorage.getItem(FAVORITE_SERVICE_IDS_KEY)
+  } catch {
+    return null
+  }
+}
+
+function getFavoriteIdsServerSnapshot() {
+  return null
+}
+
+export function FavoriteServicesProvider({ children }: { children: ReactNode }) {
+  const raw = useSyncExternalStore(
+    subscribeFavoriteIds,
+    getFavoriteIdsSnapshot,
+    getFavoriteIdsServerSnapshot
+  )
+  const favoriteIds = useMemo(() => parseFavoriteServiceIds(raw), [raw])
 
   const toggleFavorite = useCallback((id: string) => {
-    setFavoriteIds((prev) => {
-      const next = toggleFavoriteServiceId(prev, id)
-      try {
-        writeFavoriteServiceIds(next)
-      } catch {
-        // Private mode / quota: keep the in-memory set for this session.
-      }
-      return next
-    })
+    const next = toggleFavoriteServiceId(
+      parseFavoriteServiceIds(getFavoriteIdsSnapshot()),
+      id
+    )
+    try {
+      writeFavoriteServiceIds(next)
+    } catch {
+      // Private mode / quota: snapshot stays on the last persisted value.
+    }
+    emitFavoriteChange()
   }, [])
 
   const value = useMemo<FavoriteServicesContextValue>(
     () => ({
       favoriteIds,
-      isFavorited: (id) => favoriteIds.includes(id),
+      isFavorited: (itemId) => favoriteIds.includes(itemId),
       toggleFavorite,
     }),
     [favoriteIds, toggleFavorite]
