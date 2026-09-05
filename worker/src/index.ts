@@ -73,13 +73,16 @@
  * and Chef via Statuspage, Spacelift via spacelift.statuspage.io
  * (status.spacelift.io has no DNS), Crossplane via Upbound
  * Statuspage; Infra Wave B — Puppet via puppet.statuspage.io
- * (status.puppet.com has no DNS), Scalr via status.scalr.io.
+ * (status.puppet.com has no DNS), Scalr via status.scalr.io; Infra
+ * Wave C — Teleport via status.goteleport.com.
  * AWS, Azure, Fastly, Replit, Redis, Algolia, DataStax, Okta, PayPal,
  * Adyen, PagerDuty, Checkly, Postmark, Mailchimp, Campaign Monitor,
  * Mailtrap, Substack, Adobe, Sketch, Penpot, Rive, LottieFiles,
  * Whimsical, Lunacy, Photopea, Blender, Moqups, Proto.io, UXPin,
  * Overflow, Axure, Relume, Visily, Plasmic, OpenTofu, Ansible, Argo
- * CD, Flux, Terragrunt, Env0, Salt, Rancher, and Vagrant are seeded
+ * CD, Flux, Terragrunt, Env0, Salt, Rancher, Vagrant, Helm, Istio,
+ * Linkerd, Cilium, OPA, Kyverno, Traefik, cert-manager, and
+ * Infracost are seeded
  * without a fetcher) and writes snapshots, components,
  * and incidents to Postgres.
  * A tiny HTTP server exposes /healthz.
@@ -158,13 +161,14 @@ type ServiceJob = {
 
 // Board services with a fetcher (26 AI + Cloud / Developer / Data / Auth /
 // Payments / Observability Waves A–C + Email Waves A–C + Design Waves
-// A–C + Infra Waves A–B; AWS, Azure, Fastly, Replit, Redis, Algolia,
+// A–C + Infra Waves A–C; AWS, Azure, Fastly, Replit, Redis, Algolia,
 // DataStax, Okta, PayPal, Adyen, PagerDuty, Checkly, Postmark,
 // Mailchimp, Campaign Monitor, Mailtrap, Substack, Adobe, Sketch,
 // Penpot, Rive, LottieFiles, Whimsical, Lunacy, Photopea, Blender,
 // Moqups, Proto.io, UXPin, Overflow, Axure, Relume, Visily, Plasmic,
 // OpenTofu, Ansible, Argo CD, Flux, Terragrunt, Env0, Salt, Rancher,
-// and Vagrant are none).
+// Vagrant, Helm, Istio, Linkerd, Cilium, OPA, Kyverno, Traefik,
+// cert-manager, and Infracost are none).
 const statuspageJob = (id: string, baseUrl: string): ServiceJob => ({
   id,
   fetch: () => fetchStatuspageState(baseUrl, fetchOptions()),
@@ -656,6 +660,10 @@ const SERVICE_JOBS: ServiceJob[] = [
   // Flux / Terragrunt / Env0 / Salt / Rancher / Vagrant are none.
   statuspageJob("puppet", "https://puppet.statuspage.io"),
   statuspageJob("scalr", "https://status.scalr.io"),
+  // Infra Wave C. Teleport is Statuspage. Helm / Istio / Linkerd /
+  // Cilium / OPA / Kyverno / Traefik / cert-manager / Infracost
+  // are none.
+  statuspageJob("teleport", "https://status.goteleport.com"),
 ]
 
 async function fetchService(service: ServiceJob): Promise<boolean> {

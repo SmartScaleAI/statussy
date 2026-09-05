@@ -3,7 +3,7 @@ import type pg from "pg"
 /**
  * Static registry of board services (26 AI + Cloud / Developer / Data /
  * Auth / Payments / Observability Waves A–C + Email Waves A–C +
- * Design Waves A–C + Infra Waves A–B).
+ * Design Waves A–C + Infra Waves A–C).
  * Mirrors the ids in the Next.js app's data/services.ts (and public/logos/{id}.svg).
  * Windsurf is the legacy Devin Desktop name and is not seeded separately.
  * GitHub Copilot is a GitHub component, not its own card.
@@ -14,7 +14,9 @@ import type pg from "pg"
  * Sketch, Penpot, Rive, LottieFiles, Whimsical, Lunacy, Photopea,
  * Blender, Moqups, Proto.io, UXPin, Overflow, Axure, Relume, Visily,
  * Plasmic, OpenTofu, Ansible, Argo CD, Flux, Terragrunt, Env0, Salt,
- * Rancher, and Vagrant are `none` until a dedicated fetcher exists.
+ * Rancher, Vagrant, Helm, Istio, Linkerd, Cilium, OPA, Kyverno,
+ * Traefik, cert-manager, and Infracost are `none` until a dedicated
+ * fetcher exists.
  */
 export const SERVICE_SEED = [
   {
@@ -1961,6 +1963,79 @@ export const SERVICE_SEED = [
     name: "Vagrant",
     category: "infra",
     statusUrl: "https://www.vagrantup.com/",
+    fetcherType: "none",
+  },
+  // Infra Wave C. Teleport is Statuspage. Helm / Istio / Linkerd /
+  // Cilium / OPA / Kyverno / Traefik / cert-manager / Infracost
+  // are none (project sites, no public JSON).
+  {
+    id: "helm",
+    name: "Helm",
+    category: "infra",
+    statusUrl: "https://helm.sh/",
+    fetcherType: "none",
+  },
+  {
+    id: "teleport",
+    name: "Teleport",
+    category: "infra",
+    statusUrl: "https://status.goteleport.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "istio",
+    name: "Istio",
+    category: "infra",
+    statusUrl: "https://istio.io/",
+    fetcherType: "none",
+  },
+  {
+    id: "linkerd",
+    name: "Linkerd",
+    category: "infra",
+    statusUrl: "https://linkerd.io/",
+    fetcherType: "none",
+  },
+  {
+    id: "cilium",
+    name: "Cilium",
+    category: "infra",
+    statusUrl: "https://cilium.io/",
+    fetcherType: "none",
+  },
+  {
+    id: "opa",
+    name: "OPA",
+    category: "infra",
+    statusUrl: "https://www.openpolicyagent.org/",
+    fetcherType: "none",
+  },
+  {
+    id: "kyverno",
+    name: "Kyverno",
+    category: "infra",
+    statusUrl: "https://kyverno.io/",
+    fetcherType: "none",
+  },
+  {
+    id: "traefik",
+    name: "Traefik",
+    category: "infra",
+    statusUrl: "https://traefik.io/",
+    fetcherType: "none",
+  },
+  {
+    id: "cert-manager",
+    name: "cert-manager",
+    category: "infra",
+    statusUrl: "https://cert-manager.io/",
+    fetcherType: "none",
+  },
+  {
+    id: "infracost",
+    name: "Infracost",
+    category: "infra",
+    statusUrl: "https://www.infracost.io/",
     fetcherType: "none",
   },
 ] as const

@@ -2228,7 +2228,7 @@ export const services: Service[] = [
   // CloudFormation / CDK stay on AWS. ARM stays on Azure. Deployment
   // Manager stays on GCP. Docker stays Developer. Harness stays
   // Developer. Kubernetes is not a vendor card. Dagger, Earthly,
-  // Boundary, Helm, Atlantis, and Spinnaker wait.
+  // Boundary, Atlantis, and Spinnaker wait.
   {
     id: "terraform",
     name: "Terraform",
@@ -2312,7 +2312,7 @@ export const services: Service[] = [
   // Infra Wave B — config management, GitOps, IaC wrappers, and
   // Terraform automation peers. Red Hat's org-wide Statuspage is
   // too broad for Ansible. Dagger / Earthly wait (CI). Boundary
-  // waits (no official vector). Helm / Atlantis / Spinnaker wait.
+  // waits (no official vector). Atlantis / Spinnaker wait.
   {
     id: "ansible",
     name: "Ansible",
@@ -2392,5 +2392,91 @@ export const services: Service[] = [
     statusUrl: "https://www.vagrantup.com/",
     status: "operational",
     updatedAt: "2026-09-05T20:10:00.000Z",
+  },
+  // Infra Wave C — k8s packaging, mesh, CNI, policy, certs, ingress,
+  // infra access, and IaC cost. Teleport is Statuspage. Helm /
+  // Istio / Linkerd / Cilium / OPA / Kyverno / Traefik /
+  // cert-manager / Infracost are none. Atlantis waits (CNCF art
+  // is a traced island). StrongDM waits (no official vector).
+  // Kong / NGINX stay traffic (Cloud). Octopus / Spinnaker stay CD.
+  {
+    id: "helm",
+    name: "Helm",
+    category: "infra",
+    statusUrl: "https://helm.sh/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:20:00.000Z",
+  },
+  {
+    id: "teleport",
+    name: "Teleport",
+    category: "infra",
+    statusUrl: "https://status.goteleport.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:20:00.000Z",
+  },
+  {
+    id: "istio",
+    name: "Istio",
+    category: "infra",
+    statusUrl: "https://istio.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:20:00.000Z",
+  },
+  {
+    id: "linkerd",
+    name: "Linkerd",
+    category: "infra",
+    statusUrl: "https://linkerd.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:20:00.000Z",
+  },
+  {
+    id: "cilium",
+    name: "Cilium",
+    category: "infra",
+    statusUrl: "https://cilium.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:20:00.000Z",
+  },
+  {
+    id: "opa",
+    name: "OPA",
+    category: "infra",
+    statusUrl: "https://www.openpolicyagent.org/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:20:00.000Z",
+  },
+  {
+    id: "kyverno",
+    name: "Kyverno",
+    category: "infra",
+    statusUrl: "https://kyverno.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:20:00.000Z",
+  },
+  {
+    id: "traefik",
+    name: "Traefik",
+    category: "infra",
+    statusUrl: "https://traefik.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:20:00.000Z",
+  },
+  {
+    id: "cert-manager",
+    name: "cert-manager",
+    category: "infra",
+    statusUrl: "https://cert-manager.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:20:00.000Z",
+  },
+  {
+    id: "infracost",
+    name: "Infracost",
+    category: "infra",
+    statusUrl: "https://www.infracost.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:20:00.000Z",
   },
 ]

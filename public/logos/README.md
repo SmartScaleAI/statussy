@@ -287,5 +287,15 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `salt.svg` | Salt | `#57BCAD` | Simple Icons `saltproject` |
 | `rancher.svg` | Rancher | `#0075A8` | Simple Icons `rancher` |
 | `vagrant.svg` | Vagrant | `#1868F2` | Simple Icons `vagrant` |
+| `helm.svg` | Helm | `#FFFFFF` | Simple Icons `helm`; white so official `#0F1689` reads on dark |
+| `teleport.svg` | Teleport | `#512FC9` | Official cog from [goteleport.com/static/favicon.svg](https://goteleport.com/static/favicon.svg) |
+| `istio.svg` | Istio | `#466BB0` | Simple Icons `istio` |
+| `linkerd.svg` | Linkerd | `#2BEDA7` | Simple Icons `linkerd` |
+| `cilium.svg` | Cilium | `#F8C517` | Simple Icons `cilium` |
+| `opa.svg` | OPA | Official CNCF grays | Official icon from [cncf/artwork](https://github.com/cncf/artwork/blob/master/projects/open-policy-agent/icon/color/opa-icon-color.svg) |
+| `kyverno.svg` | Kyverno | Official `#E87E5B` / `#3784C5` | Official icon from [cncf/artwork](https://github.com/cncf/artwork/blob/master/projects/kyverno/icon/color/kyverno-icon-color.svg) |
+| `traefik.svg` | Traefik | `#24A1C1` | Simple Icons `traefikproxy` |
+| `cert-manager.svg` | cert-manager | Official CNCF `#326CE5` + white | Official icon from [cncf/artwork](https://github.com/cncf/artwork/blob/master/projects/cert-manager/icon/color/cert-manager-icon-color.svg) |
+| `infracost.svg` | Infracost | `#DB44B8` | Simple Icons `infracost` |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.
