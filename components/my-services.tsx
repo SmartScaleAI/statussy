@@ -49,14 +49,14 @@ export function MyServices({
   return (
     <section
       className={cn("flex flex-col", empty ? "gap-3" : "gap-8")}
-      aria-labelledby="my-services-heading"
+      aria-labelledby="my-stack-heading"
     >
       <div className="flex flex-col gap-3">
         <h2
-          id="my-services-heading"
+          id="my-stack-heading"
           className="font-heading text-lg font-semibold tracking-tight text-foreground"
         >
-          My Services
+          My Stack
         </h2>
         <StatusSummary
           operational={summary.operational}

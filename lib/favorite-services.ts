@@ -1,7 +1,7 @@
 /**
  * Browser-only favorites for the board (SMA-37).
  *
- * Storage keeps insertion order (last-starred appended). The My Services
+ * Storage keeps insertion order (last-starred appended). The My Stack
  * grid sorts by stable service id so starring does not reshuffle the row.
  */
 
