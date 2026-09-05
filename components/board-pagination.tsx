@@ -24,25 +24,15 @@ export function BoardPagination({
     return null
   }
 
-  function goTo(next: number, event: { preventDefault: () => void }) {
-    event.preventDefault()
-    onPageChange(next)
-  }
-
   return (
     <Pagination aria-label="All services pages">
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious
-            href="#"
-            aria-disabled={page <= 1}
-            className={page <= 1 ? "pointer-events-none opacity-50" : undefined}
-            onClick={(event) => {
-              if (page <= 1) {
-                event.preventDefault()
-                return
-              }
-              goTo(page - 1, event)
+            disabled={page <= 1}
+            onClick={() => {
+              if (page <= 1) return
+              onPageChange(page - 1)
             }}
           />
         </PaginationItem>
@@ -54,9 +44,8 @@ export function BoardPagination({
           ) : (
             <PaginationItem key={token}>
               <PaginationLink
-                href="#"
                 isActive={token === page}
-                onClick={(event) => goTo(token, event)}
+                onClick={() => onPageChange(token)}
               >
                 {token}
               </PaginationLink>
@@ -65,17 +54,10 @@ export function BoardPagination({
         )}
         <PaginationItem>
           <PaginationNext
-            href="#"
-            aria-disabled={page >= pageCount}
-            className={
-              page >= pageCount ? "pointer-events-none opacity-50" : undefined
-            }
-            onClick={(event) => {
-              if (page >= pageCount) {
-                event.preventDefault()
-                return
-              }
-              goTo(page + 1, event)
+            disabled={page >= pageCount}
+            onClick={() => {
+              if (page >= pageCount) return
+              onPageChange(page + 1)
             }}
           />
         </PaginationItem>
