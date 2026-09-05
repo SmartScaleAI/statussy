@@ -2227,9 +2227,8 @@ export const services: Service[] = [
   // card per HashiCorp product (Terraform vs Vault fail independently).
   // CloudFormation / CDK stay on AWS. ARM stays on Azure. Deployment
   // Manager stays on GCP. Docker stays Developer. Harness stays
-  // Developer. Kubernetes is not a vendor card. Ansible, Terragrunt,
-  // Env0, Argo CD, Flux, Dagger, Earthly, Boundary, Puppet, and
-  // Vagrant wait.
+  // Developer. Kubernetes is not a vendor card. Dagger, Earthly,
+  // Boundary, Helm, Atlantis, and Spinnaker wait.
   {
     id: "terraform",
     name: "Terraform",
@@ -2309,5 +2308,89 @@ export const services: Service[] = [
     statusUrl: "https://status.opentofu.org/",
     status: "operational",
     updatedAt: "2026-09-05T20:00:00.000Z",
+  },
+  // Infra Wave B — config management, GitOps, IaC wrappers, and
+  // Terraform automation peers. Red Hat's org-wide Statuspage is
+  // too broad for Ansible. Dagger / Earthly wait (CI). Boundary
+  // waits (no official vector). Helm / Atlantis / Spinnaker wait.
+  {
+    id: "ansible",
+    name: "Ansible",
+    category: "infra",
+    statusUrl: "https://www.ansible.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:10:00.000Z",
+  },
+  {
+    id: "puppet",
+    name: "Puppet",
+    category: "infra",
+    statusUrl: "https://puppet.statuspage.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:10:00.000Z",
+  },
+  {
+    id: "argo-cd",
+    name: "Argo CD",
+    category: "infra",
+    statusUrl: "https://argo-cd.readthedocs.io/en/stable/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:10:00.000Z",
+  },
+  {
+    id: "flux",
+    name: "Flux",
+    category: "infra",
+    statusUrl: "https://fluxcd.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:10:00.000Z",
+  },
+  {
+    id: "terragrunt",
+    name: "Terragrunt",
+    category: "infra",
+    statusUrl: "https://terragrunt.gruntwork.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:10:00.000Z",
+  },
+  {
+    id: "env0",
+    name: "Env0",
+    category: "infra",
+    statusUrl: "https://status.env0.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:10:00.000Z",
+  },
+  {
+    id: "scalr",
+    name: "Scalr",
+    category: "infra",
+    statusUrl: "https://status.scalr.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:10:00.000Z",
+  },
+  {
+    id: "salt",
+    name: "Salt",
+    category: "infra",
+    statusUrl: "https://saltproject.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:10:00.000Z",
+  },
+  {
+    id: "rancher",
+    name: "Rancher",
+    category: "infra",
+    statusUrl: "https://www.rancher.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:10:00.000Z",
+  },
+  {
+    id: "vagrant",
+    name: "Vagrant",
+    category: "infra",
+    statusUrl: "https://www.vagrantup.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:10:00.000Z",
   },
 ]

@@ -277,5 +277,15 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `packer.svg` | Packer | `#02A8EF` | Simple Icons `packer` |
 | `chef.svg` | Chef | `#F09820` | Simple Icons `chef` |
 | `opentofu.svg` | OpenTofu | `#FFDA18` | Simple Icons `opentofu` |
+| `ansible.svg` | Ansible | `#EE0000` | Simple Icons `ansible` |
+| `puppet.svg` | Puppet | `#FFAE1A` | Simple Icons `puppet` |
+| `argo-cd.svg` | Argo CD | `#EF7B4D` | Simple Icons `argo` (Argo project mark) |
+| `flux.svg` | Flux | `#5468FF` | Simple Icons `flux` (Flux CD) |
+| `terragrunt.svg` | Terragrunt | Official `#87E0E1` / `#1B46DD` / `#B068E9` / `#F9DB4E` / `#E94A5D` + `#FFFFFF` | Official light mark from [gruntwork-io/terragrunt](https://github.com/gruntwork-io/terragrunt/blob/main/docs/src/assets/logo-light.svg) |
+| `env0.svg` | Env0 | `#FFFFFF` | Official chevrons from [docs.env0.com favicon](https://mintcdn.com/envzero-b61043c8/tSDpnsOW7stD0Hxu/favicon.svg); dark tile dropped |
+| `scalr.svg` | Scalr | `#B3DBF1` / `#D21212` / `#FFFFFF` | Official stacked bars from [docs.scalr.io](https://docs.scalr.io/docs) `Scalr_Full-Color_Logo_Dark.svg` (wordmark dropped) |
+| `salt.svg` | Salt | `#57BCAD` | Simple Icons `saltproject` |
+| `rancher.svg` | Rancher | `#0075A8` | Simple Icons `rancher` |
+| `vagrant.svg` | Vagrant | `#1868F2` | Simple Icons `vagrant` |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.

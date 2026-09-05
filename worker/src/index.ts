@@ -72,12 +72,14 @@
  * Vault, Consul, Nomad, and Packer via HashiCorp Statuspage, Pulumi
  * and Chef via Statuspage, Spacelift via spacelift.statuspage.io
  * (status.spacelift.io has no DNS), Crossplane via Upbound
- * Statuspage.
+ * Statuspage; Infra Wave B — Puppet via puppet.statuspage.io
+ * (status.puppet.com has no DNS), Scalr via status.scalr.io.
  * AWS, Azure, Fastly, Replit, Redis, Algolia, DataStax, Okta, PayPal,
  * Adyen, PagerDuty, Checkly, Postmark, Mailchimp, Campaign Monitor,
  * Mailtrap, Substack, Adobe, Sketch, Penpot, Rive, LottieFiles,
  * Whimsical, Lunacy, Photopea, Blender, Moqups, Proto.io, UXPin,
- * Overflow, Axure, Relume, Visily, Plasmic, and OpenTofu are seeded
+ * Overflow, Axure, Relume, Visily, Plasmic, OpenTofu, Ansible, Argo
+ * CD, Flux, Terragrunt, Env0, Salt, Rancher, and Vagrant are seeded
  * without a fetcher) and writes snapshots, components,
  * and incidents to Postgres.
  * A tiny HTTP server exposes /healthz.
@@ -156,12 +158,13 @@ type ServiceJob = {
 
 // Board services with a fetcher (26 AI + Cloud / Developer / Data / Auth /
 // Payments / Observability Waves A–C + Email Waves A–C + Design Waves
-// A–C + Infra Wave A; AWS, Azure, Fastly, Replit, Redis, Algolia,
+// A–C + Infra Waves A–B; AWS, Azure, Fastly, Replit, Redis, Algolia,
 // DataStax, Okta, PayPal, Adyen, PagerDuty, Checkly, Postmark,
 // Mailchimp, Campaign Monitor, Mailtrap, Substack, Adobe, Sketch,
 // Penpot, Rive, LottieFiles, Whimsical, Lunacy, Photopea, Blender,
 // Moqups, Proto.io, UXPin, Overflow, Axure, Relume, Visily, Plasmic,
-// and OpenTofu are none).
+// OpenTofu, Ansible, Argo CD, Flux, Terragrunt, Env0, Salt, Rancher,
+// and Vagrant are none).
 const statuspageJob = (id: string, baseUrl: string): ServiceJob => ({
   id,
   fetch: () => fetchStatuspageState(baseUrl, fetchOptions()),
@@ -648,6 +651,11 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("crossplane", "https://status.upbound.io"),
   statuspageJob("packer", "https://status.hashicorp.com"),
   statuspageJob("chef", "https://status.chef.io"),
+  // Infra Wave B. Puppet's public host has no DNS; hit the
+  // Statuspage host. Scalr is Statuspage. Ansible / Argo CD /
+  // Flux / Terragrunt / Env0 / Salt / Rancher / Vagrant are none.
+  statuspageJob("puppet", "https://puppet.statuspage.io"),
+  statuspageJob("scalr", "https://status.scalr.io"),
 ]
 
 async function fetchService(service: ServiceJob): Promise<boolean> {

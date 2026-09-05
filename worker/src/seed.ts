@@ -3,7 +3,7 @@ import type pg from "pg"
 /**
  * Static registry of board services (26 AI + Cloud / Developer / Data /
  * Auth / Payments / Observability Waves A–C + Email Waves A–C +
- * Design Waves A–C + Infra Wave A).
+ * Design Waves A–C + Infra Waves A–B).
  * Mirrors the ids in the Next.js app's data/services.ts (and public/logos/{id}.svg).
  * Windsurf is the legacy Devin Desktop name and is not seeded separately.
  * GitHub Copilot is a GitHub component, not its own card.
@@ -13,7 +13,8 @@ import type pg from "pg"
  * Postmark, Mailchimp, Campaign Monitor, Mailtrap, Substack, Adobe,
  * Sketch, Penpot, Rive, LottieFiles, Whimsical, Lunacy, Photopea,
  * Blender, Moqups, Proto.io, UXPin, Overflow, Axure, Relume, Visily,
- * Plasmic, and OpenTofu are `none` until a dedicated fetcher exists.
+ * Plasmic, OpenTofu, Ansible, Argo CD, Flux, Terragrunt, Env0, Salt,
+ * Rancher, and Vagrant are `none` until a dedicated fetcher exists.
  */
 export const SERVICE_SEED = [
   {
@@ -1887,6 +1888,79 @@ export const SERVICE_SEED = [
     name: "OpenTofu",
     category: "infra",
     statusUrl: "https://status.opentofu.org/",
+    fetcherType: "none",
+  },
+  // Infra Wave B. Puppet's public host has no DNS; hit
+  // puppet.statuspage.io. Scalr is Statuspage. Ansible / Argo CD /
+  // Flux / Terragrunt / Env0 / Salt / Rancher / Vagrant are none.
+  {
+    id: "ansible",
+    name: "Ansible",
+    category: "infra",
+    statusUrl: "https://www.ansible.com/",
+    fetcherType: "none",
+  },
+  {
+    id: "puppet",
+    name: "Puppet",
+    category: "infra",
+    statusUrl: "https://puppet.statuspage.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "argo-cd",
+    name: "Argo CD",
+    category: "infra",
+    statusUrl: "https://argo-cd.readthedocs.io/en/stable/",
+    fetcherType: "none",
+  },
+  {
+    id: "flux",
+    name: "Flux",
+    category: "infra",
+    statusUrl: "https://fluxcd.io/",
+    fetcherType: "none",
+  },
+  {
+    id: "terragrunt",
+    name: "Terragrunt",
+    category: "infra",
+    statusUrl: "https://terragrunt.gruntwork.io/",
+    fetcherType: "none",
+  },
+  {
+    id: "env0",
+    name: "Env0",
+    category: "infra",
+    statusUrl: "https://status.env0.com/",
+    fetcherType: "none",
+  },
+  {
+    id: "scalr",
+    name: "Scalr",
+    category: "infra",
+    statusUrl: "https://status.scalr.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "salt",
+    name: "Salt",
+    category: "infra",
+    statusUrl: "https://saltproject.io/",
+    fetcherType: "none",
+  },
+  {
+    id: "rancher",
+    name: "Rancher",
+    category: "infra",
+    statusUrl: "https://www.rancher.com/",
+    fetcherType: "none",
+  },
+  {
+    id: "vagrant",
+    name: "Vagrant",
+    category: "infra",
+    statusUrl: "https://www.vagrantup.com/",
     fetcherType: "none",
   },
 ] as const
