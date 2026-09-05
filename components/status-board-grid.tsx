@@ -110,8 +110,9 @@ export function StatusBoardGrid({
                 tabIndex={selected ? 0 : -1}
                 onClick={() => setCategory(id)}
                 className={cn(
+                  "hover:bg-[var(--bg-footer)] dark:hover:bg-[var(--bg-footer)]",
                   selected &&
-                    "border-[var(--color-gray-dark)] bg-[var(--bg-footer)] text-foreground hover:bg-[var(--bg-footer)]"
+                    "border-[var(--color-gray-dark)] bg-[var(--bg-footer)] text-foreground"
                 )}
               >
                 {formatCategoryLabel(id)}
