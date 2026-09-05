@@ -26,6 +26,7 @@ export type ServiceCategory =
   | "observability"
   | "email"
   | "design"
+  | "infra"
 
 export type Service = {
   /** Matches a static mark at `public/logos/{id}.svg`. */
@@ -967,7 +968,7 @@ export const services: Service[] = [
   },
   // Auth Wave A — identity and secrets the login path dies on. One card
   // per vendor. Supabase Auth / Firebase Auth / Cognito stay on their
-  // Data / Cloud parents. Vault waits for Infra. Okta has no public JSON.
+  // Data / Cloud parents. Vault is Infra. Okta has no public JSON.
   {
     id: "auth0",
     name: "Auth0",
@@ -1049,7 +1050,7 @@ export const services: Service[] = [
     updatedAt: "2026-09-05T04:50:00.000Z",
   },
   // Auth Wave B — more identity, MFA, and secrets the login path dies on.
-  // Entra ID / Cognito stay on Azure / AWS. Vault waits for Infra.
+  // Entra ID / Cognito stay on Azure / AWS. Vault is Infra.
   {
     id: "descope",
     name: "Descope",
@@ -1131,7 +1132,7 @@ export const services: Service[] = [
     updatedAt: "2026-09-05T05:10:00.000Z",
   },
   // Auth Wave C — more CIAM, SSO, MFA hardware, and secrets the login
-  // path dies on. ForgeRock stays on Ping Identity. Vault waits for Infra.
+  // path dies on. ForgeRock stays on Ping Identity. Vault is Infra.
   {
     id: "loginradius",
     name: "LoginRadius",
@@ -2220,5 +2221,93 @@ export const services: Service[] = [
     statusUrl: "https://jitter.statuspage.io/",
     status: "operational",
     updatedAt: "2026-09-05T19:20:00.000Z",
+  },
+  // Infra Wave A — where you provision, configure, and secret the
+  // running app (IaC, schedulers, service discovery, vaults). One
+  // card per HashiCorp product (Terraform vs Vault fail independently).
+  // CloudFormation / CDK stay on AWS. ARM stays on Azure. Deployment
+  // Manager stays on GCP. Docker stays Developer. Harness stays
+  // Developer. Kubernetes is not a vendor card. Ansible, Terragrunt,
+  // Env0, Argo CD, Flux, Dagger, Earthly, Boundary, Puppet, and
+  // Vagrant wait.
+  {
+    id: "terraform",
+    name: "Terraform",
+    category: "infra",
+    statusUrl: "https://status.hashicorp.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:00:00.000Z",
+  },
+  {
+    id: "pulumi",
+    name: "Pulumi",
+    category: "infra",
+    statusUrl: "https://status.pulumi.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:00:00.000Z",
+  },
+  {
+    id: "vault",
+    name: "Vault",
+    category: "infra",
+    statusUrl: "https://status.hashicorp.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:00:00.000Z",
+  },
+  {
+    id: "consul",
+    name: "Consul",
+    category: "infra",
+    statusUrl: "https://status.hashicorp.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:00:00.000Z",
+  },
+  {
+    id: "nomad",
+    name: "Nomad",
+    category: "infra",
+    statusUrl: "https://status.hashicorp.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:00:00.000Z",
+  },
+  {
+    id: "spacelift",
+    name: "Spacelift",
+    category: "infra",
+    statusUrl: "https://spacelift.statuspage.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:00:00.000Z",
+  },
+  {
+    id: "crossplane",
+    name: "Crossplane",
+    category: "infra",
+    statusUrl: "https://status.upbound.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:00:00.000Z",
+  },
+  {
+    id: "packer",
+    name: "Packer",
+    category: "infra",
+    statusUrl: "https://status.hashicorp.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:00:00.000Z",
+  },
+  {
+    id: "chef",
+    name: "Chef",
+    category: "infra",
+    statusUrl: "https://status.chef.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:00:00.000Z",
+  },
+  {
+    id: "opentofu",
+    name: "OpenTofu",
+    category: "infra",
+    statusUrl: "https://status.opentofu.org/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:00:00.000Z",
   },
 ]

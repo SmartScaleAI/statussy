@@ -3,7 +3,7 @@ import type pg from "pg"
 /**
  * Static registry of board services (26 AI + Cloud / Developer / Data /
  * Auth / Payments / Observability Waves A–C + Email Waves A–C +
- * Design Waves A–C).
+ * Design Waves A–C + Infra Wave A).
  * Mirrors the ids in the Next.js app's data/services.ts (and public/logos/{id}.svg).
  * Windsurf is the legacy Devin Desktop name and is not seeded separately.
  * GitHub Copilot is a GitHub component, not its own card.
@@ -13,7 +13,7 @@ import type pg from "pg"
  * Postmark, Mailchimp, Campaign Monitor, Mailtrap, Substack, Adobe,
  * Sketch, Penpot, Rive, LottieFiles, Whimsical, Lunacy, Photopea,
  * Blender, Moqups, Proto.io, UXPin, Overflow, Axure, Relume, Visily,
- * and Plasmic are `none` until a dedicated fetcher exists.
+ * Plasmic, and OpenTofu are `none` until a dedicated fetcher exists.
  */
 export const SERVICE_SEED = [
   {
@@ -1814,6 +1814,80 @@ export const SERVICE_SEED = [
     category: "design",
     statusUrl: "https://jitter.statuspage.io/",
     fetcherType: "statuspage",
+  },
+  // Infra Wave A. HashiCorp products share status.hashicorp.com
+  // (HCP rollup). Spacelift's public host has no DNS; hit
+  // spacelift.statuspage.io. Crossplane polls Upbound's Statuspage.
+  // OpenTofu is HTML-only (no public JSON).
+  {
+    id: "terraform",
+    name: "Terraform",
+    category: "infra",
+    statusUrl: "https://status.hashicorp.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "pulumi",
+    name: "Pulumi",
+    category: "infra",
+    statusUrl: "https://status.pulumi.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "vault",
+    name: "Vault",
+    category: "infra",
+    statusUrl: "https://status.hashicorp.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "consul",
+    name: "Consul",
+    category: "infra",
+    statusUrl: "https://status.hashicorp.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "nomad",
+    name: "Nomad",
+    category: "infra",
+    statusUrl: "https://status.hashicorp.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "spacelift",
+    name: "Spacelift",
+    category: "infra",
+    statusUrl: "https://spacelift.statuspage.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "crossplane",
+    name: "Crossplane",
+    category: "infra",
+    statusUrl: "https://status.upbound.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "packer",
+    name: "Packer",
+    category: "infra",
+    statusUrl: "https://status.hashicorp.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "chef",
+    name: "Chef",
+    category: "infra",
+    statusUrl: "https://status.chef.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "opentofu",
+    name: "OpenTofu",
+    category: "infra",
+    statusUrl: "https://status.opentofu.org/",
+    fetcherType: "none",
   },
 ] as const
 
