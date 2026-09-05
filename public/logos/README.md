@@ -207,5 +207,15 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `langfuse.svg` | Langfuse | `#FF5D5F` / `#4E9CFF` | [LobeHub](https://github.com/lobehub/lobe-icons) `langfuse-color` (official mark + colors) |
 | `dash0.svg` | Dash0 | `#FF8A67` / `#FA4A4D` | Official mark from [dash0.com/shared/logo_colors.svg](https://www.dash0.com/shared/logo_colors.svg) |
 | `embrace.svg` | Embrace | `#EEFF04` | Official brackets from [embrace.io logo-yellow.svg](https://embrace.io/wp-content/themes/embraceio/library/images/logo-yellow.svg) (wordmark dropped) |
+| `twilio.svg` | Twilio | `#F22F46` | Simple Icons `twilio` |
+| `mailgun.svg` | Mailgun | `#F06B66` | Simple Icons `mailgun` |
+| `resend.svg` | Resend | `#FFFFFF` | Simple Icons `resend`; white so official black reads on dark |
+| `klaviyo.svg` | Klaviyo | `#FFFFFF` | Official K from the [klaviyo.com](https://www.klaviyo.com/) wordmark; white so official charcoal / `currentColor` reads on dark |
+| `brevo.svg` | Brevo | `#0B996E` | Simple Icons `brevo` |
+| `customer-io.svg` | Customer.io | `#BDFFBD` | Official mark from [customer.io/favicon.svg](https://customer.io/favicon.svg) (tile dropped) |
+| `sparkpost.svg` | SparkPost | `#FA6423` | Simple Icons `sparkpost` |
+| `braze.svg` | Braze | `#D82028` | Official B from the [braze.com](https://www.braze.com/) wordmark |
+| `loops.svg` | Loops | `#FC5200` | Simple Icons `loops` |
+| `mailjet.svg` | Mailjet | `#B7A8FF` / `#000000` | Official mark from [mailjet.com](https://www.mailjet.com/) `logo-mailjet-sinch.svg` (Sinch wordmark dropped) |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.

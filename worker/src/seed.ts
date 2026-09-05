@@ -1,7 +1,8 @@
 import type pg from "pg"
 
 /**
- * Static registry of board services (26 AI + Cloud Waves A–C + Developer Waves A–C + Data Waves A–C + Auth Waves A–B).
+ * Static registry of board services (26 AI + Cloud / Developer / Data /
+ * Auth / Payments / Observability Waves A–C + Email Wave A).
  * Mirrors the ids in the Next.js app's data/services.ts (and public/logos/{id}.svg).
  * Windsurf is the legacy Devin Desktop name and is not seeded separately.
  * GitHub Copilot is a GitHub component, not its own card.
@@ -1380,6 +1381,76 @@ export const SERVICE_SEED = [
     name: "Embrace",
     category: "observability",
     statusUrl: "https://status.embrace.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "twilio",
+    name: "Twilio",
+    category: "email",
+    statusUrl: "https://status.twilio.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "mailgun",
+    name: "Mailgun",
+    category: "email",
+    statusUrl: "https://status.mailgun.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "resend",
+    name: "Resend",
+    category: "email",
+    statusUrl: "https://status.resend.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "klaviyo",
+    name: "Klaviyo",
+    category: "email",
+    statusUrl: "https://status.klaviyo.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "brevo",
+    name: "Brevo",
+    category: "email",
+    statusUrl: "https://status.brevo.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "customer-io",
+    name: "Customer.io",
+    category: "email",
+    statusUrl: "https://status.customer.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "sparkpost",
+    name: "SparkPost",
+    category: "email",
+    statusUrl: "https://status.sparkpost.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "braze",
+    name: "Braze",
+    category: "email",
+    statusUrl: "https://status.braze.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "loops",
+    name: "Loops",
+    category: "email",
+    statusUrl: "https://status.loops.so/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "mailjet",
+    name: "Mailjet",
+    category: "email",
+    statusUrl: "https://status.mailjet.com/",
     fetcherType: "statuspage",
   },
 ] as const

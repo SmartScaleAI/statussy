@@ -24,6 +24,7 @@ export type ServiceCategory =
   | "auth"
   | "payments"
   | "observability"
+  | "email"
 
 export type Service = {
   /** Matches a static mark at `public/logos/{id}.svg`. */
@@ -1711,5 +1712,92 @@ export const services: Service[] = [
     statusUrl: "https://status.embrace.io/",
     status: "operational",
     updatedAt: "2026-09-05T17:30:00.000Z",
+  },
+  // Email Wave A — transactional and marketing send, plus inbox APIs the
+  // notification path dies on. One card per vendor. SendGrid stays on
+  // Twilio (shared Statuspage). SES stays on AWS. Mandrill stays on
+  // Mailchimp. Gmail / Workspace stay off / on Google Cloud. Sinch owns
+  // Mailgun and Mailjet; they still have separate brands and status
+  // pages, so both cards stay. SparkPost stays on its own Statuspage
+  // (Bird acquired the brand).
+  {
+    id: "twilio",
+    name: "Twilio",
+    category: "email",
+    statusUrl: "https://status.twilio.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T17:50:00.000Z",
+  },
+  {
+    id: "mailgun",
+    name: "Mailgun",
+    category: "email",
+    statusUrl: "https://status.mailgun.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T17:50:00.000Z",
+  },
+  {
+    id: "resend",
+    name: "Resend",
+    category: "email",
+    statusUrl: "https://status.resend.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T17:50:00.000Z",
+  },
+  {
+    id: "klaviyo",
+    name: "Klaviyo",
+    category: "email",
+    statusUrl: "https://status.klaviyo.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T17:50:00.000Z",
+  },
+  {
+    id: "brevo",
+    name: "Brevo",
+    category: "email",
+    statusUrl: "https://status.brevo.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T17:50:00.000Z",
+  },
+  {
+    id: "customer-io",
+    name: "Customer.io",
+    category: "email",
+    statusUrl: "https://status.customer.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T17:50:00.000Z",
+  },
+  {
+    id: "sparkpost",
+    name: "SparkPost",
+    category: "email",
+    statusUrl: "https://status.sparkpost.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T17:50:00.000Z",
+  },
+  {
+    id: "braze",
+    name: "Braze",
+    category: "email",
+    statusUrl: "https://status.braze.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T17:50:00.000Z",
+  },
+  {
+    id: "loops",
+    name: "Loops",
+    category: "email",
+    statusUrl: "https://status.loops.so/",
+    status: "operational",
+    updatedAt: "2026-09-05T17:50:00.000Z",
+  },
+  {
+    id: "mailjet",
+    name: "Mailjet",
+    category: "email",
+    statusUrl: "https://status.mailjet.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T17:50:00.000Z",
   },
 ]

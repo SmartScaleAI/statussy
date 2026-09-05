@@ -56,7 +56,10 @@
  * and logz.io via Statuspage; Observability Wave C — Lumigo, Netdata,
  * Scout, Logit.io, Nobl9, Catchpoint, VictoriaMetrics, Langfuse, and
  * Embrace via Statuspage, Dash0 via dash0status.com (the public host
- * redirects /api/v2).
+ * redirects /api/v2); Email Wave A — Twilio, Mailgun, Klaviyo, Brevo,
+ * SparkPost, Braze, Loops, and Mailjet via Statuspage, Resend via
+ * resend-status.com (status.resend.com redirects), Customer.io via
+ * customerio.statuspage.io (the public host has no /api/v2).
  * AWS, Azure, Fastly, Replit, Redis, Algolia, DataStax, Okta, PayPal,
  * Adyen, PagerDuty, and Checkly are seeded without a
  * fetcher) and writes snapshots, components,
@@ -136,9 +139,9 @@ type ServiceJob = {
 }
 
 // Board services with a fetcher (26 AI + Cloud / Developer / Data / Auth /
-// Payments Waves A–C + Observability Waves A–C; AWS, Azure, Fastly, Replit,
-// Redis, Algolia, DataStax, Okta, PayPal, Adyen, PagerDuty, and Checkly
-// are none).
+// Payments / Observability Waves A–C + Email Wave A; AWS, Azure, Fastly,
+// Replit, Redis, Algolia, DataStax, Okta, PayPal, Adyen, PagerDuty, and
+// Checkly are none).
 const statuspageJob = (id: string, baseUrl: string): ServiceJob => ({
   id,
   fetch: () => fetchStatuspageState(baseUrl, fetchOptions()),
@@ -549,6 +552,19 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("langfuse", "https://status.langfuse.com"),
   statuspageJob("dash0", "https://dash0status.com"),
   statuspageJob("embrace", "https://status.embrace.io"),
+  // Email Wave A. SendGrid stays on Twilio (same Statuspage). SES stays
+  // on AWS. Resend's public host redirects; hit resend-status.com.
+  // Customer.io's public host has no /api/v2; hit the Statuspage host.
+  statuspageJob("twilio", "https://status.twilio.com"),
+  statuspageJob("mailgun", "https://status.mailgun.com"),
+  statuspageJob("resend", "https://resend-status.com"),
+  statuspageJob("klaviyo", "https://status.klaviyo.com"),
+  statuspageJob("brevo", "https://status.brevo.com"),
+  statuspageJob("customer-io", "https://customerio.statuspage.io"),
+  statuspageJob("sparkpost", "https://status.sparkpost.com"),
+  statuspageJob("braze", "https://status.braze.com"),
+  statuspageJob("loops", "https://status.loops.so"),
+  statuspageJob("mailjet", "https://status.mailjet.com"),
 ]
 
 async function fetchService(service: ServiceJob): Promise<boolean> {
