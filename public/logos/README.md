@@ -267,5 +267,35 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `plasmic.svg` | Plasmic | Official magenta–purple | Official mark from [plasmic.app/svg/logo.svg](https://www.plasmic.app/svg/logo.svg) |
 | `beautiful-ai.svg` | Beautiful.ai | `#FFFFFF` | Official wordmark from the [beautiful.ai](https://www.beautiful.ai/) header lockup; white so `currentColor` reads on dark |
 | `jitter.svg` | Jitter | `#FFFFFF` | Official wordmark from the [jitter.video](https://jitter.video/) header lockup; white so `currentColor` reads on dark |
+| `terraform.svg` | Terraform | `#844FBA` | Simple Icons `terraform` |
+| `pulumi.svg` | Pulumi | `#8A3391` | Simple Icons `pulumi` |
+| `vault.svg` | Vault | `#FFEC6E` | Simple Icons `vault` |
+| `consul.svg` | Consul | `#F24C53` | Simple Icons `consul` |
+| `nomad.svg` | Nomad | `#00CA8E` | Simple Icons `nomad` |
+| `spacelift.svg` | Spacelift | Official `#82FFE8`–`#7C47FC` + `#FFFFFF` | Official saturn mark from [spacelift.io vertical-dark.svg](https://spacelift.io/wp-content/uploads/2023/10/vertical-dark.svg) (wordmark dropped); `#16151E` knocked to white |
+| `crossplane.svg` | Crossplane | Official CNCF colors | Official icon from [cncf/artwork](https://github.com/cncf/artwork/blob/master/projects/crossplane/icon/color/crossplane-icon-color.svg) |
+| `packer.svg` | Packer | `#02A8EF` | Simple Icons `packer` |
+| `chef.svg` | Chef | `#F09820` | Simple Icons `chef` |
+| `opentofu.svg` | OpenTofu | `#FFDA18` | Simple Icons `opentofu` |
+| `ansible.svg` | Ansible | `#EE0000` | Simple Icons `ansible` |
+| `puppet.svg` | Puppet | `#FFAE1A` | Simple Icons `puppet` |
+| `argo-cd.svg` | Argo CD | `#EF7B4D` | Simple Icons `argo` (Argo project mark) |
+| `flux.svg` | Flux | `#5468FF` | Simple Icons `flux` (Flux CD) |
+| `terragrunt.svg` | Terragrunt | Official `#87E0E1` / `#1B46DD` / `#B068E9` / `#F9DB4E` / `#E94A5D` + `#FFFFFF` | Official light mark from [gruntwork-io/terragrunt](https://github.com/gruntwork-io/terragrunt/blob/main/docs/src/assets/logo-light.svg) |
+| `env0.svg` | Env0 | `#FFFFFF` | Official chevrons from [docs.env0.com favicon](https://mintcdn.com/envzero-b61043c8/tSDpnsOW7stD0Hxu/favicon.svg); dark tile dropped |
+| `scalr.svg` | Scalr | `#B3DBF1` / `#D21212` / `#FFFFFF` | Official stacked bars from [docs.scalr.io](https://docs.scalr.io/docs) `Scalr_Full-Color_Logo_Dark.svg` (wordmark dropped) |
+| `salt.svg` | Salt | `#57BCAD` | Simple Icons `saltproject` |
+| `rancher.svg` | Rancher | `#0075A8` | Simple Icons `rancher` |
+| `vagrant.svg` | Vagrant | `#1868F2` | Simple Icons `vagrant` |
+| `helm.svg` | Helm | `#FFFFFF` | Simple Icons `helm`; white so official `#0F1689` reads on dark |
+| `teleport.svg` | Teleport | `#512FC9` | Official cog from [goteleport.com/static/favicon.svg](https://goteleport.com/static/favicon.svg) |
+| `istio.svg` | Istio | `#466BB0` | Simple Icons `istio` |
+| `linkerd.svg` | Linkerd | `#2BEDA7` | Simple Icons `linkerd` |
+| `cilium.svg` | Cilium | `#F8C517` | Simple Icons `cilium` |
+| `opa.svg` | OPA | Official CNCF grays | Official icon from [cncf/artwork](https://github.com/cncf/artwork/blob/master/projects/open-policy-agent/icon/color/opa-icon-color.svg) |
+| `kyverno.svg` | Kyverno | Official `#E87E5B` / `#3784C5` | Official icon from [cncf/artwork](https://github.com/cncf/artwork/blob/master/projects/kyverno/icon/color/kyverno-icon-color.svg) |
+| `traefik.svg` | Traefik | `#24A1C1` | Simple Icons `traefikproxy` |
+| `cert-manager.svg` | cert-manager | Official CNCF `#326CE5` + white | Official icon from [cncf/artwork](https://github.com/cncf/artwork/blob/master/projects/cert-manager/icon/color/cert-manager-icon-color.svg) |
+| `infracost.svg` | Infracost | `#DB44B8` | Simple Icons `infracost` |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.

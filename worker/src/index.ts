@@ -68,13 +68,22 @@
  * Wave A — Figma, Canva, Miro, Webflow, Lucid, Mural, and Frontify
  * via Statuspage, Framer via Better Stack `index.json`; Design Wave B
  * — Marvel, Balsamiq, and Anima via Statuspage; Design Wave C —
- * Beautiful.ai and Jitter via Statuspage.
+ * Beautiful.ai and Jitter via Statuspage; Infra Wave A — Terraform,
+ * Vault, Consul, Nomad, and Packer via HashiCorp Statuspage, Pulumi
+ * and Chef via Statuspage, Spacelift via spacelift.statuspage.io
+ * (status.spacelift.io has no DNS), Crossplane via Upbound
+ * Statuspage; Infra Wave B — Puppet via puppet.statuspage.io
+ * (status.puppet.com has no DNS), Scalr via status.scalr.io; Infra
+ * Wave C — Teleport via status.goteleport.com.
  * AWS, Azure, Fastly, Replit, Redis, Algolia, DataStax, Okta, PayPal,
  * Adyen, PagerDuty, Checkly, Postmark, Mailchimp, Campaign Monitor,
  * Mailtrap, Substack, Adobe, Sketch, Penpot, Rive, LottieFiles,
  * Whimsical, Lunacy, Photopea, Blender, Moqups, Proto.io, UXPin,
- * Overflow, Axure, Relume, Visily, and Plasmic are seeded without a
- * fetcher) and writes snapshots, components,
+ * Overflow, Axure, Relume, Visily, Plasmic, OpenTofu, Ansible, Argo
+ * CD, Flux, Terragrunt, Env0, Salt, Rancher, Vagrant, Helm, Istio,
+ * Linkerd, Cilium, OPA, Kyverno, Traefik, cert-manager, and
+ * Infracost are seeded
+ * without a fetcher) and writes snapshots, components,
  * and incidents to Postgres.
  * A tiny HTTP server exposes /healthz.
  */
@@ -152,12 +161,14 @@ type ServiceJob = {
 
 // Board services with a fetcher (26 AI + Cloud / Developer / Data / Auth /
 // Payments / Observability Waves A–C + Email Waves A–C + Design Waves
-// A–C; AWS, Azure, Fastly, Replit, Redis, Algolia, DataStax, Okta,
-// PayPal, Adyen, PagerDuty, Checkly, Postmark, Mailchimp, Campaign
-// Monitor, Mailtrap, Substack, Adobe, Sketch, Penpot, Rive,
-// LottieFiles, Whimsical, Lunacy, Photopea, Blender, Moqups,
-// Proto.io, UXPin, Overflow, Axure, Relume, Visily, and Plasmic
-// are none).
+// A–C + Infra Waves A–C; AWS, Azure, Fastly, Replit, Redis, Algolia,
+// DataStax, Okta, PayPal, Adyen, PagerDuty, Checkly, Postmark,
+// Mailchimp, Campaign Monitor, Mailtrap, Substack, Adobe, Sketch,
+// Penpot, Rive, LottieFiles, Whimsical, Lunacy, Photopea, Blender,
+// Moqups, Proto.io, UXPin, Overflow, Axure, Relume, Visily, Plasmic,
+// OpenTofu, Ansible, Argo CD, Flux, Terragrunt, Env0, Salt, Rancher,
+// Vagrant, Helm, Istio, Linkerd, Cilium, OPA, Kyverno, Traefik,
+// cert-manager, and Infracost are none).
 const statuspageJob = (id: string, baseUrl: string): ServiceJob => ({
   id,
   fetch: () => fetchStatuspageState(baseUrl, fetchOptions()),
@@ -631,6 +642,28 @@ const SERVICE_JOBS: ServiceJob[] = [
   // wait. Jitter's public host has no /api/v2; hit jitter.statuspage.io.
   statuspageJob("beautiful-ai", "https://status.beautiful.ai"),
   statuspageJob("jitter", "https://jitter.statuspage.io"),
+  // Infra Wave A. HashiCorp products share one Statuspage (HCP
+  // rollup). Spacelift's public host has no DNS; hit the Statuspage
+  // host. Crossplane polls Upbound (commercial parent). OpenTofu
+  // is none (GitLab-looking HTML, no /api/v2).
+  statuspageJob("terraform", "https://status.hashicorp.com"),
+  statuspageJob("pulumi", "https://status.pulumi.com"),
+  statuspageJob("vault", "https://status.hashicorp.com"),
+  statuspageJob("consul", "https://status.hashicorp.com"),
+  statuspageJob("nomad", "https://status.hashicorp.com"),
+  statuspageJob("spacelift", "https://spacelift.statuspage.io"),
+  statuspageJob("crossplane", "https://status.upbound.io"),
+  statuspageJob("packer", "https://status.hashicorp.com"),
+  statuspageJob("chef", "https://status.chef.io"),
+  // Infra Wave B. Puppet's public host has no DNS; hit the
+  // Statuspage host. Scalr is Statuspage. Ansible / Argo CD /
+  // Flux / Terragrunt / Env0 / Salt / Rancher / Vagrant are none.
+  statuspageJob("puppet", "https://puppet.statuspage.io"),
+  statuspageJob("scalr", "https://status.scalr.io"),
+  // Infra Wave C. Teleport is Statuspage. Helm / Istio / Linkerd /
+  // Cilium / OPA / Kyverno / Traefik / cert-manager / Infracost
+  // are none.
+  statuspageJob("teleport", "https://status.goteleport.com"),
 ]
 
 async function fetchService(service: ServiceJob): Promise<boolean> {

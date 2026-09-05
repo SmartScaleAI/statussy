@@ -26,6 +26,7 @@ export type ServiceCategory =
   | "observability"
   | "email"
   | "design"
+  | "infra"
 
 export type Service = {
   /** Matches a static mark at `public/logos/{id}.svg`. */
@@ -967,7 +968,7 @@ export const services: Service[] = [
   },
   // Auth Wave A — identity and secrets the login path dies on. One card
   // per vendor. Supabase Auth / Firebase Auth / Cognito stay on their
-  // Data / Cloud parents. Vault waits for Infra. Okta has no public JSON.
+  // Data / Cloud parents. Vault is Infra. Okta has no public JSON.
   {
     id: "auth0",
     name: "Auth0",
@@ -1049,7 +1050,7 @@ export const services: Service[] = [
     updatedAt: "2026-09-05T04:50:00.000Z",
   },
   // Auth Wave B — more identity, MFA, and secrets the login path dies on.
-  // Entra ID / Cognito stay on Azure / AWS. Vault waits for Infra.
+  // Entra ID / Cognito stay on Azure / AWS. Vault is Infra.
   {
     id: "descope",
     name: "Descope",
@@ -1131,7 +1132,7 @@ export const services: Service[] = [
     updatedAt: "2026-09-05T05:10:00.000Z",
   },
   // Auth Wave C — more CIAM, SSO, MFA hardware, and secrets the login
-  // path dies on. ForgeRock stays on Ping Identity. Vault waits for Infra.
+  // path dies on. ForgeRock stays on Ping Identity. Vault is Infra.
   {
     id: "loginradius",
     name: "LoginRadius",
@@ -2220,5 +2221,262 @@ export const services: Service[] = [
     statusUrl: "https://jitter.statuspage.io/",
     status: "operational",
     updatedAt: "2026-09-05T19:20:00.000Z",
+  },
+  // Infra Wave A — where you provision, configure, and secret the
+  // running app (IaC, schedulers, service discovery, vaults). One
+  // card per HashiCorp product (Terraform vs Vault fail independently).
+  // CloudFormation / CDK stay on AWS. ARM stays on Azure. Deployment
+  // Manager stays on GCP. Docker stays Developer. Harness stays
+  // Developer. Kubernetes is not a vendor card. Dagger, Earthly,
+  // Boundary, Atlantis, and Spinnaker wait.
+  {
+    id: "terraform",
+    name: "Terraform",
+    category: "infra",
+    statusUrl: "https://status.hashicorp.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:00:00.000Z",
+  },
+  {
+    id: "pulumi",
+    name: "Pulumi",
+    category: "infra",
+    statusUrl: "https://status.pulumi.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:00:00.000Z",
+  },
+  {
+    id: "vault",
+    name: "Vault",
+    category: "infra",
+    statusUrl: "https://status.hashicorp.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:00:00.000Z",
+  },
+  {
+    id: "consul",
+    name: "Consul",
+    category: "infra",
+    statusUrl: "https://status.hashicorp.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:00:00.000Z",
+  },
+  {
+    id: "nomad",
+    name: "Nomad",
+    category: "infra",
+    statusUrl: "https://status.hashicorp.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:00:00.000Z",
+  },
+  {
+    id: "spacelift",
+    name: "Spacelift",
+    category: "infra",
+    statusUrl: "https://spacelift.statuspage.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:00:00.000Z",
+  },
+  {
+    id: "crossplane",
+    name: "Crossplane",
+    category: "infra",
+    statusUrl: "https://status.upbound.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:00:00.000Z",
+  },
+  {
+    id: "packer",
+    name: "Packer",
+    category: "infra",
+    statusUrl: "https://status.hashicorp.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:00:00.000Z",
+  },
+  {
+    id: "chef",
+    name: "Chef",
+    category: "infra",
+    statusUrl: "https://status.chef.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:00:00.000Z",
+  },
+  {
+    id: "opentofu",
+    name: "OpenTofu",
+    category: "infra",
+    statusUrl: "https://status.opentofu.org/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:00:00.000Z",
+  },
+  // Infra Wave B — config management, GitOps, IaC wrappers, and
+  // Terraform automation peers. Red Hat's org-wide Statuspage is
+  // too broad for Ansible. Dagger / Earthly wait (CI). Boundary
+  // waits (no official vector). Atlantis / Spinnaker wait.
+  {
+    id: "ansible",
+    name: "Ansible",
+    category: "infra",
+    statusUrl: "https://www.ansible.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:10:00.000Z",
+  },
+  {
+    id: "puppet",
+    name: "Puppet",
+    category: "infra",
+    statusUrl: "https://puppet.statuspage.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:10:00.000Z",
+  },
+  {
+    id: "argo-cd",
+    name: "Argo CD",
+    category: "infra",
+    statusUrl: "https://argo-cd.readthedocs.io/en/stable/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:10:00.000Z",
+  },
+  {
+    id: "flux",
+    name: "Flux",
+    category: "infra",
+    statusUrl: "https://fluxcd.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:10:00.000Z",
+  },
+  {
+    id: "terragrunt",
+    name: "Terragrunt",
+    category: "infra",
+    statusUrl: "https://terragrunt.gruntwork.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:10:00.000Z",
+  },
+  {
+    id: "env0",
+    name: "Env0",
+    category: "infra",
+    statusUrl: "https://status.env0.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:10:00.000Z",
+  },
+  {
+    id: "scalr",
+    name: "Scalr",
+    category: "infra",
+    statusUrl: "https://status.scalr.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:10:00.000Z",
+  },
+  {
+    id: "salt",
+    name: "Salt",
+    category: "infra",
+    statusUrl: "https://saltproject.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:10:00.000Z",
+  },
+  {
+    id: "rancher",
+    name: "Rancher",
+    category: "infra",
+    statusUrl: "https://www.rancher.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:10:00.000Z",
+  },
+  {
+    id: "vagrant",
+    name: "Vagrant",
+    category: "infra",
+    statusUrl: "https://www.vagrantup.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:10:00.000Z",
+  },
+  // Infra Wave C — k8s packaging, mesh, CNI, policy, certs, ingress,
+  // infra access, and IaC cost. Teleport is Statuspage. Helm /
+  // Istio / Linkerd / Cilium / OPA / Kyverno / Traefik /
+  // cert-manager / Infracost are none. Atlantis waits (CNCF art
+  // is a traced island). StrongDM waits (no official vector).
+  // Kong / NGINX stay traffic (Cloud). Octopus / Spinnaker stay CD.
+  {
+    id: "helm",
+    name: "Helm",
+    category: "infra",
+    statusUrl: "https://helm.sh/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:20:00.000Z",
+  },
+  {
+    id: "teleport",
+    name: "Teleport",
+    category: "infra",
+    statusUrl: "https://status.goteleport.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:20:00.000Z",
+  },
+  {
+    id: "istio",
+    name: "Istio",
+    category: "infra",
+    statusUrl: "https://istio.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:20:00.000Z",
+  },
+  {
+    id: "linkerd",
+    name: "Linkerd",
+    category: "infra",
+    statusUrl: "https://linkerd.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:20:00.000Z",
+  },
+  {
+    id: "cilium",
+    name: "Cilium",
+    category: "infra",
+    statusUrl: "https://cilium.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:20:00.000Z",
+  },
+  {
+    id: "opa",
+    name: "OPA",
+    category: "infra",
+    statusUrl: "https://www.openpolicyagent.org/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:20:00.000Z",
+  },
+  {
+    id: "kyverno",
+    name: "Kyverno",
+    category: "infra",
+    statusUrl: "https://kyverno.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:20:00.000Z",
+  },
+  {
+    id: "traefik",
+    name: "Traefik",
+    category: "infra",
+    statusUrl: "https://traefik.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:20:00.000Z",
+  },
+  {
+    id: "cert-manager",
+    name: "cert-manager",
+    category: "infra",
+    statusUrl: "https://cert-manager.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:20:00.000Z",
+  },
+  {
+    id: "infracost",
+    name: "Infracost",
+    category: "infra",
+    statusUrl: "https://www.infracost.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T20:20:00.000Z",
   },
 ]
