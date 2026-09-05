@@ -147,5 +147,35 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `akeyless.svg` | Akeyless | `#01D9C1` | Official A from [akeyless.io](https://www.akeyless.io/) brand lockup (wordmark dropped) |
 | `sailpoint.svg` | SailPoint | Official sail colors | Official sail from [sailpoint.com/images/SailPoint-logo.svg](https://www.sailpoint.com/images/SailPoint-logo.svg) (wordmark dropped) |
 | `delinea.svg` | Delinea | `#00FF5A` | Official D from the [delinea.com](https://delinea.com/) wordmark lockup (wordmark dropped) |
+| `stripe.svg` | Stripe | `#635BFF` | Simple Icons `stripe` |
+| `paypal.svg` | PayPal | `#003087` | Simple Icons `paypal` |
+| `square.svg` | Square | `#FFFFFF` | Simple Icons `square`; white so official `#3E4348` reads on dark |
+| `adyen.svg` | Adyen | `#0ABF53` | Simple Icons `adyen` |
+| `paddle.svg` | Paddle | `#FFFFFF` | Simple Icons `paddle`; white so official black reads on dark |
+| `chargebee.svg` | Chargebee | `#FF3300` | Official mark from [chargebee.com brand icon](https://www.chargebee.com/static/resources/brand/chargebee-icon-orange.svg) |
+| `recurly.svg` | Recurly | `#FFFFFF` | Official R from the [recurly.com](https://recurly.com/) lockup (wordmark dropped); white so official black reads on dark |
+| `klarna.svg` | Klarna | `#FFB3C7` | Simple Icons `klarna` |
+| `plaid.svg` | Plaid | `#FFFFFF` | Official lattice from [plaid.com](https://plaid.com/) `safari-pinned-tab.svg`; white so official black reads on dark |
+| `gocardless.svg` | GoCardless | Official yellow + `#1C1B18` | Official mark from the [gocardless.com](https://gocardless.com/) header lockup |
+| `mollie.svg` | Mollie | `#FFFFFF` | Official wordmark from [status.mollie.com](https://status.mollie.com/) (same path as [mollie/magento2](https://github.com/mollie/magento2/blob/master/mollie-logo.svg)); white so official black reads on dark |
+| `polar.svg` | Polar | `#FFFFFF` | Official mark from [polarsource/polar](https://github.com/polarsource/polar/blob/main/server/polar/invoice/invoice-logo.svg); white so official black reads on dark |
+| `revenuecat.svg` | RevenueCat | `#F2545B` / `#FDFEFF` | Official RC tile from [revenuecat.com/favicon/favicon.svg](https://www.revenuecat.com/favicon/favicon.svg) |
+| `affirm.svg` | Affirm | `#4A4AF4` | Official arc from [cdn-assets.affirm.com](https://cdn-assets.affirm.com/images/black_logo-white_bg.svg) (wordmark dropped) |
+| `fastspring.svg` | FastSpring | `#FFFFFF` | Official leaf from [fastspring.com safari-pinned-tab.svg](https://fastspring.com/wp-content/themes/fastspring-bamboo/images/favicons/safari-pinned-tab.svg); white so official black reads on dark |
+| `whop.svg` | Whop | `#FA4616` | Official brandmark from [brand.whop.com](https://brand.whop.com/images/logos/whop_brandmark_orange.svg) (Vermilion) |
+| `wise.svg` | Wise | `#9FE870` / `#163300` | Official mark from [Wise wise-mark.svg](https://dq8dwmysp7hk1.cloudfront.net/logos/wise-mark.svg) |
+| `authorize-net.svg` | Authorize.net | `#FFFFFF` / `#0075FF` / `#FFC300` | Official wordmark from the [authorize.net](https://www.authorize.net/content/dam/anet-redesign/anet-logo-footer.svg) footer lockup (Visa solution line dropped); white + official dots so the dark-footer lockup reads on dark |
+| `flutterwave.svg` | Flutterwave | `#009A46` / `#FF5805` / `#F5AFCB` / `#FF9B00` | Official arc mark from [flutterwave.com/images/logo/full.svg](https://flutterwave.com/images/logo/full.svg) (wordmark dropped) |
+| `airwallex.svg` | Airwallex | Official orange–red gradient | Official A from the [airwallex/airwallex-marketplace](https://github.com/airwallex/airwallex-marketplace/blob/master/plugins/airwallex-dev/assets/logo.svg) lockup (wordmark dropped) |
+| `marqeta.svg` | Marqeta | `#FFFFFF` | Official M from the [marqeta.com](https://www.marqeta.com/) Contentful lockup (wordmark dropped); white so official `#272358` reads on dark |
+| `lithic.svg` | Lithic | `#F5F2F0` | Official parallelograms from [lithic-com/api-demo](https://github.com/lithic-com/api-demo/blob/master/public/Lithic-light-logo-mark.svg) (on-dark mark) |
+| `worldpay.svg` | Worldpay | `#FF1F3E` | Official wordmark from [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Worldpay_Logo.svg) (Worldpay, Inc.; public domain) |
+| `spreedly.svg` | Spreedly | `#2CD5C4` / `#0077C8` | Official knot from the [spreedly.com](https://www.spreedly.com/) header lockup (wordmark dropped) |
+| `finix.svg` | Finix | `#FFED36` / `#0D121A` | Official mark from [finix.com/favicon.svg](https://finix.com/favicon.svg) |
+| `mercado-pago.svg` | Mercado Pago | `#00B1EA` | Simple Icons `mercadopago` |
+| `ebanx.svg` | EBANX | Official stacked-card colors | Official mark from [ebanx.com/favicon.svg](https://www.ebanx.com/favicon.svg) |
+| `paysafe.svg` | Paysafe | `#5A28FF` | Simple Icons `paysafe` |
+| `recharge.svg` | Recharge | `#3901F1` | Official circle from [getrecharge.com recharge-full.svg](https://getrecharge.com/wp-content/uploads/2025/06/recharge-full.svg) (wordmark dropped) |
+| `maxio.svg` | Maxio | `#FFFFFF` | Official mark from [maxio.com mx-logo-svg.svg](https://www.maxio.com/wp-content/uploads/2026/04/mx-logo-svg.svg) (wordmark dropped); white so official black reads on dark |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.

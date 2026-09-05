@@ -16,7 +16,13 @@ export const SERVICE_STATUSES = [
 
 export type ServiceStatus = (typeof SERVICE_STATUSES)[number]
 
-export type ServiceCategory = "ai" | "cloud" | "developer" | "data" | "auth"
+export type ServiceCategory =
+  | "ai"
+  | "cloud"
+  | "developer"
+  | "data"
+  | "auth"
+  | "payments"
 
 export type Service = {
   /** Matches a static mark at `public/logos/{id}.svg`. */
@@ -709,7 +715,7 @@ export const services: Service[] = [
     updatedAt: "2026-09-05T04:10:00.000Z",
   },
   // Data Wave A — stores and queues the app dies on. One card per vendor.
-  // Auth / payments / observability / email stay on later chiclets.
+  // Observability / email stay on later chiclets.
   // Redis has no public JSON (custom status.redis.io page).
   {
     id: "supabase",
@@ -1202,5 +1208,253 @@ export const services: Service[] = [
     statusUrl: "https://status.delinea.com/",
     status: "operational",
     updatedAt: "2026-09-05T05:40:00.000Z",
+  },
+  // Payments Wave A — processors and billing the checkout path dies on.
+  // One card per vendor. Braintree / Venmo stay on PayPal. PayPal and
+  // Adyen have no usable public JSON (custom pages).
+  {
+    id: "stripe",
+    name: "Stripe",
+    category: "payments",
+    statusUrl: "https://status.stripe.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T06:00:00.000Z",
+  },
+  {
+    id: "paypal",
+    name: "PayPal",
+    category: "payments",
+    statusUrl: "https://www.paypal-status.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T06:00:00.000Z",
+  },
+  {
+    id: "square",
+    name: "Square",
+    category: "payments",
+    statusUrl: "https://www.issquareup.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T06:00:00.000Z",
+  },
+  {
+    id: "adyen",
+    name: "Adyen",
+    category: "payments",
+    statusUrl: "https://status.adyen.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T06:00:00.000Z",
+  },
+  {
+    id: "paddle",
+    name: "Paddle",
+    category: "payments",
+    statusUrl: "https://paddlestatus.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T06:00:00.000Z",
+  },
+  {
+    id: "chargebee",
+    name: "Chargebee",
+    category: "payments",
+    statusUrl: "https://status.chargebee.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T06:00:00.000Z",
+  },
+  {
+    id: "recurly",
+    name: "Recurly",
+    category: "payments",
+    statusUrl: "https://status.recurly.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T06:00:00.000Z",
+  },
+  {
+    id: "klarna",
+    name: "Klarna",
+    category: "payments",
+    statusUrl: "https://status.klarna.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T06:00:00.000Z",
+  },
+  {
+    id: "plaid",
+    name: "Plaid",
+    category: "payments",
+    statusUrl: "https://status.plaid.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T06:00:00.000Z",
+  },
+  {
+    id: "gocardless",
+    name: "GoCardless",
+    category: "payments",
+    statusUrl: "https://www.gocardless-status.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T06:00:00.000Z",
+  },
+  // Payments Wave B — more processors and billing. Lemon Squeezy stays
+  // on Polar. Afterpay stays on Square. Checkout.com's Statuspage is
+  // private.
+  {
+    id: "mollie",
+    name: "Mollie",
+    category: "payments",
+    statusUrl: "https://status.mollie.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T06:30:00.000Z",
+  },
+  {
+    id: "polar",
+    name: "Polar",
+    category: "payments",
+    statusUrl: "https://status.polar.sh/",
+    status: "operational",
+    updatedAt: "2026-09-05T06:30:00.000Z",
+  },
+  {
+    id: "revenuecat",
+    name: "RevenueCat",
+    category: "payments",
+    statusUrl: "https://status.revenuecat.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T06:30:00.000Z",
+  },
+  {
+    id: "affirm",
+    name: "Affirm",
+    category: "payments",
+    statusUrl: "https://status.affirm.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T06:30:00.000Z",
+  },
+  {
+    id: "fastspring",
+    name: "FastSpring",
+    category: "payments",
+    statusUrl: "https://status.fastspring.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T06:30:00.000Z",
+  },
+  {
+    id: "whop",
+    name: "Whop",
+    category: "payments",
+    statusUrl: "https://status.whop.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T06:30:00.000Z",
+  },
+  {
+    id: "wise",
+    name: "Wise",
+    category: "payments",
+    statusUrl: "https://status.wise.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T06:30:00.000Z",
+  },
+  {
+    id: "authorize-net",
+    name: "Authorize.net",
+    category: "payments",
+    statusUrl: "https://status.authorize.net/",
+    status: "operational",
+    updatedAt: "2026-09-05T06:30:00.000Z",
+  },
+  {
+    id: "flutterwave",
+    name: "Flutterwave",
+    category: "payments",
+    statusUrl: "https://status.flutterwave.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T06:30:00.000Z",
+  },
+  {
+    id: "airwallex",
+    name: "Airwallex",
+    category: "payments",
+    statusUrl: "https://status.airwallex.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T06:30:00.000Z",
+  },
+  // Payments Wave C — issuing, orchestration, regional processors, and
+  // subscription billing. Checkout.com's Statuspage is private.
+  {
+    id: "marqeta",
+    name: "Marqeta",
+    category: "payments",
+    statusUrl: "https://status.marqeta.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T06:45:00.000Z",
+  },
+  {
+    id: "lithic",
+    name: "Lithic",
+    category: "payments",
+    statusUrl: "https://status.lithic.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T06:45:00.000Z",
+  },
+  {
+    id: "worldpay",
+    name: "Worldpay",
+    category: "payments",
+    statusUrl: "https://status.worldpay.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T06:45:00.000Z",
+  },
+  {
+    id: "spreedly",
+    name: "Spreedly",
+    category: "payments",
+    statusUrl: "https://status.spreedly.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T06:45:00.000Z",
+  },
+  {
+    id: "finix",
+    name: "Finix",
+    category: "payments",
+    statusUrl: "https://status.finix.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T06:45:00.000Z",
+  },
+  {
+    id: "mercado-pago",
+    name: "Mercado Pago",
+    category: "payments",
+    statusUrl: "https://status.mercadopago.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T06:45:00.000Z",
+  },
+  {
+    id: "ebanx",
+    name: "EBANX",
+    category: "payments",
+    statusUrl: "https://status.ebanx.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T06:45:00.000Z",
+  },
+  {
+    id: "paysafe",
+    name: "Paysafe",
+    category: "payments",
+    statusUrl: "https://status.paysafe.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T06:45:00.000Z",
+  },
+  {
+    id: "recharge",
+    name: "Recharge",
+    category: "payments",
+    statusUrl: "https://status.getrecharge.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T06:45:00.000Z",
+  },
+  {
+    id: "maxio",
+    name: "Maxio",
+    category: "payments",
+    statusUrl: "https://maxio.statuspage.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T06:45:00.000Z",
   },
 ]
