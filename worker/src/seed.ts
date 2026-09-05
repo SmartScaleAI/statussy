@@ -3,7 +3,8 @@ import type pg from "pg"
 /**
  * Static registry of board services (26 AI + Cloud / Developer / Data /
  * Auth / Payments / Observability Waves A–C + Email Waves A–C +
- * Design Waves A–C + Infra Waves A–C + Flags Waves A–C).
+ * Design Waves A–C + Infra Waves A–C + Flags Waves A–C +
+ * Analytics Wave A).
  * Mirrors the ids in the Next.js app's data/services.ts (and public/logos/{id}.svg).
  * Windsurf is the legacy Devin Desktop name and is not seeded separately.
  * GitHub Copilot is a GitHub component, not its own card.
@@ -18,8 +19,8 @@ import type pg from "pg"
  * Traefik, cert-manager, Infracost, Unleash, ConfigCat, GrowthBook,
  * Eppo, VWO, AB Tasty, Convert, Flipt, Hypertune, GO Feature Flag,
  * FeatBit, flagd, FeatureHub, Bucketeer, Flipper Cloud, Confidence,
- * Frosmo, Personyze, and Insider One are `none` until a dedicated
- * fetcher exists.
+ * Frosmo, Personyze, Insider One, PostHog, Fathom, and Matomo are
+ * `none` until a dedicated fetcher exists.
  */
 export const SERVICE_SEED = [
   {
@@ -2262,6 +2263,81 @@ export const SERVICE_SEED = [
     category: "flags",
     statusUrl: "https://status.bloomreach.com/",
     fetcherType: "statuspage",
+  },
+  // Analytics Wave A. Amplitude / Mixpanel / Segment / Heap /
+  // Pendo / RudderStack are Statuspage (Mixpanel via
+  // www.mixpanelstatus.com). Plausible is Better Stack. PostHog /
+  // Fathom / Matomo are none (no public JSON; PostHog is
+  // incident.io HTML).
+  {
+    id: "amplitude",
+    name: "Amplitude",
+    category: "analytics",
+    statusUrl: "https://status.amplitude.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "mixpanel",
+    name: "Mixpanel",
+    category: "analytics",
+    statusUrl: "https://www.mixpanelstatus.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "posthog",
+    name: "PostHog",
+    category: "analytics",
+    statusUrl: "https://www.posthogstatus.com/",
+    fetcherType: "none",
+  },
+  {
+    id: "segment",
+    name: "Segment",
+    category: "analytics",
+    statusUrl: "https://status.segment.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "heap",
+    name: "Heap",
+    category: "analytics",
+    statusUrl: "https://status.heap.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "pendo",
+    name: "Pendo",
+    category: "analytics",
+    statusUrl: "https://status.pendo.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "rudderstack",
+    name: "RudderStack",
+    category: "analytics",
+    statusUrl: "https://status.rudderstack.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "plausible",
+    name: "Plausible",
+    category: "analytics",
+    statusUrl: "https://status.plausible.io/",
+    fetcherType: "betterstack",
+  },
+  {
+    id: "fathom",
+    name: "Fathom",
+    category: "analytics",
+    statusUrl: "https://status.usefathom.com/",
+    fetcherType: "none",
+  },
+  {
+    id: "matomo",
+    name: "Matomo",
+    category: "analytics",
+    statusUrl: "https://status.matomo.cloud/",
+    fetcherType: "none",
   },
 ] as const
 

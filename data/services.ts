@@ -28,6 +28,7 @@ export type ServiceCategory =
   | "design"
   | "infra"
   | "flags"
+  | "analytics"
 
 export type Service = {
   /** Matches a static mark at `public/logos/{id}.svg`. */
@@ -2482,9 +2483,8 @@ export const services: Service[] = [
   },
   // Flags Wave A — feature flags and experimentation the running
   // app dies on. Split stays on Harness (status.split.io redirects).
-  // Amplitude / PostHog / Mixpanel wait (product analytics).
-  // Firebase Remote Config stays on Firebase. Vercel Flags stay
-  // on Vercel.
+  // Amplitude / PostHog / Mixpanel are Analytics. Firebase Remote
+  // Config stays on Firebase. Vercel Flags stay on Vercel.
   {
     id: "launchdarkly",
     name: "LaunchDarkly",
@@ -2733,5 +2733,91 @@ export const services: Service[] = [
     statusUrl: "https://status.bloomreach.com/",
     status: "operational",
     updatedAt: "2026-09-05T20:50:00.000Z",
+  },
+  // Analytics Wave A — product / event analytics the insights path
+  // dies on (not Observability, not Flags). Amplitude Experiment /
+  // PostHog flags stay on Amplitude / PostHog. Google Analytics
+  // waits. Firebase Analytics stays on Firebase. Adobe Analytics
+  // stays on Adobe. FullStory / Hotjar / Contentsquare wait
+  // (session replay). Heap keeps its own status page.
+  {
+    id: "amplitude",
+    name: "Amplitude",
+    category: "analytics",
+    statusUrl: "https://status.amplitude.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T21:00:00.000Z",
+  },
+  {
+    id: "mixpanel",
+    name: "Mixpanel",
+    category: "analytics",
+    statusUrl: "https://www.mixpanelstatus.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T21:00:00.000Z",
+  },
+  {
+    id: "posthog",
+    name: "PostHog",
+    category: "analytics",
+    statusUrl: "https://www.posthogstatus.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T21:00:00.000Z",
+  },
+  {
+    id: "segment",
+    name: "Segment",
+    category: "analytics",
+    statusUrl: "https://status.segment.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T21:00:00.000Z",
+  },
+  {
+    id: "heap",
+    name: "Heap",
+    category: "analytics",
+    statusUrl: "https://status.heap.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T21:00:00.000Z",
+  },
+  {
+    id: "pendo",
+    name: "Pendo",
+    category: "analytics",
+    statusUrl: "https://status.pendo.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T21:00:00.000Z",
+  },
+  {
+    id: "rudderstack",
+    name: "RudderStack",
+    category: "analytics",
+    statusUrl: "https://status.rudderstack.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T21:00:00.000Z",
+  },
+  {
+    id: "plausible",
+    name: "Plausible",
+    category: "analytics",
+    statusUrl: "https://status.plausible.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T21:00:00.000Z",
+  },
+  {
+    id: "fathom",
+    name: "Fathom",
+    category: "analytics",
+    statusUrl: "https://status.usefathom.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T21:00:00.000Z",
+  },
+  {
+    id: "matomo",
+    name: "Matomo",
+    category: "analytics",
+    statusUrl: "https://status.matomo.cloud/",
+    status: "operational",
+    updatedAt: "2026-09-05T21:00:00.000Z",
   },
 ]

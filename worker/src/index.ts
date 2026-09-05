@@ -80,7 +80,9 @@
  * cloudbeesstatus.com, Kameleoon via kameleoon.statuspage.io,
  * Monetate via monetate.statuspage.io, Reflag via Instatus; Flags
  * Wave C — Bloomreach via Statuspage, Omniconvert via Better Stack
- * `index.json`.
+ * `index.json`; Analytics Wave A — Amplitude, Mixpanel via
+ * www.mixpanelstatus.com, Segment, Heap, Pendo, and RudderStack via
+ * Statuspage, Plausible via Better Stack `index.json`.
  * AWS, Azure, Fastly, Replit, Redis, Algolia, DataStax, Okta, PayPal,
  * Adyen, PagerDuty, Checkly, Postmark, Mailchimp, Campaign Monitor,
  * Mailtrap, Substack, Adobe, Sketch, Penpot, Rive, LottieFiles,
@@ -90,8 +92,8 @@
  * Linkerd, Cilium, OPA, Kyverno, Traefik, cert-manager, Infracost,
  * Unleash, ConfigCat, GrowthBook, Eppo, VWO, AB Tasty, Convert,
  * Flipt, Hypertune, GO Feature Flag, FeatBit, flagd, FeatureHub,
- * Bucketeer, Flipper Cloud, Confidence, Frosmo, Personyze, and
- * Insider One are seeded
+ * Bucketeer, Flipper Cloud, Confidence, Frosmo, Personyze,
+ * Insider One, PostHog, Fathom, and Matomo are seeded
  * without a fetcher) and writes snapshots, components,
  * and incidents to Postgres.
  * A tiny HTTP server exposes /healthz.
@@ -716,6 +718,23 @@ const SERVICE_JOBS: ServiceJob[] = [
         "https://status.web.omniconvert.com",
         fetchOptions(),
       ),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  // Analytics Wave A. Amplitude / Mixpanel / Segment / Heap /
+  // Pendo / RudderStack are Statuspage. Mixpanel's public host is
+  // www.mixpanelstatus.com (status.mixpanel.com redirects).
+  // Plausible is Better Stack. PostHog / Fathom / Matomo are none
+  // (PostHog is incident.io HTML; no public JSON).
+  statuspageJob("amplitude", "https://status.amplitude.com"),
+  statuspageJob("mixpanel", "https://www.mixpanelstatus.com"),
+  statuspageJob("segment", "https://status.segment.com"),
+  statuspageJob("heap", "https://status.heap.io"),
+  statuspageJob("pendo", "https://status.pendo.io"),
+  statuspageJob("rudderstack", "https://status.rudderstack.com"),
+  {
+    id: "plausible",
+    fetch: () =>
+      fetchBetterstackState("https://status.plausible.io", fetchOptions()),
     persistOptions: { resolveMissingIncidents: true },
   },
 ]

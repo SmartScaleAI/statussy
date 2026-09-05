@@ -327,5 +327,15 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `personyze.svg` | Personyze | Official `#E54944` + `#7B93C9` | Official icon from [personyze.com](https://counter2.personyze.com/images/logo-icon.svg); white tile dropped, near-black navy knocked to a lighter token |
 | `insider.svg` | Insider One | Official `#E92E2F` / `#FF6126` + `#FFFFFF` | Official header lockup from [insiderone.com](https://www.insiderone.com/); cream wordmark knocked to white |
 | `bloomreach.svg` | Bloomreach | Official `#FFD500` + `#1A1A1A` | Official icon from [bloomreach.com](https://www.bloomreach.com/wp-content/themes/hello-theme-child-master/assets/img/bloomreach-logo-icon.svg) |
+| `amplitude.svg` | Amplitude | `#10069F` | Official circular mark from Wikimedia [Amplitude logo 2020.svg](https://commons.wikimedia.org/wiki/File:Amplitude_logo_2020.svg) (wordmark dropped) |
+| `mixpanel.svg` | Mixpanel | `#7856FF` | Simple Icons `mixpanel` |
+| `posthog.svg` | PostHog | `#FFFFFF` | Simple Icons `posthog`; white so official black reads on dark |
+| `segment.svg` | Segment | `#52BE96` | Official gem from the [status.segment.com](https://status.segment.com/) Contentful lockup (wordmark dropped) |
+| `heap.svg` | Heap | `#FFFFFF` + `#31D891` | Official bars from [developers.heap.io](https://developers.heap.io/) `dev_logo.svg` (wordmark dropped); near-black bars knocked to white |
+| `pendo.svg` | Pendo | `#EC1F5B` | Official mark from [pendo.io/icon.svg](https://www.pendo.io/icon.svg) |
+| `rudderstack.svg` | RudderStack | `#FFFFFF` | Official sail from [rudderstack.com full-logo-white.svg](https://www.rudderstack.com/images/logos/full-logo-white.svg) (wordmark dropped) |
+| `plausible.svg` | Plausible | `#5850EC` | Simple Icons `plausibleanalytics` |
+| `fathom.svg` | Fathom | `#9187FF` | Simple Icons `fathom` |
+| `matomo.svg` | Matomo | `#3152A0` | Simple Icons `matomo` |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.
