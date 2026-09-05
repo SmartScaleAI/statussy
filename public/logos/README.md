@@ -107,5 +107,15 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `confluent.svg` | Confluent | `#FFFFFF` | Official mark from the [confluent.io](https://www.confluent.io/) header lockup (wordmark dropped); white so official `#173361` reads on dark |
 | `tinybird.svg` | Tinybird | `#FFFFFF` / `#25283D` | Official mark from [cloud.tinybird.co/favicon.svg](https://cloud.tinybird.co/favicon.svg); light-scheme fills so the paper plane reads on dark |
 | `zilliz.svg` | Zilliz | Official gradient | Official mark from [zilliz.com/favicon.svg](https://zilliz.com/favicon.svg) |
+| `materialize.svg` | Materialize | `#7F4EFF` | Official mark from [materialize.com logomark](https://materialize.com/__static/01a06a7d-ac2a-4bf7-85bc-1c6f40465ed7/logos/logomark-purple.svg) |
+| `turso.svg` | Turso | `#4FF8D2` | Simple Icons `turso` |
+| `qdrant.svg` | Qdrant | `#DC244C` | Simple Icons `qdrant` |
+| `meilisearch.svg` | Meilisearch | `#FF5CAA` | Simple Icons `meilisearch` |
+| `algolia.svg` | Algolia | `#003DFF` | Simple Icons `algolia` |
+| `redpanda.svg` | Redpanda | `#E2401B` | Official panda mark from the [redpanda.com](https://www.redpanda.com/) header lockup (wordmark dropped) |
+| `surreal.svg` | SurrealDB | `#FF00A0` | Simple Icons `surrealdb` |
+| `yugabyte.svg` | Yugabyte | `#FF5F3B` | Official logomark from [docs.yugabyte.com/images/yugabytedb-logo.svg](https://docs.yugabyte.com/images/yugabytedb-logo.svg) (wordmark dropped) |
+| `tidb.svg` | TiDB | `#DC150B` | Simple Icons `tidb` |
+| `datastax.svg` | DataStax | `#FFFFFF` | Simple Icons `datastax`; white so official black reads on dark |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.

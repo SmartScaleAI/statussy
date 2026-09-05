@@ -30,8 +30,10 @@
  * Pinecone, MongoDB, CockroachDB, and Prisma via Statuspage, Neon via
  * Status.io; Data Wave B — Snowflake, ClickHouse, Elastic, Aiven, InfluxDB,
  * Couchbase, Confluent, Tinybird, and Zilliz via Statuspage, Databricks via
- * Status.io. AWS, Azure, Fastly, Replit, and Redis are seeded without a
- * fetcher) and writes snapshots, components, and incidents to Postgres.
+ * Status.io; Data Wave C — Materialize, Redpanda, Yugabyte, and TiDB via
+ * Statuspage, Turso, Qdrant, Meilisearch, and SurrealDB via Better Stack
+ * `index.json`. AWS, Azure, Fastly, Replit, Redis, Algolia, and DataStax
+ * are seeded without a fetcher) and writes snapshots, components, and incidents to Postgres.
  * A tiny HTTP server exposes /healthz.
  */
 import { createServer } from "node:http"
@@ -345,6 +347,31 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("confluent", "https://status.confluent.cloud"),
   statuspageJob("tinybird", "https://status.tinybird.co"),
   statuspageJob("zilliz", "https://status.zilliz.com"),
+  // Data Wave C. Algolia is a custom SPA; DataStax Statuspage is inactive.
+  statuspageJob("materialize", "https://status.materialize.com"),
+  {
+    id: "turso",
+    fetch: () => fetchBetterstackState("https://status.turso.tech", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  {
+    id: "qdrant",
+    fetch: () => fetchBetterstackState("https://status.qdrant.io", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  {
+    id: "meilisearch",
+    fetch: () => fetchBetterstackState("https://status.meilisearch.com", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  statuspageJob("redpanda", "https://status.redpanda.com"),
+  {
+    id: "surreal",
+    fetch: () => fetchBetterstackState("https://status.surrealdb.com", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  statuspageJob("yugabyte", "https://status.yugabyte.cloud"),
+  statuspageJob("tidb", "https://status.tidbcloud.com"),
 ]
 
 async function fetchService(service: ServiceJob): Promise<boolean> {
