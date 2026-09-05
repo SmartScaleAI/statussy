@@ -521,7 +521,7 @@
 
 .course-design-board .card.green:before {
   background: linear-gradient(
-      to top left,
+      to bottom right,
       var(--bg-dark),
       var(--bg-dark),
       var(--bg-dark),
@@ -542,7 +542,7 @@
 
 .course-design-board .card.blue:before {
   background: linear-gradient(
-      to top left,
+      to bottom right,
       var(--bg-dark),
       var(--bg-dark),
       var(--bg-dark),
@@ -563,7 +563,7 @@
 
 .course-design-board .card.amber:before {
   background: linear-gradient(
-      to top left,
+      to bottom right,
       var(--bg-dark),
       var(--bg-dark),
       var(--bg-dark),
@@ -584,7 +584,7 @@
 
 .course-design-board .card.red:before {
   background: linear-gradient(
-      to top left,
+      to bottom right,
       var(--bg-dark),
       var(--bg-dark),
       var(--bg-dark),
