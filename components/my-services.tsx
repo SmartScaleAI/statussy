@@ -1,20 +1,16 @@
 "use client"
 
-import {
-  Children,
-  isValidElement,
-  useMemo,
-  type ReactNode,
-} from "react"
+import { Children, isValidElement, useMemo, type ReactNode } from "react"
 
+import { useBoardSort } from "@/components/board-sort-menu"
 import { useFavoriteServices } from "@/components/favorite-services"
 import { StatusSummary } from "@/components/status-summary"
+import { sortBoardServices, type BoardSortItem } from "@/lib/board-sort"
 import { selectFavoriteServices } from "@/lib/favorite-services"
 import { summarizeServices, type BoardStatus } from "@/lib/status"
 import { cn } from "@/lib/utils"
 
-export type MyServiceItem = {
-  id: string
+export type MyServiceItem = BoardSortItem & {
   status: BoardStatus
 }
 
@@ -26,9 +22,10 @@ export function MyServices({
   children: ReactNode
 }) {
   const { favoriteIds } = useFavoriteServices()
+  const [sortBy] = useBoardSort()
   const favorites = useMemo(
-    () => selectFavoriteServices(items, favoriteIds),
-    [favoriteIds, items]
+    () => sortBoardServices(selectFavoriteServices(items, favoriteIds), sortBy),
+    [favoriteIds, items, sortBy]
   )
   const summary = summarizeServices(favorites)
   const cardsById = useMemo(() => {

@@ -8,8 +8,9 @@ import {
   type KeyboardEvent,
   type ReactNode,
 } from "react"
-import { ArrowUpDownIcon, SearchIcon } from "lucide-react"
+import { SearchIcon } from "lucide-react"
 
+import { BoardSortMenu, useBoardSort } from "@/components/board-sort-menu"
 import { Button } from "@/components/ui/button"
 import {
   InputGroup,
@@ -25,35 +26,45 @@ import {
   summarizeBoardItems,
   type BoardFilterItem,
 } from "@/lib/board-filter"
+import { sortBoardServices, type BoardSortItem } from "@/lib/board-sort"
 import { cn } from "@/lib/utils"
+
+export type BoardGridItem = BoardFilterItem & BoardSortItem
 
 export function StatusBoardGrid({
   items,
   children,
 }: {
-  items: BoardFilterItem[]
+  items: BoardGridItem[]
   children: ReactNode
 }) {
   const [query, setQuery] = useState("")
   const [category, setCategory] = useState(ALL_CATEGORY)
+  const [sortBy, setSortBy] = useBoardSort()
   const categories = useMemo(() => distinctCategories(items), [items])
   const options = useMemo(() => [ALL_CATEGORY, ...categories], [categories])
   const visibleItems = useMemo(
-    () => filterBoardServices(items, query, category),
-    [items, query, category]
+    () =>
+      sortBoardServices(filterBoardServices(items, query, category), sortBy),
+    [items, query, category, sortBy]
   )
   const summary = useMemo(
     () => summarizeBoardItems(visibleItems),
     [visibleItems]
   )
-  const visibleIds = useMemo(
-    () => new Set(visibleItems.map((item) => item.id)),
-    [visibleItems]
-  )
-  const cards = Children.toArray(children).filter((child, index) => {
-    const id = items[index]?.id
-    return id != null && visibleIds.has(id) && isValidElement(child)
-  })
+  const cardsById = useMemo(() => {
+    const map = new Map<string, ReactNode>()
+    Children.toArray(children).forEach((child, index) => {
+      const id = items[index]?.id
+      if (id && isValidElement(child)) {
+        map.set(id, child)
+      }
+    })
+    return map
+  }, [children, items])
+  const cards = visibleItems
+    .map((item) => cardsById.get(item.id))
+    .filter((card): card is ReactNode => card != null)
 
   function onChicletKeyDown(event: KeyboardEvent<HTMLDivElement>) {
     if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") {
@@ -102,15 +113,7 @@ export function StatusBoardGrid({
                 <SearchIcon />
               </InputGroupAddon>
             </InputGroup>
-            <Button
-              type="button"
-              variant="outline"
-              size="icon"
-              aria-label="Sort"
-              className="size-10"
-            >
-              <ArrowUpDownIcon />
-            </Button>
+            <BoardSortMenu sortBy={sortBy} onSortByChange={setSortBy} />
           </div>
           <div
             role="radiogroup"
