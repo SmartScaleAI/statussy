@@ -76,7 +76,9 @@
  * (status.puppet.com has no DNS), Scalr via status.scalr.io; Infra
  * Wave C — Teleport via status.goteleport.com; Flags Wave A —
  * LaunchDarkly, Optimizely, Statsig, and Flagsmith via Statuspage,
- * DevCycle via Status.io.
+ * DevCycle via Status.io; Flags Wave B — CloudBees via
+ * cloudbeesstatus.com, Kameleoon via kameleoon.statuspage.io,
+ * Monetate via monetate.statuspage.io, Reflag via Instatus.
  * AWS, Azure, Fastly, Replit, Redis, Algolia, DataStax, Okta, PayPal,
  * Adyen, PagerDuty, Checkly, Postmark, Mailchimp, Campaign Monitor,
  * Mailtrap, Substack, Adobe, Sketch, Penpot, Rive, LottieFiles,
@@ -84,7 +86,8 @@
  * Overflow, Axure, Relume, Visily, Plasmic, OpenTofu, Ansible, Argo
  * CD, Flux, Terragrunt, Env0, Salt, Rancher, Vagrant, Helm, Istio,
  * Linkerd, Cilium, OPA, Kyverno, Traefik, cert-manager, Infracost,
- * Unleash, ConfigCat, GrowthBook, Eppo, and VWO are seeded
+ * Unleash, ConfigCat, GrowthBook, Eppo, VWO, AB Tasty, Convert,
+ * Flipt, Hypertune, GO Feature Flag, and FeatBit are seeded
  * without a fetcher) and writes snapshots, components,
  * and incidents to Postgres.
  * A tiny HTTP server exposes /healthz.
@@ -684,6 +687,18 @@ const SERVICE_JOBS: ServiceJob[] = [
         DEVCYCLE_STATUS_PAGE_ID,
         fetchOptions(),
       ),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  // Flags Wave B. CloudBees / Kameleoon / Monetate are Statuspage.
+  // Reflag is Instatus. AB Tasty / Convert / Flipt / Hypertune /
+  // GO Feature Flag / FeatBit are none.
+  statuspageJob("cloudbees", "https://www.cloudbeesstatus.com"),
+  statuspageJob("kameleoon", "https://kameleoon.statuspage.io"),
+  statuspageJob("monetate", "https://monetate.statuspage.io"),
+  {
+    id: "reflag",
+    fetch: () =>
+      fetchInstatusState("https://status.reflag.com", fetchOptions()),
     persistOptions: { resolveMissingIncidents: true },
   },
 ]
