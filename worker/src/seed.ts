@@ -3,7 +3,7 @@ import type pg from "pg"
 /**
  * Static registry of board services (26 AI + Cloud / Developer / Data /
  * Auth / Payments / Observability Waves A–C + Email Waves A–C +
- * Design Wave A).
+ * Design Waves A–B).
  * Mirrors the ids in the Next.js app's data/services.ts (and public/logos/{id}.svg).
  * Windsurf is the legacy Devin Desktop name and is not seeded separately.
  * GitHub Copilot is a GitHub component, not its own card.
@@ -11,7 +11,8 @@ import type pg from "pg"
  * `category` defaults to `ai` when omitted. AWS, Azure, Fastly, Replit,
  * Redis, Algolia, DataStax, Okta, PayPal, Adyen, PagerDuty, Checkly,
  * Postmark, Mailchimp, Campaign Monitor, Mailtrap, Substack, Adobe,
- * and Sketch are `none` until a dedicated fetcher exists.
+ * Sketch, Penpot, Rive, LottieFiles, Whimsical, Lunacy, Photopea, and
+ * Blender are `none` until a dedicated fetcher exists.
  */
 export const SERVICE_SEED = [
   {
@@ -1667,6 +1668,79 @@ export const SERVICE_SEED = [
     category: "design",
     statusUrl: "https://status.frontify.com/",
     fetcherType: "statuspage",
+  },
+  // Design Wave B. Affinity stays on Canva. Abstract / InVision stay
+  // off (sunset). Spline still waits. Marvel, Balsamiq, and Anima are
+  // Statuspage; the rest are none (custom pages or no public JSON).
+  {
+    id: "penpot",
+    name: "Penpot",
+    category: "design",
+    statusUrl: "https://penpot.app/",
+    fetcherType: "none",
+  },
+  {
+    id: "marvel",
+    name: "Marvel",
+    category: "design",
+    statusUrl: "https://status.marvelapp.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "rive",
+    name: "Rive",
+    category: "design",
+    statusUrl: "https://status.rive.app/",
+    fetcherType: "none",
+  },
+  {
+    id: "lottiefiles",
+    name: "LottieFiles",
+    category: "design",
+    statusUrl: "https://status.lottiefiles.com/",
+    fetcherType: "none",
+  },
+  {
+    id: "balsamiq",
+    name: "Balsamiq",
+    category: "design",
+    statusUrl: "https://status.balsamiq.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "anima",
+    name: "Anima",
+    category: "design",
+    statusUrl: "https://status.animaapp.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "whimsical",
+    name: "Whimsical",
+    category: "design",
+    statusUrl: "https://status.whimsical.com/",
+    fetcherType: "none",
+  },
+  {
+    id: "lunacy",
+    name: "Lunacy",
+    category: "design",
+    statusUrl: "https://icons8.com/lunacy",
+    fetcherType: "none",
+  },
+  {
+    id: "photopea",
+    name: "Photopea",
+    category: "design",
+    statusUrl: "https://www.photopea.com/",
+    fetcherType: "none",
+  },
+  {
+    id: "blender",
+    name: "Blender",
+    category: "design",
+    statusUrl: "https://status.blender.org/",
+    fetcherType: "none",
   },
 ] as const
 

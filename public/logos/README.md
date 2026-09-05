@@ -247,5 +247,15 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `lucid.svg` | Lucid | `#FFFFFF` | Simple Icons `lucid`; white so official `#282C33` reads on dark |
 | `mural.svg` | Mural | `#FF4B4B` | Simple Icons `mural` |
 | `frontify.svg` | Frontify | `#FFFFFF` | Simple Icons `frontify`; white so official `#2D3232` reads on dark |
+| `penpot.svg` | Penpot | `#FFFFFF` | Simple Icons `penpot`; white so official black reads on dark |
+| `marvel.svg` | Marvel | `#1FB6FF` | Simple Icons `marvelapp` |
+| `rive.svg` | Rive | `#FFFFFF` | Simple Icons `rive`; white so official `#1D1D1D` reads on dark |
+| `lottiefiles.svg` | LottieFiles | `#00DDB3` | Simple Icons `lottiefiles` |
+| `balsamiq.svg` | Balsamiq | `#AE1C59` | Official logomark from [balsamiq.com/assets/logomark.svg](https://balsamiq.com/assets/logomark.svg) |
+| `anima.svg` | Anima | `#FF6250` / `#FFDF90` / `#3366FF` | Official mark from [animaapp.com Storyblok anima-logo.svg](https://a.storyblok.com/f/89137/24x24/56f0f9432d/anima-logo.svg) |
+| `whimsical.svg` | Whimsical | Official gradient + `#FFFFFF` | Official diamond from [whimsical.com brand logo-color.svg](https://whimsical.com/_next_public/brand/logo-color.svg) (wordmark dropped); ring remapped from `#220a33` to white |
+| `lunacy.svg` | Lunacy | `#179DE3` | Simple Icons `lunacy` |
+| `photopea.svg` | Photopea | `#18A497` | Simple Icons `photopea` |
+| `blender.svg` | Blender | `#E87D0D` | Simple Icons `blender` |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.

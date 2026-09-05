@@ -1973,7 +1973,7 @@ export const services: Service[] = [
   // ships from. One card per vendor. FigJam / Dev Mode / Figma Slides
   // stay on Figma. Photoshop / Illustrator / XD / Express stay on
   // Adobe. Lucidspark stays on Lucid. Spline waits (no official
-  // vector). Penpot, Marvel, Rive, and LottieFiles wait.
+  // vector). Zeplin, ProtoPie, and Overflow wait.
   {
     id: "figma",
     name: "Figma",
@@ -2053,5 +2053,89 @@ export const services: Service[] = [
     statusUrl: "https://status.frontify.com/",
     status: "operational",
     updatedAt: "2026-09-05T19:00:00.000Z",
+  },
+  // Design Wave B — open-source draw, prototype, motion assets that
+  // ship in the UI, wireframe, design-to-code, and 3D DCC. Affinity
+  // stays on Canva. Abstract and InVision stay off (sunset). Spline
+  // still waits (no official vector).
+  {
+    id: "penpot",
+    name: "Penpot",
+    category: "design",
+    statusUrl: "https://penpot.app/",
+    status: "operational",
+    updatedAt: "2026-09-05T19:10:00.000Z",
+  },
+  {
+    id: "marvel",
+    name: "Marvel",
+    category: "design",
+    statusUrl: "https://status.marvelapp.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T19:10:00.000Z",
+  },
+  {
+    id: "rive",
+    name: "Rive",
+    category: "design",
+    statusUrl: "https://status.rive.app/",
+    status: "operational",
+    updatedAt: "2026-09-05T19:10:00.000Z",
+  },
+  {
+    id: "lottiefiles",
+    name: "LottieFiles",
+    category: "design",
+    statusUrl: "https://status.lottiefiles.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T19:10:00.000Z",
+  },
+  {
+    id: "balsamiq",
+    name: "Balsamiq",
+    category: "design",
+    statusUrl: "https://status.balsamiq.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T19:10:00.000Z",
+  },
+  {
+    id: "anima",
+    name: "Anima",
+    category: "design",
+    statusUrl: "https://status.animaapp.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T19:10:00.000Z",
+  },
+  {
+    id: "whimsical",
+    name: "Whimsical",
+    category: "design",
+    statusUrl: "https://status.whimsical.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T19:10:00.000Z",
+  },
+  {
+    id: "lunacy",
+    name: "Lunacy",
+    category: "design",
+    statusUrl: "https://icons8.com/lunacy",
+    status: "operational",
+    updatedAt: "2026-09-05T19:10:00.000Z",
+  },
+  {
+    id: "photopea",
+    name: "Photopea",
+    category: "design",
+    statusUrl: "https://www.photopea.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T19:10:00.000Z",
+  },
+  {
+    id: "blender",
+    name: "Blender",
+    category: "design",
+    statusUrl: "https://status.blender.org/",
+    status: "operational",
+    updatedAt: "2026-09-05T19:10:00.000Z",
   },
 ]
