@@ -7,8 +7,8 @@ import type pg from "pg"
  * GitHub Copilot is a GitHub component, not its own card.
  *
  * `category` defaults to `ai` when omitted. AWS, Azure, Fastly, Replit,
- * Redis, Algolia, DataStax, Okta, PayPal, Adyen, and PagerDuty are `none`
- * until a dedicated fetcher exists.
+ * Redis, Algolia, DataStax, Okta, PayPal, Adyen, PagerDuty, and Checkly
+ * are `none` until a dedicated fetcher exists.
  */
 export const SERVICE_SEED = [
   {
@@ -1240,6 +1240,76 @@ export const SERVICE_SEED = [
     name: "Axiom",
     category: "observability",
     statusUrl: "https://status.axiom.co/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "sumo-logic",
+    name: "Sumo Logic",
+    category: "observability",
+    statusUrl: "https://status.sumologic.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "coralogix",
+    name: "Coralogix",
+    category: "observability",
+    statusUrl: "https://status.coralogix.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "rollbar",
+    name: "Rollbar",
+    category: "observability",
+    statusUrl: "https://status.rollbar.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "bugsnag",
+    name: "Bugsnag",
+    category: "observability",
+    statusUrl: "https://status.bugsnag.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "incident-io",
+    name: "incident.io",
+    category: "observability",
+    statusUrl: "https://status.incident.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "mezmo",
+    name: "Mezmo",
+    category: "observability",
+    statusUrl: "https://status.mezmo.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "airbrake",
+    name: "Airbrake",
+    category: "observability",
+    statusUrl: "https://status.airbrake.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "checkly",
+    name: "Checkly",
+    category: "observability",
+    statusUrl: "https://status.checklyhq.com/",
+    fetcherType: "none",
+  },
+  {
+    id: "cribl",
+    name: "Cribl",
+    category: "observability",
+    statusUrl: "https://status.cribl.cloud/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "logz",
+    name: "logz.io",
+    category: "observability",
+    statusUrl: "https://status.logz.io/",
     fetcherType: "statuspage",
   },
 ] as const

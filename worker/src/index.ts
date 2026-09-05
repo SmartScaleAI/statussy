@@ -50,9 +50,12 @@
  * Statuspage (Maxio's public host times out on /api/v2, so the fetcher
  * hits maxio.statuspage.io); Observability Wave A — Datadog, Sentry,
  * Grafana, New Relic, Honeycomb, Splunk, and Axiom via Statuspage,
- * Dynatrace via Status.io, Better Stack via Better Stack `index.json`.
+ * Dynatrace via Status.io, Better Stack via Better Stack `index.json`;
+ * Observability Wave B — Sumo Logic, Coralogix, Rollbar, Bugsnag
+ * (bugsnag.status.smartbear.com), incident.io, Mezmo, Airbrake, Cribl,
+ * and logz.io via Statuspage.
  * AWS, Azure, Fastly, Replit, Redis, Algolia, DataStax, Okta, PayPal,
- * Adyen, and PagerDuty are seeded without a
+ * Adyen, PagerDuty, and Checkly are seeded without a
  * fetcher) and writes snapshots, components,
  * and incidents to Postgres.
  * A tiny HTTP server exposes /healthz.
@@ -130,8 +133,9 @@ type ServiceJob = {
 }
 
 // Board services with a fetcher (26 AI + Cloud / Developer / Data / Auth /
-// Payments Waves A–C + Observability Wave A; AWS, Azure, Fastly, Replit,
-// Redis, Algolia, DataStax, Okta, PayPal, Adyen, and PagerDuty are none).
+// Payments Waves A–C + Observability Waves A–B; AWS, Azure, Fastly, Replit,
+// Redis, Algolia, DataStax, Okta, PayPal, Adyen, PagerDuty, and Checkly
+// are none).
 const statuspageJob = (id: string, baseUrl: string): ServiceJob => ({
   id,
   fetch: () => fetchStatuspageState(baseUrl, fetchOptions()),
@@ -518,6 +522,17 @@ const SERVICE_JOBS: ServiceJob[] = [
     persistOptions: { resolveMissingIncidents: true },
   },
   statuspageJob("axiom", "https://status.axiom.co"),
+  // Observability Wave B. Checkly is none (own Nuxt page, no public JSON).
+  // Bugsnag's public host redirects; hit the SmartBear Statuspage host.
+  statuspageJob("sumo-logic", "https://status.sumologic.com"),
+  statuspageJob("coralogix", "https://status.coralogix.com"),
+  statuspageJob("rollbar", "https://status.rollbar.com"),
+  statuspageJob("bugsnag", "https://bugsnag.status.smartbear.com"),
+  statuspageJob("incident-io", "https://status.incident.io"),
+  statuspageJob("mezmo", "https://status.mezmo.com"),
+  statuspageJob("airbrake", "https://status.airbrake.io"),
+  statuspageJob("cribl", "https://status.cribl.cloud"),
+  statuspageJob("logz", "https://status.logz.io"),
 ]
 
 async function fetchService(service: ServiceJob): Promise<boolean> {

@@ -187,5 +187,15 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `dynatrace.svg` | Dynatrace | `#1496FF` | Simple Icons `dynatrace` |
 | `better-stack.svg` | Better Stack | `#FFFFFF` | Simple Icons `betterstack`; white so official black reads on dark |
 | `axiom.svg` | Axiom | `#FFFFFF` | Official A from [axiom.co/logo/axiom-wordmark.svg](https://axiom.co/logo/axiom-wordmark.svg) (wordmark dropped) |
+| `sumo-logic.svg` | Sumo Logic | `#FFFFFF` | Simple Icons `sumologic`; white so official `#000099` reads on dark |
+| `coralogix.svg` | Coralogix | `#86FFC9` / `#13E989` | Official mark from [coralogix.com Coralogix_Logo_25.svg](https://coralogix.com/wp-content/uploads/2025/12/Coralogix_Logo_25.svg) (wordmark dropped) |
+| `rollbar.svg` | Rollbar | `#3569F3` | Simple Icons `rollbar` |
+| `bugsnag.svg` | Bugsnag | `#4949E4` | Simple Icons `bugsnag` |
+| `incident-io.svg` | incident.io | `#FFFFFF` | Official mark from the [incident.io](https://incident.io/) lockup (wordmark dropped); white so official `#222326` reads on dark |
+| `mezmo.svg` | Mezmo | `#E9FF92` | Simple Icons `mezmo` |
+| `airbrake.svg` | Airbrake | `#FFA500` | Simple Icons `airbrake` |
+| `checkly.svg` | Checkly | `#0075FF` / `#002652` | Official mark from [checklyhq.com/logos/checkly/checkly.svg](https://www.checklyhq.com/logos/checkly/checkly.svg) |
+| `cribl.svg` | Cribl | `#00CCCC` | Official mark from [cribl.io cribl-logo.svg](https://images.ctfassets.net/xnqwd8kotbaj/3etrKzhi0UCCFPdBY4JADk/66e1ff433356b509dca22e9a28d41687/cribl-logo.svg) (wordmark dropped) |
+| `logz.svg` | logz.io | `#FFFFFF` | Official hex from [logz.io logo.svg](https://dytvr9ot2sszz.cloudfront.net/wp-content/uploads/2025/08/logo.svg) (wordmark dropped); white so official `#112031` reads on dark |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.

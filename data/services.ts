@@ -1461,9 +1461,8 @@ export const services: Service[] = [
   // Observability Wave A — monitoring, APM, logs, traces, error tracking,
   // and on-call the app dies on. One card per vendor. CloudWatch / Azure
   // Monitor / GCP Operations stay on their Cloud parents. Elastic
-  // Observability stays on Elastic. Opsgenie waits (Atlassian). Checkly's
-  // own Nuxt page has no public JSON. PagerDuty has no public JSON
-  // (custom page).
+  // Observability stays on Elastic. Opsgenie waits (Atlassian). PagerDuty
+  // has no public JSON (custom page).
   {
     id: "datadog",
     name: "Datadog",
@@ -1543,5 +1542,89 @@ export const services: Service[] = [
     statusUrl: "https://status.axiom.co/",
     status: "operational",
     updatedAt: "2026-09-05T15:10:00.000Z",
+  },
+  // Observability Wave B — more logs, error tracking, incident command,
+  // synthetics, and telemetry pipelines. Observe stays on Snowflake.
+  // Splunk On-Call stays on Splunk. Checkly has no public JSON (own Nuxt
+  // page).
+  {
+    id: "sumo-logic",
+    name: "Sumo Logic",
+    category: "observability",
+    statusUrl: "https://status.sumologic.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T15:20:00.000Z",
+  },
+  {
+    id: "coralogix",
+    name: "Coralogix",
+    category: "observability",
+    statusUrl: "https://status.coralogix.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T15:20:00.000Z",
+  },
+  {
+    id: "rollbar",
+    name: "Rollbar",
+    category: "observability",
+    statusUrl: "https://status.rollbar.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T15:20:00.000Z",
+  },
+  {
+    id: "bugsnag",
+    name: "Bugsnag",
+    category: "observability",
+    statusUrl: "https://status.bugsnag.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T15:20:00.000Z",
+  },
+  {
+    id: "incident-io",
+    name: "incident.io",
+    category: "observability",
+    statusUrl: "https://status.incident.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T15:20:00.000Z",
+  },
+  {
+    id: "mezmo",
+    name: "Mezmo",
+    category: "observability",
+    statusUrl: "https://status.mezmo.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T15:20:00.000Z",
+  },
+  {
+    id: "airbrake",
+    name: "Airbrake",
+    category: "observability",
+    statusUrl: "https://status.airbrake.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T15:20:00.000Z",
+  },
+  {
+    id: "checkly",
+    name: "Checkly",
+    category: "observability",
+    statusUrl: "https://status.checklyhq.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T15:20:00.000Z",
+  },
+  {
+    id: "cribl",
+    name: "Cribl",
+    category: "observability",
+    statusUrl: "https://status.cribl.cloud/",
+    status: "operational",
+    updatedAt: "2026-09-05T15:20:00.000Z",
+  },
+  {
+    id: "logz",
+    name: "logz.io",
+    category: "observability",
+    statusUrl: "https://status.logz.io/",
+    status: "operational",
+    updatedAt: "2026-09-05T15:20:00.000Z",
   },
 ]
