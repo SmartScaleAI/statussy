@@ -14,7 +14,7 @@ import {
   type ServiceIncident,
 } from "@/lib/live-status"
 import { formatTimestamp, STATUS_LABEL, type BoardStatus } from "@/lib/status"
-import { cn } from "@/lib/utils"
+import { boardPaperClassName, cn } from "@/lib/utils"
 
 type PageProps = {
   params: Promise<{ id: string }>
@@ -167,7 +167,10 @@ export default async function ServiceDetailPage({ params }: PageProps) {
           All services
         </Link>
 
-        <section className="flex flex-col gap-4" aria-label="Overall status">
+        <section
+          className={cn("flex flex-col gap-4", boardPaperClassName)}
+          aria-label="Overall status"
+        >
           <div className="flex items-center gap-4">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -208,7 +211,10 @@ export default async function ServiceDetailPage({ params }: PageProps) {
           </p>
         </section>
 
-        <section className="flex flex-col gap-3" aria-label="Active incidents">
+        <section
+          className={cn("flex flex-col gap-3", boardPaperClassName)}
+          aria-label="Active incidents"
+        >
           <h2 className="font-heading text-lg font-semibold tracking-tight text-foreground">
             Active incidents
           </h2>
@@ -219,13 +225,16 @@ export default async function ServiceDetailPage({ params }: PageProps) {
               ))}
             </ul>
           ) : (
-            <p className="rounded-lg border border-dashed border-border px-4 py-6 text-center text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               No active incidents.
             </p>
           )}
         </section>
 
-        <section className="flex flex-col gap-3" aria-label="Components">
+        <section
+          className={cn("flex flex-col gap-3", boardPaperClassName)}
+          aria-label="Components"
+        >
           <h2 className="font-heading text-lg font-semibold tracking-tight text-foreground">
             Components
           </h2>
@@ -244,7 +253,7 @@ export default async function ServiceDetailPage({ params }: PageProps) {
               ))}
             </ul>
           ) : (
-            <p className="rounded-lg border border-dashed border-border px-4 py-6 text-center text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               No components reported for this service yet.
             </p>
           )}
