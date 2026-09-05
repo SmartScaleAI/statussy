@@ -3,6 +3,7 @@
 import {
   Children,
   isValidElement,
+  useEffect,
   useMemo,
   useState,
   type KeyboardEvent,
@@ -10,6 +11,7 @@ import {
 } from "react"
 import { SearchIcon } from "lucide-react"
 
+import { BoardPagination } from "@/components/board-pagination"
 import { BoardSortMenu, useBoardSort } from "@/components/board-sort-menu"
 import { Button } from "@/components/ui/button"
 import {
@@ -26,6 +28,7 @@ import {
   summarizeBoardItems,
   type BoardFilterItem,
 } from "@/lib/board-filter"
+import { paginateItems } from "@/lib/board-pagination"
 import { sortBoardServices, type BoardSortItem } from "@/lib/board-sort"
 import { cn } from "@/lib/utils"
 
@@ -40,6 +43,7 @@ export function StatusBoardGrid({
 }) {
   const [query, setQuery] = useState("")
   const [category, setCategory] = useState(ALL_CATEGORY)
+  const [page, setPage] = useState(1)
   const [sortBy, setSortBy] = useBoardSort()
   const categories = useMemo(() => distinctCategories(items), [items])
   const options = useMemo(() => [ALL_CATEGORY, ...categories], [categories])
@@ -48,10 +52,19 @@ export function StatusBoardGrid({
       sortBoardServices(filterBoardServices(items, query, category), sortBy),
     [items, query, category, sortBy]
   )
+  const paged = useMemo(
+    () => paginateItems(visibleItems, page),
+    [visibleItems, page]
+  )
   const summary = useMemo(
     () => summarizeBoardItems(visibleItems),
     [visibleItems]
   )
+
+  useEffect(() => {
+    setPage(1)
+  }, [query, category, sortBy])
+
   const cardsById = useMemo(() => {
     const map = new Map<string, ReactNode>()
     Children.toArray(children).forEach((child, index) => {
@@ -62,7 +75,7 @@ export function StatusBoardGrid({
     })
     return map
   }, [children, items])
-  const cards = visibleItems
+  const cards = paged.pageItems
     .map((item) => cardsById.get(item.id))
     .filter((card): card is ReactNode => card != null)
 
@@ -150,9 +163,16 @@ export function StatusBoardGrid({
             No services match.
           </p>
         ) : (
-          <ul className="grid grid-cols-1 gap-10 sm:grid-cols-2 xl:grid-cols-3">
-            {cards}
-          </ul>
+          <>
+            <ul className="grid grid-cols-1 gap-10 sm:grid-cols-2 xl:grid-cols-3">
+              {cards}
+            </ul>
+            <BoardPagination
+              page={paged.page}
+              pageCount={paged.pageCount}
+              onPageChange={setPage}
+            />
+          </>
         )}
       </div>
     </div>
