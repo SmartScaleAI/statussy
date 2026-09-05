@@ -16,7 +16,7 @@ export const SERVICE_STATUSES = [
 
 export type ServiceStatus = (typeof SERVICE_STATUSES)[number]
 
-export type ServiceCategory = "ai"
+export type ServiceCategory = "ai" | "cloud"
 
 export type Service = {
   /** Matches a static mark at `public/logos/{id}.svg`. */
@@ -248,5 +248,88 @@ export const services: Service[] = [
     statusUrl: "https://status.lumalabs.ai/",
     status: "operational",
     updatedAt: "2026-09-05T02:20:00.000Z",
+  },
+  // Cloud Wave A — hosting, edge, and the three hyperscalers. One card per
+  // vendor (no CloudFront / Workers / Bedrock / Azure OpenAI splits).
+  // AWS and Azure ship without a fetcher (custom dashboards, no public JSON).
+  {
+    id: "vercel",
+    name: "Vercel",
+    category: "cloud",
+    statusUrl: "https://www.vercel-status.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T02:50:00.000Z",
+  },
+  {
+    id: "railway",
+    name: "Railway",
+    category: "cloud",
+    statusUrl: "https://status.railway.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T02:50:00.000Z",
+  },
+  {
+    id: "cloudflare",
+    name: "Cloudflare",
+    category: "cloud",
+    statusUrl: "https://www.cloudflarestatus.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T02:50:00.000Z",
+  },
+  {
+    id: "render",
+    name: "Render",
+    category: "cloud",
+    statusUrl: "https://status.render.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T02:50:00.000Z",
+  },
+  {
+    id: "fly",
+    name: "Fly.io",
+    category: "cloud",
+    statusUrl: "https://status.flyio.net/",
+    status: "operational",
+    updatedAt: "2026-09-05T02:50:00.000Z",
+  },
+  {
+    id: "netlify",
+    name: "Netlify",
+    category: "cloud",
+    statusUrl: "https://www.netlifystatus.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T02:50:00.000Z",
+  },
+  {
+    id: "digitalocean",
+    name: "DigitalOcean",
+    category: "cloud",
+    statusUrl: "https://status.digitalocean.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T02:50:00.000Z",
+  },
+  {
+    id: "google-cloud",
+    name: "Google Cloud",
+    category: "cloud",
+    statusUrl: "https://status.cloud.google.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T02:50:00.000Z",
+  },
+  {
+    id: "aws",
+    name: "AWS",
+    category: "cloud",
+    statusUrl: "https://health.aws.amazon.com/health/status",
+    status: "operational",
+    updatedAt: "2026-09-05T02:50:00.000Z",
+  },
+  {
+    id: "azure",
+    name: "Azure",
+    category: "cloud",
+    statusUrl: "https://azure.microsoft.com/status/",
+    status: "operational",
+    updatedAt: "2026-09-05T02:50:00.000Z",
   },
 ]

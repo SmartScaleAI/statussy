@@ -1,8 +1,8 @@
 # Statussy
 
-Glanceable “is anything down?” board for AI services. A SmartScale app, separate from Zerro.
+Glanceable “is anything down?” board for AI and Cloud services. A SmartScale app, separate from Zerro.
 
-The board reads **live status from Postgres** for all 26 AI services the worker fetches (Wave A: OpenAI, Anthropic, Groq, Cohere, OpenRouter, Perplexity, xAI, DeepSeek, Google Gemini, Mistral; Wave B: Fireworks AI, Together AI, Cerebras, Hugging Face, Replicate, Runway, Ideogram, Stability AI; Wave C: fal, ElevenLabs, MiniMax, Voyage AI, Black Forest Labs, Cartesia, Kimi, Luma). Nothing is scraped from the client. When a service has no snapshot yet, or the database is unreachable, the board still falls back to mock data.
+The board reads **live status from Postgres** for the 36 catalog services (26 AI + Cloud Wave A). AI Wave A: OpenAI, Anthropic, Groq, Cohere, OpenRouter, Perplexity, xAI, DeepSeek, Google Gemini, Mistral; Wave B: Fireworks AI, Together AI, Cerebras, Hugging Face, Replicate, Runway, Ideogram, Stability AI; Wave C: fal, ElevenLabs, MiniMax, Voyage AI, Black Forest Labs, Cartesia, Kimi, Luma. Cloud Wave A: Vercel, Railway, Cloudflare, Render, Fly.io, Netlify, DigitalOcean, Google Cloud, AWS, Azure. The worker fetches every service that has a fetcher; AWS and Azure are seeded without one (custom dashboards, no public Statuspage JSON) and stay on mock until a dedicated Health fetcher exists. Nothing is scraped from the client. When a service has no snapshot yet, or the database is unreachable, the board still falls back to mock data.
 
 Coding agents (Cursor, Windsurf, Devin, GitHub Copilot) are parked for a future **Developer** category and are not on this board.
 
@@ -23,7 +23,7 @@ npm run build
 
 Live-data foundation for the board: a Railway Postgres database plus a small Node
 worker in [`worker/`](worker/). The worker owns the schema (`services`,
-`service_snapshots`, `components`, `incidents`, `service_suggestions`), seeds the 26 board services,
+`service_snapshots`, `components`, `incidents`, `service_suggestions`), seeds the 36 board services,
 and ticks on a configurable interval (default every 5 minutes). Each tick fetches
 live status for services with a fetcher — OpenAI, Anthropic, Groq, Cohere,
 Fireworks, Cerebras, Replicate, Runway, Ideogram, Stability, ElevenLabs,
@@ -32,10 +32,14 @@ Statuspage-compatible API, OpenRouter via OnlineOrNot, Perplexity and fal via
 Instatus, xAI and DeepSeek via their RSS/Atom feeds, Google Gemini via Google
 Cloud Status `incidents.json`, Mistral via its Checkly/Nuxt status page
 (`__NUXT_DATA__` embedded in `https://status.mistral.ai/` HTML; there is no
-public JSON API, and Cloudflare may challenge the fetch), and Together AI,
+public JSON API, and Cloudflare may challenge the fetch), Together AI,
 Hugging Face, and Luma via Better Stack `index.json` (the undocumented JSON the SPA
 loads — no Statuspage/RSS API; if that shape changes, follow up with a
-dedicated Better Stack fetcher) — and upserts snapshot,
+dedicated Better Stack fetcher), Cloud Wave A Statuspage hosts (Vercel,
+Cloudflare, Render, Fly.io, Netlify, DigitalOcean), Railway via
+`https://api.railwaystatus.com/status` (Railway documents this JSON as-is),
+and Google Cloud via the same `incidents.json` feed as Gemini (platform-wide;
+informational notices do not paint the card) — and upserts snapshot,
 component, and incident rows. On a failed fetch the worker keeps last-known rows
 and flags the latest snapshot `stale`.
 
@@ -56,7 +60,7 @@ and flags the latest snapshot `stale`.
 cd worker
 npm install
 export DATABASE_URL=postgres://user:pass@localhost:5432/statussy
-npm run migrate   # apply migrations + seed the 26 services, then exit
+npm run migrate   # apply migrations + seed the 36 services, then exit
 npm run dev       # migrate, seed, tick on the interval, serve /healthz
 ```
 
@@ -145,7 +149,7 @@ its slot now holds the live Health chicklet.
 {
   id: "service-id",
   name: "Service Name",
-  category: "ai",
+  category: "ai", // or "cloud"
   statusUrl: "https://status.example.com/",
   status: "operational", // operational | degraded | partial_outage | major_outage | maintenance
   incidentTitle: "Optional short incident title",

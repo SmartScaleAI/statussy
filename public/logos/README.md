@@ -32,5 +32,15 @@ Marks keep the SMA-8 paths and viewBoxes (same size/alignment). Fills use docume
 | `cartesia.svg`      | Cartesia      | `#14B8A6`                    | Simple C / waveform mark; teal from [cartesia.ai](https://cartesia.ai) |
 | `kimi.svg`          | Kimi          | `#38BDF8`                    | Simple K mark; Moonshot sky from [kimi.com](https://www.kimi.com) |
 | `luma.svg`          | Luma          | `#E879F9`                    | Simple ring mark; Luma pink from [lumalabs.ai](https://lumalabs.ai) |
+| `vercel.svg`        | Vercel        | `#FFFFFF`                    | Official triangle; white so the black lockup stays readable on dark |
+| `railway.svg`       | Railway       | `#7B61FF`                    | Simple rail-bar mark; Railway purple from [railway.com](https://railway.com) |
+| `cloudflare.svg`    | Cloudflare    | `#F38020`                    | Simple cloud mark; Cloudflare orange from [cloudflare.com](https://www.cloudflare.com) |
+| `render.svg`        | Render        | `#46E3B7`                    | Simple R mark; Render teal from [render.com](https://render.com) |
+| `fly.svg`           | Fly.io        | `#7B3FF2`                    | Simple dart mark; Fly purple from [fly.io](https://fly.io) |
+| `netlify.svg`       | Netlify       | `#00C7B7`                    | Simple gem mark; Netlify teal from [netlify.com](https://www.netlify.com) |
+| `digitalocean.svg`  | DigitalOcean  | `#0080FF`                    | Simple droplet-circle; DigitalOcean blue from [digitalocean.com](https://www.digitalocean.com) |
+| `google-cloud.svg`  | Google Cloud  | `#4285F4 / #34A853 / #FBBC05 / #EA4335` | Four-color G-cloud stand-in; Google brand colors |
+| `aws.svg`           | AWS           | `#FF9900`                    | Simple smile + letter mark; Amazon orange from [aws.amazon.com](https://aws.amazon.com) |
+| `azure.svg`         | Azure         | `#0078D4`                    | Simple A-tile mark; Azure blue from [azure.microsoft.com](https://azure.microsoft.com) |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.

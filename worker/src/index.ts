@@ -12,8 +12,11 @@
  * Wave B Statuspage services per SMA-41 — Fireworks, Cerebras, Replicate,
  * Runway, Ideogram, Stability; Together AI, Hugging Face, and Luma via Better
  * Stack `index.json`; Wave C Statuspage — ElevenLabs, MiniMax, Voyage, Black
- * Forest Labs, Cartesia, Kimi; fal via Instatus) and writes snapshots,
- * components, and incidents to Postgres.
+ * Forest Labs, Cartesia, Kimi; fal via Instatus; Cloud Wave A — Vercel,
+ * Cloudflare, Render, Fly.io, Netlify, DigitalOcean via Statuspage, Railway
+ * via api.railwaystatus.com, Google Cloud via incidents.json. AWS and Azure
+ * are seeded without a fetcher) and writes snapshots, components, and
+ * incidents to Postgres.
  * A tiny HTTP server exposes /healthz.
  */
 import { createServer } from "node:http"
@@ -25,7 +28,11 @@ import { runMigrations } from "./migrate.js"
 import { fetchRssState } from "./rss.js"
 import { seedServices } from "./seed.js"
 import { fetchOnlineOrNotState } from "./onlineornot.js"
-import { fetchGoogleCloudGeminiState } from "./google-cloud.js"
+import {
+  fetchGoogleCloudGeminiState,
+  fetchGoogleCloudPlatformState,
+} from "./google-cloud.js"
+import { fetchRailwayState } from "./railway.js"
 import { fetchBetterstackState } from "./betterstack.js"
 import { fetchStatuspageState } from "./statuspage.js"
 import {
@@ -69,7 +76,7 @@ type ServiceJob = {
   persistOptions?: PersistOptions
 }
 
-// All 26 board services are fetched each tick (Wave A + Wave B + Wave C).
+// Board services with a fetcher (26 AI + 8 Cloud Wave A; AWS/Azure are none).
 const statuspageJob = (id: string, baseUrl: string): ServiceJob => ({
   id,
   fetch: () => fetchStatuspageState(baseUrl, fetchOptions()),
@@ -161,6 +168,26 @@ const SERVICE_JOBS: ServiceJob[] = [
     // Luma is a Better Stack SPA, same index.json as Together / Hugging Face.
     id: "luma",
     fetch: () => fetchBetterstackState("https://status.lumalabs.ai", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  // Cloud Wave A — Statuspage-compatible hosts. Cloudflare's page-level
+  // indicator is the official rollup (a single POP in maintenance must not
+  // paint the card; mapStatuspage already uses status.indicator).
+  statuspageJob("vercel", "https://www.vercel-status.com"),
+  statuspageJob("cloudflare", "https://www.cloudflarestatus.com"),
+  statuspageJob("render", "https://status.render.com"),
+  statuspageJob("fly", "https://status.flyio.net"),
+  statuspageJob("netlify", "https://www.netlifystatus.com"),
+  statuspageJob("digitalocean", "https://status.digitalocean.com"),
+  {
+    id: "railway",
+    fetch: () => fetchRailwayState(fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  {
+    // Platform-wide GCP card. Informational notices stay off the rollup.
+    id: "google-cloud",
+    fetch: () => fetchGoogleCloudPlatformState(fetchOptions()),
     persistOptions: { resolveMissingIncidents: true },
   },
 ]

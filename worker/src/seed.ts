@@ -1,11 +1,13 @@
 import type pg from "pg"
 
 /**
- * Static registry of the 26 AI services on the Statussy board
- * (Wave A: 10; Wave B / SMA-41: 8; Wave C: 8 stack-used AI products).
+ * Static registry of board services (26 AI + Cloud Wave A).
  * Mirrors the ids in the Next.js app's data/services.ts (and public/logos/{id}.svg).
  * Coding agents (Cursor, Windsurf, Devin, GitHub Copilot) are parked for a
  * future Developer category and must not be seeded here.
+ *
+ * `category` defaults to `ai` when omitted. AWS and Azure are `none` until
+ * a dedicated Health-dashboard fetcher exists.
  */
 export const SERVICE_SEED = [
   {
@@ -154,21 +156,97 @@ export const SERVICE_SEED = [
     statusUrl: "https://status.lumalabs.ai/",
     fetcherType: "betterstack",
   },
+  {
+    id: "vercel",
+    name: "Vercel",
+    category: "cloud",
+    statusUrl: "https://www.vercel-status.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "railway",
+    name: "Railway",
+    category: "cloud",
+    statusUrl: "https://status.railway.com/",
+    fetcherType: "railway",
+  },
+  {
+    id: "cloudflare",
+    name: "Cloudflare",
+    category: "cloud",
+    statusUrl: "https://www.cloudflarestatus.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "render",
+    name: "Render",
+    category: "cloud",
+    statusUrl: "https://status.render.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "fly",
+    name: "Fly.io",
+    category: "cloud",
+    statusUrl: "https://status.flyio.net/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "netlify",
+    name: "Netlify",
+    category: "cloud",
+    statusUrl: "https://www.netlifystatus.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "digitalocean",
+    name: "DigitalOcean",
+    category: "cloud",
+    statusUrl: "https://status.digitalocean.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "google-cloud",
+    name: "Google Cloud",
+    category: "cloud",
+    statusUrl: "https://status.cloud.google.com/",
+    fetcherType: "google_cloud",
+  },
+  {
+    id: "aws",
+    name: "AWS",
+    category: "cloud",
+    statusUrl: "https://health.aws.amazon.com/health/status",
+    fetcherType: "none",
+  },
+  {
+    id: "azure",
+    name: "Azure",
+    category: "cloud",
+    statusUrl: "https://azure.microsoft.com/status/",
+    fetcherType: "none",
+  },
 ] as const
+
+function seedCategory(service: { category?: string }): string {
+  return service.category ?? "ai"
+}
 
 export async function seedServices(pool: pg.Pool): Promise<void> {
   for (const service of SERVICE_SEED) {
     await pool.query(
       `INSERT INTO services (id, name, category, status_url, fetcher_type)
-       VALUES ($1, $2, 'ai', $3, $4)
+       VALUES ($1, $2, $3, $4, $5)
        ON CONFLICT (id) DO UPDATE
          SET name = EXCLUDED.name,
+             category = EXCLUDED.category,
              status_url = EXCLUDED.status_url,
              fetcher_type = EXCLUDED.fetcher_type,
              updated_at = now()`,
       [
         service.id,
         service.name,
+        seedCategory(service),
         service.statusUrl,
         "fetcherType" in service ? service.fetcherType : "none",
       ],
