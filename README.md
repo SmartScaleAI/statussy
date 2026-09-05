@@ -2,7 +2,7 @@
 
 Glanceable “is anything down?” board for AI and Cloud services. A SmartScale app, separate from Zerro.
 
-The board reads **live status from Postgres** for the 44 catalog services (26 AI + 10 Cloud Wave A + 8 Cloud Wave B). AI Wave A: OpenAI, Anthropic, Groq, Cohere, OpenRouter, Perplexity, xAI, DeepSeek, Google Gemini, Mistral; Wave B: Fireworks AI, Together AI, Cerebras, Hugging Face, Replicate, Runway, Ideogram, Stability AI; Wave C: fal, ElevenLabs, MiniMax, Voyage AI, Black Forest Labs, Cartesia, Kimi, Luma. Cloud Wave A: Vercel, Railway, Cloudflare, Render, Fly.io, Netlify, DigitalOcean, Google Cloud, AWS, Azure. Cloud Wave B: Heroku, Linode, Fastly, bunny.net, Deno Deploy, Koyeb, Modal, Firebase. The worker fetches every service that has a fetcher; AWS, Azure, and Fastly are seeded without one (custom dashboards or a status page that blocks programmatic access) and stay on mock until a dedicated fetcher exists. Nothing is scraped from the client. When a service has no snapshot yet, or the database is unreachable, the board still falls back to mock data.
+The board reads **live status from Postgres** for the 51 catalog services (26 AI + 10 Cloud Wave A + 8 Cloud Wave B + 7 Cloud Wave C). AI Wave A: OpenAI, Anthropic, Groq, Cohere, OpenRouter, Perplexity, xAI, DeepSeek, Google Gemini, Mistral; Wave B: Fireworks AI, Together AI, Cerebras, Hugging Face, Replicate, Runway, Ideogram, Stability AI; Wave C: fal, ElevenLabs, MiniMax, Voyage AI, Black Forest Labs, Cartesia, Kimi, Luma. Cloud Wave A: Vercel, Railway, Cloudflare, Render, Fly.io, Netlify, DigitalOcean, Google Cloud, AWS, Azure. Cloud Wave B: Heroku, Linode, Fastly, bunny.net, Deno Deploy, Koyeb, Modal, Firebase. Cloud Wave C: Akamai, Vultr, Scaleway, Oracle Cloud, Hetzner, Northflank, Lambda. The worker fetches every service that has a fetcher; AWS, Azure, and Fastly are seeded without one (custom dashboards or a status page that blocks programmatic access) and stay on mock until a dedicated fetcher exists. Nothing is scraped from the client. When a service has no snapshot yet, or the database is unreachable, the board still falls back to mock data.
 
 Coding agents (Cursor, Windsurf, Devin, GitHub Copilot) are parked for a future **Developer** category and are not on this board.
 
@@ -23,7 +23,7 @@ npm run build
 
 Live-data foundation for the board: a Railway Postgres database plus a small Node
 worker in [`worker/`](worker/). The worker owns the schema (`services`,
-`service_snapshots`, `components`, `incidents`, `service_suggestions`), seeds the 44 board services,
+`service_snapshots`, `components`, `incidents`, `service_suggestions`), seeds the 51 board services,
 and ticks on a configurable interval (default every 5 minutes). Each tick fetches
 live status for services with a fetcher — OpenAI, Anthropic, Groq, Cohere,
 Fireworks, Cerebras, Replicate, Runway, Ideogram, Stability, ElevenLabs,
@@ -42,8 +42,14 @@ Google Cloud via the same `incidents.json` feed as Gemini (platform-wide;
 informational notices do not paint the card), Cloud Wave B Statuspage hosts
 (Linode, bunny.net), Heroku via Status API v4 (`status.heroku.com/api/v4`;
 Salesforce Trust is the public card URL), Deno Deploy and Koyeb via Instatus,
-Modal via Better Stack `index.json`, and Firebase via
-`status.firebase.google.com/incidents.json` — and upserts snapshot,
+Modal via Better Stack `index.json`, Firebase via
+`status.firebase.google.com/incidents.json`, Cloud Wave C Statuspage hosts
+(Akamai, Scaleway, Lambda), Northflank via Instatus, Vultr via
+`https://status.vultr.com/status.json`, Oracle Cloud via
+`ocistatus.oraclecloud.com/api/v2/status.json` (page-level indicator only;
+the components dump is not persisted), and Hetzner via `__NEXT_DATA__`
+embedded in `https://status.hetzner.com/en` (informational notices and
+future maintenance do not paint the card) — and upserts snapshot,
 component, and incident rows. On a failed fetch the worker keeps last-known rows
 and flags the latest snapshot `stale`.
 
@@ -64,7 +70,7 @@ and flags the latest snapshot `stale`.
 cd worker
 npm install
 export DATABASE_URL=postgres://user:pass@localhost:5432/statussy
-npm run migrate   # apply migrations + seed the 44 services, then exit
+npm run migrate   # apply migrations + seed the 51 services, then exit
 npm run dev       # migrate, seed, tick on the interval, serve /healthz
 ```
 
@@ -129,7 +135,7 @@ registry in [`data/services.ts`](data/services.ts).
 
 Fallback policy (SMA-18):
 
-- **Service has snapshots** (all 26 fetched services): the card shows the live overall
+- **Service has snapshots** (any catalog row the worker has fetched): the card shows the live overall
   status, the snapshot's incident title / fetch time, and a **Health**
   chicklet from current `components` rows (operational count ÷ total — a live
   snapshot, not historical uptime or a vendor SLA). Services with no

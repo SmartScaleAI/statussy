@@ -17,9 +17,11 @@
  * via api.railwaystatus.com, Google Cloud via incidents.json; Cloud Wave B —
  * Linode and bunny.net via Statuspage, Heroku via Status API v4, Deno Deploy
  * and Koyeb via Instatus, Modal via Better Stack, Firebase via
- * status.firebase.google.com incidents.json. AWS, Azure, and Fastly are
- * seeded without a fetcher) and writes snapshots, components, and
- * incidents to Postgres.
+ * status.firebase.google.com incidents.json; Cloud Wave C — Akamai,
+ * Scaleway, and Lambda via Statuspage, Northflank via Instatus, Vultr via
+ * status.json, Oracle Cloud via ocistatus status.json, Hetzner via the
+ * official page's __NEXT_DATA__. AWS, Azure, and Fastly are seeded without
+ * a fetcher) and writes snapshots, components, and incidents to Postgres.
  * A tiny HTTP server exposes /healthz.
  */
 import { createServer } from "node:http"
@@ -37,7 +39,10 @@ import {
   fetchGoogleCloudPlatformState,
 } from "./google-cloud.js"
 import { fetchHerokuState } from "./heroku.js"
+import { fetchHetznerState } from "./hetzner.js"
+import { fetchOracleCloudState } from "./oracle-cloud.js"
 import { fetchRailwayState } from "./railway.js"
+import { fetchVultrState } from "./vultr.js"
 import { fetchBetterstackState } from "./betterstack.js"
 import { fetchStatuspageState } from "./statuspage.js"
 import {
@@ -81,7 +86,7 @@ type ServiceJob = {
   persistOptions?: PersistOptions
 }
 
-// Board services with a fetcher (26 AI + Cloud Wave A/B; AWS, Azure, and
+// Board services with a fetcher (26 AI + Cloud Waves A–C; AWS, Azure, and
 // Fastly are none).
 const statuspageJob = (id: string, baseUrl: string): ServiceJob => ({
   id,
@@ -222,6 +227,30 @@ const SERVICE_JOBS: ServiceJob[] = [
   {
     id: "firebase",
     fetch: () => fetchFirebaseState(fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  // Cloud Wave C — Statuspage-compatible hosts plus custom official JSON.
+  statuspageJob("akamai", "https://www.akamaistatus.com"),
+  statuspageJob("scaleway", "https://status.scaleway.com"),
+  statuspageJob("lambda", "https://status.lambda.ai"),
+  {
+    id: "northflank",
+    fetch: () => fetchInstatusState("https://status.northflank.com", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  {
+    id: "vultr",
+    fetch: () => fetchVultrState(fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  {
+    // status.json only (no summary/incidents API; skip the 1.7MB component dump).
+    id: "oracle-cloud",
+    fetch: () => fetchOracleCloudState(fetchOptions()),
+  },
+  {
+    id: "hetzner",
+    fetch: () => fetchHetznerState(fetchOptions()),
     persistOptions: { resolveMissingIncidents: true },
   },
 ]

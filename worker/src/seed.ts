@@ -1,7 +1,7 @@
 import type pg from "pg"
 
 /**
- * Static registry of board services (26 AI + Cloud Wave A + Cloud Wave B).
+ * Static registry of board services (26 AI + Cloud Waves A–C).
  * Mirrors the ids in the Next.js app's data/services.ts (and public/logos/{id}.svg).
  * Coding agents (Cursor, Windsurf, Devin, GitHub Copilot) are parked for a
  * future Developer category and must not be seeded here.
@@ -281,6 +281,55 @@ export const SERVICE_SEED = [
     category: "cloud",
     statusUrl: "https://status.firebase.google.com/",
     fetcherType: "google_cloud",
+  },
+  {
+    id: "akamai",
+    name: "Akamai",
+    category: "cloud",
+    statusUrl: "https://www.akamaistatus.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "vultr",
+    name: "Vultr",
+    category: "cloud",
+    statusUrl: "https://status.vultr.com/",
+    fetcherType: "vultr",
+  },
+  {
+    id: "scaleway",
+    name: "Scaleway",
+    category: "cloud",
+    statusUrl: "https://status.scaleway.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "oracle-cloud",
+    name: "Oracle Cloud",
+    category: "cloud",
+    statusUrl: "https://ocistatus.oraclecloud.com/",
+    fetcherType: "oracle_cloud",
+  },
+  {
+    id: "hetzner",
+    name: "Hetzner",
+    category: "cloud",
+    statusUrl: "https://status.hetzner.com/",
+    fetcherType: "hetzner",
+  },
+  {
+    id: "northflank",
+    name: "Northflank",
+    category: "cloud",
+    statusUrl: "https://status.northflank.com/",
+    fetcherType: "instatus",
+  },
+  {
+    id: "lambda",
+    name: "Lambda",
+    category: "cloud",
+    statusUrl: "https://status.lambda.ai/",
+    fetcherType: "statuspage",
   },
 ] as const
 

@@ -50,5 +50,12 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `koyeb.svg` | Koyeb | `#FFFFFF` | Simple Icons `koyeb`; white so official `#121212` reads on dark |
 | `modal.svg` | Modal | `#7FEE64` | Simple Icons `modal` |
 | `firebase.svg` | Firebase | `#DD2C00` | Simple Icons `firebase` |
+| `akamai.svg` | Akamai | `#0096D6` | Simple Icons `akamai` |
+| `vultr.svg` | Vultr | `#007BFC` | Simple Icons `vultr` |
+| `scaleway.svg` | Scaleway | `#4F0599` | Simple Icons `scaleway` |
+| `oracle-cloud.svg` | Oracle Cloud | `#F80000` | Simple Icons `oracle` path (vendor O) |
+| `hetzner.svg` | Hetzner | `#D50C2D` | Simple Icons `hetzner` |
+| `northflank.svg` | Northflank | Official gradient | Official mark from [northflank.com/images/logo/logo.svg](https://northflank.com/images/logo/logo.svg) |
+| `lambda.svg` | Lambda | `#FFFFFF` | Official λ + frame from [lambda.ai favicon](https://lambda.ai/hubfs/favicon-48x48-1.svg); black tile dropped so the mark reads on dark |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.

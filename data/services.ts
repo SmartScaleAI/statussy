@@ -399,4 +399,63 @@ export const services: Service[] = [
     status: "operational",
     updatedAt: "2026-09-05T03:15:00.000Z",
   },
+  // Cloud Wave C — remaining real clouds with an official JSON (or Hetzner's
+  // embedded Next payload). IBM / Backblaze / OVH / CoreWeave wait; Alibaba
+  // and Tencent stay out; storage/auth/data products stay in later chiclets.
+  {
+    id: "akamai",
+    name: "Akamai",
+    category: "cloud",
+    statusUrl: "https://www.akamaistatus.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T03:30:00.000Z",
+  },
+  {
+    id: "vultr",
+    name: "Vultr",
+    category: "cloud",
+    statusUrl: "https://status.vultr.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T03:30:00.000Z",
+  },
+  {
+    id: "scaleway",
+    name: "Scaleway",
+    category: "cloud",
+    statusUrl: "https://status.scaleway.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T03:30:00.000Z",
+  },
+  {
+    id: "oracle-cloud",
+    name: "Oracle Cloud",
+    category: "cloud",
+    statusUrl: "https://ocistatus.oraclecloud.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T03:30:00.000Z",
+  },
+  {
+    id: "hetzner",
+    name: "Hetzner",
+    category: "cloud",
+    statusUrl: "https://status.hetzner.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T03:30:00.000Z",
+  },
+  {
+    id: "northflank",
+    name: "Northflank",
+    category: "cloud",
+    statusUrl: "https://status.northflank.com/",
+    status: "operational",
+    updatedAt: "2026-09-05T03:30:00.000Z",
+  },
+  {
+    id: "lambda",
+    name: "Lambda",
+    category: "cloud",
+    statusUrl: "https://status.lambda.ai/",
+    status: "operational",
+    updatedAt: "2026-09-05T03:30:00.000Z",
+  },
 ]
