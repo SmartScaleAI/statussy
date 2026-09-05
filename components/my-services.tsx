@@ -65,7 +65,7 @@ export function MyServices({
         />
       </div>
       {empty ? (
-        <p className="py-1 text-sm text-muted-foreground" role="status">
+        <p className="pt-1 pb-8 text-sm text-muted-foreground" role="status">
           Star services below to pin them here.
         </p>
       ) : (
