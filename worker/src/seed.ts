@@ -5,7 +5,7 @@ import type pg from "pg"
  * Auth / Payments / Observability Waves A–C + Email Waves A–C +
  * Design Waves A–C + Infra Waves A–C + Flags Waves A–C +
  * Analytics Waves A–C + Security Waves A–C + Support Waves A–C +
- * Collab Waves A–C + Docs Wave A).
+ * Collab Waves A–C + Docs Wave A + Commerce Wave A).
  * Mirrors the ids in the Next.js app's data/services.ts (and public/logos/{id}.svg).
  * Windsurf is the legacy Devin Desktop name and is not seeded separately.
  * GitHub Copilot is a GitHub component, not its own card.
@@ -3191,6 +3191,76 @@ export const SERVICE_SEED = [
     name: "Bump",
     category: "docs",
     statusUrl: "https://status.bump.sh/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "shopify",
+    name: "Shopify",
+    category: "commerce",
+    statusUrl: "https://www.shopifystatus.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "bigcommerce",
+    name: "BigCommerce",
+    category: "commerce",
+    statusUrl: "https://status.bigcommerce.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "ecwid",
+    name: "Ecwid",
+    category: "commerce",
+    statusUrl: "https://status.ecwid.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "saleor",
+    name: "Saleor",
+    category: "commerce",
+    statusUrl: "https://status.saleor.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "medusa",
+    name: "Medusa",
+    category: "commerce",
+    statusUrl: "https://status.medusajs.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "commercelayer",
+    name: "Commerce Layer",
+    category: "commerce",
+    statusUrl: "https://status.commercelayer.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "elasticpath",
+    name: "Elastic Path",
+    category: "commerce",
+    statusUrl: "https://status.elasticpath.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "lightspeed",
+    name: "Lightspeed",
+    category: "commerce",
+    statusUrl: "https://status.lightspeedhq.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "swell",
+    name: "Swell",
+    category: "commerce",
+    statusUrl: "https://status.swell.store/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "vtex",
+    name: "VTEX",
+    category: "commerce",
+    statusUrl: "https://status.vtex.com/",
     fetcherType: "statuspage",
   },
 ] as const

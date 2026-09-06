@@ -33,6 +33,7 @@ export type ServiceCategory =
   | "support"
   | "collab"
   | "docs"
+  | "commerce"
 
 export type Service = {
   /** Matches a static mark at `public/logos/{id}.svg`. */
@@ -3856,5 +3857,91 @@ export const services: Service[] = [
     statusUrl: "https://status.bump.sh/",
     status: "operational",
     updatedAt: "2026-09-06T01:45:00.000Z",
+  },
+  // Commerce Wave A — storefronts, ecommerce platforms, headless
+  // commerce, and commerce APIs with public Statuspage JSON.
+  // Stripe / PayPal / Square stay Payments. Klaviyo stays Email.
+  // Gorgias stays Support. Magento / Adobe Commerce stay on Adobe.
+  // Webflow Ecommerce stays Design. Centra waits (Instatus JSON,
+  // wordmark only). WooCommerce waits (inactive Statuspage).
+  {
+    id: "shopify",
+    name: "Shopify",
+    category: "commerce",
+    statusUrl: "https://www.shopifystatus.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:00:00.000Z",
+  },
+  {
+    id: "bigcommerce",
+    name: "BigCommerce",
+    category: "commerce",
+    statusUrl: "https://status.bigcommerce.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:00:00.000Z",
+  },
+  {
+    id: "ecwid",
+    name: "Ecwid",
+    category: "commerce",
+    statusUrl: "https://status.ecwid.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:00:00.000Z",
+  },
+  {
+    id: "saleor",
+    name: "Saleor",
+    category: "commerce",
+    statusUrl: "https://status.saleor.io/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:00:00.000Z",
+  },
+  {
+    id: "medusa",
+    name: "Medusa",
+    category: "commerce",
+    statusUrl: "https://status.medusajs.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:00:00.000Z",
+  },
+  {
+    id: "commercelayer",
+    name: "Commerce Layer",
+    category: "commerce",
+    statusUrl: "https://status.commercelayer.io/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:00:00.000Z",
+  },
+  {
+    id: "elasticpath",
+    name: "Elastic Path",
+    category: "commerce",
+    statusUrl: "https://status.elasticpath.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:00:00.000Z",
+  },
+  {
+    id: "lightspeed",
+    name: "Lightspeed",
+    category: "commerce",
+    statusUrl: "https://status.lightspeedhq.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:00:00.000Z",
+  },
+  {
+    id: "swell",
+    name: "Swell",
+    category: "commerce",
+    statusUrl: "https://status.swell.store/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:00:00.000Z",
+  },
+  {
+    id: "vtex",
+    name: "VTEX",
+    category: "commerce",
+    statusUrl: "https://status.vtex.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:00:00.000Z",
   },
 ]

@@ -457,5 +457,15 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `stoplight.svg` | Stoplight | `#149CF4` | Official mark from [stoplight.io Stoplight Logo.svg](https://stoplight.io/) |
 | `swaggerhub.svg` | SwaggerHub | `#85EA2D` | Simple Icons `swagger` (Swagger / SwaggerHub mark) |
 | `bump.svg` | Bump | `#FFFFFF` | Official mark from [bump.sh/favicon.svg](https://bump.sh/favicon.svg); official `#22222A` knocked to white |
+| `shopify.svg` | Shopify | `#7AB55C` | Simple Icons `shopify` |
+| `bigcommerce.svg` | BigCommerce | `#FFFFFF` | Simple Icons `bigcommerce`; official `#121118` knocked to white |
+| `ecwid.svg` | Ecwid | `#FFFFFF` | Official bag from [ecwid.com favicon.svg](https://don16obqbay2c.cloudfront.net/favicons/favicon.svg) (rounded tile and wordmark dropped) |
+| `saleor.svg` | Saleor | `#FFFFFF` | Official parallelogram from [docs.saleor.io/img/logo.svg](https://docs.saleor.io/img/logo.svg) (wordmark dropped); official `#161A1E` knocked to white |
+| `medusa.svg` | Medusa | `#FFFFFF` | Simple Icons `medusa`; official black knocked to white |
+| `commercelayer.svg` | Commerce Layer | `#FFFFFF` | Official mark from [commercelayer.io/favicon.svg](https://commercelayer.io/favicon.svg); official `#101111` knocked to white |
+| `elasticpath.svg` | Elastic Path | `#2BCC7E` | Official chevron from [developer.elasticpath.com/logo/dark.svg](https://developer.elasticpath.com/logo/dark.svg) (wordmark dropped) |
+| `lightspeed.svg` | Lightspeed | `#E81C1C` | Official mark from [lightspeedhq.com/favicon.svg](https://www.lightspeedhq.com/favicon.svg) |
+| `swell.svg` | Swell | `#FFFFFF` | Official S from [swell.is/swell-logo.svg](https://www.swell.is/swell-logo.svg) (wordmark dropped) |
+| `vtex.svg` | VTEX | `#ED125F` | Simple Icons `vtex` |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.

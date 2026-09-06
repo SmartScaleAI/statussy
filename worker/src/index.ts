@@ -982,6 +982,19 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("stoplight", "https://stoplight.status.smartbear.com"),
   statuspageJob("swaggerhub", "https://swagger.status.smartbear.com"),
   statuspageJob("bump", "https://bump.statuspage.io"),
+  // Commerce Wave A. All ten are Statuspage storefronts /
+  // headless commerce hosts. Centra waits (Instatus JSON,
+  // wordmark only). WooCommerce waits (inactive Statuspage).
+  statuspageJob("shopify", "https://www.shopifystatus.com"),
+  statuspageJob("bigcommerce", "https://status.bigcommerce.com"),
+  statuspageJob("ecwid", "https://status.ecwid.com"),
+  statuspageJob("saleor", "https://status.saleor.io"),
+  statuspageJob("medusa", "https://status.medusajs.com"),
+  statuspageJob("commercelayer", "https://status.commercelayer.io"),
+  statuspageJob("elasticpath", "https://status.elasticpath.com"),
+  statuspageJob("lightspeed", "https://status.lightspeedhq.com"),
+  statuspageJob("swell", "https://status.swell.store"),
+  statuspageJob("vtex", "https://status.vtex.com"),
 ]
 
 async function fetchService(service: ServiceJob): Promise<boolean> {
