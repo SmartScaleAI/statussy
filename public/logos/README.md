@@ -487,5 +487,12 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `outreach.svg` | Outreach | `#FFFFFF` | Official mark from [status.outreach.io](https://status.outreach.io/bfe7482c1d714fd2.svg); light lockup knocked to white |
 | `apollo.svg` | Apollo | `#FFFFFF` | Official mark from [apollo.io logo.svg](https://www.apollo.io/_next/static/media/logo.0pq8s8~3b84w1.svg); official `#1F1F1E` knocked to white |
 | `gong.svg` | Gong | `#FFFFFF` | Official mark from [gong.io/marketing-assets/favicon.svg](https://www.gong.io/marketing-assets/favicon.svg) (rounded tile dropped) |
+| `affinity.svg` | Affinity | `#2665F1` | Official geometric mark from the [affinity.co](https://www.affinity.co/) lockup (wordmark dropped). Not Simple Icons `affinity` (photo editor). |
+| `zoominfo.svg` | ZoomInfo | `#EA1B15` | Official Z from [zoominfo.com zoominfo-red-logomark.svg](https://www.zoominfo.com/) (rounded tile dropped) |
+| `streak.svg` | Streak | `#F5A623` / `#00A99D` / `#4A90E2` | Official kanban cards from the [streak.com](https://www.streak.com/) lockup (wordmark + rounded tile dropped) |
+| `clari.svg` | Clari | `#00D7B8` / `#5F3AD7` / `#0280FF` / `#FFFFFF` | Official fan from [clari.com logo-white.svg](https://www.clari.com/) (wordmark dropped) |
+| `lusha.svg` | Lusha | `#863FFF` | Official bird from the [lusha.com](https://www.lusha.com/) 2026 mark (tile dropped) |
+| `teamleader.svg` | Teamleader | `#00B2B2` | Official chevrons from [teamleader.eu icon.svg](https://www.teamleader.eu/) (circle tile dropped) |
+| `orum.svg` | Orum | `#FCFF70` | Official petals from the [orum.com](https://www.orum.com/) favicon (dark tile dropped) |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.
