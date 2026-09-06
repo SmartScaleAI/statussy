@@ -1,15 +1,23 @@
 /**
- * StatusCast HTML mapper (SMA-63: Fastly).
+ * StatusCast mappers (SMA-63: Fastly HTML; SMA-71: Campaign Monitor RSS).
  *
- * www.fastlystatus.com is a StatusCast page. There is no public Statuspage
- * JSON; `/status.json` and the HTML both 403 the worker UA. A browser-like
- * UA gets the HTML (hero rollup + current incident rows).
+ * Fastly: www.fastlystatus.com has no public Statuspage JSON; `/status.json`
+ * and the HTML 403 the worker UA. A browser-like UA gets the HTML (hero
+ * rollup + current incident rows). Informational notices and future
+ * scheduled maintenance stay in the diary but do not paint the card.
  *
- * Informational notices and future scheduled maintenance stay in the
- * incident list but do not paint the card (same call as Hetzner / GCP).
- * The history-grid calendar is not a component board — Health stays 1/1.
+ * Campaign Monitor: HTML and `/api/v2` 403. The public surface is `/rss`
+ * (titled "Marigold rss feed"). Each incident is many items (one per
+ * update). We group by incident id and take the newest update. Name stays
+ * Campaign Monitor. Neither page exposes a component board — Health 1/1.
  */
 
+import {
+  classifyOpenIncident,
+  parseFeed,
+  type RssFeedMeta,
+  type RssItem,
+} from "./rss.js"
 import type {
   FetchOptions,
   MappedIncident,
@@ -224,4 +232,186 @@ export async function fetchStatuscastState(
     ...state,
     incidents: state.incidents.slice(0, options.maxIncidents ?? 25),
   }
+}
+
+// ---------------------------------------------------------------------------
+// Campaign Monitor RSS (SMA-71). HTML + /api/v2 403; /rss is the public surface.
+// ---------------------------------------------------------------------------
+
+const CLOSED_STATUSES = new Set(["resolved", "completed", "postmortem"])
+
+const STILL_OPEN_RE =
+  /\b(continuing to monitor|we(?:'re| are) (?:aware|currently investigating|working to)|unfortunately continues|awaiting (?:their|a) response|will share an update|currently investigating|working to (?:identify|resolve)|proportion of .+ not being delivered)\b/i
+
+const RESOLVED_RE =
+  /\b(has (?:now )?been resolved|now been resolved|is now (?:fully )?resolved|now working normally|now operating as normal|completed (?:our )?scheduled maintenance|can now login without any issues|no longer experience|issue has been resolved|incident has now been resolved)\b/i
+
+const MONITORING_RE = /\bverifying that (?:everything|all functionality) is working\b/i
+
+/** Incident id from `/incident/706835` or guid `/706835/1601159`. */
+export function statusCastIncidentId(item: RssItem): string | null {
+  const fromLink = item.link?.match(/\/incident\/(\d+)/i)?.[1]
+  if (fromLink) return fromLink
+  const fromGuid = item.externalId?.match(/(?:^|\/)(\d+)(?:\/|$)/)?.[1]
+  return fromGuid ?? item.externalId
+}
+
+/**
+ * StatusCast items have no `Status:` line. Infer lifecycle from the
+ * newest update body so historical resolved posts do not stay open.
+ */
+export function extractStatusCastStatus(item: RssItem): string {
+  const haystack = `${item.title}\n${item.text}`
+  if (STILL_OPEN_RE.test(haystack)) return "investigating"
+  if (RESOLVED_RE.test(haystack)) return "resolved"
+  if (MONITORING_RE.test(haystack)) return "monitoring"
+  return "investigating"
+}
+
+type IncidentGroup = {
+  newest: RssItem
+  startedAt: string | null
+}
+
+function toIso(raw: string | null): string | null {
+  if (!raw) return null
+  const date = new Date(raw)
+  return Number.isNaN(date.getTime()) ? null : date.toISOString()
+}
+
+function groupIncidents(items: RssItem[]): IncidentGroup[] {
+  const groups = new Map<string, IncidentGroup>()
+  const order: string[] = []
+
+  for (const item of items) {
+    const id = statusCastIncidentId(item)
+    if (!id) continue
+    const published = toIso(item.publishedAt)
+    const existing = groups.get(id)
+    if (!existing) {
+      groups.set(id, { newest: item, startedAt: published })
+      order.push(id)
+      continue
+    }
+    if (published && (!existing.startedAt || published < existing.startedAt)) {
+      existing.startedAt = published
+    }
+  }
+
+  return order.map((id) => groups.get(id)!).filter(Boolean)
+}
+
+/**
+ * Map a StatusCast RSS feed into our normalized shape. One row per
+ * incident (not per update). No component grid.
+ */
+export function mapStatusCastFeed(
+  items: RssItem[],
+  meta: RssFeedMeta,
+  maxIncidents = 25,
+): MappedServiceState {
+  const incidents: MappedIncident[] = []
+  const openSeverities: ServiceStatus[] = []
+  let headline: string | null = null
+
+  for (const group of groupIncidents(items).slice(0, maxIncidents)) {
+    const item = group.newest
+    const externalId = statusCastIncidentId(item)
+    if (!externalId) continue
+    const status = extractStatusCastStatus(item)
+    const open = !CLOSED_STATUSES.has(status)
+    if (open) {
+      openSeverities.push(classifyOpenIncident(item))
+      headline ??= item.title
+    }
+    incidents.push({
+      externalId,
+      title: item.title,
+      status,
+      impact: null,
+      url: item.link,
+      startedAt: group.startedAt,
+      resolvedAt: open ? null : toIso(item.publishedAt),
+    })
+  }
+
+  return {
+    status: worstStatus(openSeverities),
+    incidentTitle: headline,
+    detail: {
+      source: "statuscast",
+      feedUrl: meta.feedUrl,
+      feedTitle: meta.feedTitle,
+      lastBuildDate: meta.lastBuildDate,
+      openIncidents: openSeverities.length,
+    },
+    components: [],
+    incidents,
+  }
+}
+
+export type StatusCastRssFetchOptions = {
+  timeoutMs: number
+  userAgent: string
+  maxIncidents?: number
+}
+
+async function fetchText(url: string, options: StatusCastRssFetchOptions): Promise<string> {
+  const res = await fetch(url, {
+    headers: {
+      accept:
+        "application/rss+xml, application/atom+xml, application/xml, text/xml;q=0.9, */*;q=0.8",
+      "user-agent": options.userAgent,
+    },
+    signal: AbortSignal.timeout(options.timeoutMs),
+    redirect: "follow",
+  })
+  if (!res.ok) {
+    throw new Error(`GET ${url} -> HTTP ${res.status}`)
+  }
+  return await res.text()
+}
+
+function feedTitle(xml: string): string | null {
+  const head = xml.replace(/<(item|entry)[\s>][\s\S]*/i, "")
+  return head.match(/<title(?:\s[^>]*)?>([\s\S]*?)<\/title>/i)?.[1]?.trim() ?? null
+}
+
+function feedLastBuild(xml: string): string | null {
+  const head = xml.replace(/<(item|entry)[\s>][\s\S]*/i, "")
+  return (
+    head.match(/<lastBuildDate(?:\s[^>]*)?>([\s\S]*?)<\/lastBuildDate>/i)?.[1]?.trim() ??
+    head.match(/<updated(?:\s[^>]*)?>([\s\S]*?)<\/updated>/i)?.[1]?.trim() ??
+    null
+  )
+}
+
+/**
+ * Fetch and map a StatusCast RSS feed. `feedUrls` are tried in order;
+ * the first one that fetches and parses wins.
+ */
+export async function fetchStatusCastState(
+  feedUrls: readonly string[],
+  options: StatusCastRssFetchOptions,
+): Promise<MappedServiceState> {
+  let lastError: Error | null = null
+  for (const feedUrl of feedUrls) {
+    try {
+      const xml = await fetchText(feedUrl, options)
+      const items = parseFeed(xml)
+      return mapStatusCastFeed(
+        items,
+        {
+          feedUrl,
+          feedTitle: feedTitle(xml),
+          lastBuildDate: feedLastBuild(xml),
+        },
+        options.maxIncidents,
+      )
+    } catch (err) {
+      lastError = err as Error
+      console.warn(`[statuscast] feed failed ${feedUrl}: ${lastError.message}`)
+    }
+  }
+  throw lastError ?? new Error("no StatusCast feed URLs configured")
 }
