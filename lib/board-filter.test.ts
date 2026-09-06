@@ -12,11 +12,11 @@ import {
 const items = [
   { name: "OpenAI", category: "ai", status: "operational" },
   { name: "Anthropic", category: "ai", status: "degraded" },
-  { name: "Vercel", category: "hosting", status: "operational" },
+  { name: "Vercel", category: "cloud", status: "operational" },
 ]
 
 test("distinctCategories is sorted and unique, without All", () => {
-  assert.deepEqual(distinctCategories(items), ["ai", "hosting"])
+  assert.deepEqual(distinctCategories(items), ["ai", "cloud"])
   assert.deepEqual(
     distinctCategories([{ category: "ai" }, { category: "ai" }]),
     ["ai"]
@@ -26,6 +26,23 @@ test("distinctCategories is sorted and unique, without All", () => {
 test("formatCategoryLabel: All + short codes uppercase", () => {
   assert.equal(formatCategoryLabel(ALL_CATEGORY), "All")
   assert.equal(formatCategoryLabel("ai"), "AI")
+  assert.equal(formatCategoryLabel("cloud"), "Cloud")
+  assert.equal(formatCategoryLabel("developer"), "Developer")
+  assert.equal(formatCategoryLabel("data"), "Data")
+  assert.equal(formatCategoryLabel("auth"), "Auth")
+  assert.equal(formatCategoryLabel("payments"), "Payments")
+  assert.equal(formatCategoryLabel("observability"), "Observability")
+  assert.equal(formatCategoryLabel("email"), "Email")
+  assert.equal(formatCategoryLabel("design"), "Design")
+  assert.equal(formatCategoryLabel("infra"), "Infra")
+  assert.equal(formatCategoryLabel("flags"), "Flags")
+  assert.equal(formatCategoryLabel("analytics"), "Analytics")
+  assert.equal(formatCategoryLabel("security"), "Security")
+  assert.equal(formatCategoryLabel("support"), "Support")
+  assert.equal(formatCategoryLabel("collab"), "Collab")
+  assert.equal(formatCategoryLabel("docs"), "Docs")
+  assert.equal(formatCategoryLabel("commerce"), "Commerce")
+  assert.equal(formatCategoryLabel("crm"), "CRM")
   assert.equal(formatCategoryLabel("hosting"), "Hosting")
 })
 
@@ -37,6 +54,12 @@ test("All shows every service; category chiclet filters the registry field", () 
   assert.deepEqual(
     ai.map((item) => item.name),
     ["OpenAI", "Anthropic"]
+  )
+
+  const cloud = filterBoardServices(items, "", "cloud")
+  assert.deepEqual(
+    cloud.map((item) => item.name),
+    ["Vercel"]
   )
 })
 
@@ -53,8 +76,8 @@ test("search intersects with the active category", () => {
     ["OpenAI"]
   )
 
-  const hostingOpen = filterBoardServices(items, "open", "hosting")
-  assert.deepEqual(hostingOpen, [])
+  const cloudOpen = filterBoardServices(items, "open", "cloud")
+  assert.deepEqual(cloudOpen, [])
 
   const aiThropic = filterBoardServices(items, "  THROP  ", "ai")
   assert.deepEqual(

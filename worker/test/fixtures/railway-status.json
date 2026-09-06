@@ -1,0 +1,69 @@
+{
+  "components": [
+    {
+      "id": "2da0aedb-2e6e-4d62-9319-73bc76a43a5c",
+      "name": "Railway",
+      "type": "group",
+      "components": [
+        {
+          "id": "3986bf05-60cf-4555-bb3d-35edcd71b2c2",
+          "name": "Dashboard — railway.com",
+          "position": 0,
+          "status": "OPERATIONAL"
+        },
+        {
+          "id": "2f6f64ef-7853-45d2-ad5d-ee553211249a",
+          "name": "API — backboard.railway.com",
+          "position": 1,
+          "status": "DEGRADED"
+        }
+      ]
+    },
+    {
+      "id": "fb7831d4-5d6b-4d74-9dc2-49cdcfa7e647",
+      "name": "Payments & Billing",
+      "position": 4,
+      "status": "OPERATIONAL",
+      "type": "component"
+    }
+  ],
+  "incidents": [
+    {
+      "id": "11111111-1111-1111-1111-111111111111",
+      "slug": "api-latency",
+      "title": "Elevated API latency",
+      "status": "IDENTIFIED",
+      "worstImpact": "MINOR",
+      "createdAt": "2026-09-05T01:00:00.000Z",
+      "updatedAt": "2026-09-05T01:20:00.000Z",
+      "resolvedAt": null,
+      "components": [],
+      "updates": []
+    },
+    {
+      "id": "22222222-2222-2222-2222-222222222222",
+      "slug": "old-outage",
+      "title": "Resolved compute outage",
+      "status": "RESOLVED",
+      "worstImpact": "CRITICAL",
+      "createdAt": "2026-08-01T00:00:00.000Z",
+      "updatedAt": "2026-08-01T02:00:00.000Z",
+      "resolvedAt": "2026-08-01T02:00:00.000Z",
+      "components": [],
+      "updates": []
+    }
+  ],
+  "maintenances": [
+    {
+      "id": "33333333-3333-3333-3333-333333333333",
+      "slug": "future-window",
+      "title": "Scheduled EU West work",
+      "status": "SCHEDULED",
+      "scheduledStart": "2026-09-10T00:00:00.000Z",
+      "estimatedEnd": "2026-09-10T02:00:00.000Z",
+      "description": "Planned",
+      "components": [],
+      "updates": []
+    }
+  ]
+}
