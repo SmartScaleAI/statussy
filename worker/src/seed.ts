@@ -11,8 +11,7 @@ import type pg from "pg"
  * Windsurf is the legacy Devin Desktop name and is not seeded separately.
  * GitHub Copilot is a GitHub component, not its own card.
  *
- * `category` defaults to `ai` when omitted. Replit,
- * PayPal, Adyen, PagerDuty, Checkly,
+ * `category` defaults to `ai` when omitted. PayPal, Adyen, PagerDuty, Checkly,
  * Postmark, Mailchimp, Campaign Monitor, Mailtrap, Substack, Adobe,
  * Sketch, Penpot, Rive, LottieFiles, Whimsical, Lunacy, Photopea,
  * Blender, Moqups, Proto.io, UXPin, Overflow, Axure, Relume, Visily,
@@ -438,7 +437,7 @@ export const SERVICE_SEED = [
     name: "PyPI",
     category: "developer",
     statusUrl: "https://status.python.org/",
-    fetcherType: "statuspage",
+    fetcherType: "statuspage_group",
   },
   {
     id: "rubygems",
@@ -508,7 +507,7 @@ export const SERVICE_SEED = [
     name: "Replit",
     category: "developer",
     statusUrl: "https://status.replit.com/",
-    fetcherType: "none",
+    fetcherType: "rss",
   },
   {
     id: "travis",

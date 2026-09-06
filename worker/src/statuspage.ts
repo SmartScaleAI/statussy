@@ -251,6 +251,11 @@ export const CONTENTSTACK_STATUS_PAGE = "https://status.contentstack.com"
 export const LYTICS_GROUP_ID = "dpv6jsrpvvx2"
 export const LYTICS_GROUP_NAME = "Lytics"
 
+/** PSF Statuspage (`status.python.org`). PyPI is one group on that board. */
+export const PYTHON_STATUS_PAGE = "https://status.python.org"
+export const PYPI_GROUP_ID = "dhqvcb8lvrh1"
+export const PYPI_GROUP_NAME = "PyPI"
+
 function stripGroupPrefix(name: string, groupName: string | undefined): string {
   if (!groupName) return name
   const prefix = `${groupName} - `

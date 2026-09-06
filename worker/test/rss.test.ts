@@ -101,6 +101,26 @@ test("extractIncidentStatus recognizes resolved, ongoing and vendor states", () 
   assert.equal(extractIncidentStatus(makeItem({ text: "something broke" })), "investigating")
 })
 
+test("extractIncidentStatus reads Rootly [State] prefixes (Replit)", () => {
+  assert.equal(
+    extractIncidentStatus(makeItem({ text: "[Resolved] We have resolved the issue." })),
+    "resolved",
+  )
+  assert.equal(
+    extractIncidentStatus(makeItem({ text: "[Investigating] Publishing is degraded." })),
+    "investigating",
+  )
+  assert.equal(
+    extractIncidentStatus(makeItem({ text: "[Monitoring] Fix is rolling out." })),
+    "monitoring",
+  )
+  // Historical scheduled notices must not keep the card in maintenance.
+  assert.equal(
+    extractIncidentStatus(makeItem({ text: "[Scheduled] Database maintenance on Monday." })),
+    "completed",
+  )
+})
+
 test("classifyOpenIncident maps keywords to severities (incl. bilingual)", () => {
   assert.equal(classifyOpenIncident(makeItem({ title: "Major outage" })), "major_outage")
   assert.equal(classifyOpenIncident(makeItem({ title: "[Grok (Web)] Models outage" })), "partial_outage")
@@ -259,4 +279,21 @@ test("parseFeed and mapRssFeed read Freshservice status.fireflies.ai RSS", async
   assert.equal(state.incidents[0]?.url, "https://status.fireflies.ai/incidents/2")
   assert.equal(state.detail.source, "rss")
   assert.equal(state.detail.feedUrl, "https://status.fireflies.ai/rss")
+})
+
+test("mapRssFeed reads Rootly history RSS (Replit)", async () => {
+  const xml = await readFile(join(FIXTURES, "replit-history.rss"), "utf8")
+  const state = mapRssFeed(parseFeed(xml), {
+    feedUrl: "https://status.replit.com/history.rss",
+    feedTitle: "Replit - Incident History",
+    lastBuildDate: null,
+  })
+
+  assert.equal(state.status, "degraded")
+  assert.equal(state.incidentTitle, "Publishing is degraded")
+  assert.equal(state.incidents.length, 3)
+  assert.equal(state.incidents[0].status, "investigating")
+  assert.equal(state.incidents[1].status, "resolved")
+  assert.equal(state.incidents[2].status, "completed")
+  assert.equal(state.incidents[0].url, "https://status.replit.com/incidents/open-1")
 })
