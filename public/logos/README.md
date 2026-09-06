@@ -452,7 +452,7 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `document360.svg` | Document360 | `#8005D8` | Official 360 mark from [document360.com logo.svg](https://document360.com/wp-content/themes/document360/images/logo.svg) (wordmark dropped) |
 | `knowledgeowl.svg` | KnowledgeOwl | `#FFFFFF` | Official owl from [KnowledgeOwl login `ko-logo-white.svg`](https://dyzz9obi78pm5.cloudfront.net/app/image/id/579e5c9732131c3836dfd8e8/n/ko-logo-white.svg) (wordmark dropped) |
 | `stoplight.svg` | Stoplight | `#149CF4` | Official mark from [stoplight.io Stoplight Logo.svg](https://stoplight.io/) |
-| `swaggerhub.svg` | SwaggerHub | `#85EA2D` | Simple Icons `swagger` (Swagger / SwaggerHub mark) |
+| `swaggerhub.svg` | Swagger | `#85EA2D` | Simple Icons `swagger` S-mark (id stays `swaggerhub`) |
 | `bump.svg` | Bump | `#FFFFFF` | Official mark from [bump.sh/favicon.svg](https://bump.sh/favicon.svg); official `#22222A` knocked to white |
 | `shopify.svg` | Shopify | `#7AB55C` | Simple Icons `shopify` |
 | `bigcommerce.svg` | BigCommerce | `#FFFFFF` | Simple Icons `bigcommerce`; official `#121118` knocked to white |

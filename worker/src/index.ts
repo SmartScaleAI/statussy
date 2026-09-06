@@ -181,6 +181,8 @@ import { fetchPulseticState } from "./pulsetic.js"
 import { fetchSimpleAnalyticsState } from "./simpleanalytics.js"
 import { fetchStatusiqState } from "./statusiq.js"
 import { fetchStatuspalState } from "./statuspal.js"
+import { fetchAdminLabsState } from "./adminlabs.js"
+import { fetchUptimeComState } from "./uptimecom.js"
 import {
   CONTENTSTACK_STATUS_PAGE,
   LYTICS_GROUP_ID,
@@ -1085,22 +1087,31 @@ const SERVICE_JOBS: ServiceJob[] = [
   rssJob("fireflies", ["https://status.fireflies.ai/rss"]),
   statuspageJob("livestorm", "https://status.livestorm.co"),
   statuspageJob("fellow", "https://status.fellow.ai"),
-  // Docs Wave A. All ten are Statuspage. Document360 and Bump
-  // public hosts serve HTML for `/api/v2`; fetchers use
-  // document360.statuspage.io and bump.statuspage.io.
+  // Docs Wave A. GitBook / ReadMe / Mintlify / Fern / Archbee /
+  // KnowledgeOwl / Stoplight / Swagger are Statuspage.
   // KnowledgeOwl's public host login-walls, so the card and
-  // fetcher use knowledgeowl.statuspage.io. Stoplight and
-  // SwaggerHub publish on SmartBear-hosted pages.
+  // fetcher use knowledgeowl.statuspage.io. Document360 is
+  // Admin Labs HTML (Statuspage `/api/v2` is dead — do not use
+  // document360.statuspage.io). Bump is Uptime.com on
+  // status.bump.sh (do not use abandoned bump.statuspage.io).
+  // Swagger keeps id swaggerhub; SmartBear renamed the product.
   statuspageJob("gitbook", "https://www.gitbookstatus.com"),
   statuspageJob("readme", "https://www.readmestatus.com"),
   statuspageJob("mintlify", "https://status.mintlify.com"),
   statuspageJob("fern", "https://status.buildwithfern.com"),
   statuspageJob("archbee", "https://status.archbee.com"),
-  statuspageJob("document360", "https://document360.statuspage.io"),
+  {
+    id: "document360",
+    fetch: () => fetchAdminLabsState("https://status.document360.com", fetchOptions()),
+  },
   statuspageJob("knowledgeowl", "https://knowledgeowl.statuspage.io"),
   statuspageJob("stoplight", "https://stoplight.status.smartbear.com"),
   statuspageJob("swaggerhub", "https://swagger.status.smartbear.com"),
-  statuspageJob("bump", "https://bump.statuspage.io"),
+  {
+    id: "bump",
+    fetch: () => fetchUptimeComState("https://status.bump.sh", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
   // Commerce Wave A. All ten are Statuspage storefronts /
   // headless commerce hosts. Centra waits (Instatus JSON,
   // wordmark only). WooCommerce waits (inactive Statuspage).
