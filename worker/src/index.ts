@@ -995,6 +995,20 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("lightspeed", "https://status.lightspeedhq.com"),
   statuspageJob("swell", "https://status.swell.store"),
   statuspageJob("vtex", "https://status.vtex.com"),
+  // Commerce Wave B. All ten are Statuspage. Tapcart's public
+  // host does not resolve, so the card and fetcher use
+  // tapcart.statuspage.io. Printful's public host is
+  // www.printfulstatus.com. Shogun waits (wordmark only).
+  statuspageJob("nacelle", "https://status.nacelle.com"),
+  statuspageJob("volusion", "https://status.volusion.com"),
+  statuspageJob("alokai", "https://status.alokai.com"),
+  statuspageJob("shopline", "https://status.shopline.com"),
+  statuspageJob("tapcart", "https://tapcart.statuspage.io"),
+  statuspageJob("pack", "https://status.packdigital.com"),
+  statuspageJob("bold", "https://status.boldcommerce.com"),
+  statuspageJob("mirakl", "https://status.mirakl.com"),
+  statuspageJob("sharetribe", "https://status.sharetribe.com"),
+  statuspageJob("printful", "https://www.printfulstatus.com"),
 ]
 
 async function fetchService(service: ServiceJob): Promise<boolean> {

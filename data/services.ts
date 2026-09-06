@@ -3944,4 +3944,90 @@ export const services: Service[] = [
     status: "operational",
     updatedAt: "2026-09-06T02:00:00.000Z",
   },
+  // Commerce Wave B — more storefronts, headless / Hydrogen
+  // hosts, marketplace platforms, and merch/POD with public
+  // Statuspage JSON. Shogun waits (wordmark only).
+  // Marketplacer waits (no official SVG). Shopware waits
+  // (Instatus JSON). commercetools / Spryker / PrestaShop /
+  // WooCommerce wait. Reviews / loyalty / shipping / tax wait.
+  {
+    id: "nacelle",
+    name: "Nacelle",
+    category: "commerce",
+    statusUrl: "https://status.nacelle.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:15:00.000Z",
+  },
+  {
+    id: "volusion",
+    name: "Volusion",
+    category: "commerce",
+    statusUrl: "https://status.volusion.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:15:00.000Z",
+  },
+  {
+    id: "alokai",
+    name: "Alokai",
+    category: "commerce",
+    statusUrl: "https://status.alokai.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:15:00.000Z",
+  },
+  {
+    id: "shopline",
+    name: "SHOPLINE",
+    category: "commerce",
+    statusUrl: "https://status.shopline.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:15:00.000Z",
+  },
+  {
+    id: "tapcart",
+    name: "Tapcart",
+    category: "commerce",
+    statusUrl: "https://tapcart.statuspage.io/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:15:00.000Z",
+  },
+  {
+    id: "pack",
+    name: "Pack",
+    category: "commerce",
+    statusUrl: "https://status.packdigital.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:15:00.000Z",
+  },
+  {
+    id: "bold",
+    name: "Bold Commerce",
+    category: "commerce",
+    statusUrl: "https://status.boldcommerce.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:15:00.000Z",
+  },
+  {
+    id: "mirakl",
+    name: "Mirakl",
+    category: "commerce",
+    statusUrl: "https://status.mirakl.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:15:00.000Z",
+  },
+  {
+    id: "sharetribe",
+    name: "Sharetribe",
+    category: "commerce",
+    statusUrl: "https://status.sharetribe.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:15:00.000Z",
+  },
+  {
+    id: "printful",
+    name: "Printful",
+    category: "commerce",
+    statusUrl: "https://www.printfulstatus.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:15:00.000Z",
+  },
 ]

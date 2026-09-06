@@ -5,7 +5,7 @@ import type pg from "pg"
  * Auth / Payments / Observability Waves A–C + Email Waves A–C +
  * Design Waves A–C + Infra Waves A–C + Flags Waves A–C +
  * Analytics Waves A–C + Security Waves A–C + Support Waves A–C +
- * Collab Waves A–C + Docs Wave A + Commerce Wave A).
+ * Collab Waves A–C + Docs Wave A + Commerce Waves A–B).
  * Mirrors the ids in the Next.js app's data/services.ts (and public/logos/{id}.svg).
  * Windsurf is the legacy Devin Desktop name and is not seeded separately.
  * GitHub Copilot is a GitHub component, not its own card.
@@ -3261,6 +3261,76 @@ export const SERVICE_SEED = [
     name: "VTEX",
     category: "commerce",
     statusUrl: "https://status.vtex.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "nacelle",
+    name: "Nacelle",
+    category: "commerce",
+    statusUrl: "https://status.nacelle.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "volusion",
+    name: "Volusion",
+    category: "commerce",
+    statusUrl: "https://status.volusion.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "alokai",
+    name: "Alokai",
+    category: "commerce",
+    statusUrl: "https://status.alokai.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "shopline",
+    name: "SHOPLINE",
+    category: "commerce",
+    statusUrl: "https://status.shopline.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "tapcart",
+    name: "Tapcart",
+    category: "commerce",
+    statusUrl: "https://tapcart.statuspage.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "pack",
+    name: "Pack",
+    category: "commerce",
+    statusUrl: "https://status.packdigital.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "bold",
+    name: "Bold Commerce",
+    category: "commerce",
+    statusUrl: "https://status.boldcommerce.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "mirakl",
+    name: "Mirakl",
+    category: "commerce",
+    statusUrl: "https://status.mirakl.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "sharetribe",
+    name: "Sharetribe",
+    category: "commerce",
+    statusUrl: "https://status.sharetribe.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "printful",
+    name: "Printful",
+    category: "commerce",
+    statusUrl: "https://www.printfulstatus.com/",
     fetcherType: "statuspage",
   },
 ] as const

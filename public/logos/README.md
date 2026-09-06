@@ -467,5 +467,15 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `lightspeed.svg` | Lightspeed | `#E81C1C` | Official mark from [lightspeedhq.com/favicon.svg](https://www.lightspeedhq.com/favicon.svg) |
 | `swell.svg` | Swell | `#FFFFFF` | Official S from [swell.is/swell-logo.svg](https://www.swell.is/swell-logo.svg) (wordmark dropped) |
 | `vtex.svg` | VTEX | `#ED125F` | Simple Icons `vtex` |
+| `nacelle.svg` | Nacelle | `#5029F1` / `#A40DCE` / `#00D085` | Official orb from [nacelle.com logo.svg](https://nacelle.com/hubfs/Nacelle%20Logo/logo.svg) (wordmark dropped) |
+| `volusion.svg` | Volusion | `#8759F2` / `#FF3E80` / `#FFC300` / `#00D4E6` | Official diamond from [volusion.com color-logo](https://media.volusion.com/image/upload/v1754318723/logos/color-logo_owvv3n.svg) (wordmark dropped) |
+| `alokai.svg` | Alokai | `#0AD36B` | Official mark from [alokai-logo.svg](https://images.contentstack.io/v3/assets/bltb1a38d5d52a9d1a1/blt847d04e30da9e1dc/65dc9501f86c24118b8df9d8/alokai-logo.svg) (wordmark dropped) |
+| `shopline.svg` | SHOPLINE | `#333F48` | Official tag from [shoplineapp.com sprite logo](https://cdn.shoplineapp.com/assets/sprite/logo-48b2fd01fa2653845ef016f51c2afd24348e24d3baa800648ba700ddb313867e.svg) (wordmark dropped) |
+| `tapcart.svg` | Tapcart | `#3F1EFB` | Official mark from [tapcart.com favicon.svg](https://cdn.prod.website-files.com/616f0a7a027baaf59a43390b/62293c4fecc5b94c611bc4e0_favicon.svg) |
+| `pack.svg` | Pack | `#00BE8E` | Official hex from [packdigital.com/icon.svg](https://www.packdigital.com/icon.svg) (rounded tile dropped) |
+| `bold.svg` | Bold Commerce | `#E60046` | Official BOLD mark from [developer.boldcommerce.com/assets/images/logo.svg](https://developer.boldcommerce.com/assets/images/logo.svg) (Commerce wordmark dropped) |
+| `mirakl.svg` | Mirakl | `#FFFFFF` | Official globe from [mirakl.com favicon-light.svg](https://www.mirakl.com/media/favicons/favicon-light.svg); official `#03182F` knocked to white |
+| `sharetribe.svg` | Sharetribe | `#F7615E` | Official mark from [sharetribe.com/safari-pinned-tab.svg](https://www.sharetribe.com/safari-pinned-tab.svg) |
+| `printful.svg` | Printful | Official triangle colors | Official mark from [printful.com logo-icon.svg](https://static.cdn.printful.com/static/v879/images/layout/logo-icon.svg) |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.
