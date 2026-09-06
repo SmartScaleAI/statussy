@@ -57,5 +57,442 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `hetzner.svg` | Hetzner | `#D50C2D` | Simple Icons `hetzner` |
 | `northflank.svg` | Northflank | Official gradient | Official mark from [northflank.com/images/logo/logo.svg](https://northflank.com/images/logo/logo.svg) |
 | `lambda.svg` | Lambda | `#FFFFFF` | Official λ + frame from [lambda.ai favicon](https://lambda.ai/hubfs/favicon-48x48-1.svg); black tile dropped so the mark reads on dark |
+| `cursor.svg` | Cursor | `#FFFFFF` | Simple Icons `cursor` path; white so official black reads on dark |
+| `devin.svg` | Devin | `#FFFFFF` | LobeHub `devin` (official stacked-facet mark); white on dark |
+| `github.svg` | GitHub | `#FFFFFF` | Simple Icons `github`; white so official `#181717` reads on dark |
+| `gitlab.svg` | GitLab | `#FC6D26` | Simple Icons `gitlab` |
+| `circleci.svg` | CircleCI | `#FFFFFF` | Simple Icons `circleci`; white so official `#343434` reads on dark |
+| `npm.svg` | npm | `#CB3837` | Simple Icons `npm` |
+| `docker.svg` | Docker | `#2496ED` | Simple Icons `docker` |
+| `linear.svg` | Linear | `#5E6AD2` | Simple Icons `linear` |
+| `sourcegraph.svg` | Sourcegraph | `#FF5543` | Official mark from [sourcegraph.com/.assets/img/sourcegraph-mark.svg](https://sourcegraph.com/.assets/img/sourcegraph-mark.svg) |
+| `warp.svg` | Warp | `#01A4FF` | Simple Icons `warp` |
+| `bitbucket.svg` | Bitbucket | `#0052CC` | Simple Icons `bitbucket` |
+| `buildkite.svg` | Buildkite | `#14CC80` | Simple Icons `buildkite` |
+| `pypi.svg` | PyPI | `#3775A9` | Simple Icons `pypi` (PyPI mark, not the Python language logo) |
+| `rubygems.svg` | RubyGems | `#E9573F` | Simple Icons `rubygems` |
+| `maven.svg` | Maven Central | `#C71A36` | Simple Icons `apachemaven` |
+| `postman.svg` | Postman | `#FF6C37` | Simple Icons `postman` |
+| `augment.svg` | Augment | `#FFFFFF` | Official mark from [augmentcode.com/favicon.svg](https://www.augmentcode.com/favicon.svg); white so official black reads on dark |
+| `factory.svg` | Factory | `#FFFFFF` | Official mark from [Factory-AI/factory `docs/favicon.svg`](https://github.com/Factory-AI/factory/blob/main/docs/favicon.svg); white tile dropped so the mark reads on dark |
+| `tabnine.svg` | Tabnine | `#FF2D2D` | Official hex mark from [tabnine/skills](https://github.com/tabnine/skills/blob/main/plugins/cursor/tabnine/assets/logo.svg) |
+| `zed.svg` | Zed | `#084CCF` | Simple Icons `zedindustries` |
+| `lovable.svg` | Lovable | Official L-shape gradient | Official mark from [lovable.dev/favicon.svg](https://lovable.dev/favicon.svg) |
+| `bolt.svg` | Bolt | `#1389FD` | Official lightning from [StackBlitz brand kit](https://developer.stackblitz.com/public/img/logo/readme) `stackblitz-bolt-blue` |
+| `replit.svg` | Replit | `#F26207` | Simple Icons `replit` |
+| `travis.svg` | Travis CI | `#3EAAAF` | Simple Icons `travisci` |
+| `semaphore.svg` | Semaphore | `#19A974` | Simple Icons `semaphoreci` |
+| `harness.svg` | Harness | `#00ABE4` | Official diamond from [harness.io/press-kit](https://www.harness.io/press-kit) lockup (wordmark dropped) |
+| `codefresh.svg` | Codefresh | `#08B1AB` | Simple Icons `codefresh` |
+| `crates.svg` | crates.io | `#FFFFFF` | Simple Icons `rust` (official Rust mark used by crates.io); white so official black reads on dark |
+| `expo.svg` | Expo | `#FFFFFF` | Simple Icons `expo`; white so official `#1C2024` reads on dark |
+| `cloudsmith.svg` | Cloudsmith | `#2A6FE1` | Simple Icons `cloudsmith` |
+| `supabase.svg` | Supabase | `#3FCF8E` | Simple Icons `supabase` |
+| `neon.svg` | Neon | `#34D59A` | Simple Icons `neon` |
+| `planetscale.svg` | PlanetScale | `#FFFFFF` | Simple Icons `planetscale`; white so official black reads on dark |
+| `convex.svg` | Convex | `#EE342F` | Simple Icons `convex` |
+| `upstash.svg` | Upstash | `#00E9A3` | Simple Icons `upstash` |
+| `redis.svg` | Redis | `#FF4438` | Simple Icons `redis` |
+| `pinecone.svg` | Pinecone | `#FFFFFF` | Official pinecone mark from the [pinecone.io](https://www.pinecone.io/) header lockup (wordmark dropped); white so official black reads on dark |
+| `mongodb.svg` | MongoDB | `#47A248` | Simple Icons `mongodb` |
+| `cockroach.svg` | CockroachDB | `#6933FF` | Simple Icons `cockroachlabs` |
+| `prisma.svg` | Prisma | `#FFFFFF` | Simple Icons `prisma`; white so official `#2D3748` reads on dark |
+| `snowflake.svg` | Snowflake | `#29B5E8` | Simple Icons `snowflake` |
+| `databricks.svg` | Databricks | `#FF3621` | Simple Icons `databricks` |
+| `clickhouse.svg` | ClickHouse | `#FFCC01` | Simple Icons `clickhouse` |
+| `elastic.svg` | Elastic | `#FFFFFF` | Simple Icons `elastic`; white so official `#005571` reads on dark |
+| `aiven.svg` | Aiven | `#FFFFFF` | Official bird from [aiven.io/favicon.svg](https://aiven.io/favicon.svg); black tile dropped so the mark reads on dark |
+| `influxdb.svg` | InfluxDB | `#22ADF6` | Simple Icons `influxdb` |
+| `couchbase.svg` | Couchbase | `#EA2328` | Simple Icons `couchbase` |
+| `confluent.svg` | Confluent | `#FFFFFF` | Official mark from the [confluent.io](https://www.confluent.io/) header lockup (wordmark dropped); white so official `#173361` reads on dark |
+| `tinybird.svg` | Tinybird | `#FFFFFF` / `#25283D` | Official mark from [cloud.tinybird.co/favicon.svg](https://cloud.tinybird.co/favicon.svg); light-scheme fills so the paper plane reads on dark |
+| `zilliz.svg` | Zilliz | Official gradient | Official mark from [zilliz.com/favicon.svg](https://zilliz.com/favicon.svg) |
+| `materialize.svg` | Materialize | `#7F4EFF` | Official mark from [materialize.com logomark](https://materialize.com/__static/01a06a7d-ac2a-4bf7-85bc-1c6f40465ed7/logos/logomark-purple.svg) |
+| `turso.svg` | Turso | `#4FF8D2` | Simple Icons `turso` |
+| `qdrant.svg` | Qdrant | `#DC244C` | Simple Icons `qdrant` |
+| `meilisearch.svg` | Meilisearch | `#FF5CAA` | Simple Icons `meilisearch` |
+| `algolia.svg` | Algolia | `#003DFF` | Simple Icons `algolia` |
+| `redpanda.svg` | Redpanda | `#E2401B` | Official panda mark from the [redpanda.com](https://www.redpanda.com/) header lockup (wordmark dropped) |
+| `surreal.svg` | SurrealDB | `#FF00A0` | Simple Icons `surrealdb` |
+| `yugabyte.svg` | Yugabyte | `#FF5F3B` | Official logomark from [docs.yugabyte.com/images/yugabytedb-logo.svg](https://docs.yugabyte.com/images/yugabytedb-logo.svg) (wordmark dropped) |
+| `tidb.svg` | TiDB | `#DC150B` | Simple Icons `tidb` |
+| `datastax.svg` | DataStax | `#FFFFFF` | Simple Icons `datastax`; white so official black reads on dark |
+| `auth0.svg` | Auth0 | `#EB5424` | Simple Icons `auth0` |
+| `clerk.svg` | Clerk | `#6C47FF` | Simple Icons `clerk` |
+| `workos.svg` | WorkOS | `#6363F1` | Official chevrons from the [workos.com](https://workos.com/) header lockup (wordmark dropped) |
+| `okta.svg` | Okta | `#007DC1` | Simple Icons `okta` |
+| `stytch.svg` | Stytch | `#B2D6DE` | Official mark from the Mintlify favicon; dark tile dropped |
+| `kinde.svg` | Kinde | `#FFFFFF` | Official K from [kinde.com/icon.svg](https://kinde.com/icon.svg); white tile dropped; black knocked to white |
+| `fusionauth.svg` | FusionAuth | `#F58320` | Simple Icons `fusionauth` |
+| `frontegg.svg` | Frontegg | `#FFFFFF` | Official mark from frontegg `ficon.svg`; dark rounded tile dropped; white paths |
+| `propelauth.svg` | PropelAuth | Official green gradient | Official mark from [propelauth.com/imgs/mark.svg](https://www.propelauth.com/imgs/mark.svg) |
+| `onepassword.svg` | 1Password | `#145FE4` | Simple Icons `1password` |
+| `descope.svg` | Descope | Official cyan–green gradient | Official mark from [descope.com/logo.svg](https://www.descope.com/logo.svg) |
+| `duo.svg` | Duo | `#74BF4B` | Official geometric DUO from [duo.com/images/duo-logo.svg](https://duo.com/images/duo-logo.svg) (Cisco wordmark dropped) |
+| `ping-identity.svg` | Ping Identity | `#D20E0F` | Official red tile from the [pingidentity.com](https://www.pingidentity.com/) header lockup (wordmark dropped) |
+| `doppler.svg` | Doppler | `#F1F0EC` | Official mark from the [doppler.com](https://www.doppler.com/) Sanity brand asset |
+| `infisical.svg` | Infisical | `#FFFFFF` | Official infinity from [infisical.com/images/v2/infisical-logo.svg](https://infisical.com/images/v2/infisical-logo.svg) (wordmark dropped); white so official `#0D0F12` reads on dark |
+| `zitadel.svg` | Zitadel | `#FFFFFF` | Official hexagon from the [zitadel.com](https://zitadel.com/) header lockup (wordmark dropped); white so official `#ccc` reads on dark |
+| `jumpcloud.svg` | JumpCloud | `#FFFFFF` | Official cloud from the [jumpcloud.com](https://jumpcloud.com/) header lockup (wordmark dropped); white so official `#002B49` reads on dark |
+| `logto.svg` | Logto | Official purple–pink gradient | Official mark from the [logto-io/logto](https://github.com/logto-io/logto) console logo (wordmark dropped) |
+| `magic.svg` | Magic | `#6851FF` | LobeHub `magic` (official interlocking-circle mark); Magic Labs brand purple |
+| `beyond-identity.svg` | Beyond Identity | `#FFFFFF` | Official chevrons from the [beyondidentity.com](https://www.beyondidentity.com/) header lockup (wordmark dropped); white so official `#222326` reads on dark |
+| `loginradius.svg` | LoginRadius | `#008ECF` / `#FFFFFF` | Official rings from the [LoginRadius/engineering-portal](https://github.com/LoginRadius/engineering-portal) `static/logo.svg` on-dark lockup (wordmark dropped) |
+| `scalekit.svg` | Scalekit | `#FFFFFF` | Official S from the [scalekit.com](https://www.scalekit.com/) header lockup (wordmark dropped); white so official `#0E1828` reads on dark |
+| `transmit-security.svg` | Transmit Security | Official reds + `#1C2745` | Official T from [transmitsecurity.com](https://www.transmitsecurity.com/) `transmit-main-logo` (wordmark dropped) |
+| `secureauth.svg` | SecureAuth | `#2898FF` | Official mark from [secureauth.com/secureauth-favicon.svg](https://www.secureauth.com/secureauth-favicon.svg) |
+| `lastpass.svg` | LastPass | `#D32D27` | Simple Icons `lastpass` |
+| `keeper.svg` | Keeper | `#FFC700` | Official shield from [keepersecurity.com](https://www.keepersecurity.com/) `keeper-logo-light` (wordmark dropped) |
+| `yubico.svg` | Yubico | `#84BD00` | Simple Icons `yubico` path; official Yubico green |
+| `akeyless.svg` | Akeyless | `#01D9C1` | Official A from [akeyless.io](https://www.akeyless.io/) brand lockup (wordmark dropped) |
+| `sailpoint.svg` | SailPoint | Official sail colors | Official sail from [sailpoint.com/images/SailPoint-logo.svg](https://www.sailpoint.com/images/SailPoint-logo.svg) (wordmark dropped) |
+| `delinea.svg` | Delinea | `#00FF5A` | Official D from the [delinea.com](https://delinea.com/) wordmark lockup (wordmark dropped) |
+| `stripe.svg` | Stripe | `#635BFF` | Simple Icons `stripe` |
+| `paypal.svg` | PayPal | `#003087` | Simple Icons `paypal` |
+| `square.svg` | Square | `#FFFFFF` | Simple Icons `square`; white so official `#3E4348` reads on dark |
+| `adyen.svg` | Adyen | `#0ABF53` | Simple Icons `adyen` |
+| `paddle.svg` | Paddle | `#FFFFFF` | Simple Icons `paddle`; white so official black reads on dark |
+| `chargebee.svg` | Chargebee | `#FF3300` | Official mark from [chargebee.com brand icon](https://www.chargebee.com/static/resources/brand/chargebee-icon-orange.svg) |
+| `recurly.svg` | Recurly | `#FFFFFF` | Official R from the [recurly.com](https://recurly.com/) lockup (wordmark dropped); white so official black reads on dark |
+| `klarna.svg` | Klarna | `#FFB3C7` | Simple Icons `klarna` |
+| `plaid.svg` | Plaid | `#FFFFFF` | Official lattice from [plaid.com](https://plaid.com/) `safari-pinned-tab.svg`; white so official black reads on dark |
+| `gocardless.svg` | GoCardless | Official yellow + `#1C1B18` | Official mark from the [gocardless.com](https://gocardless.com/) header lockup |
+| `mollie.svg` | Mollie | `#FFFFFF` | Official wordmark from [status.mollie.com](https://status.mollie.com/) (same path as [mollie/magento2](https://github.com/mollie/magento2/blob/master/mollie-logo.svg)); white so official black reads on dark |
+| `polar.svg` | Polar | `#FFFFFF` | Official mark from [polarsource/polar](https://github.com/polarsource/polar/blob/main/server/polar/invoice/invoice-logo.svg); white so official black reads on dark |
+| `revenuecat.svg` | RevenueCat | `#F2545B` / `#FDFEFF` | Official RC tile from [revenuecat.com/favicon/favicon.svg](https://www.revenuecat.com/favicon/favicon.svg) |
+| `affirm.svg` | Affirm | `#4A4AF4` | Official arc from [cdn-assets.affirm.com](https://cdn-assets.affirm.com/images/black_logo-white_bg.svg) (wordmark dropped) |
+| `fastspring.svg` | FastSpring | `#FFFFFF` | Official leaf from [fastspring.com safari-pinned-tab.svg](https://fastspring.com/wp-content/themes/fastspring-bamboo/images/favicons/safari-pinned-tab.svg); white so official black reads on dark |
+| `whop.svg` | Whop | `#FA4616` | Official brandmark from [brand.whop.com](https://brand.whop.com/images/logos/whop_brandmark_orange.svg) (Vermilion) |
+| `wise.svg` | Wise | `#9FE870` / `#163300` | Official mark from [Wise wise-mark.svg](https://dq8dwmysp7hk1.cloudfront.net/logos/wise-mark.svg) |
+| `authorize-net.svg` | Authorize.net | `#FFFFFF` / `#0075FF` / `#FFC300` | Official wordmark from the [authorize.net](https://www.authorize.net/content/dam/anet-redesign/anet-logo-footer.svg) footer lockup (Visa solution line dropped); white + official dots so the dark-footer lockup reads on dark |
+| `flutterwave.svg` | Flutterwave | `#009A46` / `#FF5805` / `#F5AFCB` / `#FF9B00` | Official arc mark from [flutterwave.com/images/logo/full.svg](https://flutterwave.com/images/logo/full.svg) (wordmark dropped) |
+| `airwallex.svg` | Airwallex | Official orange–red gradient | Official A from the [airwallex/airwallex-marketplace](https://github.com/airwallex/airwallex-marketplace/blob/master/plugins/airwallex-dev/assets/logo.svg) lockup (wordmark dropped) |
+| `marqeta.svg` | Marqeta | `#FFFFFF` | Official M from the [marqeta.com](https://www.marqeta.com/) Contentful lockup (wordmark dropped); white so official `#272358` reads on dark |
+| `lithic.svg` | Lithic | `#F5F2F0` | Official parallelograms from [lithic-com/api-demo](https://github.com/lithic-com/api-demo/blob/master/public/Lithic-light-logo-mark.svg) (on-dark mark) |
+| `worldpay.svg` | Worldpay | `#FF1F3E` | Official wordmark from [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Worldpay_Logo.svg) (Worldpay, Inc.; public domain) |
+| `spreedly.svg` | Spreedly | `#2CD5C4` / `#0077C8` | Official knot from the [spreedly.com](https://www.spreedly.com/) header lockup (wordmark dropped) |
+| `finix.svg` | Finix | `#FFED36` / `#0D121A` | Official mark from [finix.com/favicon.svg](https://finix.com/favicon.svg) |
+| `mercado-pago.svg` | Mercado Pago | `#00B1EA` | Simple Icons `mercadopago` |
+| `ebanx.svg` | EBANX | Official stacked-card colors | Official mark from [ebanx.com/favicon.svg](https://www.ebanx.com/favicon.svg) |
+| `paysafe.svg` | Paysafe | `#5A28FF` | Simple Icons `paysafe` |
+| `recharge.svg` | Recharge | `#3901F1` | Official circle from [getrecharge.com recharge-full.svg](https://getrecharge.com/wp-content/uploads/2025/06/recharge-full.svg) (wordmark dropped) |
+| `maxio.svg` | Maxio | `#FFFFFF` | Official mark from [maxio.com mx-logo-svg.svg](https://www.maxio.com/wp-content/uploads/2026/04/mx-logo-svg.svg) (wordmark dropped); white so official black reads on dark |
+| `datadog.svg` | Datadog | `#632CA6` | Simple Icons `datadog` |
+| `sentry.svg` | Sentry | `#FFFFFF` | Simple Icons `sentry`; white so official `#362D59` reads on dark |
+| `grafana.svg` | Grafana | `#F46800` | Simple Icons `grafana` |
+| `pagerduty.svg` | PagerDuty | `#06AC38` | Simple Icons `pagerduty` |
+| `new-relic.svg` | New Relic | `#1CE783` | Simple Icons `newrelic` |
+| `honeycomb.svg` | Honeycomb | `#FFB000` / `#64BA00` / `#F96E10` / `#0298EC` | Official hex cluster from [docs.honeycomb.io](https://docs.honeycomb.io/) `logos/dark.svg` (wordmark dropped) |
+| `splunk.svg` | Splunk | `#FFFFFF` | Simple Icons `splunk`; white so official black reads on dark |
+| `dynatrace.svg` | Dynatrace | `#1496FF` | Simple Icons `dynatrace` |
+| `better-stack.svg` | Better Stack | `#FFFFFF` | Simple Icons `betterstack`; white so official black reads on dark |
+| `axiom.svg` | Axiom | `#FFFFFF` | Official A from [axiom.co/logo/axiom-wordmark.svg](https://axiom.co/logo/axiom-wordmark.svg) (wordmark dropped) |
+| `sumo-logic.svg` | Sumo Logic | `#FFFFFF` | Simple Icons `sumologic`; white so official `#000099` reads on dark |
+| `coralogix.svg` | Coralogix | `#86FFC9` / `#13E989` | Official mark from [coralogix.com Coralogix_Logo_25.svg](https://coralogix.com/wp-content/uploads/2025/12/Coralogix_Logo_25.svg) (wordmark dropped) |
+| `rollbar.svg` | Rollbar | `#3569F3` | Simple Icons `rollbar` |
+| `bugsnag.svg` | Bugsnag | `#4949E4` | Simple Icons `bugsnag` |
+| `incident-io.svg` | incident.io | `#FFFFFF` | Official mark from the [incident.io](https://incident.io/) lockup (wordmark dropped); white so official `#222326` reads on dark |
+| `mezmo.svg` | Mezmo | `#E9FF92` | Simple Icons `mezmo` |
+| `airbrake.svg` | Airbrake | `#FFA500` | Simple Icons `airbrake` |
+| `checkly.svg` | Checkly | `#0075FF` / `#002652` | Official mark from [checklyhq.com/logos/checkly/checkly.svg](https://www.checklyhq.com/logos/checkly/checkly.svg) |
+| `cribl.svg` | Cribl | `#00CCCC` | Official mark from [cribl.io cribl-logo.svg](https://images.ctfassets.net/xnqwd8kotbaj/3etrKzhi0UCCFPdBY4JADk/66e1ff433356b509dca22e9a28d41687/cribl-logo.svg) (wordmark dropped) |
+| `logz.svg` | logz.io | `#FFFFFF` | Official hex from [logz.io logo.svg](https://dytvr9ot2sszz.cloudfront.net/wp-content/uploads/2025/08/logo.svg) (wordmark dropped); white so official `#112031` reads on dark |
+| `lumigo.svg` | Lumigo | Official gold–red gradient | Official mark from [lumigo.io lumigo-logo-white.svg](https://lumigo.io/wp-content/themes/lumigo/images/v6/lumigo-logo-white.svg) (wordmark dropped) |
+| `netdata.svg` | Netdata | `#00AB44` | Simple Icons `netdata` |
+| `scout.svg` | Scout | `#FFFFFF` | Official mark from [scoutapm.com scout-icon-dark.svg](https://www.scoutapm.com/assets/images/logos/scout-icon-dark.svg); white so official `#070A18` reads on dark |
+| `logit.svg` | Logit.io | `#32A843` / `#3D646B` / `#254045` | Official mark from [logit.io/images/logitlogo.svg](https://logit.io/images/logitlogo.svg) (wordmark dropped) |
+| `nobl9.svg` | Nobl9 | `#FFFFFF` / `#1EB8D1` | Official n9 from [nobl9.com nobl9-logo-square-light.svg](https://www.nobl9.com/hubfs/Nobl9%20Logos/nobl9-logo-square-light.svg); black letter remapped to white |
+| `catchpoint.svg` | Catchpoint | `#1478C2` | Official C-of-dots from [catchpoint.com Catchpoint Logo Corporate Horizontal RBG.svg](https://www.catchpoint.com/catchpoint-logo) (wordmark dropped) |
+| `victoria-metrics.svg` | VictoriaMetrics | `#621773` | Simple Icons `victoriametrics` |
+| `langfuse.svg` | Langfuse | `#FF5D5F` / `#4E9CFF` | [LobeHub](https://github.com/lobehub/lobe-icons) `langfuse-color` (official mark + colors) |
+| `dash0.svg` | Dash0 | `#FF8A67` / `#FA4A4D` | Official mark from [dash0.com/shared/logo_colors.svg](https://www.dash0.com/shared/logo_colors.svg) |
+| `embrace.svg` | Embrace | `#EEFF04` | Official brackets from [embrace.io logo-yellow.svg](https://embrace.io/wp-content/themes/embraceio/library/images/logo-yellow.svg) (wordmark dropped) |
+| `twilio.svg` | Twilio | `#F22F46` | Simple Icons `twilio` |
+| `mailgun.svg` | Mailgun | `#F06B66` | Simple Icons `mailgun` |
+| `resend.svg` | Resend | `#FFFFFF` | Simple Icons `resend`; white so official black reads on dark |
+| `klaviyo.svg` | Klaviyo | `#FFFFFF` | Official K from the [klaviyo.com](https://www.klaviyo.com/) wordmark; white so official charcoal / `currentColor` reads on dark |
+| `brevo.svg` | Brevo | `#0B996E` | Simple Icons `brevo` |
+| `customer-io.svg` | Customer.io | `#BDFFBD` | Official mark from [customer.io/favicon.svg](https://customer.io/favicon.svg) (tile dropped) |
+| `sparkpost.svg` | SparkPost | `#FA6423` | Simple Icons `sparkpost` |
+| `braze.svg` | Braze | `#D82028` | Official B from the [braze.com](https://www.braze.com/) wordmark |
+| `loops.svg` | Loops | `#FC5200` | Simple Icons `loops` |
+| `mailjet.svg` | Mailjet | `#B7A8FF` / `#000000` | Official mark from [mailjet.com](https://www.mailjet.com/) `logo-mailjet-sinch.svg` (Sinch wordmark dropped) |
+| `knock.svg` | Knock | `#FFFFFF` / `#E95744` | Official K + orange dot from [knock.app/favicon/favicon.svg](https://knock.app/favicon/favicon.svg) (tile dropped); white so official `#262626` reads on dark |
+| `iterable.svg` | Iterable | `#FFFAF6` | Official waves from [iterable.com iterable-logo-light.svg](https://iterable.com/wp-content/uploads/2026/04/iterable-logo-light.svg) (wordmark dropped) |
+| `mailersend.svg` | MailerSend | `#4E48E0` / `#1C81C1` / `#5CC4CD` | Official symbol from [mailersend.com/favicon/favicon.svg](https://www.mailersend.com/favicon/favicon.svg) |
+| `mailerlite.svg` | MailerLite | `#FFFFFF` | Official safari-pinned-tab from [mailerlite.com](https://www.mailerlite.com/site/themes/new/img/favicons/safari-pinned-tab.svg); white so official black reads on dark. Not the MailerSend crystal |
+| `smtp2go.svg` | SMTP2GO | `#ABD3FF` | Official plane from [smtp2go.com logo.svg](https://www.smtp2go.com/wp-content/themes/smtp2go/images/logo.svg) (wordmark dropped) |
+| `kit.svg` | Kit | `#FFFFFF` | Official K cropped from [kit.com/brand](https://kit.com/brand) `kit-logo-soft-black.svg`; white so official `#1E1E1E` reads on dark. Not Simple Icons `kit` (kit.co) |
+| `front.svg` | Front | `#FFFFFF` | Official F + circle from [front.com/assets/front.svg](https://front.com/assets/front.svg) (press wordmark cropped); white so official `#001B38` reads on dark |
+| `omnisend.svg` | Omnisend | `#FFFFFF` | Official mark from [omnisend.com omnisend_logo_dark.svg](https://www.omnisend.com/wp-content/themes/omnisend-v2/assets/img/omnisend_logo_dark.svg) (wordmark dropped); white so official `#1E2423` reads on dark |
+| `postmark.svg` | Postmark | `#FFDE00` / `#000000` | Official stamp from [postmarkapp.com logo-stamp-simple.svg](https://postmarkapp.com/images/logo-stamp-simple.svg) |
+| `mailchimp.svg` | Mailchimp | `#FFE01B` | Simple Icons `mailchimp` |
+| `activecampaign.svg` | ActiveCampaign | `#004CFF` | Official glyph from the [activecampaign.com/brand](https://www.activecampaign.com/brand) `ActiveCampaign-Logos.zip` |
+| `getresponse.svg` | GetResponse | `#00AEEF` / `#FFFFFF` | Official mark from [getresponse.com brand-assets](https://www.getresponse.com/about/brand-assets) `mini-logo.svg` |
+| `campaign-monitor.svg` | Campaign Monitor | `#7856FF` | Official marque from [campaignmonitor.com cm-marque.svg](https://www.campaignmonitor.com/wp-content/themes/cm-theme/assets/ico/cm-marque.svg) |
+| `nylas.svg` | Nylas | `#4169E1` | Official N cropped from [nylas.com main-logo.svg](https://www.nylas.com/wp-content/uploads/main-logo.svg) (wordmark dropped) |
+| `emailoctopus.svg` | EmailOctopus | `#6E54D7` | Official mark from [emailoctopus.com/icon.svg](https://emailoctopus.com/icon.svg) |
+| `onesignal.svg` | OneSignal | `#FFFFFF` | Official mark from [onesignal.com/favicon.svg](https://onesignal.com/favicon.svg); white so official `#051B2C` reads on dark |
+| `hubspot.svg` | HubSpot | `#FF7A59` | Simple Icons `hubspot` |
+| `help-scout.svg` | Help Scout | `#1292EE` | Simple Icons `helpscout` |
+| `mailtrap.svg` | Mailtrap | `#22D172` | Simple Icons `mailtrap` |
+| `substack.svg` | Substack | `#FF6719` | Simple Icons `substack` |
+| `figma.svg` | Figma | `#F24E1E` | Simple Icons `figma` |
+| `canva.svg` | Canva | `#00C4CC` | Simple Icons `canva` |
+| `adobe.svg` | Adobe | `#FF0000` | Simple Icons `adobe` |
+| `sketch.svg` | Sketch | `#F7B500` | Simple Icons `sketch` |
+| `framer.svg` | Framer | `#0055FF` | Simple Icons `framer` |
+| `miro.svg` | Miro | `#FFFFFF` | Simple Icons `miro`; white so official `#050038` reads on dark |
+| `webflow.svg` | Webflow | `#146EF5` | Simple Icons `webflow` |
+| `lucid.svg` | Lucid | `#FFFFFF` | Simple Icons `lucid`; white so official `#282C33` reads on dark |
+| `mural.svg` | Mural | `#FF4B4B` | Simple Icons `mural` |
+| `frontify.svg` | Frontify | `#FFFFFF` | Simple Icons `frontify`; white so official `#2D3232` reads on dark |
+| `penpot.svg` | Penpot | `#FFFFFF` | Simple Icons `penpot`; white so official black reads on dark |
+| `marvel.svg` | Marvel | `#1FB6FF` | Simple Icons `marvelapp` |
+| `rive.svg` | Rive | `#FFFFFF` | Simple Icons `rive`; white so official `#1D1D1D` reads on dark |
+| `lottiefiles.svg` | LottieFiles | `#00DDB3` | Simple Icons `lottiefiles` |
+| `balsamiq.svg` | Balsamiq | `#AE1C59` | Official logomark from [balsamiq.com/assets/logomark.svg](https://balsamiq.com/assets/logomark.svg) |
+| `anima.svg` | Anima | `#FF6250` / `#FFDF90` / `#3366FF` | Official mark from [animaapp.com Storyblok anima-logo.svg](https://a.storyblok.com/f/89137/24x24/56f0f9432d/anima-logo.svg) |
+| `whimsical.svg` | Whimsical | Official gradient + `#FFFFFF` | Official diamond from [whimsical.com brand logo-color.svg](https://whimsical.com/_next_public/brand/logo-color.svg) (wordmark dropped); ring remapped from `#220a33` to white |
+| `lunacy.svg` | Lunacy | `#179DE3` | Simple Icons `lunacy` |
+| `photopea.svg` | Photopea | `#18A497` | Simple Icons `photopea` |
+| `blender.svg` | Blender | `#E87D0D` | Simple Icons `blender` |
+| `moqups.svg` | Moqups | `#006BE5` | Simple Icons `moqups` |
+| `proto-io.svg` | Proto.io | `#34A7C1` | Simple Icons `protodotio` |
+| `uxpin.svg` | UXPin | `#FFFFFF` | Official wordmark from [uxpin.com/images/uxpin-logo-new.svg](https://www.uxpin.com/images/uxpin-logo-new.svg) (tile dropped); white on-dark lockup |
+| `overflow.svg` | Overflow | `#FB5D2E` / `#16B4F2` / `#2C2C96` | Official mark from [overflow.io logo.svg](https://overflow.io/assets/public-site-v2/images/logo.svg) (wordmark dropped) |
+| `axure.svg` | Axure | `#74BB11` / `#009CD9` / `#EB2084` | Official A from [axure.com logo-black.svg](https://www.axure.com/images/2019/04/logo-black.svg) (wordmark dropped) |
+| `relume.svg` | Relume | `#FFFFFF` | Official hexagon from [relume.io relume-logo.svg](https://cdn.prod.website-files.com/6177739448baa66404ce1d9c/6a59a399fb4e8948af38850d_relume-logo.svg) (wordmark dropped); white so official `#101010` reads on dark |
+| `visily.svg` | Visily | Official blues / purple | Official flame from [Visily-logo.svg](https://d2kpe7grvhf8ri.cloudfront.net/website/images/Visily-logo.svg) (wordmark dropped) |
+| `plasmic.svg` | Plasmic | Official magenta–purple | Official mark from [plasmic.app/svg/logo.svg](https://www.plasmic.app/svg/logo.svg) |
+| `beautiful-ai.svg` | Beautiful.ai | `#FFFFFF` | Official wordmark from the [beautiful.ai](https://www.beautiful.ai/) header lockup; white so `currentColor` reads on dark |
+| `jitter.svg` | Jitter | `#FFFFFF` | Official wordmark from the [jitter.video](https://jitter.video/) header lockup; white so `currentColor` reads on dark |
+| `terraform.svg` | Terraform | `#844FBA` | Simple Icons `terraform` |
+| `pulumi.svg` | Pulumi | `#8A3391` | Simple Icons `pulumi` |
+| `vault.svg` | Vault | `#FFEC6E` | Simple Icons `vault` |
+| `consul.svg` | Consul | `#F24C53` | Simple Icons `consul` |
+| `nomad.svg` | Nomad | `#00CA8E` | Simple Icons `nomad` |
+| `spacelift.svg` | Spacelift | Official `#82FFE8`–`#7C47FC` + `#FFFFFF` | Official saturn mark from [spacelift.io vertical-dark.svg](https://spacelift.io/wp-content/uploads/2023/10/vertical-dark.svg) (wordmark dropped); `#16151E` knocked to white |
+| `crossplane.svg` | Crossplane | Official CNCF colors | Official icon from [cncf/artwork](https://github.com/cncf/artwork/blob/master/projects/crossplane/icon/color/crossplane-icon-color.svg) |
+| `packer.svg` | Packer | `#02A8EF` | Simple Icons `packer` |
+| `chef.svg` | Chef | `#F09820` | Simple Icons `chef` |
+| `opentofu.svg` | OpenTofu | `#FFDA18` | Simple Icons `opentofu` |
+| `ansible.svg` | Ansible | `#EE0000` | Simple Icons `ansible` |
+| `puppet.svg` | Puppet | `#FFAE1A` | Simple Icons `puppet` |
+| `argo-cd.svg` | Argo CD | `#EF7B4D` | Simple Icons `argo` (Argo project mark) |
+| `flux.svg` | Flux | `#5468FF` | Simple Icons `flux` (Flux CD) |
+| `terragrunt.svg` | Terragrunt | Official `#87E0E1` / `#1B46DD` / `#B068E9` / `#F9DB4E` / `#E94A5D` + `#FFFFFF` | Official light mark from [gruntwork-io/terragrunt](https://github.com/gruntwork-io/terragrunt/blob/main/docs/src/assets/logo-light.svg) |
+| `env0.svg` | Env0 | `#FFFFFF` | Official chevrons from [docs.env0.com favicon](https://mintcdn.com/envzero-b61043c8/tSDpnsOW7stD0Hxu/favicon.svg); dark tile dropped |
+| `scalr.svg` | Scalr | `#B3DBF1` / `#D21212` / `#FFFFFF` | Official stacked bars from [docs.scalr.io](https://docs.scalr.io/docs) `Scalr_Full-Color_Logo_Dark.svg` (wordmark dropped) |
+| `salt.svg` | Salt | `#57BCAD` | Simple Icons `saltproject` |
+| `rancher.svg` | Rancher | `#0075A8` | Simple Icons `rancher` |
+| `vagrant.svg` | Vagrant | `#1868F2` | Simple Icons `vagrant` |
+| `helm.svg` | Helm | `#FFFFFF` | Simple Icons `helm`; white so official `#0F1689` reads on dark |
+| `teleport.svg` | Teleport | `#512FC9` | Official cog from [goteleport.com/static/favicon.svg](https://goteleport.com/static/favicon.svg) |
+| `istio.svg` | Istio | `#466BB0` | Simple Icons `istio` |
+| `linkerd.svg` | Linkerd | `#2BEDA7` | Simple Icons `linkerd` |
+| `cilium.svg` | Cilium | `#F8C517` | Simple Icons `cilium` |
+| `opa.svg` | OPA | Official CNCF grays | Official icon from [cncf/artwork](https://github.com/cncf/artwork/blob/master/projects/open-policy-agent/icon/color/opa-icon-color.svg) |
+| `kyverno.svg` | Kyverno | Official `#E87E5B` / `#3784C5` | Official icon from [cncf/artwork](https://github.com/cncf/artwork/blob/master/projects/kyverno/icon/color/kyverno-icon-color.svg) |
+| `traefik.svg` | Traefik | `#24A1C1` | Simple Icons `traefikproxy` |
+| `cert-manager.svg` | cert-manager | Official CNCF `#326CE5` + white | Official icon from [cncf/artwork](https://github.com/cncf/artwork/blob/master/projects/cert-manager/icon/color/cert-manager-icon-color.svg) |
+| `infracost.svg` | Infracost | `#DB44B8` | Simple Icons `infracost` |
+| `launchdarkly.svg` | LaunchDarkly | `#FFFFFF` | Official star path; black lockup knocked out |
+| `optimizely.svg` | Optimizely | Official `#0D3A29` / `#ABFF44` | Official favicon mark |
+| `statsig.svg` | Statsig | `#EAECEE` | Official favicon chevrons; dark tile dropped |
+| `flagsmith.svg` | Flagsmith | `#FFFFFF` | Official white wordmark from [flagsmith.com](https://www.flagsmith.com/) |
+| `unleash.svg` | Unleash | Official `#1A4049` / white / `#817AFE` | Official glyph from [getunleash.io](https://www.getunleash.io/) |
+| `configcat.svg` | ConfigCat | `#FFFFFF` + `#ed1c24` | Official lockup; black wordmark knocked out, cat stays red |
+| `growthbook.svg` | GrowthBook | `#FFFFFF` + official `#029DD1` / `#0047BD` / `#4817A1` | Official white wordmark + icon from [growthbook.io](https://www.growthbook.io/) |
+| `devcycle.svg` | DevCycle | `#2E4AEF` | Official `icon.svg` |
+| `eppo.svg` | Eppo | `#FFFFFF` | Official lockup; `#2C1912` / black knocked out |
+| `vwo.svg` | VWO | Official `#BF3078` / `#802050` / `#26134D` | Official color wordmark |
+| `cloudbees.svg` | CloudBees | `#1997B5` | Simple Icons `cloudbees` |
+| `ab-tasty.svg` | AB Tasty | `#3100BE` | Official wordmark from [abtasty.com](https://www.abtasty.com/) via Wikimedia |
+| `kameleoon.svg` | Kameleoon | `#FFFFFF` | Official glyph from [kameleoon.com](https://www.kameleoon.com/) |
+| `convert.svg` | Convert | `#FFFFFF` | Official header wordmark from [convert.com](https://www.convert.com/) |
+| `monetate.svg` | Monetate | Official `#F74BB3` + `#FFFFFF` | Official wordmark from [monetate.com](https://www.monetate.com/) |
+| `flipt.svg` | Flipt | Official `#7C3AED` / `#C4B5FD` / `#A78BFA` / `#8B5CF6` / `#6D28D9` / `#5B21B6` + `#FFFFFF` | Official mark from [flipt.io](https://www.flipt.io/flipt.svg); wordmark knocked to white |
+| `hypertune.svg` | Hypertune | `#FFFFFF` | Official lockup from [hypertune.com](https://www.hypertune.com/); dark tile dropped, wordmark knocked to white |
+| `reflag.svg` | Reflag | `#FFFFFF` | Official favicon from [reflag.com](https://reflag.com/) |
+| `go-feature-flag.svg` | GO Feature Flag | Official illustrated mark | Official SVG from [thomaspoignant/go-feature-flag](https://github.com/thomaspoignant/go-feature-flag/blob/main/gofeatureflag.svg) |
+| `featbit.svg` | FeatBit | `#FFFFFF` | Official mark from [featbit/featbit](https://github.com/featbit/featbit) |
+| `flagd.svg` | flagd | `#FFFFFF` | Official mark from [flagd.dev](https://flagd.dev/assets/logo-white.svg) |
+| `featurehub.svg` | FeatureHub | Official flower + `#FFFFFF` wordmark | Official lockup from [cncf/landscape](https://github.com/cncf/landscape/blob/master/hosted_logos/featurehub.svg); navy wordmark knocked to white |
+| `bucketeer.svg` | Bucketeer | Official `#5D3597` / `#DE0B99` | Official bucket mark from [cncf/landscape](https://github.com/cncf/landscape/blob/master/hosted_logos/bucketeer.svg) (wordmark dropped) |
+| `flipper.svg` | Flipper Cloud | `#FFFFFF` + `#1AB6FF` | Official wordmark from [flippercloud.io](https://www.flippercloud.io/); dark letters knocked to white |
+| `confidence.svg` | Confidence | `#FFFFFF` | Official icon from [confidence.spotify.com](https://confidence.spotify.com/icon.svg); dark tile dropped |
+| `frosmo.svg` | Frosmo | Official cheetah + `#FFFFFF` wordmark | Official lockup from [frosmo.com](https://frosmo.com/wp-content/themes/frosmo/assets/images/frosmo-icon.svg); black wordmark knocked to white |
+| `omniconvert.svg` | Omniconvert | Official `#5AA5FB` / `#2084F9` + `#FFFFFF` | Official Nexus lockup from [omniconvert.com](https://www.omniconvert.com/); black wordmark knocked to white |
+| `personyze.svg` | Personyze | Official `#E54944` + `#7B93C9` | Official icon from [personyze.com](https://counter2.personyze.com/images/logo-icon.svg); white tile dropped, near-black navy knocked to a lighter token |
+| `insider.svg` | Insider One | Official `#E92E2F` / `#FF6126` + `#FFFFFF` | Official header lockup from [insiderone.com](https://www.insiderone.com/); cream wordmark knocked to white |
+| `bloomreach.svg` | Bloomreach | Official `#FFD500` + `#1A1A1A` | Official icon from [bloomreach.com](https://www.bloomreach.com/wp-content/themes/hello-theme-child-master/assets/img/bloomreach-logo-icon.svg) |
+| `amplitude.svg` | Amplitude | `#10069F` | Official circular mark from Wikimedia [Amplitude logo 2020.svg](https://commons.wikimedia.org/wiki/File:Amplitude_logo_2020.svg) (wordmark dropped) |
+| `mixpanel.svg` | Mixpanel | `#7856FF` | Simple Icons `mixpanel` |
+| `posthog.svg` | PostHog | `#FFFFFF` | Simple Icons `posthog`; white so official black reads on dark |
+| `segment.svg` | Segment | `#52BE96` | Official gem from the [status.segment.com](https://status.segment.com/) Contentful lockup (wordmark dropped) |
+| `heap.svg` | Heap | `#FFFFFF` + `#31D891` | Official bars from [developers.heap.io](https://developers.heap.io/) `dev_logo.svg` (wordmark dropped); near-black bars knocked to white |
+| `pendo.svg` | Pendo | `#EC1F5B` | Official mark from [pendo.io/icon.svg](https://www.pendo.io/icon.svg) |
+| `rudderstack.svg` | RudderStack | `#FFFFFF` | Official sail from [rudderstack.com full-logo-white.svg](https://www.rudderstack.com/images/logos/full-logo-white.svg) (wordmark dropped) |
+| `plausible.svg` | Plausible | `#5850EC` | Simple Icons `plausibleanalytics` |
+| `fathom.svg` | Fathom | `#9187FF` | Simple Icons `fathom` |
+| `matomo.svg` | Matomo | `#3152A0` | Simple Icons `matomo` |
+| `woopra.svg` | Woopra | `#FFFFFF` | Official mark from [woopra.com/favicon.svg](https://www.woopra.com/favicon.svg); white so official black reads on dark |
+| `treasuredata.svg` | Treasure Data | Official diamond gradient | Official symbol from [treasure.ai logo-symbol-only.svg](https://www.treasure.ai/hubfs/assets/images/logos/logo-symbol-only.svg) |
+| `appsflyer.svg` | AppsFlyer | `#FFFFFF` | Official shards from the [appsflyer.com](https://www.appsflyer.com/) lockup (wordmark dropped); black knocked to white |
+| `branch.svg` | Branch | `#FFFFFF` | Official glyph from [branch.io favicon-light.svg](https://www.branch.io/wp-content/themes/branch/assets/images/favicons/favicon-light.svg) |
+| `hightouch.svg` | Hightouch | `#3C34E5` | Official wordmark from [hightouch.com](https://hightouch.com/) Sanity `489x60.svg` |
+| `simpleanalytics.svg` | Simple Analytics | `#FF4F64` | Simple Icons `simpleanalytics` |
+| `countly.svg` | Countly | `#2CAE5C` | Official mark from [countly.com favcon.svg](https://countly.com/) |
+| `parsely.svg` | Parse.ly | `#5BA745` | Simple Icons `parsedotly` |
+| `umami.svg` | Umami | `#FFFFFF` | Simple Icons `umami`; white so official black reads on dark |
+| `goatcounter.svg` | GoatCounter | `#9A15A4` | Official mark from [arp242/goatcounter](https://github.com/arp242/goatcounter) `public/logo.svg` |
+| `singular.svg` | Singular | `#3088F4` | Official swirl from [singular.net singular-logo.svg](https://www.singular.net/wp-content/uploads/2026/04/singular-logo.svg) (wordmark dropped) |
+| `airbridge.svg` | Airbridge | `#FFFFFF` | Official A from [airbridge.io airbridge-logo.svg](https://www.airbridge.io/images/airbridge-logo.svg) (wordmark dropped); white so official currentColor reads on dark |
+| `kissmetrics.svg` | Kissmetrics | `#4651FF` | Official icon from [kissmetrics.io/logo-icon.svg](https://www.kissmetrics.io/logo-icon.svg) |
+| `lytics.svg` | Lytics | Official `#794CFF` / `#3885D0` / `#28AEB9`–`#18D6A3` | Official strokes from [lytics.com lytics-logo.svg](https://www.lytics.com/wp-content/uploads/2021/03/lytics-logo.svg) (wordmark dropped) |
+| `polytomic.svg` | Polytomic | `#0BD9A5` | Official mark from [polytomic.com/favicon.svg](https://www.polytomic.com/favicon.svg) |
+| `baremetrics.svg` | Baremetrics | `#6078FF` | Simple Icons `baremetrics` |
+| `chartmogul.svg` | ChartMogul | Official `#1E8FFB` + `#FFFFFF` | Official icon from [chartmogul.com/-/brand/icon-blue.svg](https://www.chartmogul.com/-/brand/icon-blue.svg) |
+| `quantcast.svg` | Quantcast | `#F6F6EE` | Official marque from [quantcast.com Quantcast_Marque_Grey.svg](https://static.quantcast.com/marketing-site/Quantcast_Marque_Grey.svg) |
+| `metabase.svg` | Metabase | `#509EE3` | Simple Icons `metabase` |
+| `hex.svg` | Hex | `#F5C0C0` | Official HEX letters from [hex.tech/favicon.svg](https://hex.tech/favicon.svg); dark tile dropped |
+| `snyk.svg` | Snyk | `#4C4A73` | Simple Icons `snyk` |
+| `wiz.svg` | Wiz | `#FFFFFF` | Official star from [wiz.io logo_sprite.svg](https://www.wiz.io/images/logo_sprite.svg) `#wiz-star`; white so official currentColor reads on dark |
+| `sentinelone.svg` | SentinelOne | `#6100FF` | Official mark from the [status.sentinelone.com](https://status.sentinelone.com/) Statuspage logo blob |
+| `semgrep.svg` | Semgrep | `#13BF95` | Official mark from [semgrep.dev/favicon.svg](https://semgrep.dev/build/assets/favicon-CIx-xpG_.svg) |
+| `veracode.svg` | Veracode | `#FFFFFF` + `#00B9FF`→`#0065DD` | Official symbol from [veracode.com VER-Symbol-Full-Reversed.svg](https://www.veracode.com/); near-black polygon knocked to white |
+| `tenable.svg` | Tenable | `#E7FF00` + `#1E2426` | Official favicon from [tenable.com tenable-favicon.svg](https://www.tenable.com/) |
+| `qualys.svg` | Qualys | `#ED2E26` | Simple Icons `qualys` |
+| `vanta.svg` | Vanta | `#FFFFFF` | Official V from [vanta.com vanta-logo.svg](https://www.vanta.com/) (wordmark dropped); official `#240642` knocked to white |
+| `rapid7.svg` | Rapid7 | `#E85E26` | Official R from [rapid7.com/rapid7-logo.svg](https://www.rapid7.com/rapid7-logo.svg) (wordmark dropped) |
+| `socket.svg` | Socket | `#C93CD7` | Simple Icons `socket` |
+| `aqua.svg` | Aqua | `#1904DA` | Simple Icons `aqua` |
+| `orca.svg` | Orca | `#FFFFFF` + `#0080FF` | Official o + sonar rings from [orca.security orca-security-logo-2025.svg](https://orca.security/) `#o`; official `#101921` knocked to white |
+| `sysdig.svg` | Sysdig | `#00CBE2` | Official S from the [sysdig.com](https://sysdig.com/) homepage `nav-logo_vector` |
+| `gitguardian.svg` | GitGuardian | `#F7FAFF` | Official shield/face from the [gitguardian.com](https://www.gitguardian.com/) lockup (wordmark dropped) |
+| `secureframe.svg` | Secureframe | `#0FD082` | Official mark from [secureframe.com sf-logo-2.svg](https://secureframe.com/) |
+| `palo-alto.svg` | Palo Alto Networks | `#F04E23` | Simple Icons `paloaltonetworks` |
+| `imperva.svg` | Imperva | `#FFFFFF` + `#285AE6` | Official lockup from [imperva.com logo.svg](https://www.imperva.com/); black squares knocked to white |
+| `upwind.svg` | Upwind | `#FFFFFF` + `#F2583C`→`#9214C4`→`#1E71ED` | Official U from [upwind.io dark-u-logo.svg](https://www.upwind.io/); official `#18202D` knocked to white |
+| `fossa.svg` | FOSSA | `#289E6D` | Simple Icons `fossa` |
+| `mend.svg` | Mend | `#073C8C` + `#55C6C2` | Official M waves from [mend.io Mend-io-logo-color-32px-2.svg](https://www.mend.io/) |
+| `human.svg` | HUMAN | `#FFFFFF` | Official mark from [docs.humansecurity.com logo-light.svg](https://docs.humansecurity.com/) (wordmark dropped); official black knocked to white |
+| `tailscale.svg` | Tailscale | `#FFFFFF` | Simple Icons `tailscale`; official `#242424` knocked to white |
+| `twingate.svg` | Twingate | `#FFFFFF` | Official triangles from the [twingate.com](https://www.twingate.com/) homepage lockup (wordmark dropped) |
+| `digicert.svg` | DigiCert | `#0174C3` | Official d from [digicert.com/icon.svg](https://www.digicert.com/icon.svg); circular tile dropped |
+| `securityscorecard.svg` | SecurityScorecard | `#7033FD` | Simple Icons `securityscorecard` |
+| `knowbe4.svg` | KnowBe4 | `#FFFFFF` | Official K from [knowbe4.com knowbe4-logo-blk-orange-cropped-rgb_fixed.svg](https://www.knowbe4.com/) (wordmark dropped); official `#121921` knocked to white |
+| `chainguard.svg` | Chainguard | `#4445E7` | Simple Icons `chainguard` |
+| `bugcrowd.svg` | Bugcrowd | `#F26822` | Simple Icons `bugcrowd` |
+| `sonar.svg` | Sonar | `#FD3456` | Simple Icons `sonar` |
+| `lets-encrypt.svg` | Let's Encrypt | `#003A70` + `#FFA400` | Official lock from [letsencrypt.org/images/le-logo-lockonly.svg](https://letsencrypt.org/images/le-logo-lockonly.svg) |
+| `zendesk.svg` | Zendesk | `#FFFFFF` | Simple Icons `zendesk`; official `#03363D` knocked to white |
+| `intercom.svg` | Intercom | `#6AFDEF` | Simple Icons `intercom` |
+| `gorgias.svg` | Gorgias | `#FFFFFF` | Official chat window from [gorgias.com Gorgias Logo - Black.svg](https://www.gorgias.com/) (wordmark dropped); official black knocked to white |
+| `talkdesk.svg` | Talkdesk | `#5405BD` | Official three-dot mark from [talkdesk.com talkdesk_logo-4.svg](https://www.talkdesk.com/) (wordmark dropped) |
+| `aircall.svg` | Aircall | `#00B388` | Simple Icons `aircall` |
+| `livechat.svg` | LiveChat | `#FF5100` | Simple Icons `livechat` |
+| `kustomer.svg` | Kustomer | `#FFFFFF` | Official smile from [kustomer.com/images/kustomer/kustomer-logo.svg](https://www.kustomer.com/images/kustomer/kustomer-logo.svg) (wordmark dropped); official `#292929` knocked to white |
+| `dixa.svg` | Dixa | `#FFFFFF` | Official mark from [dixa.com logo.svg](https://www.dixa.com/) (wordmark dropped); official `#171512` knocked to white |
+| `kayako.svg` | Kayako | `#FFFFFF` | Official K from [kayako.com kayako-one-logo-light.svg](https://kayako.com/) (wordmark dropped) |
+| `helpshift.svg` | Helpshift | `#0042FF` + white | Official mark from [helpshift.com Logo-Helpshift.svg](https://www.helpshift.com/) |
+| `uservoice.svg` | UserVoice | `#FF6720` | Simple Icons `uservoice` |
+| `ada.svg` | Ada | `#FFFFFF` | Official mark from [docs.ada.cx logo-light.svg](https://docs.ada.cx/) (wordmark dropped); official `#0A0B0C` knocked to white |
+| `plain.svg` | Plain | `#1AD379` | Official mark from [plain.com wordmark](https://www.plain.com/) (letters dropped) |
+| `forethought.svg` | Forethought | `#FFFFFF` | Official stacked-brick mark from [forethought.ai Isolation_Mode.svg](https://www.forethought.ai/) (wordmark dropped); official `#F7FDFC` knocked to white |
+| `gladly.svg` | Gladly | `#74AA9C` + white | Official mark from [gladly.com](https://www.gladly.com/) |
+| `genesys.svg` | Genesys | `#FF451A` | Official G from [genesys.com genesys-com-full-color.svg](https://www.genesys.com/) (wordmark dropped) |
+| `deskpro.svg` | Deskpro | `#FFFFFF` | Official D from [deskpro.com Deskpro/deskpro-logo.svg](https://www.deskpro.com/) (wordmark dropped); official `#090C2F` knocked to white |
+| `olark.svg` | Olark | Official rainbow | Official bird from [olark.com olark-rainbow-logo.svg](https://www.olark.com/) |
+| `chatwoot.svg` | Chatwoot | `#1F93FF` | Simple Icons `chatwoot` |
+| `helpdesk.svg` | HelpDesk | `#2FC774` | Official ticket from [helpdesk.com/helpdesk-logo.svg](https://www.helpdesk.com/helpdesk-logo.svg) (wordmark dropped) |
+| `tidio.svg` | Tidio | `#FFFFFF` | Official mark from [tidio.com tidio-logo.svg](https://www.tidio.com/images/brand-logos/tidio-logo.svg); official black knocked to white |
+| `teamsupport.svg` | TeamSupport | `#1E63AF` + `#FFC709` + `#ED9222` + `#E86E25` | Official mark from [teamsupport.com teamsupport-icon-mark.svg](https://www.teamsupport.com/astro-assets/teamsupport-icon-mark.svg) |
+| `dialpad.svg` | Dialpad | `#7C52FF` | Official sparkle from [dialpad.com dark_dialpad.svg](https://www.dialpad.com/assets/images/logo/dark_dialpad.svg) (wordmark dropped) |
+| `khoros.svg` | Khoros | `#FFFFFF` | Official bug from [khoros.ai khoros-bug-icon.svg](https://khoros.ai/wp-content/uploads/2026/02/khoros-bug-icon.svg) |
+| `lime-connect.svg` | Lime Connect | `#FEB000` + `#FFA6EA` + `#6FCDB6` + `#BEE034` + `#A6EFFF` | Official fruit from [connect.lime-technologies.com lime-logo-no-tagline.svg](https://connect.lime-technologies.com/wp-content/uploads/2025/12/lime-logo-no-tagline.svg) (wordmark dropped) |
+| `sysaid.svg` | SysAid | `#6BD9B9` → `#DEFF00` | Official diamond from [cdn.sysaid.com logo-v2.svg](https://cdn.sysaid.com/wp-content/uploads/logo-v2.svg) (wordmark dropped) |
+| `assembled.svg` | Assembled | `#FFFFFF` | Official A from [assembled.com Logo.svg](https://www.assembled.com/) (wordmark dropped); official white on dark |
+| `cresta.svg` | Cresta | `#FFFFFF` | Official standalone sign from [cresta.com cresta sign.svg](https://cresta.com/); official `#25252A` knocked to white |
+| `observe-ai.svg` | Observe.AI | `#F4F73D` + `#000000` | Official mark from [observe.ai OAI_FAVICON_2024.svg](https://www.observe.ai/) |
+| `helpjuice.svg` | Helpjuice | `#5DA3D9` | Official icon from [helpjuice.com helpjuice-icon.svg](https://helpjuice.com/) |
+| `slack.svg` | Slack | `#4A154B` | Simple Icons `slack` |
+| `notion.svg` | Notion | `#FFFFFF` | Simple Icons `notion`; official black knocked to white |
+| `jira.svg` | Jira | `#0052CC` | Simple Icons `jira` |
+| `asana.svg` | Asana | `#F06A6A` | Simple Icons `asana` |
+| `monday.svg` | monday.com | `#FB275D` + `#FFCC00` + `#00CA72` | Official bars from [monday.com monday-logo.svg](https://monday.com/) (circular tile dropped) |
+| `clickup.svg` | ClickUp | `#7B68EE` | Simple Icons `clickup` |
+| `discord.svg` | Discord | `#5865F2` | Simple Icons `discord` |
+| `zoom.svg` | Zoom | `#0B5CFF` | Simple Icons `zoom` |
+| `trello.svg` | Trello | `#0052CC` | Simple Icons `trello` |
+| `airtable.svg` | Airtable | `#18BFFF` | Simple Icons `airtable` |
+| `confluence.svg` | Confluence | `#FFFFFF` | Simple Icons `confluence`; official `#172B4D` knocked to white |
+| `loom.svg` | Loom | `#625DF5` | Simple Icons `loom` |
+| `coda.svg` | Coda | `#F46A54` | Simple Icons `coda` |
+| `mattermost.svg` | Mattermost | `#0058CC` | Simple Icons `mattermost` |
+| `smartsheet.svg` | Smartsheet | `#FFFFFF` | Official S from [smartsheet.com smartsheet-logo-blue-new.svg](https://www.smartsheet.com/sites/default/files/smartsheet-logo-blue-new.svg) (wordmark dropped); official `#0E2947` knocked to white |
+| `shortcut.svg` | Shortcut | `#494BCB` | Simple Icons `shortcut` |
+| `teamwork.svg` | Teamwork | `#FFFFFF` + `#FF22B1` | Official T + pink dot from [teamwork.com teamwork-logo-dot.svg](https://a.storyblok.com/f/99519/52x50/fd3b4f2cfe/teamwork-logo-dot.svg) (circular tile dropped); official dark tile knocked to white T |
+| `productboard.svg` | Productboard | `#0071E1` + `#FFC600` + `#F84136` | Official mark from [productboard.com/favicon.svg](https://www.productboard.com/favicon.svg) |
+| `aha.svg` | Aha! | `#FFFFFF` + `#d34cf9` → `#0889f0` | Official A + sparkle from [aha.io](https://www.aha.io/) (wordmark dropped); official `currentColor` A knocked to white |
+| `hive.svg` | Hive | `#FBC67A` → `#FFA561` | Official bars from [hive.com](https://www.hive.com/) wordmark (letters dropped). Simple Icons `hive` is Hive Home, not Hive.com |
+| `calendly.svg` | Calendly | `#006BFF` | Simple Icons `calendly` |
+| `basecamp.svg` | Basecamp | `#FFFFFF` | Simple Icons `basecamp`; official `#1D2D35` knocked to white |
+| `zulip.svg` | Zulip | `#6492FE` | Simple Icons `zulip` |
+| `element.svg` | Element | `#0DBD8B` | Simple Icons `element` |
+| `plane.svg` | Plane | `#FFFFFF` | Simple Icons `plane`; official `#121212` knocked to white |
+| `guru.svg` | Guru | `#FFFFFF` | Official G from [getguru.com Guru logo.svg](https://www.getguru.com/) (blob tile dropped); official white on dark |
+| `tettra.svg` | Tettra | `#F62888` + `#F8BFD9` + `#FFFFFF` | Official T from [tettra.com tettra-logo-fuchsia.svg](https://tettra.com/wp-content/themes/tettra-2016/images/2023/tettra-logo-fuchsia.svg) (wordmark dropped); official `#171627` outline knocked to white |
+| `fireflies.svg` | Fireflies | Official magenta → blue | Official mark from [fireflies.ai logo-full-color.svg](https://fireflies.ai/images/logo-full-color.svg) (wordmark dropped) |
+| `livestorm.svg` | Livestorm | `#FFFFFF` | Official bars + dot from [livestorm.co/favicon.svg](https://livestorm.co/favicon.svg) (circular tile dropped) |
+| `fellow.svg` | Fellow | `#FFFFFF` | Official mark from [fellow.ai](https://fellow.ai/) |
+| `gitbook.svg` | GitBook | `#BBDDE5` | Simple Icons `gitbook` |
+| `readme.svg` | ReadMe | `#018EF5` | Simple Icons `readme` |
+| `mintlify.svg` | Mintlify | `#18E299` | Simple Icons `mintlify` |
+| `fern.svg` | Fern | `#51C233` | Official leaf from the [buildwithfern.com](https://buildwithfern.com/) header lockup (wordmark dropped) |
+| `archbee.svg` | Archbee | `#2166AE` | Official hex from [archbee.com/archbee-logo.svg](https://www.archbee.com/archbee-logo.svg) (wordmark dropped) |
+| `document360.svg` | Document360 | `#8005D8` | Official 360 mark from [document360.com logo.svg](https://document360.com/wp-content/themes/document360/images/logo.svg) (wordmark dropped) |
+| `knowledgeowl.svg` | KnowledgeOwl | `#FFFFFF` | Official owl from [KnowledgeOwl login `ko-logo-white.svg`](https://dyzz9obi78pm5.cloudfront.net/app/image/id/579e5c9732131c3836dfd8e8/n/ko-logo-white.svg) (wordmark dropped) |
+| `stoplight.svg` | Stoplight | `#149CF4` | Official mark from [stoplight.io Stoplight Logo.svg](https://stoplight.io/) |
+| `swaggerhub.svg` | SwaggerHub | `#85EA2D` | Simple Icons `swagger` (Swagger / SwaggerHub mark) |
+| `bump.svg` | Bump | `#FFFFFF` | Official mark from [bump.sh/favicon.svg](https://bump.sh/favicon.svg); official `#22222A` knocked to white |
+| `shopify.svg` | Shopify | `#7AB55C` | Simple Icons `shopify` |
+| `bigcommerce.svg` | BigCommerce | `#FFFFFF` | Simple Icons `bigcommerce`; official `#121118` knocked to white |
+| `ecwid.svg` | Ecwid | `#FFFFFF` | Official bag from [ecwid.com favicon.svg](https://don16obqbay2c.cloudfront.net/favicons/favicon.svg) (rounded tile and wordmark dropped) |
+| `saleor.svg` | Saleor | `#FFFFFF` | Official parallelogram from [docs.saleor.io/img/logo.svg](https://docs.saleor.io/img/logo.svg) (wordmark dropped); official `#161A1E` knocked to white |
+| `medusa.svg` | Medusa | `#FFFFFF` | Simple Icons `medusa`; official black knocked to white |
+| `commercelayer.svg` | Commerce Layer | `#FFFFFF` | Official mark from [commercelayer.io/favicon.svg](https://commercelayer.io/favicon.svg); official `#101111` knocked to white |
+| `elasticpath.svg` | Elastic Path | `#2BCC7E` | Official chevron from [developer.elasticpath.com/logo/dark.svg](https://developer.elasticpath.com/logo/dark.svg) (wordmark dropped) |
+| `lightspeed.svg` | Lightspeed | `#E81C1C` | Official mark from [lightspeedhq.com/favicon.svg](https://www.lightspeedhq.com/favicon.svg) |
+| `swell.svg` | Swell | `#FFFFFF` | Official S from [swell.is/swell-logo.svg](https://www.swell.is/swell-logo.svg) (wordmark dropped) |
+| `vtex.svg` | VTEX | `#ED125F` | Simple Icons `vtex` |
+| `nacelle.svg` | Nacelle | `#5029F1` / `#A40DCE` / `#00D085` | Official orb from [nacelle.com logo.svg](https://nacelle.com/hubfs/Nacelle%20Logo/logo.svg) (wordmark dropped) |
+| `volusion.svg` | Volusion | `#8759F2` / `#FF3E80` / `#FFC300` / `#00D4E6` | Official diamond from [volusion.com color-logo](https://media.volusion.com/image/upload/v1754318723/logos/color-logo_owvv3n.svg) (wordmark dropped) |
+| `alokai.svg` | Alokai | `#0AD36B` | Official mark from [alokai-logo.svg](https://images.contentstack.io/v3/assets/bltb1a38d5d52a9d1a1/blt847d04e30da9e1dc/65dc9501f86c24118b8df9d8/alokai-logo.svg) (wordmark dropped) |
+| `shopline.svg` | SHOPLINE | `#333F48` | Official tag from [shoplineapp.com sprite logo](https://cdn.shoplineapp.com/assets/sprite/logo-48b2fd01fa2653845ef016f51c2afd24348e24d3baa800648ba700ddb313867e.svg) (wordmark dropped) |
+| `tapcart.svg` | Tapcart | `#3F1EFB` | Official mark from [tapcart.com favicon.svg](https://cdn.prod.website-files.com/616f0a7a027baaf59a43390b/62293c4fecc5b94c611bc4e0_favicon.svg) |
+| `pack.svg` | Pack | `#00BE8E` | Official hex from [packdigital.com/icon.svg](https://www.packdigital.com/icon.svg) (rounded tile dropped) |
+| `bold.svg` | Bold Commerce | `#E60046` | Official BOLD mark from [developer.boldcommerce.com/assets/images/logo.svg](https://developer.boldcommerce.com/assets/images/logo.svg) (Commerce wordmark dropped) |
+| `mirakl.svg` | Mirakl | `#FFFFFF` | Official globe from [mirakl.com favicon-light.svg](https://www.mirakl.com/media/favicons/favicon-light.svg); official `#03182F` knocked to white |
+| `sharetribe.svg` | Sharetribe | `#F7615E` | Official mark from [sharetribe.com/safari-pinned-tab.svg](https://www.sharetribe.com/safari-pinned-tab.svg) |
+| `printful.svg` | Printful | Official triangle colors | Official mark from [printful.com logo-icon.svg](https://static.cdn.printful.com/static/v879/images/layout/logo-icon.svg) |
+| `salesforce.svg` | Salesforce | `#00B3FF` | Official cloud from [salesforce.com logo-salesforce-no-type.svg](https://wp.sfdcdigital.com/en-us/wp-content/uploads/sites/4/2026/05/logo-salesforce-no-type.svg) (wordmark dropped) |
+| `pipedrive.svg` | Pipedrive | `#017737` | Official P from the [Wikimedia Pipedrive lockup](https://commons.wikimedia.org/wiki/File:Pipedrive_logo.svg) (wordmark dropped) |
+| `copper.svg` | Copper | `#FF3465` | Official colon from [copper.com logo](https://cdn.prod.website-files.com/69bdc11d6d8dca48c8a32ff4/69c58163b6548ea11daddf60_copper%20logo%20-%20black.svg) (wordmark dropped) |
+| `close.svg` | Close | `#4EC375` / `#1463FF` / `#FFBC00` | Official overlapping-circle mark from [close.com logo-dark-large.svg](https://cdn.prod.website-files.com/61717799a852418a278cfa9b/6876a6daecee99d3bff05939_logo-dark-large.svg) (wordmark dropped) |
+| `attio.svg` | Attio | `#FFFFFF` | Official crystal from [attio.com Storyblok attio.svg](https://a.storyblok.com/f/234930/18x18/cfb7753a31/attio.svg); official `#232529` knocked to white |
+| `capsule.svg` | Capsule | `#453DD8` | Official mark from [app.capsulecrm.com/favicon.svg](https://app.capsulecrm.com/favicon.svg) (rounded tile dropped) |
+| `salesloft.svg` | Salesloft | `#FFFFFF` | Official constellation from [salesloft.com/icon.svg](https://www.salesloft.com/icon.svg) (rounded tile dropped); official `#181818` knocked to white |
+| `outreach.svg` | Outreach | `#FFFFFF` | Official mark from [status.outreach.io](https://status.outreach.io/bfe7482c1d714fd2.svg); light lockup knocked to white |
+| `apollo.svg` | Apollo | `#FFFFFF` | Official mark from [apollo.io logo.svg](https://www.apollo.io/_next/static/media/logo.0pq8s8~3b84w1.svg); official `#1F1F1E` knocked to white |
+| `gong.svg` | Gong | `#FFFFFF` | Official mark from [gong.io/marketing-assets/favicon.svg](https://www.gong.io/marketing-assets/favicon.svg) (rounded tile dropped) |
+| `affinity.svg` | Affinity | `#2665F1` | Official geometric mark from the [affinity.co](https://www.affinity.co/) lockup (wordmark dropped). Not Simple Icons `affinity` (photo editor). |
+| `zoominfo.svg` | ZoomInfo | `#EA1B15` | Official Z from [zoominfo.com zoominfo-red-logomark.svg](https://www.zoominfo.com/) (rounded tile dropped) |
+| `streak.svg` | Streak | `#F5A623` / `#00A99D` / `#4A90E2` | Official kanban cards from the [streak.com](https://www.streak.com/) lockup (wordmark + rounded tile dropped) |
+| `clari.svg` | Clari | `#00D7B8` / `#5F3AD7` / `#0280FF` / `#FFFFFF` | Official fan from [clari.com logo-white.svg](https://www.clari.com/) (wordmark dropped) |
+| `lusha.svg` | Lusha | `#863FFF` | Official bird from the [lusha.com](https://www.lusha.com/) 2026 mark (tile dropped) |
+| `teamleader.svg` | Teamleader | `#00B2B2` | Official chevrons from [teamleader.eu icon.svg](https://www.teamleader.eu/) (circle tile dropped) |
+| `orum.svg` | Orum | `#FCFF70` | Official petals from the [orum.com](https://www.orum.com/) favicon (dark tile dropped) |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.

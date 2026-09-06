@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 33 49" role="img" aria-hidden="true">
+  <title>Upwind</title>
+  <defs>
+    <linearGradient id="upwind-bar" x1="-0.0582381" y1="2.04755" x2="30.6962" y2="11.0002" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F2583C"/>
+      <stop offset="0.541667" stop-color="#9214C4"/>
+      <stop offset="1" stop-color="#1E71ED"/>
+    </linearGradient>
+  </defs>
+  <path fill="url(#upwind-bar)" d="M32.0549 0H0.939453V8.09168H32.0549V0Z"/>
+  <path fill="#FFFFFF" d="M16.4972 48.0017C7.91994 48.0017 0.939453 40.9865 0.939453 32.3606V14.0215H9.52211V32.9003C9.52211 36.7671 12.6509 39.9127 16.4972 39.9127C20.3435 39.9127 23.4723 36.7671 23.4723 32.9003V14.0215H32.0549V32.3606C32.0549 40.9865 25.0745 48.0017 16.4972 48.0017Z"/>
+</svg>
