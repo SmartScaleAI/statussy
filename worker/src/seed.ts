@@ -11,10 +11,8 @@ import type pg from "pg"
  * Windsurf is the legacy Devin Desktop name and is not seeded separately.
  * GitHub Copilot is a GitHub component, not its own card.
  *
- * `category` defaults to `ai` when omitted. Adobe,
- * Sketch, Penpot, Rive, LottieFiles, Whimsical, Lunacy, Photopea,
- * Blender, Moqups, Proto.io, UXPin, Overflow, Axure, Relume, Visily,
- * Plasmic
+ * `category` defaults to `ai` when omitted. Remaining rows without
+ * a dedicated fetcher
  * are `none` until a dedicated fetcher exists.
  */
 export const SERVICE_SEED = [
@@ -1603,7 +1601,8 @@ export const SERVICE_SEED = [
   },
   // Design Wave A. FigJam / Dev Mode stay on Figma. Photoshop /
   // Illustrator / XD stay on Adobe. Lucidspark stays on Lucid. Spline
-  // waits (no official vector). Adobe and Sketch are none.
+  // waits (no official vector). Adobe is SnowServiceRegistry +
+  // StatusEvents; Sketch is Instatus.
   {
     id: "figma",
     name: "Figma",
@@ -1623,14 +1622,14 @@ export const SERVICE_SEED = [
     name: "Adobe",
     category: "design",
     statusUrl: "https://status.adobe.com/",
-    fetcherType: "none",
+    fetcherType: "adobe",
   },
   {
     id: "sketch",
     name: "Sketch",
     category: "design",
     statusUrl: "https://status.sketch.com/",
-    fetcherType: "none",
+    fetcherType: "instatus",
   },
   {
     id: "framer",
@@ -1675,15 +1674,10 @@ export const SERVICE_SEED = [
     fetcherType: "statuspage",
   },
   // Design Wave B. Affinity stays on Canva. Abstract / InVision stay
-  // off (sunset). Spline still waits. Marvel, Balsamiq, and Anima are
-  // Statuspage; the rest are none (custom pages or no public JSON).
-  {
-    id: "penpot",
-    name: "Penpot",
-    category: "design",
-    statusUrl: "https://penpot.app/",
-    fetcherType: "none",
-  },
+  // off (sunset). Spline still waits. Penpot / Lunacy / Photopea
+  // dropped (no status board). Rive is Instatus; LottieFiles is
+  // Checkly client-payload; Whimsical is SorryApp HTML; Blender is
+  // Uptime Kuma.
   {
     id: "marvel",
     name: "Marvel",
@@ -1696,14 +1690,14 @@ export const SERVICE_SEED = [
     name: "Rive",
     category: "design",
     statusUrl: "https://status.rive.app/",
-    fetcherType: "none",
+    fetcherType: "instatus",
   },
   {
     id: "lottiefiles",
     name: "LottieFiles",
     category: "design",
     statusUrl: "https://status.lottiefiles.com/",
-    fetcherType: "none",
+    fetcherType: "checkly_client",
   },
   {
     id: "balsamiq",
@@ -1724,86 +1718,24 @@ export const SERVICE_SEED = [
     name: "Whimsical",
     category: "design",
     statusUrl: "https://status.whimsical.com/",
-    fetcherType: "none",
-  },
-  {
-    id: "lunacy",
-    name: "Lunacy",
-    category: "design",
-    statusUrl: "https://icons8.com/lunacy",
-    fetcherType: "none",
-  },
-  {
-    id: "photopea",
-    name: "Photopea",
-    category: "design",
-    statusUrl: "https://www.photopea.com/",
-    fetcherType: "none",
+    fetcherType: "sorryapp_html",
   },
   {
     id: "blender",
     name: "Blender",
     category: "design",
     statusUrl: "https://status.blender.org/",
-    fetcherType: "none",
+    fetcherType: "uptime_kuma",
   },
   // Design Wave C. Spline still waits. Zeplin / ProtoPie / Builder.io
-  // wait. Beautiful.ai and Jitter are Statuspage; the rest are none.
-  {
-    id: "moqups",
-    name: "Moqups",
-    category: "design",
-    statusUrl: "https://moqups.com/",
-    fetcherType: "none",
-  },
-  {
-    id: "proto-io",
-    name: "Proto.io",
-    category: "design",
-    statusUrl: "https://proto.io/",
-    fetcherType: "none",
-  },
+  // wait. Moqups / Proto.io / Overflow / Axure / Relume / Visily /
+  // Plasmic dropped (no status board). UXPin is api.uxpin.com/status.
   {
     id: "uxpin",
     name: "UXPin",
     category: "design",
-    statusUrl: "https://www.uxpin.com/",
-    fetcherType: "none",
-  },
-  {
-    id: "overflow",
-    name: "Overflow",
-    category: "design",
-    statusUrl: "https://overflow.io/",
-    fetcherType: "none",
-  },
-  {
-    id: "axure",
-    name: "Axure",
-    category: "design",
-    statusUrl: "https://www.axure.com/",
-    fetcherType: "none",
-  },
-  {
-    id: "relume",
-    name: "Relume",
-    category: "design",
-    statusUrl: "https://www.relume.io/",
-    fetcherType: "none",
-  },
-  {
-    id: "visily",
-    name: "Visily",
-    category: "design",
-    statusUrl: "https://www.visily.ai/",
-    fetcherType: "none",
-  },
-  {
-    id: "plasmic",
-    name: "Plasmic",
-    category: "design",
-    statusUrl: "https://www.plasmic.app/",
-    fetcherType: "none",
+    statusUrl: "https://status.uxpin.com/",
+    fetcherType: "uxpin",
   },
   {
     id: "beautiful-ai",
