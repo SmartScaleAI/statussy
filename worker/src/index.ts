@@ -160,6 +160,9 @@ import { fetchOracleCloudState } from "./oracle-cloud.js"
 import { fetchRailwayState } from "./railway.js"
 import { fetchVultrState } from "./vultr.js"
 import { fetchBetterstackState } from "./betterstack.js"
+import { fetchOutreachState } from "./outreach.js"
+import { fetchSalesforceState } from "./salesforce.js"
+import { fetchSorryState } from "./sorry.js"
 import { fetchFathomState } from "./fathom.js"
 import { fetchIncidentioState } from "./incidentio.js"
 import { fetchPulseticState } from "./pulsetic.js"
@@ -1064,25 +1067,38 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("mirakl", "https://status.mirakl.com"),
   statuspageJob("sharetribe", "https://status.sharetribe.com"),
   statuspageJob("printful", "https://www.printfulstatus.com"),
-  // CRM Wave A. Salesforce Trust and Pipedrive / Outreach are
-  // custom HTML (no Statuspage JSON) and stay none. Apollo's
-  // public host serves HTML for /api/v2, so the fetcher hits
-  // apollo.statuspage.io. Attio and Gong are Instatus.
+  // CRM Wave A. Salesforce Trust rolls up Salesforce Services +
+  // Experience Cloud (not the instance list). Pipedrive is Sorry™
+  // `/api/v1`. Attio and Gong serve Statuspage `/api/v2` (Instatus
+  // `/summary.json` 404s). Apollo is Better Stack `index.json`
+  // (apollo.statuspage.io is an example page). Outreach is the
+  // status.outreach.io SPA etag / outage.html flip.
+  {
+    id: "salesforce",
+    fetch: () => fetchSalesforceState(fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  {
+    id: "pipedrive",
+    fetch: () => fetchSorryState("https://status.pipedrive.com", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
   statuspageJob("copper", "https://status.copper.com"),
   statuspageJob("close", "https://status.close.com"),
-  {
-    id: "attio",
-    fetch: () => fetchInstatusState("https://status.attio.com", fetchOptions()),
-    persistOptions: { resolveMissingIncidents: true },
-  },
+  statuspageJob("attio", "https://status.attio.com"),
   statuspageJob("capsule", "https://status.capsulecrm.com"),
   statuspageJob("salesloft", "https://status.salesloft.com"),
-  statuspageJob("apollo", "https://apollo.statuspage.io"),
   {
-    id: "gong",
-    fetch: () => fetchInstatusState("https://status.gong.io", fetchOptions()),
+    id: "outreach",
+    fetch: () => fetchOutreachState(fetchOptions()),
     persistOptions: { resolveMissingIncidents: true },
   },
+  {
+    id: "apollo",
+    fetch: () => fetchBetterstackState("https://status.apollo.io", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  statuspageJob("gong", "https://status.gong.io"),
   // CRM Wave B. All seven are Statuspage. Clari's public host
   // is trust.clari.com (also on clari.statuspage.io). Affinity
   // here is affinity.co, not the photo editor on Canva.
