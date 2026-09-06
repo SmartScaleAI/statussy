@@ -34,7 +34,8 @@
  * Statuspage, Turso, Qdrant, Meilisearch, and SurrealDB via Better Stack
  * `index.json`; Auth Wave A — Clerk, WorkOS, FusionAuth, Frontegg, and
  * 1Password via Statuspage, Auth0 via auth0.statuspage.io (custom domain
- * has no /api/v2), Stytch, Kinde, and PropelAuth via Instatus; Auth Wave B
+ * has no /api/v2), Okta via Trust HTML (`Incident__c` spans), Stytch,
+ * Kinde, and PropelAuth via Instatus; Auth Wave B
  * — Duo, Ping Identity, Doppler, Infisical, Zitadel, JumpCloud, Magic, and
  * Beyond Identity via Statuspage, Descope via Instatus, Logto via Better
  * Stack `index.json`; Auth Wave C — LoginRadius, Scalekit, Transmit
@@ -109,7 +110,7 @@
  * Gladly (gladly.statuspage.io), Genesys (mypurecloud.com),
  * Deskpro, Olark, and HelpDesk via Statuspage, Chatwoot
  * via Better Stack `index.json`.
- * AWS, Azure, Fastly, Replit, Redis, Algolia, DataStax, Okta, PayPal,
+ * AWS, Azure, Fastly, Replit, Redis, Algolia, DataStax, PayPal,
  * Adyen, PagerDuty, Checkly, Postmark, Mailchimp, Campaign Monitor,
  * Mailtrap, Substack, Adobe, Sketch, Penpot, Rive, LottieFiles,
  * Whimsical, Lunacy, Photopea, Blender, Moqups, Proto.io, UXPin,
@@ -156,6 +157,7 @@ import { fetchHerokuState } from "./heroku.js"
 import { fetchZendeskState } from "./zendesk.js"
 import { fetchSlackState } from "./slack.js"
 import { fetchHetznerState } from "./hetzner.js"
+import { fetchOktaState } from "./okta.js"
 import { fetchOracleCloudState } from "./oracle-cloud.js"
 import { fetchRailwayState } from "./railway.js"
 import { fetchVultrState } from "./vultr.js"
@@ -217,7 +219,7 @@ type ServiceJob = {
 // Board services with a fetcher (26 AI + Cloud / Developer / Data / Auth /
 // Payments / Observability Waves A–C + Email Waves A–C + Design Waves
 // A–C + Infra Waves A–C; AWS, Azure, Fastly, Replit, Redis, Algolia,
-// DataStax, Okta, PayPal, Adyen, PagerDuty, Checkly, Postmark,
+// DataStax, PayPal, Adyen, PagerDuty, Checkly, Postmark,
 // Mailchimp, Campaign Monitor, Mailtrap, Substack, Adobe, Sketch,
 // Penpot, Rive, LottieFiles, Whimsical, Lunacy, Photopea, Blender,
 // Moqups, Proto.io, UXPin, Overflow, Axure, Relume, Visily, Plasmic,
@@ -490,10 +492,15 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("yugabyte", "https://status.yugabyte.cloud"),
   statuspageJob("tidb", "https://status.tidbcloud.com"),
   // Auth Wave A. Auth0's public host has no /api/v2; hit the Statuspage host.
-  // Okta status.okta.com returns 401 for JSON (same pattern as Fastly).
+  // Okta Trust HTML embeds Salesforce Incident__c rows (JSON/RSS 401).
   statuspageJob("auth0", "https://auth0.statuspage.io"),
   statuspageJob("clerk", "https://status.clerk.com"),
   statuspageJob("workos", "https://status.workos.com"),
+  {
+    id: "okta",
+    fetch: () => fetchOktaState(fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
   {
     id: "stytch",
     fetch: () => fetchInstatusState("https://status.stytch.com", fetchOptions()),

@@ -12,7 +12,7 @@ import type pg from "pg"
  * GitHub Copilot is a GitHub component, not its own card.
  *
  * `category` defaults to `ai` when omitted. AWS, Azure, Fastly, Replit,
- * Redis, Algolia, DataStax, Okta, PayPal, Adyen, PagerDuty, Checkly,
+ * Redis, Algolia, DataStax, PayPal, Adyen, PagerDuty, Checkly,
  * Postmark, Mailchimp, Campaign Monitor, Mailtrap, Substack, Adobe,
  * Sketch, Penpot, Rive, LottieFiles, Whimsical, Lunacy, Photopea,
  * Blender, Moqups, Proto.io, UXPin, Overflow, Axure, Relume, Visily,
@@ -795,7 +795,7 @@ export const SERVICE_SEED = [
     name: "Okta",
     category: "auth",
     statusUrl: "https://status.okta.com/",
-    fetcherType: "none",
+    fetcherType: "okta",
   },
   {
     id: "stytch",

@@ -129,7 +129,7 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `onepassword.svg` | 1Password | `#145FE4` | Simple Icons `1password` |
 | `descope.svg` | Descope | Official cyan–green gradient | Official mark from [descope.com/logo.svg](https://www.descope.com/logo.svg) |
 | `duo.svg` | Duo | `#74BF4B` | Official geometric DUO from [duo.com/images/duo-logo.svg](https://duo.com/images/duo-logo.svg) (Cisco wordmark dropped) |
-| `ping-identity.svg` | Ping Identity | `#D20E0F` | Official red tile from the [pingidentity.com](https://www.pingidentity.com/) header lockup (wordmark dropped) |
+| `ping-identity.svg` | Ping Identity | Official `#B8232F` + `#FFFFFF` | Official square lockup from [pingidentity.com Ping-Logo.svg](https://www.pingidentity.com/content/dam/ping-6-2-assets/topnav-json-configs/Ping-Logo.svg) (schema.org / brand mark; white PING IDENTITY on the red tile) |
 | `doppler.svg` | Doppler | `#F1F0EC` | Official mark from the [doppler.com](https://www.doppler.com/) Sanity brand asset |
 | `infisical.svg` | Infisical | `#FFFFFF` | Official infinity from [infisical.com/images/v2/infisical-logo.svg](https://infisical.com/images/v2/infisical-logo.svg) (wordmark dropped); white so official `#0D0F12` reads on dark |
 | `zitadel.svg` | Zitadel | `#FFFFFF` | Official hexagon from the [zitadel.com](https://zitadel.com/) header lockup (wordmark dropped); white so official `#ccc` reads on dark |
@@ -139,7 +139,7 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `beyond-identity.svg` | Beyond Identity | `#FFFFFF` | Official chevrons from the [beyondidentity.com](https://www.beyondidentity.com/) header lockup (wordmark dropped); white so official `#222326` reads on dark |
 | `loginradius.svg` | LoginRadius | `#008ECF` / `#FFFFFF` | Official rings from the [LoginRadius/engineering-portal](https://github.com/LoginRadius/engineering-portal) `static/logo.svg` on-dark lockup (wordmark dropped) |
 | `scalekit.svg` | Scalekit | `#FFFFFF` | Official S from the [scalekit.com](https://www.scalekit.com/) header lockup (wordmark dropped); white so official `#0E1828` reads on dark |
-| `transmit-security.svg` | Transmit Security | Official reds + `#1C2745` | Official T from [transmitsecurity.com](https://www.transmitsecurity.com/) `transmit-main-logo` (wordmark dropped) |
+| `transmit-security.svg` | Transmit Security | Official reds + `#FFFFFF` | Official T from [transmitsecurity.com](https://www.transmitsecurity.com/) `transmit-main-logo` (wordmark dropped); navy `#1C2745` knocked to white |
 | `secureauth.svg` | SecureAuth | `#2898FF` | Official mark from [secureauth.com/secureauth-favicon.svg](https://www.secureauth.com/secureauth-favicon.svg) |
 | `lastpass.svg` | LastPass | `#D32D27` | Simple Icons `lastpass` |
 | `keeper.svg` | Keeper | `#FFC700` | Official shield from [keepersecurity.com](https://www.keepersecurity.com/) `keeper-logo-light` (wordmark dropped) |
