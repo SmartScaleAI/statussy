@@ -937,6 +937,20 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("zoom", "https://status.zoom.us"),
   statuspageJob("trello", "https://trello.status.atlassian.com"),
   statuspageJob("airtable", "https://status.airtable.com"),
+  // Collab Wave B. Confluence and Loom publish on their own
+  // Atlassian hosts, like Jira / Trello / Bitbucket. Coda,
+  // Mattermost, Smartsheet, Shortcut, Teamwork, Productboard,
+  // Aha!, and Hive are Statuspage on their public hosts.
+  statuspageJob("confluence", "https://confluence.status.atlassian.com"),
+  statuspageJob("loom", "https://loom.status.atlassian.com"),
+  statuspageJob("coda", "https://status.coda.io"),
+  statuspageJob("mattermost", "https://status.mattermost.com"),
+  statuspageJob("smartsheet", "https://status.smartsheet.com"),
+  statuspageJob("shortcut", "https://status.shortcut.com"),
+  statuspageJob("teamwork", "https://status.teamwork.com"),
+  statuspageJob("productboard", "https://status.productboard.com"),
+  statuspageJob("aha", "https://status.aha.io"),
+  statuspageJob("hive", "https://status.hive.com"),
 ]
 
 async function fetchService(service: ServiceJob): Promise<boolean> {

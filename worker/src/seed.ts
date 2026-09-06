@@ -4,7 +4,8 @@ import type pg from "pg"
  * Static registry of board services (26 AI + Cloud / Developer / Data /
  * Auth / Payments / Observability Waves A–C + Email Waves A–C +
  * Design Waves A–C + Infra Waves A–C + Flags Waves A–C +
- * Analytics Waves A–C + Security Waves A–C + Support Waves A–B).
+ * Analytics Waves A–C + Security Waves A–C + Support Waves A–C +
+ * Collab Waves A–B).
  * Mirrors the ids in the Next.js app's data/services.ts (and public/logos/{id}.svg).
  * Windsurf is the legacy Devin Desktop name and is not seeded separately.
  * GitHub Copilot is a GitHub component, not its own card.
@@ -2980,6 +2981,76 @@ export const SERVICE_SEED = [
     name: "Airtable",
     category: "collab",
     statusUrl: "https://status.airtable.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "confluence",
+    name: "Confluence",
+    category: "collab",
+    statusUrl: "https://confluence.status.atlassian.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "loom",
+    name: "Loom",
+    category: "collab",
+    statusUrl: "https://loom.status.atlassian.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "coda",
+    name: "Coda",
+    category: "collab",
+    statusUrl: "https://status.coda.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "mattermost",
+    name: "Mattermost",
+    category: "collab",
+    statusUrl: "https://status.mattermost.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "smartsheet",
+    name: "Smartsheet",
+    category: "collab",
+    statusUrl: "https://status.smartsheet.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "shortcut",
+    name: "Shortcut",
+    category: "collab",
+    statusUrl: "https://status.shortcut.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "teamwork",
+    name: "Teamwork",
+    category: "collab",
+    statusUrl: "https://status.teamwork.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "productboard",
+    name: "Productboard",
+    category: "collab",
+    statusUrl: "https://status.productboard.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "aha",
+    name: "Aha!",
+    category: "collab",
+    statusUrl: "https://status.aha.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "hive",
+    name: "Hive",
+    category: "collab",
+    statusUrl: "https://status.hive.com/",
     fetcherType: "statuspage",
   },
 ] as const

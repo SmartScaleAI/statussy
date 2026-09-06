@@ -427,5 +427,15 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `zoom.svg` | Zoom | `#0B5CFF` | Simple Icons `zoom` |
 | `trello.svg` | Trello | `#0052CC` | Simple Icons `trello` |
 | `airtable.svg` | Airtable | `#18BFFF` | Simple Icons `airtable` |
+| `confluence.svg` | Confluence | `#FFFFFF` | Simple Icons `confluence`; official `#172B4D` knocked to white |
+| `loom.svg` | Loom | `#625DF5` | Simple Icons `loom` |
+| `coda.svg` | Coda | `#F46A54` | Simple Icons `coda` |
+| `mattermost.svg` | Mattermost | `#0058CC` | Simple Icons `mattermost` |
+| `smartsheet.svg` | Smartsheet | `#FFFFFF` | Official S from [smartsheet.com smartsheet-logo-blue-new.svg](https://www.smartsheet.com/sites/default/files/smartsheet-logo-blue-new.svg) (wordmark dropped); official `#0E2947` knocked to white |
+| `shortcut.svg` | Shortcut | `#494BCB` | Simple Icons `shortcut` |
+| `teamwork.svg` | Teamwork | `#FFFFFF` + `#FF22B1` | Official T + pink dot from [teamwork.com teamwork-logo-dot.svg](https://a.storyblok.com/f/99519/52x50/fd3b4f2cfe/teamwork-logo-dot.svg) (circular tile dropped); official dark tile knocked to white T |
+| `productboard.svg` | Productboard | `#0071E1` + `#FFC600` + `#F84136` | Official mark from [productboard.com/favicon.svg](https://www.productboard.com/favicon.svg) |
+| `aha.svg` | Aha! | `#FFFFFF` + `#d34cf9` → `#0889f0` | Official A + sparkle from [aha.io](https://www.aha.io/) (wordmark dropped); official `currentColor` A knocked to white |
+| `hive.svg` | Hive | `#FBC67A` → `#FFA561` | Official bars from [hive.com](https://www.hive.com/) wordmark (letters dropped). Simple Icons `hive` is Hive Home, not Hive.com |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.
