@@ -15,9 +15,7 @@ import type pg from "pg"
  * Adobe,
  * Sketch, Penpot, Rive, LottieFiles, Whimsical, Lunacy, Photopea,
  * Blender, Moqups, Proto.io, UXPin, Overflow, Axure, Relume, Visily,
- * Plasmic, OpenTofu, Ansible, Argo CD, Flux, Terragrunt, Env0, Salt,
- * Rancher, Vagrant, Helm, Istio, Linkerd, Cilium, OPA, Kyverno,
- * Traefik, cert-manager, and Infracost
+ * Plasmic
  * are `none` until a dedicated fetcher exists.
  */
 export const SERVICE_SEED = [
@@ -1830,9 +1828,10 @@ export const SERVICE_SEED = [
     fetcherType: "statuspage",
   },
   // Infra Wave A. HashiCorp products share status.hashicorp.com
-  // (HCP rollup). Spacelift's public host has no DNS; hit
+  // but each job filters by product name (SMA-73) so they do not
+  // clone the HCP rollup. Spacelift's public host has no DNS; hit
   // spacelift.statuspage.io. Crossplane polls Upbound's Statuspage.
-  // OpenTofu is HTML-only (no public JSON).
+  // OpenTofu is Better Stack index.json.
   {
     id: "terraform",
     name: "Terraform",
@@ -1901,18 +1900,12 @@ export const SERVICE_SEED = [
     name: "OpenTofu",
     category: "infra",
     statusUrl: "https://status.opentofu.org/",
-    fetcherType: "none",
+    fetcherType: "betterstack",
   },
   // Infra Wave B. Puppet's public host has no DNS; hit
-  // puppet.statuspage.io. Scalr is Statuspage. Ansible / Argo CD /
-  // Flux / Terragrunt / Env0 / Salt / Rancher / Vagrant are none.
-  {
-    id: "ansible",
-    name: "Ansible",
-    category: "infra",
-    statusUrl: "https://www.ansible.com/",
-    fetcherType: "none",
-  },
+  // puppet.statuspage.io. Scalr is Statuspage. Env0 is Instatus.
+  // Ansible / Argo CD / Flux / Terragrunt / Salt / Rancher /
+  // Vagrant were dropped (SMA-73).
   {
     id: "puppet",
     name: "Puppet",
@@ -1921,32 +1914,11 @@ export const SERVICE_SEED = [
     fetcherType: "statuspage",
   },
   {
-    id: "argo-cd",
-    name: "Argo CD",
-    category: "infra",
-    statusUrl: "https://argo-cd.readthedocs.io/en/stable/",
-    fetcherType: "none",
-  },
-  {
-    id: "flux",
-    name: "Flux",
-    category: "infra",
-    statusUrl: "https://fluxcd.io/",
-    fetcherType: "none",
-  },
-  {
-    id: "terragrunt",
-    name: "Terragrunt",
-    category: "infra",
-    statusUrl: "https://terragrunt.gruntwork.io/",
-    fetcherType: "none",
-  },
-  {
     id: "env0",
     name: "Env0",
     category: "infra",
     statusUrl: "https://status.env0.com/",
-    fetcherType: "none",
+    fetcherType: "instatus",
   },
   {
     id: "scalr",
@@ -1955,99 +1927,30 @@ export const SERVICE_SEED = [
     statusUrl: "https://status.scalr.io/",
     fetcherType: "statuspage",
   },
-  {
-    id: "salt",
-    name: "Salt",
-    category: "infra",
-    statusUrl: "https://saltproject.io/",
-    fetcherType: "none",
-  },
-  {
-    id: "rancher",
-    name: "Rancher",
-    category: "infra",
-    statusUrl: "https://www.rancher.com/",
-    fetcherType: "none",
-  },
-  {
-    id: "vagrant",
-    name: "Vagrant",
-    category: "infra",
-    statusUrl: "https://www.vagrantup.com/",
-    fetcherType: "none",
-  },
-  // Infra Wave C. Teleport is Statuspage. Helm / Istio / Linkerd /
-  // Cilium / OPA / Kyverno / Traefik / cert-manager / Infracost
-  // are none (project sites, no public JSON).
-  {
-    id: "helm",
-    name: "Helm",
-    category: "infra",
-    statusUrl: "https://helm.sh/",
-    fetcherType: "none",
-  },
+  // Infra Wave C. Teleport is Teleport Cloud Statuspage.
+  // Traefik is OpenStatus. Infracost is Better Stack. Helm /
+  // Istio / Linkerd / Cilium / OPA / Kyverno / cert-manager
+  // were dropped (SMA-73).
   {
     id: "teleport",
     name: "Teleport",
     category: "infra",
-    statusUrl: "https://status.goteleport.com/",
+    statusUrl: "https://status.teleport.sh/",
     fetcherType: "statuspage",
-  },
-  {
-    id: "istio",
-    name: "Istio",
-    category: "infra",
-    statusUrl: "https://istio.io/",
-    fetcherType: "none",
-  },
-  {
-    id: "linkerd",
-    name: "Linkerd",
-    category: "infra",
-    statusUrl: "https://linkerd.io/",
-    fetcherType: "none",
-  },
-  {
-    id: "cilium",
-    name: "Cilium",
-    category: "infra",
-    statusUrl: "https://cilium.io/",
-    fetcherType: "none",
-  },
-  {
-    id: "opa",
-    name: "OPA",
-    category: "infra",
-    statusUrl: "https://www.openpolicyagent.org/",
-    fetcherType: "none",
-  },
-  {
-    id: "kyverno",
-    name: "Kyverno",
-    category: "infra",
-    statusUrl: "https://kyverno.io/",
-    fetcherType: "none",
   },
   {
     id: "traefik",
     name: "Traefik",
     category: "infra",
-    statusUrl: "https://traefik.io/",
-    fetcherType: "none",
-  },
-  {
-    id: "cert-manager",
-    name: "cert-manager",
-    category: "infra",
-    statusUrl: "https://cert-manager.io/",
-    fetcherType: "none",
+    statusUrl: "https://status.traefik.io/",
+    fetcherType: "openstatus",
   },
   {
     id: "infracost",
     name: "Infracost",
     category: "infra",
-    statusUrl: "https://www.infracost.io/",
-    fetcherType: "none",
+    statusUrl: "https://status.infracost.io/",
+    fetcherType: "betterstack",
   },
   // Flags Wave A. LaunchDarkly / Optimizely / Statsig / Flagsmith
   // are Statuspage. DevCycle is Status.io. Unleash / GrowthBook
@@ -3368,7 +3271,7 @@ export const SERVICE_SEED = [
   },
 ] as const
 
-/** Dropped in SMA-45 / SMA-72: marketing/docs homepages or no pollable board. */
+/** Dropped in SMA-45 / SMA-72 / SMA-73: marketing/docs homepages or no pollable board. */
 export const REMOVED_SERVICE_IDS = [
   "umami",
   "goatcounter",
@@ -3383,6 +3286,20 @@ export const REMOVED_SERVICE_IDS = [
   "frosmo",
   "personyze",
   "insider",
+  "ansible",
+  "argo-cd",
+  "flux",
+  "terragrunt",
+  "salt",
+  "rancher",
+  "vagrant",
+  "helm",
+  "istio",
+  "linkerd",
+  "cilium",
+  "opa",
+  "kyverno",
+  "cert-manager",
 ] as const
 
 function seedCategory(service: { id: string }): string {

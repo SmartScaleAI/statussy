@@ -80,12 +80,14 @@
  * via Statuspage, Framer via Better Stack `index.json`; Design Wave B
  * — Marvel, Balsamiq, and Anima via Statuspage; Design Wave C —
  * Beautiful.ai and Jitter via Statuspage; Infra Wave A — Terraform,
- * Vault, Consul, Nomad, and Packer via HashiCorp Statuspage, Pulumi
- * and Chef via Statuspage, Spacelift via spacelift.statuspage.io
- * (status.spacelift.io has no DNS), Crossplane via Upbound
- * Statuspage; Infra Wave B — Puppet via puppet.statuspage.io
- * (status.puppet.com has no DNS), Scalr via status.scalr.io; Infra
- * Wave C — Teleport via status.goteleport.com; Flags Wave A —
+ * Vault, Consul, Nomad, and Packer via HashiCorp Statuspage name
+ * filters (SMA-73), Pulumi and Chef via Statuspage, Spacelift via
+ * spacelift.statuspage.io (status.spacelift.io has no DNS),
+ * Crossplane via Upbound Statuspage, OpenTofu via Better Stack
+ * index.json; Infra Wave B — Puppet via puppet.statuspage.io
+ * (status.puppet.com has no DNS), Scalr via status.scalr.io, Env0
+ * via Instatus; Infra Wave C — Teleport via status.teleport.sh,
+ * Traefik via OpenStatus, Infracost via Better Stack; Flags Wave A —
  * LaunchDarkly, Optimizely, Statsig, and Flagsmith via Statuspage,
  * DevCycle via Status.io, Unleash and GrowthBook via Instatus,
  * ConfigCat via StatusIQ RSS, Eppo via AdminLabs HTML, VWO via
@@ -126,9 +128,7 @@
  * via Better Stack `index.json`.
  * PayPal, Adyen, PagerDuty, Checkly, Adobe, Sketch, Penpot, Rive, LottieFiles,
  * Whimsical, Lunacy, Photopea, Blender, Moqups, Proto.io, UXPin,
- * Overflow, Axure, Relume, Visily, Plasmic, OpenTofu, Ansible, Argo
- * CD, Flux, Terragrunt, Env0, Salt, Rancher, Vagrant, Helm, Istio,
- * Linkerd, Cilium, OPA, Kyverno, Traefik, cert-manager, and Infracost
+ * Overflow, Axure, Relume, Visily, Plasmic
  * are seeded
  * without a fetcher) and writes snapshots, components,
  * and incidents to Postgres.
@@ -191,6 +191,7 @@ import { fetchStatusiqApiState, fetchStatusiqState } from "./statusiq.js"
 import { fetchStatuspalState } from "./statuspal.js"
 import { fetchAdminLabsState } from "./adminlabs.js"
 import { fetchUptimeComState } from "./uptimecom.js"
+import { fetchOpenstatusState } from "./openstatus.js"
 import {
   CONTENTSTACK_STATUS_PAGE,
   LYTICS_GROUP_ID,
@@ -199,6 +200,7 @@ import {
   PYPI_GROUP_ID,
   PYPI_GROUP_NAME,
   fetchStatuspageGroupState,
+  fetchStatuspageNameFilterState,
   fetchStatuspageState,
 } from "./statuspage.js"
 import {
@@ -247,9 +249,10 @@ type ServiceJob = {
 // A–C + Infra Waves A–C; PayPal, Adyen, PagerDuty, Checkly, Adobe, Sketch,
 // Penpot, Rive, LottieFiles, Whimsical, Lunacy, Photopea, Blender,
 // Moqups, Proto.io, UXPin, Overflow, Axure, Relume, Visily, Plasmic,
-// OpenTofu, Ansible, Argo CD, Flux, Terragrunt, Env0, Salt, Rancher,
-// Vagrant, Helm, Istio, Linkerd, Cilium, OPA, Kyverno, Traefik,
-// cert-manager, and Infracost are none).
+// Unleash, ConfigCat, GrowthBook, Eppo, VWO, AB Tasty, Convert,
+// Flipt, Hypertune, GO Feature Flag, FeatBit, flagd, FeatureHub,
+// Bucketeer, Flipper Cloud, Confidence, Frosmo, Personyze, and
+// Insider One are none).
 const statuspageJob = (id: string, baseUrl: string): ServiceJob => ({
   id,
   fetch: () => fetchStatuspageState(baseUrl, fetchOptions()),
@@ -802,28 +805,83 @@ const SERVICE_JOBS: ServiceJob[] = [
   // wait. Jitter's public host has no /api/v2; hit jitter.statuspage.io.
   statuspageJob("beautiful-ai", "https://status.beautiful.ai"),
   statuspageJob("jitter", "https://jitter.statuspage.io"),
-  // Infra Wave A. HashiCorp products share one Statuspage (HCP
-  // rollup). Spacelift's public host has no DNS; hit the Statuspage
-  // host. Crossplane polls Upbound (commercial parent). OpenTofu
-  // is none (GitLab-looking HTML, no /api/v2).
-  statuspageJob("terraform", "https://status.hashicorp.com"),
+  // Infra Wave A. HashiCorp products share one Statuspage; each
+  // job filters by product name so they do not clone the HCP
+  // rollup (SMA-73). Spacelift's public host has no DNS; hit the
+  // Statuspage host. Crossplane polls Upbound (commercial parent).
+  // OpenTofu is Better Stack index.json.
+  {
+    id: "terraform",
+    fetch: () =>
+      fetchStatuspageNameFilterState("https://status.hashicorp.com", fetchOptions(), {
+        nameIncludes: "Terraform",
+      }),
+  },
   statuspageJob("pulumi", "https://status.pulumi.com"),
-  statuspageJob("vault", "https://status.hashicorp.com"),
-  statuspageJob("consul", "https://status.hashicorp.com"),
-  statuspageJob("nomad", "https://status.hashicorp.com"),
+  {
+    id: "vault",
+    fetch: () =>
+      fetchStatuspageNameFilterState("https://status.hashicorp.com", fetchOptions(), {
+        nameIncludes: "Vault",
+      }),
+  },
+  {
+    id: "consul",
+    fetch: () =>
+      fetchStatuspageNameFilterState("https://status.hashicorp.com", fetchOptions(), {
+        nameIncludes: "Consul",
+      }),
+  },
+  {
+    id: "nomad",
+    fetch: () =>
+      fetchStatuspageNameFilterState("https://status.hashicorp.com", fetchOptions(), {
+        nameIncludes: "Nomad",
+      }),
+  },
   statuspageJob("spacelift", "https://spacelift.statuspage.io"),
   statuspageJob("crossplane", "https://status.upbound.io"),
-  statuspageJob("packer", "https://status.hashicorp.com"),
+  {
+    id: "packer",
+    fetch: () =>
+      fetchStatuspageNameFilterState("https://status.hashicorp.com", fetchOptions(), {
+        nameIncludes: "Packer",
+      }),
+  },
   statuspageJob("chef", "https://status.chef.io"),
+  {
+    id: "opentofu",
+    fetch: () =>
+      fetchBetterstackState("https://status.opentofu.org", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
   // Infra Wave B. Puppet's public host has no DNS; hit the
-  // Statuspage host. Scalr is Statuspage. Ansible / Argo CD /
-  // Flux / Terragrunt / Env0 / Salt / Rancher / Vagrant are none.
+  // Statuspage host. Scalr is Statuspage. Env0 is Instatus.
+  // Ansible / Argo CD / Flux / Terragrunt / Salt / Rancher /
+  // Vagrant were dropped (SMA-73).
   statuspageJob("puppet", "https://puppet.statuspage.io"),
+  {
+    id: "env0",
+    fetch: () => fetchInstatusState("https://status.env0.com", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
   statuspageJob("scalr", "https://status.scalr.io"),
-  // Infra Wave C. Teleport is Statuspage. Helm / Istio / Linkerd /
-  // Cilium / OPA / Kyverno / Traefik / cert-manager / Infracost
-  // are none.
-  statuspageJob("teleport", "https://status.goteleport.com"),
+  // Infra Wave C. Teleport is Teleport Cloud. Traefik is
+  // OpenStatus. Infracost is Better Stack. Helm / Istio /
+  // Linkerd / Cilium / OPA / Kyverno / cert-manager were
+  // dropped (SMA-73).
+  statuspageJob("teleport", "https://status.teleport.sh"),
+  {
+    id: "traefik",
+    fetch: () => fetchOpenstatusState("https://status.traefik.io", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  {
+    id: "infracost",
+    fetch: () =>
+      fetchBetterstackState("https://status.infracost.io", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
   // Flags Wave A. LaunchDarkly / Optimizely / Statsig / Flagsmith
   // are Statuspage. DevCycle is Status.io. Unleash / GrowthBook
   // are Instatus. ConfigCat is StatusIQ RSS. Eppo is AdminLabs

@@ -277,25 +277,11 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `packer.svg` | Packer | `#02A8EF` | Simple Icons `packer` |
 | `chef.svg` | Chef | `#F09820` | Simple Icons `chef` |
 | `opentofu.svg` | OpenTofu | `#FFDA18` | Simple Icons `opentofu` |
-| `ansible.svg` | Ansible | `#EE0000` | Simple Icons `ansible` |
 | `puppet.svg` | Puppet | `#FFAE1A` | Simple Icons `puppet` |
-| `argo-cd.svg` | Argo CD | `#EF7B4D` | Simple Icons `argo` (Argo project mark) |
-| `flux.svg` | Flux | `#5468FF` | Simple Icons `flux` (Flux CD) |
-| `terragrunt.svg` | Terragrunt | Official `#87E0E1` / `#1B46DD` / `#B068E9` / `#F9DB4E` / `#E94A5D` + `#FFFFFF` | Official light mark from [gruntwork-io/terragrunt](https://github.com/gruntwork-io/terragrunt/blob/main/docs/src/assets/logo-light.svg) |
 | `env0.svg` | Env0 | `#FFFFFF` | Official chevrons from [docs.env0.com favicon](https://mintcdn.com/envzero-b61043c8/tSDpnsOW7stD0Hxu/favicon.svg); dark tile dropped |
 | `scalr.svg` | Scalr | `#B3DBF1` / `#D21212` / `#FFFFFF` | Official stacked bars from [docs.scalr.io](https://docs.scalr.io/docs) `Scalr_Full-Color_Logo_Dark.svg` (wordmark dropped) |
-| `salt.svg` | Salt | `#57BCAD` | Simple Icons `saltproject` |
-| `rancher.svg` | Rancher | `#0075A8` | Simple Icons `rancher` |
-| `vagrant.svg` | Vagrant | `#1868F2` | Simple Icons `vagrant` |
-| `helm.svg` | Helm | `#FFFFFF` | Simple Icons `helm`; white so official `#0F1689` reads on dark |
 | `teleport.svg` | Teleport | `#512FC9` | Official cog from [goteleport.com/static/favicon.svg](https://goteleport.com/static/favicon.svg) |
-| `istio.svg` | Istio | `#466BB0` | Simple Icons `istio` |
-| `linkerd.svg` | Linkerd | `#2BEDA7` | Simple Icons `linkerd` |
-| `cilium.svg` | Cilium | `#F8C517` | Simple Icons `cilium` |
-| `opa.svg` | OPA | Official CNCF grays | Official icon from [cncf/artwork](https://github.com/cncf/artwork/blob/master/projects/open-policy-agent/icon/color/opa-icon-color.svg) |
-| `kyverno.svg` | Kyverno | Official `#E87E5B` / `#3784C5` | Official icon from [cncf/artwork](https://github.com/cncf/artwork/blob/master/projects/kyverno/icon/color/kyverno-icon-color.svg) |
 | `traefik.svg` | Traefik | `#24A1C1` | Simple Icons `traefikproxy` |
-| `cert-manager.svg` | cert-manager | Official CNCF `#326CE5` + white | Official icon from [cncf/artwork](https://github.com/cncf/artwork/blob/master/projects/cert-manager/icon/color/cert-manager-icon-color.svg) |
 | `infracost.svg` | Infracost | `#DB44B8` | Simple Icons `infracost` |
 | `launchdarkly.svg` | LaunchDarkly | `#FFFFFF` | Official star path; black lockup knocked out |
 | `optimizely.svg` | Optimizely | Official `#0D3A29` / `#ABFF44` | Official favicon mark |

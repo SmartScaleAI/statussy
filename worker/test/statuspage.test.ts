@@ -11,6 +11,7 @@ import {
   mapIndicator,
   mapStatuspage,
   mapStatuspageGroup,
+  mapStatuspageNameFilter,
   selectStatuspageGroupComponents,
   type StatuspageIncident,
   type StatuspageSummary,
@@ -275,4 +276,82 @@ test("mapStatuspageGroup for PyPI ignores PSF / Fastly page status", () => {
   assert.equal(state.components.length, 4)
   assert.ok(state.components.every((c) => /pypi\.org|files\.pythonhosted\.org/i.test(c.name)))
   assert.ok(!state.components.some((c) => /fastly|python\.org|AWS/i.test(c.name)))
+})
+
+const HASHICORP_LIKE: StatuspageSummary = {
+  status: { indicator: "major", description: "Partial System Outage" },
+  components: [
+    { id: "hcp-api", name: "HCP API", status: "partial_outage", position: 1 },
+    { id: "hcp-packer", name: "HCP Packer", status: "degraded_performance", position: 2 },
+    { id: "hcp-boundary", name: "HCP Boundary", status: "operational", position: 3 },
+    { id: "aws-east", name: "AWS-us-east-1", status: "major_outage", position: 4 },
+  ],
+}
+
+const HASHICORP_INCIDENTS: StatuspageIncident[] = [
+  {
+    id: "tf-runs",
+    name: "Delayed HCP Terraform Runs",
+    status: "investigating",
+    impact: "minor",
+    started_at: "2026-09-06T10:00:00Z",
+  },
+  {
+    id: "infragraph",
+    name: "Infragraph Service and UI down",
+    status: "identified",
+    impact: "major",
+    components: [{ id: "hcp-api", name: "HCP API" }],
+  },
+  {
+    id: "packer-inc",
+    name: "HCP Packer registry delay",
+    status: "identified",
+    impact: "minor",
+    components: [{ id: "hcp-packer", name: "HCP Packer" }],
+  },
+]
+
+test("mapStatuspageNameFilter keeps Terraform incidents and ignores the HCP rollup", () => {
+  const state = mapStatuspageNameFilter(
+    HASHICORP_LIKE,
+    HASHICORP_INCIDENTS,
+    "https://status.hashicorp.com",
+    { nameIncludes: "Terraform" },
+  )
+  assert.equal(state.status, "degraded")
+  assert.equal(state.detail.source, "statuspage_name")
+  assert.equal(state.detail.nameIncludes, "Terraform")
+  assert.equal(state.components.length, 0)
+  assert.equal(state.incidents.length, 1)
+  assert.equal(state.incidentTitle, "Delayed HCP Terraform Runs")
+})
+
+test("mapStatuspageNameFilter keeps the HCP Packer component only", () => {
+  const state = mapStatuspageNameFilter(
+    HASHICORP_LIKE,
+    HASHICORP_INCIDENTS,
+    "https://status.hashicorp.com",
+    { nameIncludes: "Packer" },
+  )
+  assert.equal(state.status, "degraded")
+  assert.deepEqual(
+    state.components.map((c) => c.name),
+    ["HCP Packer"],
+  )
+  assert.equal(state.incidents.length, 1)
+  assert.equal(state.incidents[0].title, "HCP Packer registry delay")
+})
+
+test("mapStatuspageNameFilter stays operational when the product has no rows", () => {
+  const state = mapStatuspageNameFilter(
+    HASHICORP_LIKE,
+    HASHICORP_INCIDENTS,
+    "https://status.hashicorp.com",
+    { nameIncludes: "Vault" },
+  )
+  assert.equal(state.status, "operational")
+  assert.equal(state.components.length, 0)
+  assert.equal(state.incidents.length, 0)
+  assert.equal(state.incidentTitle, null)
 })
