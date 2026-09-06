@@ -32,6 +32,9 @@ export type ServiceCategory =
   | "security"
   | "support"
   | "collab"
+  | "docs"
+  | "commerce"
+  | "crm"
 
 export type Service = {
   /** Matches a static mark at `public/logos/{id}.svg`. */
@@ -3684,5 +3687,499 @@ export const services: Service[] = [
     statusUrl: "https://status.hive.com/",
     status: "operational",
     updatedAt: "2026-09-06T01:20:00.000Z",
+  },
+  // Collab Wave C — only vendors with public Statuspage JSON (or a
+  // Statuspage host the public page redirects away from). Microsoft
+  // Teams waits (Office 365 status is login-walled). Wrike / Webex /
+  // Whereby / Rocket.Chat / Height / Todoist / Evernote / Cal.com
+  // wait (no easy public JSON). Dropbox / Box stay file storage.
+  // Quip stays on Salesforce. GitBook is Docs.
+  {
+    id: "calendly",
+    name: "Calendly",
+    category: "collab",
+    statusUrl: "https://calendlystatus.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:30:00.000Z",
+  },
+  {
+    id: "basecamp",
+    name: "Basecamp",
+    category: "collab",
+    statusUrl: "https://www.37status.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:30:00.000Z",
+  },
+  {
+    id: "zulip",
+    name: "Zulip",
+    category: "collab",
+    statusUrl: "https://status.zulip.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:30:00.000Z",
+  },
+  {
+    id: "element",
+    name: "Element",
+    category: "collab",
+    statusUrl: "https://status.element.io/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:30:00.000Z",
+  },
+  {
+    id: "plane",
+    name: "Plane",
+    category: "collab",
+    statusUrl: "https://status.plane.so/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:30:00.000Z",
+  },
+  {
+    id: "guru",
+    name: "Guru",
+    category: "collab",
+    statusUrl: "https://status.getguru.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:30:00.000Z",
+  },
+  {
+    id: "tettra",
+    name: "Tettra",
+    category: "collab",
+    statusUrl: "https://status.tettra.co/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:30:00.000Z",
+  },
+  {
+    id: "fireflies",
+    name: "Fireflies",
+    category: "collab",
+    statusUrl: "https://status.fireflies.ai/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:30:00.000Z",
+  },
+  {
+    id: "livestorm",
+    name: "Livestorm",
+    category: "collab",
+    statusUrl: "https://status.livestorm.co/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:30:00.000Z",
+  },
+  {
+    id: "fellow",
+    name: "Fellow",
+    category: "collab",
+    statusUrl: "https://status.fellow.ai/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:30:00.000Z",
+  },
+  // Docs Wave A — documentation platforms, knowledge bases, and
+  // API/docs portals with public Statuspage JSON. Notion /
+  // Confluence / Coda / Guru / Tettra stay Collab. Helpjuice
+  // stays Support. Help Scout Docs stays Email. Postman docs
+  // stay Developer. Headless CMS and Ghost stay off.
+  {
+    id: "gitbook",
+    name: "GitBook",
+    category: "docs",
+    statusUrl: "https://www.gitbookstatus.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:45:00.000Z",
+  },
+  {
+    id: "readme",
+    name: "ReadMe",
+    category: "docs",
+    statusUrl: "https://www.readmestatus.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:45:00.000Z",
+  },
+  {
+    id: "mintlify",
+    name: "Mintlify",
+    category: "docs",
+    statusUrl: "https://status.mintlify.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:45:00.000Z",
+  },
+  {
+    id: "fern",
+    name: "Fern",
+    category: "docs",
+    statusUrl: "https://status.buildwithfern.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:45:00.000Z",
+  },
+  {
+    id: "archbee",
+    name: "Archbee",
+    category: "docs",
+    statusUrl: "https://status.archbee.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:45:00.000Z",
+  },
+  {
+    id: "document360",
+    name: "Document360",
+    category: "docs",
+    statusUrl: "https://status.document360.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:45:00.000Z",
+  },
+  {
+    id: "knowledgeowl",
+    name: "KnowledgeOwl",
+    category: "docs",
+    statusUrl: "https://knowledgeowl.statuspage.io/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:45:00.000Z",
+  },
+  {
+    id: "stoplight",
+    name: "Stoplight",
+    category: "docs",
+    statusUrl: "https://stoplight.status.smartbear.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:45:00.000Z",
+  },
+  {
+    id: "swaggerhub",
+    name: "SwaggerHub",
+    category: "docs",
+    statusUrl: "https://swagger.status.smartbear.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:45:00.000Z",
+  },
+  {
+    id: "bump",
+    name: "Bump",
+    category: "docs",
+    statusUrl: "https://status.bump.sh/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:45:00.000Z",
+  },
+  // Commerce Wave A — storefronts, ecommerce platforms, headless
+  // commerce, and commerce APIs with public Statuspage JSON.
+  // Stripe / PayPal / Square stay Payments. Klaviyo stays Email.
+  // Gorgias stays Support. Magento / Adobe Commerce stay on Adobe.
+  // Webflow Ecommerce stays Design. Centra waits (Instatus JSON,
+  // wordmark only). WooCommerce waits (inactive Statuspage).
+  {
+    id: "shopify",
+    name: "Shopify",
+    category: "commerce",
+    statusUrl: "https://www.shopifystatus.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:00:00.000Z",
+  },
+  {
+    id: "bigcommerce",
+    name: "BigCommerce",
+    category: "commerce",
+    statusUrl: "https://status.bigcommerce.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:00:00.000Z",
+  },
+  {
+    id: "ecwid",
+    name: "Ecwid",
+    category: "commerce",
+    statusUrl: "https://status.ecwid.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:00:00.000Z",
+  },
+  {
+    id: "saleor",
+    name: "Saleor",
+    category: "commerce",
+    statusUrl: "https://status.saleor.io/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:00:00.000Z",
+  },
+  {
+    id: "medusa",
+    name: "Medusa",
+    category: "commerce",
+    statusUrl: "https://status.medusajs.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:00:00.000Z",
+  },
+  {
+    id: "commercelayer",
+    name: "Commerce Layer",
+    category: "commerce",
+    statusUrl: "https://status.commercelayer.io/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:00:00.000Z",
+  },
+  {
+    id: "elasticpath",
+    name: "Elastic Path",
+    category: "commerce",
+    statusUrl: "https://status.elasticpath.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:00:00.000Z",
+  },
+  {
+    id: "lightspeed",
+    name: "Lightspeed",
+    category: "commerce",
+    statusUrl: "https://status.lightspeedhq.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:00:00.000Z",
+  },
+  {
+    id: "swell",
+    name: "Swell",
+    category: "commerce",
+    statusUrl: "https://status.swell.store/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:00:00.000Z",
+  },
+  {
+    id: "vtex",
+    name: "VTEX",
+    category: "commerce",
+    statusUrl: "https://status.vtex.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:00:00.000Z",
+  },
+  // Commerce Wave B — more storefronts, headless / Hydrogen
+  // hosts, marketplace platforms, and merch/POD with public
+  // Statuspage JSON. Shogun waits (wordmark only).
+  // Marketplacer waits (no official SVG). Shopware waits
+  // (Instatus JSON). commercetools / Spryker / PrestaShop /
+  // WooCommerce wait. Reviews / loyalty / shipping / tax wait.
+  {
+    id: "nacelle",
+    name: "Nacelle",
+    category: "commerce",
+    statusUrl: "https://status.nacelle.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:15:00.000Z",
+  },
+  {
+    id: "volusion",
+    name: "Volusion",
+    category: "commerce",
+    statusUrl: "https://status.volusion.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:15:00.000Z",
+  },
+  {
+    id: "alokai",
+    name: "Alokai",
+    category: "commerce",
+    statusUrl: "https://status.alokai.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:15:00.000Z",
+  },
+  {
+    id: "shopline",
+    name: "SHOPLINE",
+    category: "commerce",
+    statusUrl: "https://status.shopline.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:15:00.000Z",
+  },
+  {
+    id: "tapcart",
+    name: "Tapcart",
+    category: "commerce",
+    statusUrl: "https://tapcart.statuspage.io/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:15:00.000Z",
+  },
+  {
+    id: "pack",
+    name: "Pack",
+    category: "commerce",
+    statusUrl: "https://status.packdigital.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:15:00.000Z",
+  },
+  {
+    id: "bold",
+    name: "Bold Commerce",
+    category: "commerce",
+    statusUrl: "https://status.boldcommerce.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:15:00.000Z",
+  },
+  {
+    id: "mirakl",
+    name: "Mirakl",
+    category: "commerce",
+    statusUrl: "https://status.mirakl.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:15:00.000Z",
+  },
+  {
+    id: "sharetribe",
+    name: "Sharetribe",
+    category: "commerce",
+    statusUrl: "https://status.sharetribe.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:15:00.000Z",
+  },
+  {
+    id: "printful",
+    name: "Printful",
+    category: "commerce",
+    statusUrl: "https://www.printfulstatus.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:15:00.000Z",
+  },
+  // CRM Wave A — CRM platforms, sales CRMs, and sales engagement
+  // with a public status page. HubSpot stays Email. Zendesk /
+  // Intercom / Gorgias stay Support. ActiveCampaign stays Email.
+  // monday.com / ClickUp stay Collab. Salesforce Service Cloud /
+  // Commerce Cloud / Tableau / Quip stay on Salesforce. Zoho CRM
+  // waits (StatusIQ HTML). Freshworks CRM waits (Freshstatus, no
+  // public JSON). Dynamics 365 waits (Office 365 is login-walled).
+  // Insightly waits (wordmark only). Nutshell / HighLevel / Thryv
+  // wait (no isolated official SVG).
+  {
+    id: "salesforce",
+    name: "Salesforce",
+    category: "crm",
+    statusUrl: "https://status.salesforce.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:30:00.000Z",
+  },
+  {
+    id: "pipedrive",
+    name: "Pipedrive",
+    category: "crm",
+    statusUrl: "https://status.pipedrive.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:30:00.000Z",
+  },
+  {
+    id: "copper",
+    name: "Copper",
+    category: "crm",
+    statusUrl: "https://status.copper.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:30:00.000Z",
+  },
+  {
+    id: "close",
+    name: "Close",
+    category: "crm",
+    statusUrl: "https://status.close.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:30:00.000Z",
+  },
+  {
+    id: "attio",
+    name: "Attio",
+    category: "crm",
+    statusUrl: "https://status.attio.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:30:00.000Z",
+  },
+  {
+    id: "capsule",
+    name: "Capsule",
+    category: "crm",
+    statusUrl: "https://status.capsulecrm.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:30:00.000Z",
+  },
+  {
+    id: "salesloft",
+    name: "Salesloft",
+    category: "crm",
+    statusUrl: "https://status.salesloft.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:30:00.000Z",
+  },
+  {
+    id: "outreach",
+    name: "Outreach",
+    category: "crm",
+    statusUrl: "https://status.outreach.io/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:30:00.000Z",
+  },
+  {
+    id: "apollo",
+    name: "Apollo",
+    category: "crm",
+    statusUrl: "https://status.apollo.io/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:30:00.000Z",
+  },
+  {
+    id: "gong",
+    name: "Gong",
+    category: "crm",
+    statusUrl: "https://status.gong.io/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:30:00.000Z",
+  },
+  // CRM Wave B — remaining CRM / sales-intel vendors with a
+  // public Statuspage JSON API and an official isolated SVG.
+  // Affinity here is affinity.co (relationship CRM), not the
+  // photo editor that stays on Canva. Zoho CRM, Freshworks CRM,
+  // Dynamics 365, Insightly, Nutshell, HighLevel, Thryv, Keap,
+  // SugarCRM, Folk, and Twenty still wait.
+  {
+    id: "affinity",
+    name: "Affinity",
+    category: "crm",
+    statusUrl: "https://status.affinity.co/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:45:00.000Z",
+  },
+  {
+    id: "zoominfo",
+    name: "ZoomInfo",
+    category: "crm",
+    statusUrl: "https://status.zoominfo.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:45:00.000Z",
+  },
+  {
+    id: "streak",
+    name: "Streak",
+    category: "crm",
+    statusUrl: "https://status.streak.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:45:00.000Z",
+  },
+  {
+    id: "clari",
+    name: "Clari",
+    category: "crm",
+    statusUrl: "https://trust.clari.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:45:00.000Z",
+  },
+  {
+    id: "lusha",
+    name: "Lusha",
+    category: "crm",
+    statusUrl: "https://status.lusha.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:45:00.000Z",
+  },
+  {
+    id: "teamleader",
+    name: "Teamleader",
+    category: "crm",
+    statusUrl: "https://status.teamleader.eu/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:45:00.000Z",
+  },
+  {
+    id: "orum",
+    name: "Orum",
+    category: "crm",
+    statusUrl: "https://status.orum.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:45:00.000Z",
   },
 ]
