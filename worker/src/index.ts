@@ -995,6 +995,49 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("lightspeed", "https://status.lightspeedhq.com"),
   statuspageJob("swell", "https://status.swell.store"),
   statuspageJob("vtex", "https://status.vtex.com"),
+  // Commerce Wave B. All ten are Statuspage. Tapcart's public
+  // host does not resolve, so the card and fetcher use
+  // tapcart.statuspage.io. Printful's public host is
+  // www.printfulstatus.com. Shogun waits (wordmark only).
+  statuspageJob("nacelle", "https://status.nacelle.com"),
+  statuspageJob("volusion", "https://status.volusion.com"),
+  statuspageJob("alokai", "https://status.alokai.com"),
+  statuspageJob("shopline", "https://status.shopline.com"),
+  statuspageJob("tapcart", "https://tapcart.statuspage.io"),
+  statuspageJob("pack", "https://status.packdigital.com"),
+  statuspageJob("bold", "https://status.boldcommerce.com"),
+  statuspageJob("mirakl", "https://status.mirakl.com"),
+  statuspageJob("sharetribe", "https://status.sharetribe.com"),
+  statuspageJob("printful", "https://www.printfulstatus.com"),
+  // CRM Wave A. Salesforce Trust and Pipedrive / Outreach are
+  // custom HTML (no Statuspage JSON) and stay none. Apollo's
+  // public host serves HTML for /api/v2, so the fetcher hits
+  // apollo.statuspage.io. Attio and Gong are Instatus.
+  statuspageJob("copper", "https://status.copper.com"),
+  statuspageJob("close", "https://status.close.com"),
+  {
+    id: "attio",
+    fetch: () => fetchInstatusState("https://status.attio.com", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  statuspageJob("capsule", "https://status.capsulecrm.com"),
+  statuspageJob("salesloft", "https://status.salesloft.com"),
+  statuspageJob("apollo", "https://apollo.statuspage.io"),
+  {
+    id: "gong",
+    fetch: () => fetchInstatusState("https://status.gong.io", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  // CRM Wave B. All seven are Statuspage. Clari's public host
+  // is trust.clari.com (also on clari.statuspage.io). Affinity
+  // here is affinity.co, not the photo editor on Canva.
+  statuspageJob("affinity", "https://status.affinity.co"),
+  statuspageJob("zoominfo", "https://status.zoominfo.com"),
+  statuspageJob("streak", "https://status.streak.com"),
+  statuspageJob("clari", "https://trust.clari.com"),
+  statuspageJob("lusha", "https://status.lusha.com"),
+  statuspageJob("teamleader", "https://status.teamleader.eu"),
+  statuspageJob("orum", "https://status.orum.com"),
 ]
 
 async function fetchService(service: ServiceJob): Promise<boolean> {
