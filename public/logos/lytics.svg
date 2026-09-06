@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 930" fill="none" role="img" aria-hidden="true">
+  <title>Lytics</title>
+  <defs>
+    <linearGradient id="lytics-stroke" x1="207.57" y1="737.51" x2="675.29" y2="737.51" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#28AEB9"/>
+      <stop offset="1" stop-color="#18D6A3"/>
+    </linearGradient>
+  </defs>
+  <line x1="125.34" y1="258.9" x2="364.48" y2="122.16" stroke="#794CFF" stroke-width="228.57" stroke-linecap="round" stroke-linejoin="round"/>
+  <line x1="125.34" y1="585.81" x2="364.48" y2="449.07" stroke="#3885D0" stroke-width="228.57" stroke-linecap="round" stroke-linejoin="round"/>
+  <line x1="321.86" y1="805.88" x2="561" y2="669.14" stroke="url(#lytics-stroke)" stroke-width="228.57" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
