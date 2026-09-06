@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 139.45 139.65" role="img" aria-hidden="true">
+  <title>Veracode</title>
+  <defs>
+    <linearGradient id="veracode-gradient" x1="99.76" y1="0" x2="99.76" y2="139.5" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#00B9FF"/>
+      <stop offset="1" stop-color="#0065DD"/>
+    </linearGradient>
+  </defs>
+  <polygon fill="#FFFFFF" points="31.32 0 0 0 48.63 134.55 63.08 92.42 31.32 0"/>
+  <polygon fill="url(#veracode-gradient)" points="70.62 109.12 70.54 109.12 60.07 139.65 88.97 139.65 139.45 0 108.13 0 70.62 109.12"/>
+</svg>
