@@ -1225,8 +1225,8 @@ export const services: Service[] = [
     updatedAt: "2026-09-05T05:40:00.000Z",
   },
   // Payments Wave A — processors and billing the checkout path dies on.
-  // One card per vendor. Braintree / Venmo stay on PayPal. PayPal and
-  // Adyen have no usable public JSON (custom pages).
+  // One card per vendor. Braintree / Venmo stay on PayPal. PayPal is
+  // RSS/Atom; Adyen is the Nuxt page's public /api JSON.
   {
     id: "stripe",
     name: "Stripe",
@@ -1371,14 +1371,6 @@ export const services: Service[] = [
     name: "Authorize.net",
     category: "payments",
     statusUrl: "https://status.authorize.net/",
-    status: "operational",
-    updatedAt: "2026-09-05T06:30:00.000Z",
-  },
-  {
-    id: "flutterwave",
-    name: "Flutterwave",
-    category: "payments",
-    statusUrl: "https://status.flutterwave.com/",
     status: "operational",
     updatedAt: "2026-09-05T06:30:00.000Z",
   },

@@ -50,9 +50,10 @@
  * via Statuspage, LastPass via lastpass.statuspage.io (the public host
  * challenges /api/v2); Payments Wave A — Stripe via www.stripestatus.com
  * (the public host has no /api/v2), Square, Paddle, Chargebee, Recurly,
- * Klarna, Plaid, and GoCardless via Statuspage; Payments Wave B — Mollie
+ * Klarna, Plaid, and GoCardless via Statuspage, PayPal via RSS/Atom,
+ * Adyen via its Nuxt `/api` JSON; Payments Wave B — Mollie
  * via Instatus, Polar via Better Stack `index.json`, RevenueCat, Affirm,
- * FastSpring, Whop, Wise, Authorize.net, Flutterwave, and Airwallex via
+ * FastSpring, Whop, Wise, Authorize.net, and Airwallex via
  * Statuspage; Payments Wave C — Marqeta, Lithic, Worldpay, Spreedly,
  * Finix, Mercado Pago, EBANX, Paysafe, Recharge, and Maxio via
  * Statuspage (Maxio's public host times out on /api/v2, so the fetcher
@@ -128,7 +129,7 @@
  * Gladly (gladly.statuspage.io), Genesys (mypurecloud.com),
  * Deskpro, Olark, and HelpDesk via Statuspage, Chatwoot
  * via Better Stack `index.json`.
- * PayPal, Adyen, Adobe, Sketch, Penpot, Rive, LottieFiles,
+ * Adobe, Sketch, Penpot, Rive, LottieFiles,
  * Whimsical, Lunacy, Photopea, Blender, Moqups, Proto.io, UXPin,
  * Overflow, Axure, Relume, Visily, Plasmic
  * are seeded
@@ -143,6 +144,7 @@ import { fetchChecklyNuxtState } from "./checkly-nuxt.js"
 import { fetchPagerDutyState } from "./pagerduty.js"
 import { fetchInstatusState } from "./instatus.js"
 import { runMigrations } from "./migrate.js"
+import { fetchAdyenState } from "./adyen.js"
 import { fetchRssState } from "./rss.js"
 import { fetchStatusCakeState } from "./statuscake.js"
 import { seedServices } from "./seed.js"
@@ -249,7 +251,7 @@ type ServiceJob = {
 
 // Board services with a fetcher (26 AI + Cloud / Developer / Data / Auth /
 // Payments / Observability Waves A–C + Email Waves A–C + Design Waves
-// A–C + Infra Waves A–C; PayPal, Adyen, Adobe, Sketch,
+// A–C + Infra Waves A–C; Adobe, Sketch,
 // Penpot, Rive, LottieFiles, Whimsical, Lunacy, Photopea, Blender,
 // Moqups, Proto.io, UXPin, Overflow, Axure, Relume, Visily, Plasmic,
 // Unleash, ConfigCat, GrowthBook, Eppo, VWO, AB Tasty, Convert,
@@ -632,9 +634,20 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("sailpoint", "https://status.sailpoint.com"),
   statuspageJob("delinea", "https://status.delinea.com"),
   // Payments Wave A. Stripe's public host has no /api/v2; hit the
-  // Statuspage host. PayPal and Adyen have no usable public JSON.
+  // Statuspage host. PayPal is RSS/Atom (SMA-75). Adyen is the Nuxt
+  // page's public /api JSON (SMA-75). Flutterwave was removed — the
+  // Statuspage is inactive and the custom domain 302s to Atlassian.
   statuspageJob("stripe", "https://www.stripestatus.com"),
+  rssJob("paypal", [
+    "https://www.paypal-status.com/feed/rss",
+    "https://www.paypal-status.com/feed/atom",
+  ]),
   statuspageJob("square", "https://www.issquareup.com"),
+  {
+    id: "adyen",
+    fetch: () => fetchAdyenState(fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
   statuspageJob("paddle", "https://paddlestatus.com"),
   statuspageJob("chargebee", "https://status.chargebee.com"),
   statuspageJob("recurly", "https://status.recurly.com"),
@@ -658,7 +671,6 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("whop", "https://status.whop.com"),
   statuspageJob("wise", "https://status.wise.com"),
   statuspageJob("authorize-net", "https://status.authorize.net"),
-  statuspageJob("flutterwave", "https://status.flutterwave.com"),
   statuspageJob("airwallex", "https://status.airwallex.com"),
   // Payments Wave C. Maxio's public host times out on /api/v2; hit the
   // Statuspage host (same pattern as Stripe / Auth0 / Voyage).

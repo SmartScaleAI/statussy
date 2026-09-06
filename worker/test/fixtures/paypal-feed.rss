@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+    <channel>
+        <title>PayPal Status - Event History</title>
+        <link>https://www.paypal-status.com</link>
+        <description>PayPal Incidents, bulletins and scheduled maintenance</description>
+        <lastBuildDate>Sun, 06 Sep 2026 12:58:31 GMT</lastBuildDate>
+        <generator>PayPal Status Feed Generator</generator>
+        <item>
+            <title><![CDATA[Initial Notification: PayPal Live Site Maintenance (PP-LIVE-108260)]]></title>
+            <link>https://www.paypal-status.com/history/eventdetails/108260</link>
+            <guid>https://www.paypal-status.com/history/eventdetails/108260</guid>
+            <pubDate>Mon, 31 Aug 2026 12:12:52 GMT</pubDate>
+            <content:encoded><![CDATA[<br /><strong>Initial Notification: </strong> <br /> <p><span>On Thursday September 10th PayPal will be performing routine maintenance activity.</span></p>]]></content:encoded>
+        </item>
+        <item>
+            <title><![CDATA[Resolved: Impact to Refunds, Payments, Authorizations (PP-LIVE-108078)]]></title>
+            <link>https://www.paypal-status.com/history/eventdetails/108078</link>
+            <guid>https://www.paypal-status.com/history/eventdetails/108078</guid>
+            <pubDate>Sat, 15 Aug 2026 07:25:43 GMT</pubDate>
+            <content:encoded><![CDATA[<br /><strong>Resolved: </strong> <p>The issue has been resolved.</p> <br /><strong>Initial Notification: </strong> <p>We are currently experiencing Degraded Performance affecting Refunds.</p>]]></content:encoded>
+        </item>
+        <item>
+            <title><![CDATA[Postponed: Venmo Maintenance (PP-LIVE-107523)]]></title>
+            <link>https://www.paypal-status.com/history/eventdetails/107523</link>
+            <guid>https://www.paypal-status.com/history/eventdetails/107523</guid>
+            <pubDate>Fri, 17 Jul 2026 09:00:03 GMT</pubDate>
+            <content:encoded><![CDATA[<br /><strong>Postponed: </strong> <br /> <p>Venmo maintenance activity has been postponed to next week.</p>]]></content:encoded>
+        </item>
+    </channel>
+</rss>
