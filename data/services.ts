@@ -646,8 +646,8 @@ export const services: Service[] = [
   },
   // Developer Wave C — remaining coding environments, CI, and registries.
   // Windsurf stays on Devin. JetBrains has no public JSON. HashiCorp /
-  // Pulumi wait for an Infra chiclet. Replit is seeded without a fetcher
-  // (Cloudflare challenges the Statuspage JSON).
+  // Pulumi wait for an Infra chiclet. Replit polls Rootly history RSS
+  // (status.replit.com HTML/JSON is Cloudflare-challenged).
   {
     id: "lovable",
     name: "Lovable",

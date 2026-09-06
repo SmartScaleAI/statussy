@@ -4,6 +4,8 @@ import { dirname, join } from "node:path"
 import test from "node:test"
 import { fileURLToPath } from "node:url"
 import {
+  PYPI_GROUP_ID,
+  PYPI_GROUP_NAME,
   incidentTouchesComponents,
   mapComponentStatus,
   mapIndicator,
@@ -209,4 +211,68 @@ test("mapStatuspageGroup throws when the group is missing", () => {
       { groupName: "Lytics" },
     ),
   )
+})
+
+const PYTHON_INFRA_LIKE: StatuspageSummary = {
+  status: { indicator: "maintenance", description: "Service Under Maintenance" },
+  components: [
+    { id: PYPI_GROUP_ID, name: "PyPI", status: "operational", group: true, position: 1 },
+    { id: "pypi-general", name: "pypi.org - General", status: "operational", group: false, group_id: PYPI_GROUP_ID, position: 1 },
+    { id: "pypi-cdn", name: "pypi.org - CDN", status: "operational", group: false, group_id: PYPI_GROUP_ID, position: 2 },
+    { id: "pypi-files", name: "files.pythonhosted.org - Files", status: "operational", group: false, group_id: PYPI_GROUP_ID, position: 3 },
+    { id: "pypi-redirects", name: "files.pythonhosted.org - Redirects", status: "operational", group: false, group_id: PYPI_GROUP_ID, position: 4 },
+    { id: "hosting", name: "PyPI Hosting Platforms", status: "operational", group: true, position: 2 },
+    { id: "aws-ec2", name: "AWS ec2-us-east-2", status: "operational", group: false, group_id: "hosting", position: 1 },
+    { id: "fastly", name: "Content Delivery Network", status: "under_maintenance", group: true, position: 3 },
+    { id: "fastly-lhr", name: "Fastly Europe (LHR)", status: "under_maintenance", group: false, group_id: "fastly", position: 1 },
+    { id: "python-org", name: "python.org", status: "partial_outage", group: true, position: 4 },
+    { id: "python-cdn", name: "python.org - CDN", status: "partial_outage", group: false, group_id: "python-org", position: 1 },
+  ],
+}
+
+test("selectStatuspageGroupComponents keeps PyPI + files.pythonhosted.org only", () => {
+  const children = selectStatuspageGroupComponents(PYTHON_INFRA_LIKE.components, {
+    groupId: PYPI_GROUP_ID,
+    groupName: PYPI_GROUP_NAME,
+  })
+  assert.deepEqual(
+    children.map((c) => c.name),
+    [
+      "pypi.org - General",
+      "pypi.org - CDN",
+      "files.pythonhosted.org - Files",
+      "files.pythonhosted.org - Redirects",
+    ],
+  )
+})
+
+test("mapStatuspageGroup for PyPI ignores PSF / Fastly page status", () => {
+  const state = mapStatuspageGroup(
+    PYTHON_INFRA_LIKE,
+    [
+      {
+        id: "fastly-inc",
+        name: "Fastly London maintenance",
+        status: "investigating",
+        components: [{ id: "fastly-lhr", name: "Fastly Europe (LHR)" }],
+      },
+      {
+        id: "pypi-inc",
+        name: "PyPI CDN elevated errors",
+        status: "resolved",
+        components: [{ id: "pypi-cdn", name: "pypi.org - CDN" }],
+      },
+    ],
+    "https://status.python.org",
+    { groupId: PYPI_GROUP_ID, groupName: PYPI_GROUP_NAME },
+  )
+  assert.equal(state.status, "operational")
+  assert.equal(state.incidentTitle, null)
+  assert.equal(state.detail.source, "statuspage_group")
+  assert.equal(state.detail.groupId, PYPI_GROUP_ID)
+  assert.equal(state.incidents.length, 1)
+  assert.equal(state.incidents[0].title, "PyPI CDN elevated errors")
+  assert.equal(state.components.length, 4)
+  assert.ok(state.components.every((c) => /pypi\.org|files\.pythonhosted\.org/i.test(c.name)))
+  assert.ok(!state.components.some((c) => /fastly|python\.org|AWS/i.test(c.name)))
 })

@@ -24,11 +24,14 @@
  * status.json, Oracle Cloud via ocistatus status.json, Hetzner via the
  * official page's __NEXT_DATA__; Developer Wave A — Cursor, Devin, GitHub,
  * CircleCI, npm, Docker, Linear, Sourcegraph, and Warp via Statuspage,
- * GitLab via Status.io; Developer Wave B — Bitbucket, Buildkite, PyPI,
+ * GitLab via Status.io; Developer Wave B — Bitbucket, Buildkite,
  * RubyGems, Maven Central, Postman, Augment, Factory, and Tabnine via
- * Statuspage, Zed via Instatus; Developer Wave C — Lovable, Bolt, Travis CI,
- * Semaphore, Harness, Codefresh, crates.io, Expo, and Cloudsmith via
- * Statuspage; Data Wave A — Supabase, PlanetScale, Convex, Upstash,
+ * Statuspage, PyPI via the Statuspage PyPI group on status.python.org
+ * (not the full PSF / Fastly board), Zed via Instatus; Developer Wave C
+ * — Lovable, Bolt, Travis CI, Semaphore, Harness, Codefresh, crates.io,
+ * Expo, and Cloudsmith via Statuspage, Replit via Rootly history RSS
+ * (status.replit.com HTML/JSON is Cloudflare-challenged); Data Wave A —
+ * Supabase, PlanetScale, Convex, Upstash,
  * Pinecone, MongoDB, CockroachDB, and Prisma via Statuspage, Neon via
  * Status.io, Redis via Firehydrant/Nunc `payload.json`; Data Wave B —
  * Snowflake, ClickHouse, Elastic, Aiven, InfluxDB, Couchbase, Confluent,
@@ -114,8 +117,7 @@
  * Gladly (gladly.statuspage.io), Genesys (mypurecloud.com),
  * Deskpro, Olark, and HelpDesk via Statuspage, Chatwoot
  * via Better Stack `index.json`.
- * Replit, PayPal,
- * Adyen, PagerDuty, Checkly, Postmark, Mailchimp, Campaign Monitor,
+ * PayPal, Adyen, PagerDuty, Checkly, Postmark, Mailchimp, Campaign Monitor,
  * Mailtrap, Substack, Adobe, Sketch, Penpot, Rive, LottieFiles,
  * Whimsical, Lunacy, Photopea, Blender, Moqups, Proto.io, UXPin,
  * Overflow, Axure, Relume, Visily, Plasmic, OpenTofu, Ansible, Argo
@@ -185,6 +187,9 @@ import {
   CONTENTSTACK_STATUS_PAGE,
   LYTICS_GROUP_ID,
   LYTICS_GROUP_NAME,
+  PYTHON_STATUS_PAGE,
+  PYPI_GROUP_ID,
+  PYPI_GROUP_NAME,
   fetchStatuspageGroupState,
   fetchStatuspageState,
 } from "./statuspage.js"
@@ -231,7 +236,7 @@ type ServiceJob = {
 
 // Board services with a fetcher (26 AI + Cloud / Developer / Data / Auth /
 // Payments / Observability Waves A–C + Email Waves A–C + Design Waves
-// A–C + Infra Waves A–C; Replit, PayPal, Adyen, PagerDuty, Checkly, Postmark,
+// A–C + Infra Waves A–C; PayPal, Adyen, PagerDuty, Checkly, Postmark,
 // Mailchimp, Campaign Monitor, Mailtrap, Substack, Adobe, Sketch,
 // Penpot, Rive, LottieFiles, Whimsical, Lunacy, Photopea, Blender,
 // Moqups, Proto.io, UXPin, Overflow, Axure, Relume, Visily, Plasmic,
@@ -444,7 +449,17 @@ const SERVICE_JOBS: ServiceJob[] = [
   // Developer Wave B. More forges, registries, API tooling, and coding agents.
   statuspageJob("bitbucket", "https://bitbucket.status.atlassian.com"),
   statuspageJob("buildkite", "https://www.buildkitestatus.com"),
-  statuspageJob("pypi", "https://status.python.org"),
+  {
+    // SMA-69: PyPI + files.pythonhosted.org only. The PSF page has 129
+    // components (python.org, Mailman, 97 Fastly POPs). files.pythonhosted.org
+    // rows live in the PyPI group.
+    id: "pypi",
+    fetch: () =>
+      fetchStatuspageGroupState(PYTHON_STATUS_PAGE, fetchOptions(), {
+        groupId: PYPI_GROUP_ID,
+        groupName: PYPI_GROUP_NAME,
+      }),
+  },
   statuspageJob("rubygems", "https://status.rubygems.org"),
   statuspageJob("maven", "https://status.maven.org"),
   statuspageJob("postman", "https://status.postman.com"),
@@ -456,9 +471,14 @@ const SERVICE_JOBS: ServiceJob[] = [
     fetch: () => fetchInstatusState("https://status.zed.dev", fetchOptions()),
     persistOptions: { resolveMissingIncidents: true },
   },
-  // Developer Wave C. Replit is none (Cloudflare challenges status.replit.com).
+  // Developer Wave C. Replit is Rootly RSS — HTML/JSON is CF-challenged
+  // and replit.statuspage.io is inactive.
   statuspageJob("lovable", "https://status.lovable.dev"),
   statuspageJob("bolt", "https://status.bolt.new"),
+  rssJob("replit", [
+    "https://status.replit.com/history.rss",
+    "https://status.replit.com/history.atom",
+  ]),
   statuspageJob("travis", "https://www.traviscistatus.com"),
   statuspageJob("semaphore", "https://status.semaphore.io"),
   statuspageJob("harness", "https://status.harness.io"),

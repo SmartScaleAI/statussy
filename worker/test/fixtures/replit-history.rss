@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Replit - Incident History</title>
+    <link>https://status.replit.com/history</link>
+    <item>
+      <title><![CDATA[Publishing is degraded]]></title>
+      <description><![CDATA[[Investigating] Some apps are failing during the publishing step.]]></description>
+      <pubDate>Sun, 06 Sep 2026 10:00:00 -0700</pubDate>
+      <link>https://status.replit.com/incidents/open-1</link>
+      <guid>https://status.replit.com/incidents/open-1</guid>
+    </item>
+    <item>
+      <title><![CDATA[Deployment issue causing 403 errors]]></title>
+      <description><![CDATA[[Resolved] We’ve fixed the issue impacting Replit Deployments.]]></description>
+      <pubDate>Mon, 11 May 2026 10:43:48 -0700</pubDate>
+      <link>https://status.replit.com/incidents/c771a1f3-d711-40d1-8d2c-37ed8ca5776f</link>
+      <guid>https://status.replit.com/incidents/c771a1f3-d711-40d1-8d2c-37ed8ca5776f</guid>
+    </item>
+    <item>
+      <title><![CDATA[Scheduled Database Maintenance]]></title>
+      <description><![CDATA[[Scheduled] We'll be performing scheduled database maintenance.]]></description>
+      <pubDate>Wed, 12 Aug 2026 00:29:04 -0700</pubDate>
+      <link>https://status.replit.com/incidents/sched-1</link>
+      <guid>https://status.replit.com/incidents/sched-1</guid>
+    </item>
+  </channel>
+</rss>

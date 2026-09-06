@@ -165,11 +165,45 @@ const KNOWN_LIFECYCLE_STATUSES = new Set([
 ])
 
 /**
+ * Rootly history feeds (Replit) prefix the description with `[Resolved]`,
+ * `[Investigating]`, `[Scheduled]`, etc. Historical `[Scheduled]` notices
+ * stay closed so old maintenance windows do not pin the card.
+ */
+const ROOTLY_BRACKET_STATUS: Record<string, string> = {
+  resolved: "resolved",
+  complete: "completed",
+  completed: "completed",
+  postmortem: "postmortem",
+  scheduled: "completed",
+  investigating: "investigating",
+  identified: "identified",
+  monitoring: "monitoring",
+  update: "monitoring",
+  underway: "investigating",
+  "in progress": "investigating",
+  in_progress: "investigating",
+  "false alarm": "resolved",
+  false_alarm: "resolved",
+}
+
+function extractRootlyBracketStatus(text: string): string | null {
+  const match = text.match(/^\s*\[([^\]]+)\]/)
+  if (!match) return null
+  const key = match[1].trim().toLowerCase().replace(/[_-]+/g, " ").replace(/\s+/g, " ")
+  return ROOTLY_BRACKET_STATUS[key] ?? null
+}
+
+/**
  * Extract the incident lifecycle state from an item. Both xAI and DeepSeek
  * embed a "Status: <state>" line in the description; xAI additionally tags
- * a "resolved" category and a "Resolved: <date>" line.
+ * a "resolved" category and a "Resolved: <date>" line. Rootly (Replit)
+ * prefixes the body with `[Resolved]` / `[Investigating]`.
  */
 export function extractIncidentStatus(item: RssItem): string {
+  const bracket = extractRootlyBracketStatus(item.text)
+  if (bracket) {
+    return bracket
+  }
   const statusLine = item.text.match(/\bstatus:\s*([a-z_ ]+)/i)?.[1]?.trim().toLowerCase()
   if (statusLine && KNOWN_LIFECYCLE_STATUSES.has(statusLine)) {
     return statusLine
