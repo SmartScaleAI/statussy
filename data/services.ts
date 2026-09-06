@@ -3965,7 +3965,7 @@ export const services: Service[] = [
     id: "tapcart",
     name: "Tapcart",
     category: "commerce",
-    statusUrl: "https://tapcart.statuspage.io/",
+    statusUrl: "https://status.tapcart.co/",
     status: "operational",
     updatedAt: "2026-09-06T02:15:00.000Z",
   },

@@ -3276,7 +3276,7 @@ export const SERVICE_SEED = [
     id: "tapcart",
     name: "Tapcart",
     category: "commerce",
-    statusUrl: "https://tapcart.statuspage.io/",
+    statusUrl: "https://status.tapcart.co/",
     fetcherType: "statuspage",
   },
   {

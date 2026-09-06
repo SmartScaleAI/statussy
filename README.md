@@ -184,8 +184,8 @@ Embrace), and Dash0 via `https://dash0status.com` (the public host
   Swell via `status.swell.store`, VTEX),
   Commerce Wave B Statuspage hosts (Nacelle, Volusion, Alokai,
   SHOPLINE via `status.shopline.com`, Tapcart via
-  `tapcart.statuspage.io` — the public host does not resolve,
-  Pack via `status.packdigital.com`, Bold Commerce, Mirakl,
+  `status.tapcart.co`, Pack via `status.packdigital.com`,
+  Bold Commerce, Mirakl,
   Sharetribe, Printful via `www.printfulstatus.com`),
   CRM Wave A Statuspage hosts (Copper, Close via
   `status.close.com`, Capsule via `status.capsulecrm.com`,
