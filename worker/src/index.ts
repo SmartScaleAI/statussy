@@ -91,7 +91,20 @@
  * Wiz, SentinelOne, Semgrep, Veracode, Tenable, Qualys, Vanta,
  * Rapid7, and Socket via Statuspage; Security Wave B —
  * Aqua, Orca, Sysdig, GitGuardian, Secureframe, Palo Alto
- * Networks, Imperva, Upwind, FOSSA, and Mend via Statuspage.
+ * Networks, Imperva, Upwind, FOSSA, and Mend via Statuspage;
+ * Security Wave C — HUMAN, Tailscale (Statuspage-compatible
+ * incident.io page), Twingate, DigiCert, SecurityScorecard,
+ * KnowBe4, Bugcrowd, and Sonar via Statuspage, Chainguard via
+ * Better Stack `index.json`, Let's Encrypt via Status.io;
+ * Support Wave A — Gorgias, Talkdesk, Aircall, LiveChat
+ * (Statuspage-compatible incident.io page), Kustomer, Dixa,
+ * Kayako, and Helpshift via Statuspage, Intercom via
+ * www.finstatus.com (the public intercomstatus.com host
+ * redirects /api/v2 to HTML), Zendesk via /api/ssp;
+ * Support Wave B — UserVoice, Ada, Plain, Forethought,
+ * Gladly (gladly.statuspage.io), Genesys (mypurecloud.com),
+ * Deskpro, Olark, and HelpDesk via Statuspage, Chatwoot
+ * via Better Stack `index.json`.
  * AWS, Azure, Fastly, Replit, Redis, Algolia, DataStax, Okta, PayPal,
  * Adyen, PagerDuty, Checkly, Postmark, Mailchimp, Campaign Monitor,
  * Mailtrap, Substack, Adobe, Sketch, Penpot, Rive, LottieFiles,
@@ -132,10 +145,14 @@ import {
   DEVCYCLE_STATUS_PAGE_ID,
   DYNATRACE_STATUS_PAGE,
   DYNATRACE_STATUS_PAGE_ID,
+  LETSENCRYPT_STATUS_PAGE,
+  LETSENCRYPT_STATUS_PAGE_ID,
   NEON_STATUS_PAGE,
   NEON_STATUS_PAGE_ID,
 } from "./gitlab.js"
 import { fetchHerokuState } from "./heroku.js"
+import { fetchZendeskState } from "./zendesk.js"
+import { fetchSlackState } from "./slack.js"
 import { fetchHetznerState } from "./hetzner.js"
 import { fetchOracleCloudState } from "./oracle-cloud.js"
 import { fetchRailwayState } from "./railway.js"
@@ -801,6 +818,226 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("upwind", "https://status.upwind.io"),
   statuspageJob("fossa", "https://status.fossa.com"),
   statuspageJob("mend", "https://status.mend.io"),
+  // Security Wave C. HUMAN / Tailscale / Twingate / DigiCert /
+  // SecurityScorecard / KnowBe4 / Bugcrowd / Sonar are
+  // Statuspage (Tailscale's incident.io host exposes
+  // Statuspage-compatible /api/v2). Chainguard is Better Stack.
+  // Let's Encrypt is Status.io. Abnormal waits (PNG-only).
+  // Recorded Future waits (no official SVG).
+  statuspageJob("human", "https://status.humansecurity.com"),
+  statuspageJob("tailscale", "https://status.tailscale.com"),
+  statuspageJob("twingate", "https://status.twingate.com"),
+  statuspageJob("digicert", "https://status.digicert.com"),
+  statuspageJob("securityscorecard", "https://status.securityscorecard.com"),
+  statuspageJob("knowbe4", "https://status.knowbe4.com"),
+  {
+    id: "chainguard",
+    fetch: () =>
+      fetchBetterstackState("https://status.chainguard.dev", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  statuspageJob("bugcrowd", "https://www.bugcrowdstatus.com"),
+  statuspageJob("sonar", "https://status.sonarqube.com"),
+  {
+    id: "lets-encrypt",
+    fetch: () =>
+      fetchStatusIoState(
+        LETSENCRYPT_STATUS_PAGE,
+        LETSENCRYPT_STATUS_PAGE_ID,
+        fetchOptions(),
+      ),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  // Support Wave A. Gorgias / Talkdesk / Aircall / LiveChat /
+  // Kustomer / Dixa / Kayako / Helpshift are Statuspage
+  // (LiveChat's incident.io host exposes Statuspage-compatible
+  // /api/v2). Intercom is Statuspage-compatible on
+  // www.finstatus.com (intercomstatus.com redirects /api/v2).
+  // Zendesk is the public SSP JSON. Freshdesk waits
+  // (Freshstatus API is authenticated). ServiceNow waits (no
+  // public status JSON). Crisp waits (Vigil HTML). Zoho Desk
+  // waits (StatusIQ HTML).
+  {
+    id: "zendesk",
+    fetch: () => fetchZendeskState(fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  statuspageJob("intercom", "https://www.finstatus.com"),
+  statuspageJob("gorgias", "https://status.gorgias.com"),
+  statuspageJob("talkdesk", "https://status.talkdesk.com"),
+  statuspageJob("aircall", "https://status.aircall.com"),
+  statuspageJob("livechat", "https://status.livechat.com"),
+  statuspageJob("kustomer", "https://status.kustomer.com"),
+  statuspageJob("dixa", "https://status.dixa.io"),
+  statuspageJob("kayako", "https://status.kayako.com"),
+  statuspageJob("helpshift", "https://status.helpshift.com"),
+  // Support Wave B. UserVoice / Ada / Plain / Forethought /
+  // Gladly / Genesys / Deskpro / Olark / HelpDesk are
+  // Statuspage (Gladly's public host is gladly.statuspage.io;
+  // Genesys Cloud publishes on status.mypurecloud.com; Plain
+  // and HelpDesk are Statuspage-compatible). Chatwoot is
+  // Better Stack `index.json`. Podium waits (Instatus JSON,
+  // no official SVG). Groove / tawk.to wait (PNG lockups).
+  // Sprinklr waits (CX suite). Drift waits (status.io host
+  // does not resolve).
+  statuspageJob("uservoice", "https://status.uservoice.com"),
+  statuspageJob("ada", "https://status.ada.support"),
+  statuspageJob("plain", "https://status.plain.com"),
+  statuspageJob("forethought", "https://status.forethought.ai"),
+  statuspageJob("gladly", "https://gladly.statuspage.io"),
+  statuspageJob("genesys", "https://status.mypurecloud.com"),
+  statuspageJob("deskpro", "https://deskprostatus.com"),
+  statuspageJob("olark", "https://status.olark.com"),
+  {
+    id: "chatwoot",
+    fetch: () =>
+      fetchBetterstackState("https://status.chatwoot.com", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  statuspageJob("helpdesk", "https://status.helpdesk.com"),
+  // Support Wave C. Tidio / TeamSupport / Dialpad / Khoros /
+  // Lime Connect / Assembled / Cresta / Observe.AI /
+  // Helpjuice are Statuspage. SysAid is Instatus. LivePerson
+  // waits (status host is HTML, no /api/v2). Nextiva waits
+  // (wordmark only). Yellow.ai waits (Instatus JSON, no
+  // official SVG). Sierra waits (empty Statuspage). Decagon
+  // waits (Better Stack, no isolated official SVG).
+  statuspageJob("tidio", "https://status.tidio.com"),
+  statuspageJob("teamsupport", "https://status.teamsupport.com"),
+  statuspageJob("dialpad", "https://status.dialpad.com"),
+  statuspageJob("khoros", "https://status.khoros.com"),
+  statuspageJob("lime-connect", "https://status.lime-connect.com"),
+  {
+    id: "sysaid",
+    fetch: () => fetchInstatusState("https://status.sysaid.com", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  statuspageJob("assembled", "https://status.assembled.com"),
+  statuspageJob("cresta", "https://status.cresta.com"),
+  statuspageJob("observe-ai", "https://status.observe.ai"),
+  statuspageJob("helpjuice", "https://status.helpjuice.com"),
+  // Collab Wave A. Notion / Jira / Asana / monday.com / Discord /
+  // Zoom / Trello / Airtable are Statuspage (Jira and Trello
+  // publish on their own Atlassian hosts, like Bitbucket).
+  // ClickUp's public host redirects /api/v2; the fetcher uses
+  // clickup.statuspage.io. Slack is the public Status API
+  // (`/api/v2.0.0/current`). Microsoft Teams waits (Office 365
+  // status is login-walled). Linear stays Developer.
+  {
+    id: "slack",
+    fetch: () => fetchSlackState(fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  statuspageJob("notion", "https://www.notion-status.com"),
+  statuspageJob("jira", "https://jira-software.status.atlassian.com"),
+  statuspageJob("asana", "https://status.asana.com"),
+  statuspageJob("monday", "https://status.monday.com"),
+  statuspageJob("clickup", "https://clickup.statuspage.io"),
+  statuspageJob("discord", "https://discordstatus.com"),
+  statuspageJob("zoom", "https://status.zoom.us"),
+  statuspageJob("trello", "https://trello.status.atlassian.com"),
+  statuspageJob("airtable", "https://status.airtable.com"),
+  // Collab Wave B. Confluence and Loom publish on their own
+  // Atlassian hosts, like Jira / Trello / Bitbucket. Coda,
+  // Mattermost, Smartsheet, Shortcut, Teamwork, Productboard,
+  // Aha!, and Hive are Statuspage on their public hosts.
+  statuspageJob("confluence", "https://confluence.status.atlassian.com"),
+  statuspageJob("loom", "https://loom.status.atlassian.com"),
+  statuspageJob("coda", "https://status.coda.io"),
+  statuspageJob("mattermost", "https://status.mattermost.com"),
+  statuspageJob("smartsheet", "https://status.smartsheet.com"),
+  statuspageJob("shortcut", "https://status.shortcut.com"),
+  statuspageJob("teamwork", "https://status.teamwork.com"),
+  statuspageJob("productboard", "https://status.productboard.com"),
+  statuspageJob("aha", "https://status.aha.io"),
+  statuspageJob("hive", "https://status.hive.com"),
+  // Collab Wave C. All ten are Statuspage. Calendly's public host
+  // (`status.calendly.com`) serves HTML for `/api/v2`; the fetcher
+  // uses calendlystatus.com. Fireflies' public host has no `/api/v2`;
+  // the fetcher uses fireflies.statuspage.io. Basecamp publishes on
+  // the 37signals page (`www.37status.com`).
+  statuspageJob("calendly", "https://calendlystatus.com"),
+  statuspageJob("basecamp", "https://www.37status.com"),
+  statuspageJob("zulip", "https://status.zulip.com"),
+  statuspageJob("element", "https://status.element.io"),
+  statuspageJob("plane", "https://status.plane.so"),
+  statuspageJob("guru", "https://status.getguru.com"),
+  statuspageJob("tettra", "https://status.tettra.co"),
+  statuspageJob("fireflies", "https://fireflies.statuspage.io"),
+  statuspageJob("livestorm", "https://status.livestorm.co"),
+  statuspageJob("fellow", "https://status.fellow.ai"),
+  // Docs Wave A. All ten are Statuspage. Document360 and Bump
+  // public hosts serve HTML for `/api/v2`; fetchers use
+  // document360.statuspage.io and bump.statuspage.io.
+  // KnowledgeOwl's public host login-walls, so the card and
+  // fetcher use knowledgeowl.statuspage.io. Stoplight and
+  // SwaggerHub publish on SmartBear-hosted pages.
+  statuspageJob("gitbook", "https://www.gitbookstatus.com"),
+  statuspageJob("readme", "https://www.readmestatus.com"),
+  statuspageJob("mintlify", "https://status.mintlify.com"),
+  statuspageJob("fern", "https://status.buildwithfern.com"),
+  statuspageJob("archbee", "https://status.archbee.com"),
+  statuspageJob("document360", "https://document360.statuspage.io"),
+  statuspageJob("knowledgeowl", "https://knowledgeowl.statuspage.io"),
+  statuspageJob("stoplight", "https://stoplight.status.smartbear.com"),
+  statuspageJob("swaggerhub", "https://swagger.status.smartbear.com"),
+  statuspageJob("bump", "https://bump.statuspage.io"),
+  // Commerce Wave A. All ten are Statuspage storefronts /
+  // headless commerce hosts. Centra waits (Instatus JSON,
+  // wordmark only). WooCommerce waits (inactive Statuspage).
+  statuspageJob("shopify", "https://www.shopifystatus.com"),
+  statuspageJob("bigcommerce", "https://status.bigcommerce.com"),
+  statuspageJob("ecwid", "https://status.ecwid.com"),
+  statuspageJob("saleor", "https://status.saleor.io"),
+  statuspageJob("medusa", "https://status.medusajs.com"),
+  statuspageJob("commercelayer", "https://status.commercelayer.io"),
+  statuspageJob("elasticpath", "https://status.elasticpath.com"),
+  statuspageJob("lightspeed", "https://status.lightspeedhq.com"),
+  statuspageJob("swell", "https://status.swell.store"),
+  statuspageJob("vtex", "https://status.vtex.com"),
+  // Commerce Wave B. All ten are Statuspage. Tapcart's public
+  // host does not resolve, so the card and fetcher use
+  // tapcart.statuspage.io. Printful's public host is
+  // www.printfulstatus.com. Shogun waits (wordmark only).
+  statuspageJob("nacelle", "https://status.nacelle.com"),
+  statuspageJob("volusion", "https://status.volusion.com"),
+  statuspageJob("alokai", "https://status.alokai.com"),
+  statuspageJob("shopline", "https://status.shopline.com"),
+  statuspageJob("tapcart", "https://tapcart.statuspage.io"),
+  statuspageJob("pack", "https://status.packdigital.com"),
+  statuspageJob("bold", "https://status.boldcommerce.com"),
+  statuspageJob("mirakl", "https://status.mirakl.com"),
+  statuspageJob("sharetribe", "https://status.sharetribe.com"),
+  statuspageJob("printful", "https://www.printfulstatus.com"),
+  // CRM Wave A. Salesforce Trust and Pipedrive / Outreach are
+  // custom HTML (no Statuspage JSON) and stay none. Apollo's
+  // public host serves HTML for /api/v2, so the fetcher hits
+  // apollo.statuspage.io. Attio and Gong are Instatus.
+  statuspageJob("copper", "https://status.copper.com"),
+  statuspageJob("close", "https://status.close.com"),
+  {
+    id: "attio",
+    fetch: () => fetchInstatusState("https://status.attio.com", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  statuspageJob("capsule", "https://status.capsulecrm.com"),
+  statuspageJob("salesloft", "https://status.salesloft.com"),
+  statuspageJob("apollo", "https://apollo.statuspage.io"),
+  {
+    id: "gong",
+    fetch: () => fetchInstatusState("https://status.gong.io", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  // CRM Wave B. All seven are Statuspage. Clari's public host
+  // is trust.clari.com (also on clari.statuspage.io). Affinity
+  // here is affinity.co, not the photo editor on Canva.
+  statuspageJob("affinity", "https://status.affinity.co"),
+  statuspageJob("zoominfo", "https://status.zoominfo.com"),
+  statuspageJob("streak", "https://status.streak.com"),
+  statuspageJob("clari", "https://trust.clari.com"),
+  statuspageJob("lusha", "https://status.lusha.com"),
+  statuspageJob("teamleader", "https://status.teamleader.eu"),
+  statuspageJob("orum", "https://status.orum.com"),
 ]
 
 async function fetchService(service: ServiceJob): Promise<boolean> {
