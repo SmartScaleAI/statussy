@@ -407,5 +407,15 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `olark.svg` | Olark | Official rainbow | Official bird from [olark.com olark-rainbow-logo.svg](https://www.olark.com/) |
 | `chatwoot.svg` | Chatwoot | `#1F93FF` | Simple Icons `chatwoot` |
 | `helpdesk.svg` | HelpDesk | `#2FC774` | Official ticket from [helpdesk.com/helpdesk-logo.svg](https://www.helpdesk.com/helpdesk-logo.svg) (wordmark dropped) |
+| `tidio.svg` | Tidio | `#FFFFFF` | Official mark from [tidio.com tidio-logo.svg](https://www.tidio.com/images/brand-logos/tidio-logo.svg); official black knocked to white |
+| `teamsupport.svg` | TeamSupport | `#1E63AF` + `#FFC709` + `#ED9222` + `#E86E25` | Official mark from [teamsupport.com teamsupport-icon-mark.svg](https://www.teamsupport.com/astro-assets/teamsupport-icon-mark.svg) |
+| `dialpad.svg` | Dialpad | `#7C52FF` | Official sparkle from [dialpad.com dark_dialpad.svg](https://www.dialpad.com/assets/images/logo/dark_dialpad.svg) (wordmark dropped) |
+| `khoros.svg` | Khoros | `#FFFFFF` | Official bug from [khoros.ai khoros-bug-icon.svg](https://khoros.ai/wp-content/uploads/2026/02/khoros-bug-icon.svg) |
+| `lime-connect.svg` | Lime Connect | `#FEB000` + `#FFA6EA` + `#6FCDB6` + `#BEE034` + `#A6EFFF` | Official fruit from [connect.lime-technologies.com lime-logo-no-tagline.svg](https://connect.lime-technologies.com/wp-content/uploads/2025/12/lime-logo-no-tagline.svg) (wordmark dropped) |
+| `sysaid.svg` | SysAid | `#6BD9B9` → `#DEFF00` | Official diamond from [cdn.sysaid.com logo-v2.svg](https://cdn.sysaid.com/wp-content/uploads/logo-v2.svg) (wordmark dropped) |
+| `assembled.svg` | Assembled | `#FFFFFF` | Official A from [assembled.com Logo.svg](https://www.assembled.com/) (wordmark dropped); official white on dark |
+| `cresta.svg` | Cresta | `#FFFFFF` | Official standalone sign from [cresta.com cresta sign.svg](https://cresta.com/); official `#25252A` knocked to white |
+| `observe-ai.svg` | Observe.AI | `#F4F73D` + `#000000` | Official mark from [observe.ai OAI_FAVICON_2024.svg](https://www.observe.ai/) |
+| `helpjuice.svg` | Helpjuice | `#5DA3D9` | Official icon from [helpjuice.com helpjuice-icon.svg](https://helpjuice.com/) |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.

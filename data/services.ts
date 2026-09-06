@@ -3338,11 +3338,11 @@ export const services: Service[] = [
   },
   // Support Wave B — more helpdesk / live chat / contact-center
   // SaaS with a public JSON feed + official SVG. Podium waits
-  // (Instatus JSON, no official SVG). Tidio / TeamSupport /
-  // Groove / tawk.to wait (PNG lockups). Sprinklr waits (CX
-  // suite; no isolated official SVG). Drift waits (status.io
-  // host does not resolve). Freshdesk / ServiceNow / Crisp /
-  // Zoho Desk still wait.
+  // (Instatus JSON, no official SVG). Groove / tawk.to wait
+  // (PNG lockups). Sprinklr waits (CX suite; no isolated
+  // official SVG). Drift waits (status.io host does not
+  // resolve). Freshdesk / ServiceNow / Crisp / Zoho Desk
+  // still wait.
   {
     id: "uservoice",
     name: "UserVoice",
@@ -3420,6 +3420,95 @@ export const services: Service[] = [
     name: "HelpDesk",
     category: "support",
     statusUrl: "https://status.helpdesk.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T00:00:00.000Z",
+  },
+  // Support Wave C — more helpdesk / live chat / contact-center
+  // SaaS with a public JSON feed + official SVG. Tidio /
+  // TeamSupport graduate (official isolated marks). LivePerson
+  // waits (status host is HTML, no /api/v2). Nextiva waits
+  // (wordmark only). Yellow.ai waits (Instatus JSON, no
+  // official SVG). Sierra waits (empty Statuspage). Decagon
+  // waits (Better Stack, no isolated official SVG). Groove /
+  // tawk.to / Podium / Sprinklr / Drift / Freshdesk /
+  // ServiceNow / Crisp / Zoho Desk still wait.
+  {
+    id: "tidio",
+    name: "Tidio",
+    category: "support",
+    statusUrl: "https://status.tidio.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T00:00:00.000Z",
+  },
+  {
+    id: "teamsupport",
+    name: "TeamSupport",
+    category: "support",
+    statusUrl: "https://status.teamsupport.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T00:00:00.000Z",
+  },
+  {
+    id: "dialpad",
+    name: "Dialpad",
+    category: "support",
+    statusUrl: "https://status.dialpad.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T00:00:00.000Z",
+  },
+  {
+    id: "khoros",
+    name: "Khoros",
+    category: "support",
+    statusUrl: "https://status.khoros.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T00:00:00.000Z",
+  },
+  {
+    id: "lime-connect",
+    name: "Lime Connect",
+    category: "support",
+    statusUrl: "https://status.lime-connect.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T00:00:00.000Z",
+  },
+  {
+    id: "sysaid",
+    name: "SysAid",
+    category: "support",
+    statusUrl: "https://status.sysaid.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T00:00:00.000Z",
+  },
+  {
+    id: "assembled",
+    name: "Assembled",
+    category: "support",
+    statusUrl: "https://status.assembled.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T00:00:00.000Z",
+  },
+  {
+    id: "cresta",
+    name: "Cresta",
+    category: "support",
+    statusUrl: "https://status.cresta.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T00:00:00.000Z",
+  },
+  {
+    id: "observe-ai",
+    name: "Observe.AI",
+    category: "support",
+    statusUrl: "https://status.observe.ai/",
+    status: "operational",
+    updatedAt: "2026-09-06T00:00:00.000Z",
+  },
+  {
+    id: "helpjuice",
+    name: "Helpjuice",
+    category: "support",
+    statusUrl: "https://status.helpjuice.com/",
     status: "operational",
     updatedAt: "2026-09-06T00:00:00.000Z",
   },

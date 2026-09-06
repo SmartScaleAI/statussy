@@ -876,9 +876,9 @@ const SERVICE_JOBS: ServiceJob[] = [
   // Genesys Cloud publishes on status.mypurecloud.com; Plain
   // and HelpDesk are Statuspage-compatible). Chatwoot is
   // Better Stack `index.json`. Podium waits (Instatus JSON,
-  // no official SVG). Tidio / TeamSupport / Groove / tawk.to
-  // wait (PNG lockups). Sprinklr waits (CX suite). Drift
-  // waits (status.io host does not resolve).
+  // no official SVG). Groove / tawk.to wait (PNG lockups).
+  // Sprinklr waits (CX suite). Drift waits (status.io host
+  // does not resolve).
   statuspageJob("uservoice", "https://status.uservoice.com"),
   statuspageJob("ada", "https://status.ada.support"),
   statuspageJob("plain", "https://status.plain.com"),
@@ -894,6 +894,27 @@ const SERVICE_JOBS: ServiceJob[] = [
     persistOptions: { resolveMissingIncidents: true },
   },
   statuspageJob("helpdesk", "https://status.helpdesk.com"),
+  // Support Wave C. Tidio / TeamSupport / Dialpad / Khoros /
+  // Lime Connect / Assembled / Cresta / Observe.AI /
+  // Helpjuice are Statuspage. SysAid is Instatus. LivePerson
+  // waits (status host is HTML, no /api/v2). Nextiva waits
+  // (wordmark only). Yellow.ai waits (Instatus JSON, no
+  // official SVG). Sierra waits (empty Statuspage). Decagon
+  // waits (Better Stack, no isolated official SVG).
+  statuspageJob("tidio", "https://status.tidio.com"),
+  statuspageJob("teamsupport", "https://status.teamsupport.com"),
+  statuspageJob("dialpad", "https://status.dialpad.com"),
+  statuspageJob("khoros", "https://status.khoros.com"),
+  statuspageJob("lime-connect", "https://status.lime-connect.com"),
+  {
+    id: "sysaid",
+    fetch: () => fetchInstatusState("https://status.sysaid.com", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  statuspageJob("assembled", "https://status.assembled.com"),
+  statuspageJob("cresta", "https://status.cresta.com"),
+  statuspageJob("observe-ai", "https://status.observe.ai"),
+  statuspageJob("helpjuice", "https://status.helpjuice.com"),
 ]
 
 async function fetchService(service: ServiceJob): Promise<boolean> {
