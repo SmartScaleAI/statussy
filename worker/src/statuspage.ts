@@ -26,6 +26,9 @@ export type StatuspageComponent = {
   name: string
   status?: string
   position?: number
+  /** True for Statuspage group headers (not leaf components). */
+  group?: boolean
+  group_id?: string | null
 }
 
 export type StatuspageIncident = {
@@ -37,6 +40,7 @@ export type StatuspageIncident = {
   created_at?: string | null
   started_at?: string | null
   resolved_at?: string | null
+  components?: Array<{ id?: string; name?: string }> | null
 }
 
 /** Statuspage page-level indicator -> our service_status enum. */
@@ -77,6 +81,25 @@ export function mapComponentStatus(status: string | undefined): ServiceStatus {
 }
 
 const OPEN_INCIDENT_STATUSES = new Set(["investigating", "identified", "monitoring", "in_progress", "verifying"])
+
+export const STATUS_SEVERITY_RANK: Record<ServiceStatus, number> = {
+  operational: 0,
+  unknown: 1,
+  maintenance: 2,
+  degraded: 3,
+  partial_outage: 4,
+  major_outage: 5,
+}
+
+export function worstStatus(statuses: Iterable<ServiceStatus>): ServiceStatus {
+  let worst: ServiceStatus = "operational"
+  for (const status of statuses) {
+    if (STATUS_SEVERITY_RANK[status] > STATUS_SEVERITY_RANK[worst]) {
+      worst = status
+    }
+  }
+  return worst
+}
 
 export type MappedComponent = {
   externalId: string
@@ -171,14 +194,20 @@ async function fetchJson<T>(url: string, options: FetchOptions): Promise<T> {
   return (await res.json()) as T
 }
 
+export type StatuspagePayloads = {
+  root: string
+  summary: StatuspageSummary
+  incidents: StatuspageIncident[]
+}
+
 /**
- * Fetch and map live state for one Statuspage-compatible service.
- * Throws on network error, timeout, non-2xx, or unparseable payload.
+ * Fetch Statuspage summary + incidents without mapping. Shared by the
+ * full-page fetcher and the group filter used for Lytics on Contentstack.
  */
-export async function fetchStatuspageState(
+export async function fetchStatuspagePayloads(
   baseUrl: string,
   options: FetchOptions,
-): Promise<MappedServiceState> {
+): Promise<StatuspagePayloads> {
   const root = baseUrl.replace(/\/+$/, "")
   const summary = await fetchJson<StatuspageSummary>(`${root}/api/v2/summary.json`, options)
   if (!summary || typeof summary !== "object" || !summary.status) {
@@ -198,5 +227,124 @@ export async function fetchStatuspageState(
     console.warn(`[statuspage] incidents fetch failed for ${root}: ${(err as Error).message}`)
   }
 
+  return { root, summary, incidents }
+}
+
+/**
+ * Fetch and map live state for one Statuspage-compatible service.
+ * Throws on network error, timeout, non-2xx, or unparseable payload.
+ */
+export async function fetchStatuspageState(
+  baseUrl: string,
+  options: FetchOptions,
+): Promise<MappedServiceState> {
+  const { root, summary, incidents } = await fetchStatuspagePayloads(baseUrl, options)
   return mapStatuspage(summary, incidents, root)
+}
+
+export type StatuspageGroupFilter = {
+  groupId?: string
+  groupName?: string
+}
+
+export const CONTENTSTACK_STATUS_PAGE = "https://status.contentstack.com"
+export const LYTICS_GROUP_ID = "dpv6jsrpvvx2"
+export const LYTICS_GROUP_NAME = "Lytics"
+
+function stripGroupPrefix(name: string, groupName: string | undefined): string {
+  if (!groupName) return name
+  const prefix = `${groupName} - `
+  return name.startsWith(prefix) ? name.slice(prefix.length) : name
+}
+
+/** Leaf components that belong to a Statuspage group (not the group header). */
+export function selectStatuspageGroupComponents(
+  components: StatuspageComponent[] | null | undefined,
+  filter: StatuspageGroupFilter,
+): StatuspageComponent[] {
+  const list = components ?? []
+  const group = list.find(
+    (component) =>
+      (filter.groupId != null && component.id === filter.groupId) ||
+      (filter.groupName != null && component.group === true && component.name === filter.groupName),
+  )
+  const groupId = filter.groupId ?? group?.id
+  if (!groupId) return []
+  return list.filter((component) => component.group_id === groupId && component.group !== true)
+}
+
+export function incidentTouchesComponents(
+  incident: StatuspageIncident,
+  componentIds: Set<string>,
+  groupName?: string,
+): boolean {
+  const comps = incident.components ?? []
+  if (comps.some((component) => component.id && componentIds.has(component.id))) {
+    return true
+  }
+  if (groupName) {
+    const needle = groupName.toLowerCase()
+    if (comps.some((component) => (component.name ?? "").toLowerCase().includes(needle))) {
+      return true
+    }
+    if ((incident.name ?? "").toLowerCase().includes(needle)) {
+      return true
+    }
+  }
+  return false
+}
+
+/**
+ * Map one Statuspage group (e.g. Contentstack → Lytics) as its own card.
+ * Overall status comes from the group's leaf components, not the host page.
+ */
+export function mapStatuspageGroup(
+  summary: StatuspageSummary,
+  incidents: StatuspageIncident[],
+  baseUrl: string,
+  filter: StatuspageGroupFilter,
+): MappedServiceState {
+  const children = selectStatuspageGroupComponents(summary.components, filter)
+  if (children.length === 0) {
+    throw new Error(
+      `No Statuspage components matched group ${filter.groupName ?? filter.groupId ?? "?"} on ${baseUrl}`,
+    )
+  }
+
+  const group = (summary.components ?? []).find(
+    (component) =>
+      (filter.groupId != null && component.id === filter.groupId) ||
+      (filter.groupName != null && component.group === true && component.name === filter.groupName),
+  )
+  const componentIds = new Set(children.map((component) => component.id))
+  if (group?.id) componentIds.add(group.id)
+
+  const renamed = children.map((component) => ({
+    ...component,
+    name: stripGroupPrefix(component.name, filter.groupName ?? group?.name),
+  }))
+  const filteredIncidents = incidents.filter((incident) =>
+    incidentTouchesComponents(incident, componentIds, filter.groupName ?? group?.name),
+  )
+
+  const mapped = mapStatuspage({ ...summary, components: renamed }, filteredIncidents, baseUrl)
+  return {
+    ...mapped,
+    status: worstStatus(mapped.components.map((component) => component.status)),
+    detail: {
+      ...mapped.detail,
+      source: "statuspage_group",
+      groupId: group?.id ?? filter.groupId ?? null,
+      groupName: filter.groupName ?? group?.name ?? null,
+    },
+  }
+}
+
+export async function fetchStatuspageGroupState(
+  baseUrl: string,
+  options: FetchOptions,
+  filter: StatuspageGroupFilter,
+): Promise<MappedServiceState> {
+  const { root, summary, incidents } = await fetchStatuspagePayloads(baseUrl, options)
+  return mapStatuspageGroup(summary, incidents, root, filter)
 }

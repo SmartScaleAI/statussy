@@ -21,9 +21,7 @@ import type pg from "pg"
  * Traefik, cert-manager, Infracost, Unleash, ConfigCat, GrowthBook,
  * Eppo, VWO, AB Tasty, Convert, Flipt, Hypertune, GO Feature Flag,
  * FeatBit, flagd, FeatureHub, Bucketeer, Flipper Cloud, Confidence,
- * Frosmo, Personyze, Insider One, PostHog, Fathom, Matomo,
- * Simple Analytics, Countly, Parse.ly, Umami, GoatCounter,
- * Kissmetrics, and ChartMogul
+ * Frosmo, Personyze, and Insider One
  * are `none` until a dedicated fetcher exists.
  */
 export const SERVICE_SEED = [
@@ -2273,9 +2271,9 @@ export const SERVICE_SEED = [
   },
   // Analytics Wave A. Amplitude / Mixpanel / Segment / Heap /
   // Pendo / RudderStack are Statuspage (Mixpanel via
-  // www.mixpanelstatus.com). Plausible is Better Stack. PostHog /
-  // Fathom / Matomo are none (no public JSON; PostHog is
-  // incident.io HTML).
+  // www.mixpanelstatus.com). Plausible is Better Stack. PostHog
+  // is incident.io /api/v1/summary. Fathom is status.usefathom.com/json.
+  // Matomo is StatusIQ RSS.
   {
     id: "amplitude",
     name: "Amplitude",
@@ -2295,7 +2293,7 @@ export const SERVICE_SEED = [
     name: "PostHog",
     category: "analytics",
     statusUrl: "https://www.posthogstatus.com/",
-    fetcherType: "none",
+    fetcherType: "incidentio",
   },
   {
     id: "segment",
@@ -2337,21 +2335,21 @@ export const SERVICE_SEED = [
     name: "Fathom",
     category: "analytics",
     statusUrl: "https://status.usefathom.com/",
-    fetcherType: "none",
+    fetcherType: "fathom",
   },
   {
     id: "matomo",
     name: "Matomo",
     category: "analytics",
     statusUrl: "https://status.matomo.cloud/",
-    fetcherType: "none",
+    fetcherType: "statusiq",
   },
   // Analytics Wave B. Woopra / Treasure Data / AppsFlyer /
   // Branch / Hightouch are Statuspage (Treasure Data via
   // status.treasure.ai; Hightouch via status.hightouch.io).
-  // Simple Analytics / Countly / Parse.ly / Umami /
-  // GoatCounter are none (no public JSON; Umami and
-  // GoatCounter have no incident board).
+  // Simple Analytics is the Jekyll incident diary. Parse.ly
+  // is StatusIQ RSS. Umami / GoatCounter / Countly were
+  // removed (SMA-45: no usable live board).
   {
     id: "woopra",
     name: "Woopra",
@@ -2392,41 +2390,20 @@ export const SERVICE_SEED = [
     name: "Simple Analytics",
     category: "analytics",
     statusUrl: "https://status.simpleanalytics.com/",
-    fetcherType: "none",
-  },
-  {
-    id: "countly",
-    name: "Countly",
-    category: "analytics",
-    statusUrl: "https://status.count.ly/",
-    fetcherType: "none",
+    fetcherType: "simpleanalytics",
   },
   {
     id: "parsely",
     name: "Parse.ly",
     category: "analytics",
     statusUrl: "https://status.parsely.com/",
-    fetcherType: "none",
+    fetcherType: "statusiq",
   },
-  {
-    id: "umami",
-    name: "Umami",
-    category: "analytics",
-    statusUrl: "https://umami.is/",
-    fetcherType: "none",
-  },
-  {
-    id: "goatcounter",
-    name: "GoatCounter",
-    category: "analytics",
-    statusUrl: "https://www.goatcounter.com/",
-    fetcherType: "none",
-  },
-  // Analytics Wave C. Singular / Airbridge / Lytics /
-  // Polytomic / Baremetrics / Quantcast / Metabase / Hex
-  // are Statuspage (Lytics via lytics.statuspage.io).
-  // Kissmetrics / ChartMogul are none (custom HTML /
-  // Statuspal; no public JSON).
+  // Analytics Wave C. Singular / Airbridge / Polytomic /
+  // Baremetrics / Quantcast / Metabase / Hex are Statuspage.
+  // Lytics is the Contentstack Statuspage Lytics group (keep
+  // the display name Lytics; do not poll lytics.statuspage.io).
+  // Kissmetrics is Pulsetic. ChartMogul is Statuspal HTML.
   {
     id: "singular",
     name: "Singular",
@@ -2446,14 +2423,14 @@ export const SERVICE_SEED = [
     name: "Kissmetrics",
     category: "analytics",
     statusUrl: "https://status.kissmetrics.io/",
-    fetcherType: "none",
+    fetcherType: "pulsetic",
   },
   {
     id: "lytics",
     name: "Lytics",
     category: "analytics",
-    statusUrl: "https://lytics.statuspage.io/",
-    fetcherType: "statuspage",
+    statusUrl: "https://status.contentstack.com/",
+    fetcherType: "statuspage_group",
   },
   {
     id: "polytomic",
@@ -2474,7 +2451,7 @@ export const SERVICE_SEED = [
     name: "ChartMogul",
     category: "analytics",
     statusUrl: "https://status.chartmogul.com/",
-    fetcherType: "none",
+    fetcherType: "statuspal",
   },
   {
     id: "quantcast",
@@ -3458,6 +3435,9 @@ export const SERVICE_SEED = [
   },
 ] as const
 
+/** Dropped in SMA-45: marketing homepages or an empty heartbeat, no live board. */
+export const REMOVED_SERVICE_IDS = ["umami", "goatcounter", "countly"] as const
+
 function seedCategory(service: { id: string }): string {
   return "category" in service && typeof service.category === "string"
     ? service.category
@@ -3484,4 +3464,8 @@ export async function seedServices(pool: pg.Pool): Promise<void> {
       ],
     )
   }
+
+  await pool.query(`DELETE FROM services WHERE id = ANY($1::text[])`, [
+    REMOVED_SERVICE_IDS,
+  ])
 }

@@ -343,10 +343,7 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `branch.svg` | Branch | `#FFFFFF` | Official glyph from [branch.io favicon-light.svg](https://www.branch.io/wp-content/themes/branch/assets/images/favicons/favicon-light.svg) |
 | `hightouch.svg` | Hightouch | `#3C34E5` | Official wordmark from [hightouch.com](https://hightouch.com/) Sanity `489x60.svg` |
 | `simpleanalytics.svg` | Simple Analytics | `#FF4F64` | Simple Icons `simpleanalytics` |
-| `countly.svg` | Countly | `#2CAE5C` | Official mark from [countly.com favcon.svg](https://countly.com/) |
 | `parsely.svg` | Parse.ly | `#5BA745` | Simple Icons `parsedotly` |
-| `umami.svg` | Umami | `#FFFFFF` | Simple Icons `umami`; white so official black reads on dark |
-| `goatcounter.svg` | GoatCounter | `#9A15A4` | Official mark from [arp242/goatcounter](https://github.com/arp242/goatcounter) `public/logo.svg` |
 | `singular.svg` | Singular | `#3088F4` | Official swirl from [singular.net singular-logo.svg](https://www.singular.net/wp-content/uploads/2026/04/singular-logo.svg) (wordmark dropped) |
 | `airbridge.svg` | Airbridge | `#FFFFFF` | Official A from [airbridge.io airbridge-logo.svg](https://www.airbridge.io/images/airbridge-logo.svg) (wordmark dropped); white so official currentColor reads on dark |
 | `kissmetrics.svg` | Kissmetrics | `#4651FF` | Official icon from [kissmetrics.io/logo-icon.svg](https://www.kissmetrics.io/logo-icon.svg) |

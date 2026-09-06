@@ -4,9 +4,12 @@ import { dirname, join } from "node:path"
 import test from "node:test"
 import { fileURLToPath } from "node:url"
 import {
+  incidentTouchesComponents,
   mapComponentStatus,
   mapIndicator,
   mapStatuspage,
+  mapStatuspageGroup,
+  selectStatuspageGroupComponents,
   type StatuspageIncident,
   type StatuspageSummary,
 } from "../src/statuspage.js"
@@ -114,4 +117,96 @@ test("mapStatuspage prefers vendor shortlink for incident url", () => {
   )
   assert.equal(state.incidents[0].url, "https://stspg.io/abc")
   assert.equal(state.status, "degraded")
+})
+
+const CONTENTSTACK_LIKE: StatuspageSummary = {
+  status: { indicator: "major", description: "Partial System Outage" },
+  components: [
+    { id: "aws", name: "Amazon Web Services US Region", status: "partial_outage", group: true, position: 1 },
+    { id: "lytics-group", name: "Lytics", status: "operational", group: true, position: 8 },
+    { id: "lytics-api", name: "Lytics - API", status: "operational", group: false, group_id: "lytics-group", position: 1 },
+    { id: "lytics-collect", name: "Lytics - Collect API", status: "degraded_performance", group: false, group_id: "lytics-group", position: 2 },
+    { id: "lytics-web", name: "Lytics - Web Application", status: "operational", group: false, group_id: "lytics-group", position: 3 },
+    { id: "lytics-pipe", name: "Lytics - Data Pipeline", status: "operational", group: false, group_id: "lytics-group", position: 4 },
+    { id: "cms", name: "CMS", status: "major_outage", group: false, group_id: "aws", position: 1 },
+  ],
+}
+
+test("selectStatuspageGroupComponents returns only Lytics leaves", () => {
+  const children = selectStatuspageGroupComponents(CONTENTSTACK_LIKE.components, {
+    groupId: "lytics-group",
+    groupName: "Lytics",
+  })
+  assert.deepEqual(
+    children.map((c) => c.name),
+    ["Lytics - API", "Lytics - Collect API", "Lytics - Web Application", "Lytics - Data Pipeline"],
+  )
+})
+
+test("incidentTouchesComponents matches group component ids or Lytics in the title", () => {
+  const ids = new Set(["lytics-api", "lytics-group"])
+  assert.equal(
+    incidentTouchesComponents(
+      { id: "1", name: "CMS down", components: [{ id: "cms", name: "CMS" }] },
+      ids,
+      "Lytics",
+    ),
+    false,
+  )
+  assert.equal(
+    incidentTouchesComponents(
+      { id: "2", name: "Collect delay", components: [{ id: "lytics-collect", name: "Lytics - Collect API" }] },
+      new Set(["lytics-collect"]),
+      "Lytics",
+    ),
+    true,
+  )
+  assert.equal(
+    incidentTouchesComponents({ id: "3", name: "Lytics migration", components: [] }, ids, "Lytics"),
+    true,
+  )
+})
+
+test("mapStatuspageGroup ignores the host-page indicator and strips the group prefix", () => {
+  const state = mapStatuspageGroup(
+    CONTENTSTACK_LIKE,
+    [
+      {
+        id: "cms-inc",
+        name: "AWS CMS outage",
+        status: "investigating",
+        components: [{ id: "cms", name: "CMS" }],
+      },
+      {
+        id: "lytics-inc",
+        name: "Collect API latency",
+        status: "identified",
+        impact: "minor",
+        components: [{ id: "lytics-collect", name: "Lytics - Collect API" }],
+        started_at: "2026-09-06T10:00:00Z",
+      },
+    ],
+    "https://status.contentstack.com",
+    { groupId: "lytics-group", groupName: "Lytics" },
+  )
+  assert.equal(state.status, "degraded")
+  assert.equal(state.detail.source, "statuspage_group")
+  assert.equal(state.incidentTitle, "Collect API latency")
+  assert.deepEqual(
+    state.components.map((c) => c.name),
+    ["API", "Collect API", "Web Application", "Data Pipeline"],
+  )
+  assert.equal(state.incidents.length, 1)
+  assert.equal(state.incidents[0].title, "Collect API latency")
+})
+
+test("mapStatuspageGroup throws when the group is missing", () => {
+  assert.throws(() =>
+    mapStatuspageGroup(
+      { status: { indicator: "none" }, components: [] },
+      [],
+      "https://status.contentstack.com",
+      { groupName: "Lytics" },
+    ),
+  )
 })
