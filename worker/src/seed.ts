@@ -2521,10 +2521,12 @@ export const SERVICE_SEED = [
     fetcherType: "zendesk",
   },
   {
+    // Catalog URL is the public Fin host. Worker must keep www.finstatus.com
+    // — intercomstatus.com/api/v2 returns HTML (SMA-77).
     id: "intercom",
-    name: "Intercom",
+    name: "Intercom Fin",
     category: "support",
-    statusUrl: "https://www.intercomstatus.com/",
+    statusUrl: "https://www.finstatus.com/",
     fetcherType: "statuspage",
   },
   {
@@ -2606,7 +2608,7 @@ export const SERVICE_SEED = [
   },
   {
     id: "forethought",
-    name: "Forethought",
+    name: "Forethought AI",
     category: "support",
     statusUrl: "https://status.forethought.ai/",
     fetcherType: "statuspage",

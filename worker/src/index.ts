@@ -122,10 +122,10 @@
  * Better Stack `index.json`, Let's Encrypt via Status.io;
  * Support Wave A — Gorgias, Talkdesk, Aircall, LiveChat
  * (Statuspage-compatible incident.io page), Kustomer, Dixa,
- * Kayako, and Helpshift via Statuspage, Intercom via
- * www.finstatus.com (the public intercomstatus.com host
- * redirects /api/v2 to HTML), Zendesk via /api/ssp;
- * Support Wave B — UserVoice, Ada, Plain, Forethought,
+ * Kayako, and Helpshift via Statuspage, Intercom Fin via
+ * www.finstatus.com (do not use intercomstatus.com — /api/v2
+ * returns HTML), Zendesk via /api/ssp;
+ * Support Wave B — UserVoice, Ada, Plain, Forethought AI,
  * Gladly (gladly.statuspage.io), Genesys (mypurecloud.com),
  * Deskpro, Olark, and HelpDesk via Statuspage, Chatwoot
  * via Better Stack `index.json`.
@@ -1153,8 +1153,9 @@ const SERVICE_JOBS: ServiceJob[] = [
   // Support Wave A. Gorgias / Talkdesk / Aircall / LiveChat /
   // Kustomer / Dixa / Kayako / Helpshift are Statuspage
   // (LiveChat's incident.io host exposes Statuspage-compatible
-  // /api/v2). Intercom is Statuspage-compatible on
-  // www.finstatus.com (intercomstatus.com redirects /api/v2).
+  // /api/v2). Intercom Fin is Statuspage-compatible on
+  // www.finstatus.com (do not use intercomstatus.com — /api/v2
+  // returns HTML).
   // Zendesk is the public SSP JSON. Freshdesk waits
   // (Freshstatus API is authenticated). ServiceNow waits (no
   // public status JSON). Crisp waits (Vigil HTML). Zoho Desk
@@ -1173,7 +1174,7 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("dixa", "https://status.dixa.io"),
   statuspageJob("kayako", "https://status.kayako.com"),
   statuspageJob("helpshift", "https://status.helpshift.com"),
-  // Support Wave B. UserVoice / Ada / Plain / Forethought /
+  // Support Wave B. UserVoice / Ada / Plain / Forethought AI /
   // Gladly / Genesys / Deskpro / Olark / HelpDesk are
   // Statuspage (Gladly's public host is gladly.statuspage.io;
   // Genesys Cloud publishes on status.mypurecloud.com; Plain
