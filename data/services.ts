@@ -47,6 +47,12 @@ export type Service = {
   /** Short incident or maintenance title when not fully operational. */
   incidentTitle?: string
   updatedAt: string
+  /**
+   * Coverage caveat when this card tracks less than the whole vendor
+   * (e.g. one region). Shown on the detail page and appended to the
+   * Health/incident chicklet tooltip so green here is not read as global.
+   */
+  scopeNote?: string
 }
 
 export const LAST_REFRESHED_AT = "2026-09-03T21:40:00.000Z"
@@ -2818,6 +2824,8 @@ export const services: Service[] = [
     statusUrl: "https://status.sysdigcloud.com/",
     status: "operational",
     updatedAt: "2026-09-05T23:00:00.000Z",
+    scopeNote:
+      "Covers the Sysdig US-East-1 region only — other regions have separate status pages.",
   },
   {
     id: "gitguardian",

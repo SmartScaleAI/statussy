@@ -210,6 +210,9 @@ export default async function ServiceDetailPage({ params }: PageProps) {
           {incidentTitle ? (
             <p className="text-sm text-muted-foreground">{incidentTitle}</p>
           ) : null}
+          {service.scopeNote ? (
+            <p className="text-xs text-muted-foreground">{service.scopeNote}</p>
+          ) : null}
           <p className="text-xs text-muted-foreground">
             Updated{" "}
             <time dateTime={updatedAtIso}>{formatTimestamp(updatedAtIso)}</time>

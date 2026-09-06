@@ -4,7 +4,6 @@ import { test } from "node:test"
 import { selectFavoriteServices } from "./favorite-services.ts"
 import {
   DEFAULT_SORT_BY,
-  parseHealthLabel,
   parseSortBy,
   resolveSortHealth,
   serviceHasIssues,
@@ -55,13 +54,6 @@ test("parseSortBy defaults to Issues first", () => {
   assert.equal(parseSortBy("name"), "name")
   assert.equal(parseSortBy("health"), "health")
   assert.equal(parseSortBy("issues-first"), "issues-first")
-})
-
-test("parseHealthLabel reads formatHealth percents", () => {
-  assert.equal(parseHealthLabel("94.1%"), 94.1)
-  assert.equal(parseHealthLabel("100.00%"), 100)
-  assert.equal(parseHealthLabel(null), null)
-  assert.equal(parseHealthLabel("—"), null)
 })
 
 test("serviceHasIssues: non-operational or active incident", () => {

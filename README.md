@@ -301,13 +301,14 @@ registry in [`data/services.ts`](data/services.ts).
 Fallback policy (SMA-18):
 
 - **Service has snapshots** (any catalog row the worker has fetched): the card shows the live overall
-  status, the snapshot's incident title / fetch time, and a **Health**
-  chicklet from current `components` rows (operational count ÷ total — a live
-  snapshot, not historical uptime or a vendor SLA). Services with no
-  component rows show Health 100% if the latest overall status is
-  `operational`, else 0%. A **Stale** badge appears when the worker flagged
-  the latest snapshot stale (failed fetch) or the snapshot is older than 15
-  minutes (3 missed worker ticks).
+  status, the snapshot's incident title / fetch time, and a chicklet with
+  three modes (SMA-79): services with `components` rows show **Health**
+  (operational count ÷ total — component health, a live snapshot, not
+  historical uptime or a vendor SLA); services with no component rows show
+  the open-incident count (**N open**) or **No incidents** when quiet.
+  Health % is never faked from the overall status alone. A **Stale** badge
+  appears when the worker flagged the latest snapshot stale (failed fetch)
+  or the snapshot is older than 15 minutes (3 missed worker ticks).
 - **Service has no snapshots yet**: the card keeps its prior mock entry from
   `data/services.ts` and shows an em-dash Health placeholder.
 - **No `DATABASE_URL` or the read fails**: the whole board falls back to mock.

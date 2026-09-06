@@ -132,6 +132,11 @@ export type MappedServiceState = {
 /**
  * Map a Statuspage summary + incident list into our normalized shape.
  * `baseUrl` is used to build incident links when the API omits `shortlink`.
+ *
+ * Group headers (`group: true`) are dropped (SMA-79): they duplicate their
+ * leaf components and inflated the Health denominator on pages like
+ * Cloudflare / Datadog / Snowflake. Only leaf components are persisted —
+ * same behavior as the group / name-filter mappers.
  */
 export function mapStatuspage(
   summary: StatuspageSummary,
@@ -139,7 +144,7 @@ export function mapStatuspage(
   baseUrl: string,
 ): MappedServiceState {
   const components: MappedComponent[] = (summary.components ?? [])
-    .filter((c) => c.id && c.name)
+    .filter((c) => c.id && c.name && c.group !== true)
     .map((c) => ({
       externalId: c.id,
       name: c.name,

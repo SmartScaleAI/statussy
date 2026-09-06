@@ -30,10 +30,18 @@ export interface CardData {
   title: string
   description?: string
   /**
-   * Live Health % from current components (SMA-31); omitted until live
-   * data exists. This is a live snapshot, not historical uptime.
+   * Health chicklet (SMA-31/SMA-79): "Health X%" from current components,
+   * "N open" incident count, or "No incidents" for no-grid services. The
+   * tooltip (`title`) must match the mode — it only claims component health
+   * when a component grid exists.
    */
-  healthLabel?: string
+  chicklet?: {
+    /** Slot prefix ("Health"); null in incident modes. */
+    label: string | null
+    value: string
+    /** Tooltip + aria text. */
+    title: string
+  }
   /** Latest snapshot is stale (failed fetch or past freshness threshold). */
   stale?: boolean
   imgSrc1?: string
@@ -80,7 +88,7 @@ const Card: React.FC<CardProps> = ({ data }) => {
     date,
     title,
     description,
-    healthLabel,
+    chicklet,
     stale,
     imgSrc1,
     imgAlt1,
@@ -91,6 +99,12 @@ const Card: React.FC<CardProps> = ({ data }) => {
     updatedAt,
     updatedLabel,
   } = data
+
+  const chickletDisplay = chicklet ?? {
+    label: "Health",
+    value: "—",
+    title: "No live data for this service yet.",
+  }
 
   const identity = (
     <>
@@ -141,21 +155,21 @@ const Card: React.FC<CardProps> = ({ data }) => {
         <div className="metric-chicklets">
           <div
             className="health-chicklet"
-            aria-label="Live health, current components"
-            title="Live component health — not historical uptime"
+            aria-label={chickletDisplay.title}
+            title={chickletDisplay.title}
           >
-            <span className="status-metric-label">Health</span>
-            {healthLabel ?? "—"}
+            {chickletDisplay.label !== null ? (
+              <span className="status-metric-label">
+                {chickletDisplay.label}
+              </span>
+            ) : null}
+            {chickletDisplay.value}
           </div>
         </div>
       </div>
       <div className="card-footer">
         {updatedLabel ? (
-          <time
-            className="updated-at"
-            dateTime={updatedAt}
-            title={updatedAt}
-          >
+          <time className="updated-at" dateTime={updatedAt} title={updatedAt}>
             {updatedLabel}
           </time>
         ) : (

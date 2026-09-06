@@ -1,8 +1,8 @@
 import { cache } from "react"
 import { connection } from "next/server"
 
-import { LAST_REFRESHED_AT, services } from "@/data/services"
-import { formatHealth } from "@/lib/health"
+import { LAST_REFRESHED_AT, services, type Service } from "@/data/services"
+import { describeChicklet, type ChickletDisplay } from "@/lib/health"
 import { getLiveSnapshots, isSnapshotStale } from "@/lib/live-status"
 import {
   sortServices,
@@ -17,6 +17,17 @@ import {
  *
  * Kept out of `lib/status.ts` so card helpers stay client-safe (SMA-37).
  */
+/** Append the service's scope note (e.g. Sysdig US-East-1) to the tooltip. */
+function withScopeNote(
+  display: ChickletDisplay,
+  service: Pick<Service, "scopeNote">
+): ChickletDisplay {
+  if (!service.scopeNote) {
+    return display
+  }
+  return { ...display, title: `${display.title} ${service.scopeNote}` }
+}
+
 export const getStatusBoard = cache(async function getStatusBoard() {
   // Status must reflect the DB at request time, never a build-time prerender.
   await connection()
@@ -30,7 +41,16 @@ export const getStatusBoard = cache(async function getStatusBoard() {
           ...service,
           live: false,
           stale: false,
-          healthLabel: null,
+          // Mock fallback: no live snapshot yet, so no honest chicklet value.
+          chicklet: withScopeNote(
+            {
+              label: "Health",
+              value: "—",
+              title: "No live data for this service yet.",
+              healthPct: null,
+            },
+            service
+          ),
         }
       }
       return {
@@ -40,10 +60,7 @@ export const getStatusBoard = cache(async function getStatusBoard() {
         updatedAt: snapshot.fetchedAt.toISOString(),
         live: true,
         stale: isSnapshotStale(snapshot),
-        healthLabel: formatHealth(
-          snapshot.health.operational,
-          snapshot.health.total
-        ),
+        chicklet: withScopeNote(describeChicklet(snapshot.chicklet), service),
       }
     })
   )

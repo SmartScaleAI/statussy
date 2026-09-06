@@ -2,23 +2,22 @@ import { FavoriteServicesProvider } from "@/components/favorite-services"
 import { MyServices } from "@/components/my-services"
 import { ServiceCard } from "@/components/service-card"
 import { StatusBoardGrid } from "@/components/status-board-grid"
-import { parseHealthLabel } from "@/lib/board-sort"
 import { getStatusBoard } from "@/lib/status-board"
-import type { BoardStatus } from "@/lib/status"
+import type { BoardStatus, ChickletDisplay } from "@/lib/status"
 import { boardPaperClassName, cn } from "@/lib/utils"
 
 function toSortFields(item: {
   id: string
   name: string
   status: BoardStatus
-  healthLabel: string | null
+  chicklet: ChickletDisplay
   incidentTitle?: string
 }) {
   return {
     id: item.id,
     name: item.name,
     status: item.status,
-    healthPct: parseHealthLabel(item.healthLabel),
+    healthPct: item.chicklet.healthPct,
     hasActiveIncident: Boolean(item.incidentTitle),
   }
 }
