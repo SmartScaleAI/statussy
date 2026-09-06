@@ -937,6 +937,107 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("zoom", "https://status.zoom.us"),
   statuspageJob("trello", "https://trello.status.atlassian.com"),
   statuspageJob("airtable", "https://status.airtable.com"),
+  // Collab Wave B. Confluence and Loom publish on their own
+  // Atlassian hosts, like Jira / Trello / Bitbucket. Coda,
+  // Mattermost, Smartsheet, Shortcut, Teamwork, Productboard,
+  // Aha!, and Hive are Statuspage on their public hosts.
+  statuspageJob("confluence", "https://confluence.status.atlassian.com"),
+  statuspageJob("loom", "https://loom.status.atlassian.com"),
+  statuspageJob("coda", "https://status.coda.io"),
+  statuspageJob("mattermost", "https://status.mattermost.com"),
+  statuspageJob("smartsheet", "https://status.smartsheet.com"),
+  statuspageJob("shortcut", "https://status.shortcut.com"),
+  statuspageJob("teamwork", "https://status.teamwork.com"),
+  statuspageJob("productboard", "https://status.productboard.com"),
+  statuspageJob("aha", "https://status.aha.io"),
+  statuspageJob("hive", "https://status.hive.com"),
+  // Collab Wave C. All ten are Statuspage. Calendly's public host
+  // (`status.calendly.com`) serves HTML for `/api/v2`; the fetcher
+  // uses calendlystatus.com. Fireflies' public host has no `/api/v2`;
+  // the fetcher uses fireflies.statuspage.io. Basecamp publishes on
+  // the 37signals page (`www.37status.com`).
+  statuspageJob("calendly", "https://calendlystatus.com"),
+  statuspageJob("basecamp", "https://www.37status.com"),
+  statuspageJob("zulip", "https://status.zulip.com"),
+  statuspageJob("element", "https://status.element.io"),
+  statuspageJob("plane", "https://status.plane.so"),
+  statuspageJob("guru", "https://status.getguru.com"),
+  statuspageJob("tettra", "https://status.tettra.co"),
+  statuspageJob("fireflies", "https://fireflies.statuspage.io"),
+  statuspageJob("livestorm", "https://status.livestorm.co"),
+  statuspageJob("fellow", "https://status.fellow.ai"),
+  // Docs Wave A. All ten are Statuspage. Document360 and Bump
+  // public hosts serve HTML for `/api/v2`; fetchers use
+  // document360.statuspage.io and bump.statuspage.io.
+  // KnowledgeOwl's public host login-walls, so the card and
+  // fetcher use knowledgeowl.statuspage.io. Stoplight and
+  // SwaggerHub publish on SmartBear-hosted pages.
+  statuspageJob("gitbook", "https://www.gitbookstatus.com"),
+  statuspageJob("readme", "https://www.readmestatus.com"),
+  statuspageJob("mintlify", "https://status.mintlify.com"),
+  statuspageJob("fern", "https://status.buildwithfern.com"),
+  statuspageJob("archbee", "https://status.archbee.com"),
+  statuspageJob("document360", "https://document360.statuspage.io"),
+  statuspageJob("knowledgeowl", "https://knowledgeowl.statuspage.io"),
+  statuspageJob("stoplight", "https://stoplight.status.smartbear.com"),
+  statuspageJob("swaggerhub", "https://swagger.status.smartbear.com"),
+  statuspageJob("bump", "https://bump.statuspage.io"),
+  // Commerce Wave A. All ten are Statuspage storefronts /
+  // headless commerce hosts. Centra waits (Instatus JSON,
+  // wordmark only). WooCommerce waits (inactive Statuspage).
+  statuspageJob("shopify", "https://www.shopifystatus.com"),
+  statuspageJob("bigcommerce", "https://status.bigcommerce.com"),
+  statuspageJob("ecwid", "https://status.ecwid.com"),
+  statuspageJob("saleor", "https://status.saleor.io"),
+  statuspageJob("medusa", "https://status.medusajs.com"),
+  statuspageJob("commercelayer", "https://status.commercelayer.io"),
+  statuspageJob("elasticpath", "https://status.elasticpath.com"),
+  statuspageJob("lightspeed", "https://status.lightspeedhq.com"),
+  statuspageJob("swell", "https://status.swell.store"),
+  statuspageJob("vtex", "https://status.vtex.com"),
+  // Commerce Wave B. All ten are Statuspage. Tapcart's public
+  // host does not resolve, so the card and fetcher use
+  // tapcart.statuspage.io. Printful's public host is
+  // www.printfulstatus.com. Shogun waits (wordmark only).
+  statuspageJob("nacelle", "https://status.nacelle.com"),
+  statuspageJob("volusion", "https://status.volusion.com"),
+  statuspageJob("alokai", "https://status.alokai.com"),
+  statuspageJob("shopline", "https://status.shopline.com"),
+  statuspageJob("tapcart", "https://tapcart.statuspage.io"),
+  statuspageJob("pack", "https://status.packdigital.com"),
+  statuspageJob("bold", "https://status.boldcommerce.com"),
+  statuspageJob("mirakl", "https://status.mirakl.com"),
+  statuspageJob("sharetribe", "https://status.sharetribe.com"),
+  statuspageJob("printful", "https://www.printfulstatus.com"),
+  // CRM Wave A. Salesforce Trust and Pipedrive / Outreach are
+  // custom HTML (no Statuspage JSON) and stay none. Apollo's
+  // public host serves HTML for /api/v2, so the fetcher hits
+  // apollo.statuspage.io. Attio and Gong are Instatus.
+  statuspageJob("copper", "https://status.copper.com"),
+  statuspageJob("close", "https://status.close.com"),
+  {
+    id: "attio",
+    fetch: () => fetchInstatusState("https://status.attio.com", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  statuspageJob("capsule", "https://status.capsulecrm.com"),
+  statuspageJob("salesloft", "https://status.salesloft.com"),
+  statuspageJob("apollo", "https://apollo.statuspage.io"),
+  {
+    id: "gong",
+    fetch: () => fetchInstatusState("https://status.gong.io", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  // CRM Wave B. All seven are Statuspage. Clari's public host
+  // is trust.clari.com (also on clari.statuspage.io). Affinity
+  // here is affinity.co, not the photo editor on Canva.
+  statuspageJob("affinity", "https://status.affinity.co"),
+  statuspageJob("zoominfo", "https://status.zoominfo.com"),
+  statuspageJob("streak", "https://status.streak.com"),
+  statuspageJob("clari", "https://trust.clari.com"),
+  statuspageJob("lusha", "https://status.lusha.com"),
+  statuspageJob("teamleader", "https://status.teamleader.eu"),
+  statuspageJob("orum", "https://status.orum.com"),
 ]
 
 async function fetchService(service: ServiceJob): Promise<boolean> {
