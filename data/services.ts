@@ -730,7 +730,7 @@ export const services: Service[] = [
   },
   // Data Wave A — stores and queues the app dies on. One card per vendor.
   // Email stays on a later chiclet.
-  // Redis has no public JSON (custom status.redis.io page).
+  // Redis is Firehydrant/Nunc (`/data/payload.json`, RSS fallback).
   {
     id: "supabase",
     name: "Supabase",
@@ -894,8 +894,9 @@ export const services: Service[] = [
     updatedAt: "2026-09-05T04:30:00.000Z",
   },
   // Data Wave C — remaining stores, search, and streaming. Algolia is a
-  // custom SPA (no public JSON). DataStax Statuspage is inactive (needs a
-  // key). TigerData / Typesense / Weaviate / MotherDuck wait on a public JSON.
+  // custom `/1/status` + `/1/incidents` API. DataStax lives on Astra
+  // Statuspage (status.datastax.com is inactive). TigerData / Typesense /
+  // Weaviate / MotherDuck wait on a public JSON.
   {
     id: "materialize",
     name: "Materialize",
@@ -972,7 +973,7 @@ export const services: Service[] = [
     id: "datastax",
     name: "DataStax",
     category: "data",
-    statusUrl: "https://status.datastax.com/",
+    statusUrl: "https://status.astra.datastax.com/",
     status: "operational",
     updatedAt: "2026-09-05T04:40:00.000Z",
   },

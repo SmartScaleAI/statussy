@@ -12,7 +12,7 @@ import type pg from "pg"
  * GitHub Copilot is a GitHub component, not its own card.
  *
  * `category` defaults to `ai` when omitted. Replit,
- * Redis, Algolia, DataStax, PayPal, Adyen, PagerDuty, Checkly,
+ * PayPal, Adyen, PagerDuty, Checkly,
  * Postmark, Mailchimp, Campaign Monitor, Mailtrap, Substack, Adobe,
  * Sketch, Penpot, Rive, LottieFiles, Whimsical, Lunacy, Photopea,
  * Blender, Moqups, Proto.io, UXPin, Overflow, Axure, Relume, Visily,
@@ -599,7 +599,7 @@ export const SERVICE_SEED = [
     name: "Redis",
     category: "data",
     statusUrl: "https://status.redis.io/",
-    fetcherType: "none",
+    fetcherType: "nunc",
   },
   {
     id: "pinecone",
@@ -732,7 +732,7 @@ export const SERVICE_SEED = [
     name: "Algolia",
     category: "data",
     statusUrl: "https://status.algolia.com/",
-    fetcherType: "none",
+    fetcherType: "algolia",
   },
   {
     id: "redpanda",
@@ -766,8 +766,8 @@ export const SERVICE_SEED = [
     id: "datastax",
     name: "DataStax",
     category: "data",
-    statusUrl: "https://status.datastax.com/",
-    fetcherType: "none",
+    statusUrl: "https://status.astra.datastax.com/",
+    fetcherType: "statuspage",
   },
   {
     id: "auth0",

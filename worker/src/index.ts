@@ -30,11 +30,13 @@
  * Semaphore, Harness, Codefresh, crates.io, Expo, and Cloudsmith via
  * Statuspage; Data Wave A — Supabase, PlanetScale, Convex, Upstash,
  * Pinecone, MongoDB, CockroachDB, and Prisma via Statuspage, Neon via
- * Status.io; Data Wave B — Snowflake, ClickHouse, Elastic, Aiven, InfluxDB,
- * Couchbase, Confluent, Tinybird, and Zilliz via Statuspage, Databricks via
- * Status.io; Data Wave C — Materialize, Redpanda, Yugabyte, and TiDB via
- * Statuspage, Turso, Qdrant, Meilisearch, and SurrealDB via Better Stack
- * `index.json`; Auth Wave A — Clerk, WorkOS, FusionAuth, Frontegg, and
+ * Status.io, Redis via Firehydrant/Nunc `payload.json`; Data Wave B —
+ * Snowflake, ClickHouse, Elastic, Aiven, InfluxDB, Couchbase, Confluent,
+ * Tinybird, and Zilliz via Statuspage, Databricks via Status.io; Data Wave
+ * C — Materialize, Redpanda, Yugabyte, and TiDB via Statuspage, Turso,
+ * Qdrant, Meilisearch, and SurrealDB via Better Stack `index.json`,
+ * Algolia via `/1/status` + `/1/incidents`, DataStax via Astra
+ * Statuspage; Auth Wave A — Clerk, WorkOS, FusionAuth, Frontegg, and
  * 1Password via Statuspage, Auth0 via auth0.statuspage.io (custom domain
  * has no /api/v2), Okta via Trust HTML (`Incident__c` spans), Stytch,
  * Kinde, and PropelAuth via Instatus; Auth Wave B
@@ -112,7 +114,7 @@
  * Gladly (gladly.statuspage.io), Genesys (mypurecloud.com),
  * Deskpro, Olark, and HelpDesk via Statuspage, Chatwoot
  * via Better Stack `index.json`.
- * Replit, Redis, Algolia, DataStax, PayPal,
+ * Replit, PayPal,
  * Adyen, PagerDuty, Checkly, Postmark, Mailchimp, Campaign Monitor,
  * Mailtrap, Substack, Adobe, Sketch, Penpot, Rive, LottieFiles,
  * Whimsical, Lunacy, Photopea, Blender, Moqups, Proto.io, UXPin,
@@ -167,6 +169,8 @@ import { fetchAwsState } from "./aws.js"
 import { fetchRailwayState } from "./railway.js"
 import { fetchStatuscastState } from "./statuscast.js"
 import { fetchVultrState } from "./vultr.js"
+import { fetchRedisState } from "./redis.js"
+import { fetchAlgoliaState } from "./algolia.js"
 import { fetchBetterstackState } from "./betterstack.js"
 import { fetchOutreachState } from "./outreach.js"
 import { fetchSalesforceState } from "./salesforce.js"
@@ -227,8 +231,7 @@ type ServiceJob = {
 
 // Board services with a fetcher (26 AI + Cloud / Developer / Data / Auth /
 // Payments / Observability Waves A–C + Email Waves A–C + Design Waves
-// A–C + Infra Waves A–C; Replit, Redis, Algolia,
-// DataStax, PayPal, Adyen, PagerDuty, Checkly, Postmark,
+// A–C + Infra Waves A–C; Replit, PayPal, Adyen, PagerDuty, Checkly, Postmark,
 // Mailchimp, Campaign Monitor, Mailtrap, Substack, Adobe, Sketch,
 // Penpot, Rive, LottieFiles, Whimsical, Lunacy, Photopea, Blender,
 // Moqups, Proto.io, UXPin, Overflow, Axure, Relume, Visily, Plasmic,
@@ -463,7 +466,7 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("crates", "https://status.crates.io"),
   statuspageJob("expo", "https://status.expo.dev"),
   statuspageJob("cloudsmith", "https://status.cloudsmith.com"),
-  // Data Wave A. Redis is none (custom status.redis.io page, no public JSON).
+  // Data Wave A. Redis is Firehydrant/Nunc (`/data/payload.json`, RSS fallback).
   statuspageJob("supabase", "https://status.supabase.com"),
   {
     id: "neon",
@@ -473,6 +476,11 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("planetscale", "https://www.planetscalestatus.com"),
   statuspageJob("convex", "https://status.convex.dev"),
   statuspageJob("upstash", "https://status.upstash.com"),
+  {
+    id: "redis",
+    fetch: () => fetchRedisState(fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
   statuspageJob("pinecone", "https://status.pinecone.io"),
   statuspageJob("mongodb", "https://status.mongodb.com"),
   statuspageJob("cockroach", "https://status.cockroachlabs.cloud"),
@@ -497,7 +505,7 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("confluent", "https://status.confluent.cloud"),
   statuspageJob("tinybird", "https://status.tinybird.co"),
   statuspageJob("zilliz", "https://status.zilliz.com"),
-  // Data Wave C. Algolia is a custom SPA; DataStax Statuspage is inactive.
+  // Data Wave C. Algolia is `/1/status` + `/1/incidents`. DataStax is Astra Statuspage.
   statuspageJob("materialize", "https://status.materialize.com"),
   {
     id: "turso",
@@ -514,6 +522,13 @@ const SERVICE_JOBS: ServiceJob[] = [
     fetch: () => fetchBetterstackState("https://status.meilisearch.com", fetchOptions()),
     persistOptions: { resolveMissingIncidents: true },
   },
+  {
+    // SMA-67: Algolia custom `/1/status` + `/1/incidents`. ~300 clusters;
+    // overall is any non-operational cluster. Dropped incidents resolve.
+    id: "algolia",
+    fetch: () => fetchAlgoliaState(fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
   statuspageJob("redpanda", "https://status.redpanda.com"),
   {
     id: "surreal",
@@ -522,6 +537,8 @@ const SERVICE_JOBS: ServiceJob[] = [
   },
   statuspageJob("yugabyte", "https://status.yugabyte.cloud"),
   statuspageJob("tidb", "https://status.tidbcloud.com"),
+  // SMA-67: catalog host status.datastax.com is inactive; poll Astra.
+  statuspageJob("datastax", "https://status.astra.datastax.com"),
   // Auth Wave A. Auth0's public host has no /api/v2; hit the Statuspage host.
   // Okta Trust HTML embeds Salesforce Incident__c rows (JSON/RSS 401).
   statuspageJob("auth0", "https://auth0.statuspage.io"),
