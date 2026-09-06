@@ -2387,8 +2387,9 @@ export const SERVICE_SEED = [
     fetcherType: "statuspage",
   },
   {
+    // US-East-1 Statuspage only — no vendor rollup of other regions.
     id: "sysdig",
-    name: "Sysdig",
+    name: "Sysdig US-East-1",
     category: "security",
     statusUrl: "https://status.sysdigcloud.com/",
     fetcherType: "statuspage",

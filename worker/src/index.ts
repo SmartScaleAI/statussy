@@ -114,7 +114,7 @@
  * Security Wave A — Snyk,
  * Wiz, SentinelOne, Semgrep, Veracode, Tenable, Qualys, Vanta,
  * Rapid7, and Socket via Statuspage; Security Wave B —
- * Aqua, Orca, Sysdig, GitGuardian, Secureframe, Palo Alto
+ * Aqua, Orca, Sysdig US-East-1, GitGuardian, Secureframe, Palo Alto
  * Networks, Imperva, Upwind, FOSSA, and Mend via Statuspage;
  * Security Wave C — HUMAN, Tailscale (Statuspage-compatible
  * incident.io page), Twingate, DigiCert, SecurityScorecard,
@@ -1104,10 +1104,12 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("vanta", "https://status.vanta.com"),
   statuspageJob("rapid7", "https://status.rapid7.com"),
   statuspageJob("socket", "https://status.socket.dev"),
-  // Security Wave B. Aqua / Orca / Sysdig / GitGuardian /
-  // Secureframe / Palo Alto Networks / Imperva / Upwind /
-  // FOSSA / Mend are Statuspage. Sprinto waits (no official
-  // SVG). Endor waits (no isolated official mark).
+  // Security Wave B. Aqua / Orca / Sysdig US-East-1 /
+  // GitGuardian / Secureframe / Palo Alto Networks / Imperva /
+  // Upwind / FOSSA / Mend are Statuspage. Sysdig is
+  // status.sysdigcloud.com only (no regional rollup).
+  // Sprinto waits (no official SVG). Endor waits (no isolated
+  // official mark).
   statuspageJob("aqua", "https://status.aquasec.com"),
   statuspageJob("orca", "https://status.orcasecurity.io"),
   statuspageJob("sysdig", "https://status.sysdigcloud.com"),

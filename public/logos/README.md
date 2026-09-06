@@ -329,7 +329,7 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `quantcast.svg` | Quantcast | `#F6F6EE` | Official marque from [quantcast.com Quantcast_Marque_Grey.svg](https://static.quantcast.com/marketing-site/Quantcast_Marque_Grey.svg) |
 | `metabase.svg` | Metabase | `#509EE3` | Simple Icons `metabase` |
 | `hex.svg` | Hex | `#F5C0C0` | Official HEX letters from [hex.tech/favicon.svg](https://hex.tech/favicon.svg); dark tile dropped |
-| `snyk.svg` | Snyk | `#4C4A73` | Simple Icons `snyk` |
+| `snyk.svg` | Snyk | `#FFFFFF` | Simple Icons `snyk`; white so official `#4C4A73` reads on dark |
 | `wiz.svg` | Wiz | `#FFFFFF` | Official star from [wiz.io logo_sprite.svg](https://www.wiz.io/images/logo_sprite.svg) `#wiz-star`; white so official currentColor reads on dark |
 | `sentinelone.svg` | SentinelOne | `#6100FF` | Official mark from the [status.sentinelone.com](https://status.sentinelone.com/) Statuspage logo blob |
 | `semgrep.svg` | Semgrep | `#13BF95` | Official mark from [semgrep.dev/favicon.svg](https://semgrep.dev/build/assets/favicon-CIx-xpG_.svg) |
@@ -339,7 +339,7 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `vanta.svg` | Vanta | `#FFFFFF` | Official V from [vanta.com vanta-logo.svg](https://www.vanta.com/) (wordmark dropped); official `#240642` knocked to white |
 | `rapid7.svg` | Rapid7 | `#E85E26` | Official R from [rapid7.com/rapid7-logo.svg](https://www.rapid7.com/rapid7-logo.svg) (wordmark dropped) |
 | `socket.svg` | Socket | `#C93CD7` | Simple Icons `socket` |
-| `aqua.svg` | Aqua | `#1904DA` | Simple Icons `aqua` |
+| `aqua.svg` | Aqua | `#FFFFFF` | Simple Icons `aqua`; white so official `#1904DA` reads on dark |
 | `orca.svg` | Orca | `#FFFFFF` + `#0080FF` | Official o + sonar rings from [orca.security orca-security-logo-2025.svg](https://orca.security/) `#o`; official `#101921` knocked to white |
 | `sysdig.svg` | Sysdig | `#00CBE2` | Official S from the [sysdig.com](https://sysdig.com/) homepage `nav-logo_vector` |
 | `gitguardian.svg` | GitGuardian | `#F7FAFF` | Official shield/face from the [gitguardian.com](https://www.gitguardian.com/) lockup (wordmark dropped) |

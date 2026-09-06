@@ -2866,10 +2866,10 @@ export const services: Service[] = [
     status: "operational",
     updatedAt: "2026-09-05T22:00:00.000Z",
   },
-  // Security Wave B — Aqua / Orca / Sysdig / GitGuardian /
-  // Secureframe / Palo Alto Networks / Imperva / Upwind /
-  // FOSSA / Mend. Sprinto waits (no official SVG). Endor
-  // waits (no isolated official mark).
+  // Security Wave B — Aqua / Orca / Sysdig US-East-1 /
+  // GitGuardian / Secureframe / Palo Alto Networks / Imperva /
+  // Upwind / FOSSA / Mend. Sprinto waits (no official SVG).
+  // Endor waits (no isolated official mark).
   {
     id: "aqua",
     name: "Aqua",
@@ -2887,8 +2887,11 @@ export const services: Service[] = [
     updatedAt: "2026-09-05T23:00:00.000Z",
   },
   {
+    // US-East-1 Statuspage only. Other regions have their own pages
+    // (status-us2 / status-us4 / status-eu1 / status-eu2 / status-in1 /
+    // status-au1). No vendor rollup; do not treat green here as global.
     id: "sysdig",
-    name: "Sysdig",
+    name: "Sysdig US-East-1",
     category: "security",
     statusUrl: "https://status.sysdigcloud.com/",
     status: "operational",
