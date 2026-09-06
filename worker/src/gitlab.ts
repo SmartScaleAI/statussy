@@ -33,6 +33,9 @@ export const DEVCYCLE_STATUS_PAGE_ID = "6a28108059348e05f706f393" // Flags Wave 
 export const LETSENCRYPT_STATUS_PAGE = "https://letsencrypt.status.io"
 export const LETSENCRYPT_STATUS_PAGE_ID = "55957a99e800baa4470002da" // Security Wave C
 
+export const CLICKUP_STATUS_PAGE = "https://status.clickup.com"
+export const CLICKUP_STATUS_PAGE_ID = "5b6e0963c662144d00913a09" // Collab Wave A; status.clickup.com → Status.io
+
 export type StatusIoComponent = {
   id?: string
   name?: string

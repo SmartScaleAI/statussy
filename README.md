@@ -154,8 +154,8 @@ Embrace), and Dash0 via `https://dash0status.com` (the public host
   Collab Wave A Statuspage hosts (Notion, Jira via
   `jira-software.status.atlassian.com`, Asana, monday.com,
   Discord, Zoom, Trello via `trello.status.atlassian.com`,
-  Airtable), ClickUp via `clickup.statuspage.io` (the public
-  host redirects `/api/v2`), Slack via
+  Airtable), ClickUp via Status.io
+  (`api.status.io/1.0/status/{pageId}`), Slack via
   `slack-status.com/api/v2.0.0/current`,
   Collab Wave B Statuspage hosts (Confluence via
   `confluence.status.atlassian.com`, Loom via
@@ -165,9 +165,9 @@ Embrace), and Dash0 via `https://dash0status.com` (the public host
   Collab Wave C Statuspage hosts (Calendly via
   `calendlystatus.com` — the public host serves HTML for
   `/api/v2`, Basecamp via `www.37status.com`, Zulip,
-  Element, Plane, Guru, Tettra, Livestorm, Fellow,
-  Fireflies via `fireflies.statuspage.io` — the public host
-  has no `/api/v2`),
+  Element, Plane, Guru, Tettra, Livestorm, Fellow),
+  Fireflies via Freshservice RSS (`status.fireflies.ai/rss`
+  — the public host has no `/api/v2`),
   Docs Wave A Statuspage hosts (GitBook via
   `www.gitbookstatus.com`, ReadMe via `www.readmestatus.com`,
   Mintlify, Fern via `status.buildwithfern.com`, Archbee,

@@ -144,6 +144,8 @@ import {
 import {
   fetchGitlabState,
   fetchStatusIoState,
+  CLICKUP_STATUS_PAGE,
+  CLICKUP_STATUS_PAGE_ID,
   DATABRICKS_STATUS_PAGE,
   DATABRICKS_STATUS_PAGE_ID,
   DEVCYCLE_STATUS_PAGE,
@@ -1007,10 +1009,10 @@ const SERVICE_JOBS: ServiceJob[] = [
   // Collab Wave A. Notion / Jira / Asana / monday.com / Discord /
   // Zoom / Trello / Airtable are Statuspage (Jira and Trello
   // publish on their own Atlassian hosts, like Bitbucket).
-  // ClickUp's public host redirects /api/v2; the fetcher uses
-  // clickup.statuspage.io. Slack is the public Status API
-  // (`/api/v2.0.0/current`). Microsoft Teams waits (Office 365
-  // status is login-walled). Linear stays Developer.
+  // ClickUp is Status.io (status.clickup.com → Status.io). Slack
+  // is the public Status API (`/api/v2.0.0/current`). Microsoft
+  // Teams waits (Office 365 status is login-walled). Linear stays
+  // Developer.
   {
     id: "slack",
     fetch: () => fetchSlackState(fetchOptions()),
@@ -1020,7 +1022,16 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("jira", "https://jira-software.status.atlassian.com"),
   statuspageJob("asana", "https://status.asana.com"),
   statuspageJob("monday", "https://status.monday.com"),
-  statuspageJob("clickup", "https://clickup.statuspage.io"),
+  {
+    id: "clickup",
+    fetch: () =>
+      fetchStatusIoState(
+        CLICKUP_STATUS_PAGE,
+        CLICKUP_STATUS_PAGE_ID,
+        fetchOptions(),
+      ),
+    persistOptions: { resolveMissingIncidents: true },
+  },
   statuspageJob("discord", "https://discordstatus.com"),
   statuspageJob("zoom", "https://status.zoom.us"),
   statuspageJob("trello", "https://trello.status.atlassian.com"),
@@ -1039,10 +1050,10 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("productboard", "https://status.productboard.com"),
   statuspageJob("aha", "https://status.aha.io"),
   statuspageJob("hive", "https://status.hive.com"),
-  // Collab Wave C. All ten are Statuspage. Calendly's public host
-  // (`status.calendly.com`) serves HTML for `/api/v2`; the fetcher
-  // uses calendlystatus.com. Fireflies' public host has no `/api/v2`;
-  // the fetcher uses fireflies.statuspage.io. Basecamp publishes on
+  // Collab Wave C. Calendly's public host (`status.calendly.com`)
+  // serves HTML for `/api/v2`; the fetcher uses calendlystatus.com.
+  // Fireflies is Freshservice (`status.fireflies.ai`); there is no
+  // public `/api/v2`, so the job uses `/rss`. Basecamp publishes on
   // the 37signals page (`www.37status.com`).
   statuspageJob("calendly", "https://calendlystatus.com"),
   statuspageJob("basecamp", "https://www.37status.com"),
@@ -1051,7 +1062,7 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("plane", "https://status.plane.so"),
   statuspageJob("guru", "https://status.getguru.com"),
   statuspageJob("tettra", "https://status.tettra.co"),
-  statuspageJob("fireflies", "https://fireflies.statuspage.io"),
+  rssJob("fireflies", ["https://status.fireflies.ai/rss"]),
   statuspageJob("livestorm", "https://status.livestorm.co"),
   statuspageJob("fellow", "https://status.fellow.ai"),
   // Docs Wave A. All ten are Statuspage. Document360 and Bump
