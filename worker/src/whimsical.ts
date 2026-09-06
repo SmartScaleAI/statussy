@@ -187,14 +187,20 @@ function htmlUserAgent(configured: string): string {
  */
 export async function fetchWhimsicalState(options: FetchOptions): Promise<MappedServiceState> {
   const root = WHIMSICAL_STATUS_PAGE.replace(/\/+$/, "")
-  const res = await fetch(root + "/", {
-    headers: {
-      accept: "text/html,application/xhtml+xml;q=0.9,*/*;q=0.8",
-      "user-agent": htmlUserAgent(options.userAgent),
-    },
-    signal: AbortSignal.timeout(options.timeoutMs),
-    redirect: "follow",
-  })
+  const headers = {
+    accept: "text/html,application/xhtml+xml;q=0.9,*/*;q=0.8",
+    "accept-language": "en-US,en;q=0.9",
+    "user-agent": htmlUserAgent(options.userAgent),
+  }
+  const get = () =>
+    fetch(root + "/", {
+      headers,
+      signal: AbortSignal.timeout(options.timeoutMs),
+      redirect: "follow",
+    })
+  // SorryApp occasionally 406s the first HTML GET; one retry is enough.
+  let res = await get()
+  if (res.status === 406) res = await get()
   if (!res.ok) {
     throw new Error(`GET ${root}/ -> HTTP ${res.status}`)
   }
