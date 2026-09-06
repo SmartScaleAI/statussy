@@ -30,6 +30,9 @@ export const DYNATRACE_STATUS_PAGE_ID = "546d8cb6af8407b6730000cb"
 export const DEVCYCLE_STATUS_PAGE = "https://status.devcycle.com"
 export const DEVCYCLE_STATUS_PAGE_ID = "6a28108059348e05f706f393" // Flags Wave A; status.devcycle.com → Status.io
 
+export const LETSENCRYPT_STATUS_PAGE = "https://letsencrypt.status.io"
+export const LETSENCRYPT_STATUS_PAGE_ID = "55957a99e800baa4470002da" // Security Wave C
+
 export type StatusIoComponent = {
   id?: string
   name?: string
