@@ -32,7 +32,8 @@ async function loadFixtures(): Promise<{
   return { incidents, products: parseProductsPayload(productsBody) }
 }
 
-test("isGeminiProduct matches Vertex Gemini API and Gemini* siblings", () => {
+test("isGeminiProduct matches Gemini on Agent Platform and Gemini* siblings", () => {
+  assert.equal(isGeminiProduct({ id: VERTEX_GEMINI_API_PRODUCT_ID, title: "Gemini on Agent Platform" }), true)
   assert.equal(isGeminiProduct({ id: VERTEX_GEMINI_API_PRODUCT_ID, title: "Vertex Gemini API" }), true)
   assert.equal(isGeminiProduct({ id: "deUeOEPYanfJ9w8cpyBJ", title: "Gemini Code Assist" }), true)
   assert.equal(isGeminiProduct({ id: "cxUh24jPxEXgyRlaVhuk", current_title: "Gemini Enterprise" }), true)
@@ -143,6 +144,10 @@ test("mapGoogleCloud synthesizes Gemini components when the catalog is missing",
   assert.ok(ids.includes(VERTEX_GEMINI_API_PRODUCT_ID))
   assert.ok(ids.includes("deUeOEPYanfJ9w8cpyBJ"))
   assert.equal(ids.includes("L3ggmi3Jy4xJmgodFA9K"), false)
+  assert.equal(
+    state.components.find((c) => c.externalId === VERTEX_GEMINI_API_PRODUCT_ID)?.name,
+    "Gemini on Agent Platform",
+  )
   assert.equal(
     state.components.find((c) => c.externalId === VERTEX_GEMINI_API_PRODUCT_ID)?.status,
     "partial_outage",

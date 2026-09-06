@@ -10,7 +10,7 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `anthropic.svg` | Anthropic | `#D97757` | Simple Icons `anthropic` path; Claude Clay token (official lockup is `#191919`) |
 | `google-gemini.svg` | Google Gemini | Official sparkle colors | [LobeHub](https://github.com/lobehub/lobe-icons) `gemini-color` (official Gemini mark + gradient) |
 | `xai.svg` | xAI | `#FFFFFF` | LobeHub `xai` Grok geometric mark; white on dark |
-| `mistral.svg` | Mistral | `#FA520F` | Simple Icons `mistralai` ([chat.mistral.ai](https://chat.mistral.ai)) |
+| `mistral.svg` | Mistral AI | `#FA520F` | Simple Icons `mistralai` ([chat.mistral.ai](https://chat.mistral.ai)) |
 | `groq.svg` | Groq | `#F55036` | LobeHub `groq` (not in Simple Icons); Groq orange |
 | `perplexity.svg` | Perplexity | `#1FB8CD` | Simple Icons `perplexity` |
 | `deepseek.svg` | DeepSeek | `#5786FE` | Simple Icons `deepseek` |
@@ -31,7 +31,7 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `bfl.svg` | Black Forest Labs | `#F59E0B` | LobeHub `bfl` |
 | `cartesia.svg` | Cartesia | `#309D4B` / `#F9F9F8` | Official Archie symbol from [cartesia.ai/favicon.svg](https://www.cartesia.ai/favicon.svg) |
 | `kimi.svg` | Kimi | `#FFFFFF` | Simple Icons `kimi`; white so official black reads on dark |
-| `luma.svg` | Luma | Official facet colors | LobeHub `luma-color` (official stacked-facet logo) |
+| `luma.svg` | Luma | Official facet colors + `#FFFFFF` | LobeHub `luma-color` (official stacked-facet logo); black face knocked to white so it reads on dark |
 | `vercel.svg` | Vercel | `#FFFFFF` | Simple Icons `vercel` triangle; white so official black reads on dark |
 | `railway.svg` | Railway | `#FFFFFF` | Simple Icons `railway`; white so official near-black reads on dark |
 | `cloudflare.svg` | Cloudflare | `#F38020` | Simple Icons `cloudflare` |

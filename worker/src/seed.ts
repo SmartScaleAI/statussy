@@ -40,15 +40,16 @@ export const SERVICE_SEED = [
     fetcherType: "statuspage",
   },
   {
+    // Cloud/Vertex Gemini via Cloud Status — not AI Studio / consumer Gemini.
     id: "google-gemini",
     name: "Google Gemini",
-    statusUrl: "https://aistudio.google.com/status",
+    statusUrl: "https://status.cloud.google.com/",
     fetcherType: "google_cloud",
   },
   { id: "xai", name: "xAI", statusUrl: "https://status.x.ai/", fetcherType: "rss" },
   {
     id: "mistral",
-    name: "Mistral",
+    name: "Mistral AI",
     statusUrl: "https://status.mistral.ai/",
     fetcherType: "checkly_nuxt",
   },
@@ -144,6 +145,8 @@ export const SERVICE_SEED = [
     fetcherType: "statuspage",
   },
   {
+    // Catalog URL is the public host. Worker must keep voyageai-status.statuspage.io
+    // — status.voyageai.com/api/v2 times out (SMA-43).
     id: "voyage",
     name: "Voyage AI",
     statusUrl: "https://status.voyageai.com/",
