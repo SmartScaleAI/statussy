@@ -152,6 +152,7 @@ import {
 } from "./gitlab.js"
 import { fetchHerokuState } from "./heroku.js"
 import { fetchZendeskState } from "./zendesk.js"
+import { fetchSlackState } from "./slack.js"
 import { fetchHetznerState } from "./hetzner.js"
 import { fetchOracleCloudState } from "./oracle-cloud.js"
 import { fetchRailwayState } from "./railway.js"
@@ -915,6 +916,27 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("cresta", "https://status.cresta.com"),
   statuspageJob("observe-ai", "https://status.observe.ai"),
   statuspageJob("helpjuice", "https://status.helpjuice.com"),
+  // Collab Wave A. Notion / Jira / Asana / monday.com / Discord /
+  // Zoom / Trello / Airtable are Statuspage (Jira and Trello
+  // publish on their own Atlassian hosts, like Bitbucket).
+  // ClickUp's public host redirects /api/v2; the fetcher uses
+  // clickup.statuspage.io. Slack is the public Status API
+  // (`/api/v2.0.0/current`). Microsoft Teams waits (Office 365
+  // status is login-walled). Linear stays Developer.
+  {
+    id: "slack",
+    fetch: () => fetchSlackState(fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  statuspageJob("notion", "https://www.notion-status.com"),
+  statuspageJob("jira", "https://jira-software.status.atlassian.com"),
+  statuspageJob("asana", "https://status.asana.com"),
+  statuspageJob("monday", "https://status.monday.com"),
+  statuspageJob("clickup", "https://clickup.statuspage.io"),
+  statuspageJob("discord", "https://discordstatus.com"),
+  statuspageJob("zoom", "https://status.zoom.us"),
+  statuspageJob("trello", "https://trello.status.atlassian.com"),
+  statuspageJob("airtable", "https://status.airtable.com"),
 ]
 
 async function fetchService(service: ServiceJob): Promise<boolean> {

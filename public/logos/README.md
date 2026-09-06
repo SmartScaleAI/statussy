@@ -417,5 +417,15 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `cresta.svg` | Cresta | `#FFFFFF` | Official standalone sign from [cresta.com cresta sign.svg](https://cresta.com/); official `#25252A` knocked to white |
 | `observe-ai.svg` | Observe.AI | `#F4F73D` + `#000000` | Official mark from [observe.ai OAI_FAVICON_2024.svg](https://www.observe.ai/) |
 | `helpjuice.svg` | Helpjuice | `#5DA3D9` | Official icon from [helpjuice.com helpjuice-icon.svg](https://helpjuice.com/) |
+| `slack.svg` | Slack | `#4A154B` | Simple Icons `slack` |
+| `notion.svg` | Notion | `#FFFFFF` | Simple Icons `notion`; official black knocked to white |
+| `jira.svg` | Jira | `#0052CC` | Simple Icons `jira` |
+| `asana.svg` | Asana | `#F06A6A` | Simple Icons `asana` |
+| `monday.svg` | monday.com | `#FB275D` + `#FFCC00` + `#00CA72` | Official bars from [monday.com monday-logo.svg](https://monday.com/) (circular tile dropped) |
+| `clickup.svg` | ClickUp | `#7B68EE` | Simple Icons `clickup` |
+| `discord.svg` | Discord | `#5865F2` | Simple Icons `discord` |
+| `zoom.svg` | Zoom | `#0B5CFF` | Simple Icons `zoom` |
+| `trello.svg` | Trello | `#0052CC` | Simple Icons `trello` |
+| `airtable.svg` | Airtable | `#18BFFF` | Simple Icons `airtable` |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.

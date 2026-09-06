@@ -31,6 +31,7 @@ export type ServiceCategory =
   | "analytics"
   | "security"
   | "support"
+  | "collab"
 
 export type Service = {
   /** Matches a static mark at `public/logos/{id}.svg`. */
@@ -3511,5 +3512,93 @@ export const services: Service[] = [
     statusUrl: "https://status.helpjuice.com/",
     status: "operational",
     updatedAt: "2026-09-06T00:00:00.000Z",
+  },
+  // Collab Wave A — team chat, meetings, docs/wikis, and work-
+  // management SaaS that go dark. Linear stays Developer. Figma /
+  // Miro / Lucid / Mural / Whimsical stay Design. Front / Help
+  // Scout / HubSpot stay Email. Support helpdesks stay Support.
+  // Gmail / Workspace / Google Meet stay off / on Google Cloud.
+  // Microsoft Teams waits (Office 365 status is login-walled).
+  // Jira Service Management waits (Support + Atlassian). Bitbucket
+  // stays Developer on its own Atlassian host.
+  {
+    id: "slack",
+    name: "Slack",
+    category: "collab",
+    statusUrl: "https://slack-status.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:00:00.000Z",
+  },
+  {
+    id: "notion",
+    name: "Notion",
+    category: "collab",
+    statusUrl: "https://www.notion-status.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:00:00.000Z",
+  },
+  {
+    id: "jira",
+    name: "Jira",
+    category: "collab",
+    statusUrl: "https://jira-software.status.atlassian.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:00:00.000Z",
+  },
+  {
+    id: "asana",
+    name: "Asana",
+    category: "collab",
+    statusUrl: "https://status.asana.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:00:00.000Z",
+  },
+  {
+    id: "monday",
+    name: "monday.com",
+    category: "collab",
+    statusUrl: "https://status.monday.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:00:00.000Z",
+  },
+  {
+    id: "clickup",
+    name: "ClickUp",
+    category: "collab",
+    statusUrl: "https://status.clickup.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:00:00.000Z",
+  },
+  {
+    id: "discord",
+    name: "Discord",
+    category: "collab",
+    statusUrl: "https://discordstatus.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:00:00.000Z",
+  },
+  {
+    id: "zoom",
+    name: "Zoom",
+    category: "collab",
+    statusUrl: "https://status.zoom.us/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:00:00.000Z",
+  },
+  {
+    id: "trello",
+    name: "Trello",
+    category: "collab",
+    statusUrl: "https://trello.status.atlassian.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:00:00.000Z",
+  },
+  {
+    id: "airtable",
+    name: "Airtable",
+    category: "collab",
+    statusUrl: "https://status.airtable.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:00:00.000Z",
   },
 ]
