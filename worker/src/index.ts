@@ -87,11 +87,15 @@
  * (status.puppet.com has no DNS), Scalr via status.scalr.io; Infra
  * Wave C — Teleport via status.goteleport.com; Flags Wave A —
  * LaunchDarkly, Optimizely, Statsig, and Flagsmith via Statuspage,
- * DevCycle via Status.io; Flags Wave B — CloudBees via
+ * DevCycle via Status.io, Unleash and GrowthBook via Instatus,
+ * ConfigCat via StatusIQ RSS, Eppo via AdminLabs HTML, VWO via
+ * StatusIQ summary_details; Flags Wave B — CloudBees via
  * cloudbeesstatus.com, Kameleoon via kameleoon.statuspage.io,
- * Monetate via monetate.statuspage.io, Reflag via Instatus; Flags
+ * Monetate via monetate.statuspage.io, Reflag and Hypertune via
+ * Instatus, AB Tasty via Sorry™ /api/v1, Convert via Pingdom
+ * Public Reports (never convert.statuspage.io); Flags
  * Wave C — Bloomreach via Statuspage, Omniconvert via Better Stack
- * `index.json`; Analytics Wave A — Amplitude, Mixpanel via
+ * `index.json`, Flipper Cloud via Honeybadger HTML; Analytics Wave A — Amplitude, Mixpanel via
  * www.mixpanelstatus.com, Segment, Heap, Pendo, and RudderStack via
  * Statuspage, Plausible via Better Stack `index.json`, PostHog via
  * incident.io `/api/v1/summary`, Fathom via `/json`, Matomo via
@@ -124,11 +128,8 @@
  * Whimsical, Lunacy, Photopea, Blender, Moqups, Proto.io, UXPin,
  * Overflow, Axure, Relume, Visily, Plasmic, OpenTofu, Ansible, Argo
  * CD, Flux, Terragrunt, Env0, Salt, Rancher, Vagrant, Helm, Istio,
- * Linkerd, Cilium, OPA, Kyverno, Traefik, cert-manager, Infracost,
- * Unleash, ConfigCat, GrowthBook, Eppo, VWO, AB Tasty, Convert,
- * Flipt, Hypertune, GO Feature Flag, FeatBit, flagd, FeatureHub,
- * Bucketeer, Flipper Cloud, Confidence, Frosmo, Personyze,
- * Insider One are seeded
+ * Linkerd, Cilium, OPA, Kyverno, Traefik, cert-manager, and Infracost
+ * are seeded
  * without a fetcher) and writes snapshots, components,
  * and incidents to Postgres.
  * A tiny HTTP server exposes /healthz.
@@ -184,7 +185,9 @@ import { fetchFathomState } from "./fathom.js"
 import { fetchIncidentioState } from "./incidentio.js"
 import { fetchPulseticState } from "./pulsetic.js"
 import { fetchSimpleAnalyticsState } from "./simpleanalytics.js"
-import { fetchStatusiqState } from "./statusiq.js"
+import { fetchHoneybadgerState } from "./honeybadger.js"
+import { fetchPingdomState } from "./pingdom.js"
+import { fetchStatusiqApiState, fetchStatusiqState } from "./statusiq.js"
 import { fetchStatuspalState } from "./statuspal.js"
 import { fetchAdminLabsState } from "./adminlabs.js"
 import { fetchUptimeComState } from "./uptimecom.js"
@@ -822,13 +825,29 @@ const SERVICE_JOBS: ServiceJob[] = [
   // are none.
   statuspageJob("teleport", "https://status.goteleport.com"),
   // Flags Wave A. LaunchDarkly / Optimizely / Statsig / Flagsmith
-  // are Statuspage. DevCycle is Status.io (status.devcycle.com →
-  // Status.io). Unleash / ConfigCat / GrowthBook / Eppo / VWO
-  // are none (no public JSON).
+  // are Statuspage. DevCycle is Status.io. Unleash / GrowthBook
+  // are Instatus. ConfigCat is StatusIQ RSS. Eppo is AdminLabs
+  // HTML. VWO is StatusIQ public summary_details (RSS is off).
   statuspageJob("launchdarkly", "https://status.launchdarkly.com"),
   statuspageJob("optimizely", "https://status.optimizely.com"),
   statuspageJob("statsig", "https://status.statsig.com"),
   statuspageJob("flagsmith", "https://status.flagsmith.com"),
+  {
+    id: "unleash",
+    fetch: () =>
+      fetchInstatusState("https://unleash.instatus.com", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  {
+    id: "configcat",
+    fetch: () => fetchStatusiqState("https://status.configcat.com", fetchOptions()),
+  },
+  {
+    id: "growthbook",
+    fetch: () =>
+      fetchInstatusState("https://status.growthbook.io", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
   {
     id: "devcycle",
     fetch: () =>
@@ -839,12 +858,41 @@ const SERVICE_JOBS: ServiceJob[] = [
       ),
     persistOptions: { resolveMissingIncidents: true },
   },
+  {
+    id: "eppo",
+    fetch: () =>
+      fetchAdminLabsState("https://status.eppo.cloud", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  {
+    id: "vwo",
+    fetch: () =>
+      fetchStatusiqApiState("https://status.vwo.com", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
   // Flags Wave B. CloudBees / Kameleoon / Monetate are Statuspage.
-  // Reflag is Instatus. AB Tasty / Convert / Flipt / Hypertune /
-  // GO Feature Flag / FeatBit are none.
+  // Reflag / Hypertune are Instatus. AB Tasty is Sorry™ /api/v1.
+  // Convert is Pingdom Public Reports (never convert.statuspage.io).
+  // Flipt / GO Feature Flag / FeatBit were removed (SMA-72).
   statuspageJob("cloudbees", "https://www.cloudbeesstatus.com"),
+  {
+    id: "ab-tasty",
+    fetch: () => fetchSorryState("https://status.abtasty.com", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
   statuspageJob("kameleoon", "https://kameleoon.statuspage.io"),
+  {
+    id: "convert",
+    fetch: () =>
+      fetchPingdomState("https://status.convert.com", fetchOptions()),
+  },
   statuspageJob("monetate", "https://monetate.statuspage.io"),
+  {
+    id: "hypertune",
+    fetch: () =>
+      fetchInstatusState("https://hypertune.instatus.com", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
   {
     id: "reflag",
     fetch: () =>
@@ -852,8 +900,14 @@ const SERVICE_JOBS: ServiceJob[] = [
     persistOptions: { resolveMissingIncidents: true },
   },
   // Flags Wave C. Bloomreach is Statuspage. Omniconvert is Better
-  // Stack. flagd / FeatureHub / Bucketeer / Flipper Cloud /
-  // Confidence / Frosmo / Personyze / Insider One are none.
+  // Stack. Flipper Cloud is Honeybadger HTML. flagd / FeatureHub /
+  // Bucketeer / Confidence / Frosmo / Personyze / Insider One
+  // were removed (SMA-72).
+  {
+    id: "flipper",
+    fetch: () =>
+      fetchHoneybadgerState("https://status.flippercloud.io", fetchOptions()),
+  },
   statuspageJob("bloomreach", "https://status.bloomreach.com"),
   {
     id: "omniconvert",

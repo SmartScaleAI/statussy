@@ -142,3 +142,62 @@ test("fetchSorryState follows component pagination", async () => {
   assert.equal(state.components[1].name, "Web App")
   assert.equal(state.status, "operational")
 })
+
+test("mapSorry maps an AB Tasty board with a resolved notice", () => {
+  const state = mapSorry(
+    {
+      status: {
+        page: {
+          name: "AB Tasty",
+          state: "operational",
+          url: "https://status.abtasty.com",
+        },
+      },
+      components: [
+        { id: 1, name: "[SLA] API - Uptime", state: "operational", parent_id: null, position: 1 },
+        { id: 2, name: "Europe", state: "operational", parent_id: 1, position: 2 },
+        { id: 3, name: "North America", state: "operational", parent_id: 1, position: 3 },
+      ],
+      notices: [
+        {
+          id: 99,
+          type: "unplanned",
+          state: "resolved",
+          subject: "Past notice",
+          url: "https://status.abtasty.com/notices/99",
+          began_at: "2026-04-09T16:45:00.000Z",
+          ended_at: "2026-04-14T18:06:25.586Z",
+        },
+      ],
+    },
+    "https://status.abtasty.com",
+  )
+  assert.equal(state.detail.source, "sorry")
+  assert.equal(state.status, "operational")
+  assert.equal(state.incidentTitle, null)
+  assert.equal(state.incidents[0]?.status, "resolved")
+  assert.equal(state.incidents[0]?.resolvedAt, "2026-04-14T18:06:25.586Z")
+})
+
+test("mapSorry uses an AB Tasty open notice as the snapshot headline", () => {
+  const state = mapSorry(
+    {
+      status: { page: { name: "AB Tasty", state: "operational" } },
+      components: [{ id: 1, name: "API", state: "operational" }],
+      notices: [
+        {
+          id: 7,
+          type: "unplanned",
+          state: "investigating",
+          subject: "Elevated API errors",
+          began_at: "2026-09-06T10:00:00.000Z",
+          ended_at: null,
+        },
+      ],
+    },
+    "https://status.abtasty.com",
+  )
+  assert.equal(state.status, "degraded")
+  assert.equal(state.incidentTitle, "Elevated API errors")
+  assert.equal(state.incidents[0]?.resolvedAt, null)
+})

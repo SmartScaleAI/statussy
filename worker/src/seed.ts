@@ -17,10 +17,7 @@ import type pg from "pg"
  * Blender, Moqups, Proto.io, UXPin, Overflow, Axure, Relume, Visily,
  * Plasmic, OpenTofu, Ansible, Argo CD, Flux, Terragrunt, Env0, Salt,
  * Rancher, Vagrant, Helm, Istio, Linkerd, Cilium, OPA, Kyverno,
- * Traefik, cert-manager, Infracost, Unleash, ConfigCat, GrowthBook,
- * Eppo, VWO, AB Tasty, Convert, Flipt, Hypertune, GO Feature Flag,
- * FeatBit, flagd, FeatureHub, Bucketeer, Flipper Cloud, Confidence,
- * Frosmo, Personyze, and Insider One
+ * Traefik, cert-manager, and Infracost
  * are `none` until a dedicated fetcher exists.
  */
 export const SERVICE_SEED = [
@@ -2053,8 +2050,9 @@ export const SERVICE_SEED = [
     fetcherType: "none",
   },
   // Flags Wave A. LaunchDarkly / Optimizely / Statsig / Flagsmith
-  // are Statuspage. DevCycle is Status.io. Unleash / ConfigCat /
-  // GrowthBook / Eppo / VWO are none (no public JSON).
+  // are Statuspage. DevCycle is Status.io. Unleash / GrowthBook
+  // are Instatus. ConfigCat is StatusIQ RSS. Eppo is AdminLabs.
+  // VWO is StatusIQ summary_details (RSS off).
   {
     id: "launchdarkly",
     name: "LaunchDarkly",
@@ -2087,22 +2085,22 @@ export const SERVICE_SEED = [
     id: "unleash",
     name: "Unleash",
     category: "flags",
-    statusUrl: "https://www.getunleash.io/",
-    fetcherType: "none",
+    statusUrl: "https://unleash.instatus.com/",
+    fetcherType: "instatus",
   },
   {
     id: "configcat",
     name: "ConfigCat",
     category: "flags",
     statusUrl: "https://status.configcat.com/",
-    fetcherType: "none",
+    fetcherType: "statusiq",
   },
   {
     id: "growthbook",
     name: "GrowthBook",
     category: "flags",
-    statusUrl: "https://www.growthbook.io/",
-    fetcherType: "none",
+    statusUrl: "https://status.growthbook.io/",
+    fetcherType: "instatus",
   },
   {
     id: "devcycle",
@@ -2115,21 +2113,21 @@ export const SERVICE_SEED = [
     id: "eppo",
     name: "Eppo",
     category: "flags",
-    statusUrl: "https://www.geteppo.com/",
-    fetcherType: "none",
+    statusUrl: "https://status.eppo.cloud/",
+    fetcherType: "adminlabs",
   },
   {
     id: "vwo",
     name: "VWO",
     category: "flags",
     statusUrl: "https://status.vwo.com/",
-    fetcherType: "none",
+    fetcherType: "statusiq",
   },
   // Flags Wave B. CloudBees / Kameleoon / Monetate are Statuspage
-  // (Kameleoon and Monetate public hosts have no DNS). Reflag is
-  // Instatus. AB Tasty / Convert / Flipt / Hypertune / GO Feature
-  // Flag / FeatBit are none (no public JSON; convert.statuspage.io
-  // is an unrelated example page).
+  // (Kameleoon and Monetate public hosts have no DNS). Reflag /
+  // Hypertune are Instatus. AB Tasty is Sorry™. Convert is Pingdom
+  // Public Reports — never convert.statuspage.io (unrelated example
+  // page). Flipt / GO Feature Flag / FeatBit were removed (SMA-72).
   {
     id: "cloudbees",
     name: "CloudBees",
@@ -2142,7 +2140,7 @@ export const SERVICE_SEED = [
     name: "AB Tasty",
     category: "flags",
     statusUrl: "https://status.abtasty.com/",
-    fetcherType: "none",
+    fetcherType: "sorry",
   },
   {
     id: "kameleoon",
@@ -2156,7 +2154,7 @@ export const SERVICE_SEED = [
     name: "Convert",
     category: "flags",
     statusUrl: "https://status.convert.com/",
-    fetcherType: "none",
+    fetcherType: "pingdom",
   },
   {
     id: "monetate",
@@ -2166,18 +2164,11 @@ export const SERVICE_SEED = [
     fetcherType: "statuspage",
   },
   {
-    id: "flipt",
-    name: "Flipt",
-    category: "flags",
-    statusUrl: "https://www.flipt.io/",
-    fetcherType: "none",
-  },
-  {
     id: "hypertune",
     name: "Hypertune",
     category: "flags",
-    statusUrl: "https://www.hypertune.com/",
-    fetcherType: "none",
+    statusUrl: "https://hypertune.instatus.com/",
+    fetcherType: "instatus",
   },
   {
     id: "reflag",
@@ -2186,65 +2177,16 @@ export const SERVICE_SEED = [
     statusUrl: "https://status.reflag.com/",
     fetcherType: "instatus",
   },
-  {
-    id: "go-feature-flag",
-    name: "GO Feature Flag",
-    category: "flags",
-    statusUrl: "https://gofeatureflag.org/",
-    fetcherType: "none",
-  },
-  {
-    id: "featbit",
-    name: "FeatBit",
-    category: "flags",
-    statusUrl: "https://www.featbit.co/",
-    fetcherType: "none",
-  },
   // Flags Wave C. Bloomreach is Statuspage. Omniconvert is Better
-  // Stack. flagd / FeatureHub / Bucketeer / Flipper Cloud /
-  // Confidence / Frosmo / Personyze / Insider One are none (no
-  // public JSON; Flipper's Honeybadger page has an empty Atom feed).
-  {
-    id: "flagd",
-    name: "flagd",
-    category: "flags",
-    statusUrl: "https://flagd.dev/",
-    fetcherType: "none",
-  },
-  {
-    id: "featurehub",
-    name: "FeatureHub",
-    category: "flags",
-    statusUrl: "https://www.featurehub.io/",
-    fetcherType: "none",
-  },
-  {
-    id: "bucketeer",
-    name: "Bucketeer",
-    category: "flags",
-    statusUrl: "https://bucketeer.io/",
-    fetcherType: "none",
-  },
+  // Stack. Flipper Cloud is Honeybadger HTML. flagd / FeatureHub /
+  // Bucketeer / Confidence / Frosmo / Personyze / Insider One
+  // were removed (SMA-72: no usable live board).
   {
     id: "flipper",
     name: "Flipper Cloud",
     category: "flags",
     statusUrl: "https://status.flippercloud.io/",
-    fetcherType: "none",
-  },
-  {
-    id: "confidence",
-    name: "Confidence",
-    category: "flags",
-    statusUrl: "https://confidence.spotify.com/",
-    fetcherType: "none",
-  },
-  {
-    id: "frosmo",
-    name: "Frosmo",
-    category: "flags",
-    statusUrl: "https://frosmo.com/",
-    fetcherType: "none",
+    fetcherType: "honeybadger",
   },
   {
     id: "omniconvert",
@@ -2252,20 +2194,6 @@ export const SERVICE_SEED = [
     category: "flags",
     statusUrl: "https://status.web.omniconvert.com/",
     fetcherType: "betterstack",
-  },
-  {
-    id: "personyze",
-    name: "Personyze",
-    category: "flags",
-    statusUrl: "https://www.personyze.com/",
-    fetcherType: "none",
-  },
-  {
-    id: "insider",
-    name: "Insider One",
-    category: "flags",
-    statusUrl: "https://www.insiderone.com/",
-    fetcherType: "none",
   },
   {
     id: "bloomreach",
@@ -3440,8 +3368,22 @@ export const SERVICE_SEED = [
   },
 ] as const
 
-/** Dropped in SMA-45: marketing homepages or an empty heartbeat, no live board. */
-export const REMOVED_SERVICE_IDS = ["umami", "goatcounter", "countly"] as const
+/** Dropped in SMA-45 / SMA-72: marketing/docs homepages or no pollable board. */
+export const REMOVED_SERVICE_IDS = [
+  "umami",
+  "goatcounter",
+  "countly",
+  "flipt",
+  "go-feature-flag",
+  "featbit",
+  "flagd",
+  "featurehub",
+  "bucketeer",
+  "confidence",
+  "frosmo",
+  "personyze",
+  "insider",
+] as const
 
 function seedCategory(service: { id: string }): string {
   return "category" in service && typeof service.category === "string"

@@ -2,8 +2,11 @@ import assert from "node:assert/strict"
 import test from "node:test"
 import { parseFeed } from "../src/rss.js"
 import {
+  extractStatusiqPageId,
   mapStatusiqComponentStatus,
   mapStatusiqFeed,
+  mapStatusiqNumericStatus,
+  mapStatusiqSummary,
   parseStatusiqItem,
 } from "../src/statusiq.js"
 
@@ -55,4 +58,58 @@ test("mapStatusiqFeed throws when the feed has no components", () => {
   assert.throws(() =>
     mapStatusiqFeed([], { feedUrl: "https://example.test/rss", pageUrl: "https://example.test" }),
   )
+})
+
+test("mapStatusiqNumericStatus covers StatusIQ public API codes", () => {
+  assert.equal(mapStatusiqNumericStatus(1), "operational")
+  assert.equal(mapStatusiqNumericStatus(2), "degraded")
+  assert.equal(mapStatusiqNumericStatus(3), "partial_outage")
+  assert.equal(mapStatusiqNumericStatus(4), "major_outage")
+  assert.equal(mapStatusiqNumericStatus(5), "maintenance")
+  assert.equal(mapStatusiqNumericStatus(6), "operational")
+})
+
+test("extractStatusiqPageId reads enc_statuspage_id from the SPA bootstrap", () => {
+  const html = `statuspages.globals.statuspageDetails = {"enc_statuspage_id":"P4CJ5YG_lN8Fh07rnB3KSStEkzXCM5Q43Q7erkQCqDQ=","status":1}`
+  assert.equal(
+    extractStatusiqPageId(html),
+    "P4CJ5YG_lN8Fh07rnB3KSStEkzXCM5Q43Q7erkQCqDQ=",
+  )
+})
+
+test("mapStatusiqSummary maps VWO current_status + an active incident", () => {
+  const state = mapStatusiqSummary(
+    {
+      current_status: [
+        {
+          enc_component_id: "app",
+          display_name: "VWO Application",
+          is_group: false,
+          component_status: 1,
+        },
+        {
+          enc_component_id: "cdn",
+          display_name: "VWO DaCDN",
+          is_group: false,
+          component_status: 3,
+        },
+      ],
+      active_incident_details: [
+        {
+          enc_incident_id: "inc-1",
+          title: "DaCDN delays",
+          status: "investigating",
+          started_at: "2026-09-06T10:00:00+0000",
+        },
+      ],
+      statuspage_details: { status: 3 },
+    },
+    { pageUrl: "https://status.vwo.com", pageId: "abc" },
+  )
+  assert.equal(state.detail.source, "statusiq_api")
+  assert.equal(state.status, "partial_outage")
+  assert.equal(state.components.length, 2)
+  assert.equal(state.incidentTitle, "DaCDN delays")
+  const byName = new Map(state.components.map((component) => [component.name, component]))
+  assert.equal(byName.get("VWO DaCDN")?.status, "partial_outage")
 })

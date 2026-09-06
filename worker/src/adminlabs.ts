@@ -1,10 +1,14 @@
 /**
- * Admin Labs HTML mapper (SMA-70: Document360).
+ * Admin Labs HTML mapper (SMA-70: Document360, SMA-72: Eppo).
  *
  * status.document360.com is Admin Labs, not Statuspage — `/api/v2`
  * redirects to a “status page disabled” HTML page. The public HTML is
  * the live source: overall-status, EU/US/Canada `block-item-sub`
  * monitors, and `/status/incident/id/` history. No public JSON/RSS.
+ *
+ * status.eppo.cloud is the same host family but often overall-only
+ * (“All systems operational”) with no component tiles. `/index.json`
+ * and `/api/v2` fall through to the AdminLabs not-found page.
  */
 
 import type {
@@ -43,6 +47,9 @@ export function mapAdminLabsClass(value: string | undefined | null): ServiceStat
       return "unknown"
   }
 }
+
+/** SMA-72 alias used by the Eppo call path / tests. */
+export const mapAdminlabsTone = mapAdminLabsClass
 
 export function mapAdminLabsLabel(label: string | undefined | null): ServiceStatus {
   const normalized = (label ?? "").trim().toLowerCase()
@@ -94,6 +101,36 @@ function parseAdminLabsTime(stamp: string | undefined): string | null {
   return Number.isNaN(date.getTime()) ? null : date.toISOString()
 }
 
+function readStatusTitle(slice: string): { className?: string; label?: string } {
+  const heading = slice.match(
+    /<(?:h4|span) class="status-title\s+([^"]+)"[^>]*>\s*([^<]+?)\s*<\/(?:h4|span)>/i,
+  )
+  if (heading) return { className: heading[1], label: heading[2] }
+  return {
+    className: slice.match(/status-title\s+([a-z]+)/i)?.[1],
+    label: undefined,
+  }
+}
+
+function pushComponent(
+  components: MappedComponent[],
+  seen: Set<string>,
+  id: string,
+  name: string,
+  className: string | undefined,
+  label: string | undefined,
+): void {
+  if (seen.has(id)) return
+  seen.add(id)
+  const fromLabel = mapAdminLabsLabel(label)
+  components.push({
+    externalId: id,
+    name,
+    status: fromLabel === "unknown" ? mapAdminLabsClass(className) : fromLabel,
+    position: components.length,
+  })
+}
+
 /** Leaf monitors only — region headers (`block-item-has-block-item-sub`) stay out of Health %. */
 export function parseAdminLabsComponents(html: string): MappedComponent[] {
   const components: MappedComponent[] = []
@@ -106,17 +143,22 @@ export function parseAdminLabsComponents(html: string): MappedComponent[] {
     const id =
       slice.match(/data-tooltip-content="#component_([^"]+)"/i)?.[1] ??
       fallbackComponentId(html, start, name)
-    if (seen.has(id)) continue
-    seen.add(id)
-    const className = slice.match(/<h4 class="status-title\s+([^"]+)"/i)?.[1]
-    const label = slice.match(/<h4 class="status-title[^"]*">\s*([^<]+?)\s*<\/h4>/i)?.[1]
-    const fromLabel = mapAdminLabsLabel(label)
-    components.push({
-      externalId: id,
-      name,
-      status: fromLabel === "unknown" ? mapAdminLabsClass(className) : fromLabel,
-      position: components.length,
-    })
+    const { className, label } = readStatusTitle(slice)
+    pushComponent(components, seen, id, name, className, label)
+  }
+  if (components.length > 0) return components
+
+  // Eppo-style pages expose top-level `block-item` tiles, not `block-item-sub`.
+  for (const match of html.matchAll(/<div class="block-item(?![^"]*has-block-item-sub)[^"]*"/gi)) {
+    const start = match.index ?? 0
+    const slice = html.slice(start, start + 2500)
+    const name = stripTags(slice.match(/<h3>([\s\S]*?)<\/h3>/i)?.[1] ?? "").replace(/\s*\?$/, "")
+    if (!name) continue
+    const id =
+      slice.match(/data-tooltip-content="#component_([^"]+)"/i)?.[1] ??
+      fallbackComponentId(html, start, name)
+    const { className, label } = readStatusTitle(slice)
+    pushComponent(components, seen, id, name, className, label)
   }
   return components
 }
@@ -162,17 +204,24 @@ export function parseAdminLabsOverall(html: string): { status: ServiceStatus; he
   }
 }
 
+/** SMA-72 alias: `{ tone, title }` for the Eppo overall-only fixture. */
+export function parseAdminlabsOverall(html: string): { tone: string; title: string } | null {
+  const match = html.match(/class="overall-status\s+([a-z]+)"[^>]*>\s*<h1>([\s\S]*?)<\/h1>/i)
+  if (!match) return null
+  return { tone: match[1], title: stripTags(match[2]) }
+}
+
 /** Map an Admin Labs HTML status page into our normalized shape. */
 export function mapAdminLabsHtml(html: string, pageUrl: string, maxIncidents = 25): MappedServiceState {
   const components = parseAdminLabsComponents(html)
-  if (components.length === 0) {
-    throw new Error(`Admin Labs HTML from ${pageUrl} had no component tiles`)
+  const overall = parseAdminLabsOverall(html)
+  if (components.length === 0 && overall.status === "unknown" && !overall.headline) {
+    throw new Error(`Admin Labs HTML from ${pageUrl} had no overall-status block or component tiles`)
   }
   const incidents = parseAdminLabsIncidents(html, pageUrl).slice(0, maxIncidents)
-  const overall = parseAdminLabsOverall(html)
   const open = incidents.find((incident) => incident.resolvedAt == null)
   const status = worstStatus([
-    overall.status,
+    overall.status === "unknown" ? "operational" : overall.status,
     worstStatus(components.map((component) => component.status)),
   ])
 
@@ -188,6 +237,9 @@ export function mapAdminLabsHtml(html: string, pageUrl: string, maxIncidents = 2
     incidents,
   }
 }
+
+/** SMA-72 alias used by Eppo tests. */
+export const mapAdminlabsHtml = mapAdminLabsHtml
 
 /**
  * Fetch and map an Admin Labs HTML status page.
@@ -212,3 +264,6 @@ export async function fetchAdminLabsState(
   const html = await res.text()
   return mapAdminLabsHtml(html, root, options.maxIncidents)
 }
+
+/** SMA-72 alias used by the Eppo job. */
+export const fetchAdminlabsState = fetchAdminLabsState

@@ -1,5 +1,5 @@
 /**
- * Sorry™ status-page fetcher (SMA-66: Pipedrive).
+ * Sorry™ status-page fetcher (SMA-66: Pipedrive, SMA-72: AB Tasty).
  *
  * Sorry pages expose `/api/v1/status`, `/api/v1/components`, and
  * `/api/v1/notices` (components and notices are paginated). `recovering`

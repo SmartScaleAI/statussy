@@ -3,9 +3,12 @@ import test from "node:test"
 import {
   mapAdminLabsClass,
   mapAdminLabsHtml,
+  mapAdminlabsHtml,
+  mapAdminlabsTone,
   parseAdminLabsComponents,
   parseAdminLabsIncidents,
   parseAdminLabsOverall,
+  parseAdminlabsOverall,
 } from "../src/adminlabs.js"
 
 const DOCUMENT360_HTML = `
@@ -37,6 +40,35 @@ const DOCUMENT360_HTML = `
 <h3>Timeouts in EU environment <a href="/status/incident/id/inc-resolved"></a></h3>
 <p class="update-time"><b>Resolved</b> | Jun 23, 2026 | 16:20 GMT+01:00</p>
 `
+
+const EPPO_OK = `<div class="block block-overall-status">
+  <div class="overall-status ok">
+    <h1>All systems operational</h1>
+  </div>
+</div>
+<div class="block block-incidents">
+  <h2>Incident history</h2>
+  No incidents reported.
+</div>`
+
+const EPPO_WITH_COMPONENTS = `<div class="block block-overall-status">
+  <div class="overall-status warning">
+    <h1>Partial system outage</h1>
+  </div>
+</div>
+<div class="block block-components">
+  <div class="block-item">
+    <h3>API</h3>
+    <span class="status-title error">Major outage</span>
+  </div>
+  <div class="block-item">
+    <h3>Dashboard</h3>
+    <span class="status-title ok">Operational</span>
+  </div>
+</div>
+<div class="block block-incidents">
+  <h2>Incident history</h2>
+</div>`
 
 test("mapAdminLabsClass covers Admin Labs CSS states", () => {
   assert.equal(mapAdminLabsClass("ok"), "operational")
@@ -81,4 +113,39 @@ test("mapAdminLabsHtml rolls up leaf + open incident status", () => {
   assert.equal(state.incidentTitle, "Slowness in KB site and API Hub")
   assert.equal(state.components.length, 3)
   assert.equal(state.incidents.length, 2)
+})
+
+test("mapAdminlabsTone covers AdminLabs CSS tones", () => {
+  assert.equal(mapAdminlabsTone("ok"), "operational")
+  assert.equal(mapAdminlabsTone("notice"), "operational")
+  assert.equal(mapAdminlabsTone("warning"), "degraded")
+  assert.equal(mapAdminlabsTone("error"), "major_outage")
+  assert.equal(mapAdminlabsTone("maintenance"), "maintenance")
+})
+
+test("parseAdminlabsOverall reads the live Eppo heading", () => {
+  const overall = parseAdminlabsOverall(EPPO_OK)
+  assert.deepEqual(overall, { tone: "ok", title: "All systems operational" })
+})
+
+test("mapAdminlabsHtml accepts an overall-only page (Eppo)", () => {
+  const state = mapAdminlabsHtml(EPPO_OK, "https://status.eppo.cloud")
+  assert.equal(state.detail.source, "admin_labs")
+  assert.equal(state.status, "operational")
+  assert.equal(state.components.length, 0)
+  assert.equal(state.incidents.length, 0)
+  assert.equal(state.incidentTitle, null)
+})
+
+test("mapAdminlabsHtml maps component tiles and worst-status rollup", () => {
+  const state = mapAdminlabsHtml(EPPO_WITH_COMPONENTS, "https://status.eppo.cloud")
+  assert.equal(state.status, "major_outage")
+  assert.equal(state.components.length, 2)
+  const byName = new Map(state.components.map((component) => [component.name, component]))
+  assert.equal(byName.get("API")?.status, "major_outage")
+  assert.equal(byName.get("Dashboard")?.status, "operational")
+})
+
+test("mapAdminlabsHtml throws without an overall-status block", () => {
+  assert.throws(() => mapAdminlabsHtml("<html></html>", "https://status.eppo.cloud"))
 })
