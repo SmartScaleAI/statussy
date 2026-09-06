@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 55" role="img" aria-hidden="true">
+  <title>Visily</title>
+  <defs>
+    <radialGradient id="visily-a" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(32.7588 44.876) scale(30.0385)">
+      <stop stop-color="#3A78DD"/>
+      <stop offset="1" stop-color="#45B2EE"/>
+    </radialGradient>
+    <radialGradient id="visily-b" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(10.795 8.65452) scale(52.6996)">
+      <stop stop-color="#6454D6"/>
+      <stop offset="1" stop-color="#3A78DD"/>
+    </radialGradient>
+  </defs>
+  <path fill="url(#visily-a)" d="M48.9728 20.9817C48.7525 18.6473 46.4402 17.8655 44.304 18.7519C41.331 19.9852 36.8825 23.8501 35.5776 25.2981C28.9709 32.6811 27.7597 40.0256 27.1706 46.1808C26.5815 52.3361 36.1612 52.7325 37.1192 46.6488C40.7529 23.6079 49.4022 25.4633 48.9728 20.9817Z"/>
+  <path fill="url(#visily-b)" d="M36.842 45.3769C36.6082 35.6077 34.105 26.0269 29.5305 17.3919C26.7919 12.0334 23.0544 7.24764 18.5193 3.29207C11.9126 -2.69802 0.494012 -0.512302 0.0260361 9.83822C-0.254749 16.0816 5.21231 18.6086 8.16331 20.475C11.8354 22.7321 15.1575 25.5143 18.0238 28.7334C22.5747 33.8281 25.664 40.058 26.9649 46.7643C28.0715 53.0572 37.9211 52.0441 36.842 45.3769Z"/>
+</svg>
