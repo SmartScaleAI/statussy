@@ -7,17 +7,25 @@
  * RSS `https://status.aws.amazon.com/rss/all.rss` is a history feed
  * without lifecycle markers, so it is not used for the rollup.
  *
- * No component grid: `impacted_services` is a region × product dump
- * (Health would look like a service matrix). Incidents are the events.
+ * Regional rollup (SMA-78): currentevents are almost always region-scoped
+ * (region code lives in the event ARN). A couple of disrupted regions must
+ * not paint the whole card `major_outage`, so the card status is capped at
+ * `partial_outage` unless an open event is global-scoped or disruptions span
+ * at least MULTI_REGION_OUTAGE_THRESHOLD distinct regions.
+ *
+ * Components are one row per AWS region (bounded — never the full
+ * `impacted_services` region × product dump), so Health reads as
+ * "regions healthy / regions total" instead of collapsing to 0%.
  */
 
 import type {
   FetchOptions,
+  MappedComponent,
   MappedIncident,
   MappedServiceState,
   ServiceStatus,
 } from "./statuspage.js"
-import { worstStatus } from "./statuspage.js"
+import { STATUS_SEVERITY_RANK, worstStatus } from "./statuspage.js"
 
 export const AWS_CURRENT_EVENTS_URL = "https://health.aws.amazon.com/public/currentevents"
 export const AWS_STATUS_PAGE = "https://health.aws.amazon.com/health/status"
@@ -57,6 +65,70 @@ export function mapAwsEventStatus(status: string | number | undefined | null): S
     default:
       return "unknown"
   }
+}
+
+/**
+ * Launched AWS commercial regions (code → dashboard-style display name).
+ * This is the bounded component grid: one row per region, so Health is
+ * "regions healthy / regions total". Regions AWS launches later still show
+ * up — codes seen in events but missing here are appended dynamically.
+ */
+export const AWS_REGIONS: ReadonlyArray<{ code: string; name: string }> = [
+  { code: "us-east-1", name: "N. Virginia" },
+  { code: "us-east-2", name: "Ohio" },
+  { code: "us-west-1", name: "N. California" },
+  { code: "us-west-2", name: "Oregon" },
+  { code: "af-south-1", name: "Cape Town" },
+  { code: "ap-east-1", name: "Hong Kong" },
+  { code: "ap-east-2", name: "Taipei" },
+  { code: "ap-south-1", name: "Mumbai" },
+  { code: "ap-south-2", name: "Hyderabad" },
+  { code: "ap-southeast-1", name: "Singapore" },
+  { code: "ap-southeast-2", name: "Sydney" },
+  { code: "ap-southeast-3", name: "Jakarta" },
+  { code: "ap-southeast-4", name: "Melbourne" },
+  { code: "ap-southeast-5", name: "Malaysia" },
+  { code: "ap-southeast-7", name: "Thailand" },
+  { code: "ap-northeast-1", name: "Tokyo" },
+  { code: "ap-northeast-2", name: "Seoul" },
+  { code: "ap-northeast-3", name: "Osaka" },
+  { code: "ca-central-1", name: "Canada Central" },
+  { code: "ca-west-1", name: "Calgary" },
+  { code: "eu-central-1", name: "Frankfurt" },
+  { code: "eu-central-2", name: "Zurich" },
+  { code: "eu-west-1", name: "Ireland" },
+  { code: "eu-west-2", name: "London" },
+  { code: "eu-west-3", name: "Paris" },
+  { code: "eu-south-1", name: "Milan" },
+  { code: "eu-south-2", name: "Spain" },
+  { code: "eu-north-1", name: "Stockholm" },
+  { code: "il-central-1", name: "Tel Aviv" },
+  { code: "me-central-1", name: "UAE" },
+  { code: "me-south-1", name: "Bahrain" },
+  { code: "mx-central-1", name: "Mexico" },
+  { code: "sa-east-1", name: "São Paulo" },
+]
+
+/**
+ * Open disruptions in this many distinct regions (or any global-scoped
+ * event) count as a broad outage: the card keeps the raw worst severity
+ * (`major_outage` allowed). Below the threshold the card is capped at
+ * `partial_outage` — a minority of regions is regional impact, not AWS down.
+ */
+export const MULTI_REGION_OUTAGE_THRESHOLD = 5
+
+/**
+ * Region code for one event: ARN region field (`arn:aws:health:<region>::…`),
+ * else the `service` suffix (`multipleservices-me-central-1`). Returns null
+ * for global-scoped events (no region, or the literal `global`).
+ */
+export function eventRegionCode(event: AwsCurrentEvent): string | null {
+  const arnRegion = (event.arn ?? "").split(":")[3]?.trim().toLowerCase()
+  const fromService = (event.service ?? "")
+    .toLowerCase()
+    .match(/-([a-z]{2}(?:-[a-z]+)+-\d+)$/)?.[1]
+  const code = arnRegion || fromService || ""
+  return code && code !== "global" ? code : null
 }
 
 /** Decode the UTF-16 (BOM) or UTF-8 currentevents body. */
@@ -104,7 +176,11 @@ function eventId(event: AwsCurrentEvent): string | null {
 
 /**
  * Map AWS currentevents into our normalized snapshot.
- * Empty list = operational. Open events paint the card; no components.
+ * Empty list = operational (all region components operational).
+ *
+ * Card status rule (SMA-78): worst open-event severity, capped at
+ * `partial_outage` unless an open event is global-scoped or disruptions
+ * span >= MULTI_REGION_OUTAGE_THRESHOLD distinct regions.
  */
 export function mapAwsCurrentEvents(
   events: AwsCurrentEvent[],
@@ -112,6 +188,11 @@ export function mapAwsCurrentEvents(
 ): MappedServiceState {
   const incidents: MappedIncident[] = []
   const severities: ServiceStatus[] = []
+  /** Worst open severity per affected region code. */
+  const regionSeverity = new Map<string, ServiceStatus>()
+  /** Display names from events, for regions missing from AWS_REGIONS. */
+  const regionNames = new Map<string, string>()
+  let hasGlobalOpenEvent = false
   let headline: string | null = null
 
   for (const event of events.slice(0, options.maxIncidents ?? 25)) {
@@ -122,6 +203,14 @@ export function mapAwsCurrentEvents(
     if (severity !== "operational" && severity !== "unknown") {
       severities.push(severity)
       headline ??= title
+      const region = eventRegionCode(event)
+      if (region) {
+        regionSeverity.set(region, worstStatus([regionSeverity.get(region) ?? "operational", severity]))
+        const displayName = (event.region_name ?? "").trim()
+        if (displayName) regionNames.set(region, displayName)
+      } else {
+        hasGlobalOpenEvent = true
+      }
     }
     incidents.push({
       externalId,
@@ -134,15 +223,38 @@ export function mapAwsCurrentEvents(
     })
   }
 
+  const rawWorst = worstStatus(severities)
+  const broadOutage = hasGlobalOpenEvent || regionSeverity.size >= MULTI_REGION_OUTAGE_THRESHOLD
+  const status =
+    !broadOutage && STATUS_SEVERITY_RANK[rawWorst] > STATUS_SEVERITY_RANK.partial_outage
+      ? "partial_outage"
+      : rawWorst
+
+  const knownCodes = new Set(AWS_REGIONS.map((region) => region.code))
+  const extraRegions = [...regionSeverity.keys()]
+    .filter((code) => !knownCodes.has(code))
+    .sort()
+    .map((code) => ({ code, name: regionNames.get(code) ?? code }))
+  const components: MappedComponent[] = [...AWS_REGIONS, ...extraRegions].map(
+    (region, index) => ({
+      externalId: region.code,
+      name: `${region.name} (${region.code})`,
+      status: regionSeverity.get(region.code) ?? "operational",
+      position: index,
+    }),
+  )
+
   return {
-    status: worstStatus(severities),
+    status,
     incidentTitle: headline,
     detail: {
       source: "aws",
       eventCount: events.length,
       openEvents: severities.length,
+      affectedRegions: [...regionSeverity.keys()].sort(),
+      globalOpenEvent: hasGlobalOpenEvent,
     },
-    components: [],
+    components,
     incidents,
   }
 }

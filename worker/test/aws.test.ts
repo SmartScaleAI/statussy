@@ -1,9 +1,12 @@
 import assert from "node:assert/strict"
 import test from "node:test"
 import {
+  AWS_REGIONS,
   decodeAwsPayload,
+  eventRegionCode,
   mapAwsCurrentEvents,
   mapAwsEventStatus,
+  MULTI_REGION_OUTAGE_THRESHOLD,
   parseAwsCurrentEvents,
   type AwsCurrentEvent,
 } from "../src/aws.js"
@@ -66,22 +69,99 @@ test("mapAwsCurrentEvents is operational on an empty list", () => {
   const state = mapAwsCurrentEvents([])
   assert.equal(state.status, "operational")
   assert.equal(state.incidentTitle, null)
-  assert.equal(state.components.length, 0)
+  // Region grid is always emitted so Health has a stable denominator.
+  assert.equal(state.components.length, AWS_REGIONS.length)
+  assert.ok(state.components.every((component) => component.status === "operational"))
   assert.equal(state.incidents.length, 0)
   assert.equal(state.detail.source, "aws")
   assert.equal(state.detail.eventCount, 0)
 })
 
-test("mapAwsCurrentEvents paints the worst current event", () => {
+test("mapAwsCurrentEvents caps a minority of regional disruptions at partial_outage (SMA-78)", () => {
   const state = mapAwsCurrentEvents(OPEN_EVENTS)
-  assert.equal(state.status, "major_outage")
+  // Two disrupted regions is regional impact, not a global AWS major outage.
+  assert.equal(state.status, "partial_outage")
   assert.equal(state.incidentTitle, "Multiple services — UAE: Increased Error Rates")
-  assert.equal(state.components.length, 0)
+  assert.deepEqual(state.detail.affectedRegions, ["me-central-1", "me-south-1"])
+  assert.equal(state.detail.globalOpenEvent, false)
+  // Health denominator: every region present, only the two affected are down.
+  assert.equal(state.components.length, AWS_REGIONS.length)
+  const down = state.components.filter((component) => component.status !== "operational")
+  assert.deepEqual(
+    down.map((component) => component.externalId).sort(),
+    ["me-central-1", "me-south-1"],
+  )
+  assert.ok(down.every((component) => component.status === "major_outage"))
+  // Regional incidents stay visible, region in the title.
   assert.equal(state.incidents.length, 2)
   assert.equal(state.incidents[0].externalId, OPEN_EVENTS[0].arn)
   assert.equal(state.incidents[0].status, "investigating")
+  assert.equal(state.incidents[0].impact, "major_outage")
   assert.equal(state.incidents[0].startedAt, "2026-03-01T12:51:25.000Z")
   assert.equal(state.detail.openEvents, 2)
+})
+
+test("mapAwsCurrentEvents keeps major_outage for a global-scoped event", () => {
+  const state = mapAwsCurrentEvents([
+    {
+      date: "1772369485",
+      arn: "arn:aws:health:global::event/MULTIPLE_SERVICES/ISSUE_G",
+      region_name: "",
+      status: "3",
+      service: "multipleservices",
+      service_name: "Multiple services",
+      summary: "Increased Error Rates",
+    },
+  ])
+  assert.equal(state.status, "major_outage")
+  assert.equal(state.detail.globalOpenEvent, true)
+})
+
+test("mapAwsCurrentEvents keeps major_outage for a broad multi-region outage", () => {
+  const regions = AWS_REGIONS.slice(0, MULTI_REGION_OUTAGE_THRESHOLD)
+  const state = mapAwsCurrentEvents(
+    regions.map(({ code, name }) => ({
+      date: "1772369485",
+      arn: `arn:aws:health:${code}::event/MULTIPLE_SERVICES/ISSUE_${code}`,
+      region_name: name,
+      status: "3",
+      service: `multipleservices-${code}`,
+      service_name: "Multiple services",
+      summary: "Increased Error Rates",
+    })),
+  )
+  assert.equal(state.status, "major_outage")
+  assert.equal(state.detail.affectedRegions.length, MULTI_REGION_OUTAGE_THRESHOLD)
+})
+
+test("mapAwsCurrentEvents appends unknown region codes to the grid", () => {
+  const state = mapAwsCurrentEvents([
+    {
+      date: "1772369485",
+      arn: "arn:aws:health:xx-future-1::event/MULTIPLE_SERVICES/ISSUE_X",
+      region_name: "Futuretown",
+      status: "2",
+      service: "multipleservices-xx-future-1",
+      service_name: "Multiple services",
+      summary: "Increased Error Rates",
+    },
+  ])
+  assert.equal(state.status, "partial_outage")
+  assert.equal(state.components.length, AWS_REGIONS.length + 1)
+  const extra = state.components.at(-1)
+  assert.equal(extra?.externalId, "xx-future-1")
+  assert.equal(extra?.name, "Futuretown (xx-future-1)")
+  assert.equal(extra?.status, "partial_outage")
+})
+
+test("eventRegionCode reads the ARN, falls back to service, treats global as null", () => {
+  assert.equal(eventRegionCode(OPEN_EVENTS[0]), "me-central-1")
+  assert.equal(
+    eventRegionCode({ arn: "", service: "multipleservices-eu-west-2" }),
+    "eu-west-2",
+  )
+  assert.equal(eventRegionCode({ arn: "arn:aws:health:global::event/X" }), null)
+  assert.equal(eventRegionCode({ service: "multipleservices" }), null)
 })
 
 test("mapAwsCurrentEvents treats status 0 as resolved and not a headline", () => {
