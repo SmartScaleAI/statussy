@@ -11,7 +11,7 @@ import type pg from "pg"
  * Windsurf is the legacy Devin Desktop name and is not seeded separately.
  * GitHub Copilot is a GitHub component, not its own card.
  *
- * `category` defaults to `ai` when omitted. AWS, Azure, Fastly, Replit,
+ * `category` defaults to `ai` when omitted. Replit,
  * Redis, Algolia, DataStax, PayPal, Adyen, PagerDuty, Checkly,
  * Postmark, Mailchimp, Campaign Monitor, Mailtrap, Substack, Adobe,
  * Sketch, Penpot, Rive, LottieFiles, Whimsical, Lunacy, Photopea,
@@ -235,14 +235,14 @@ export const SERVICE_SEED = [
     name: "AWS",
     category: "cloud",
     statusUrl: "https://health.aws.amazon.com/health/status",
-    fetcherType: "none",
+    fetcherType: "aws",
   },
   {
     id: "azure",
     name: "Azure",
     category: "cloud",
     statusUrl: "https://azure.microsoft.com/status/",
-    fetcherType: "none",
+    fetcherType: "rss",
   },
   {
     id: "heroku",
@@ -263,7 +263,7 @@ export const SERVICE_SEED = [
     name: "Fastly",
     category: "cloud",
     statusUrl: "https://www.fastlystatus.com/",
-    fetcherType: "none",
+    fetcherType: "statuscast",
   },
   {
     id: "bunny",
@@ -344,7 +344,7 @@ export const SERVICE_SEED = [
   },
   {
     id: "lambda",
-    name: "Lambda",
+    name: "Lambda GPU Cloud",
     category: "cloud",
     statusUrl: "https://status.lambda.ai/",
     fetcherType: "statuspage",

@@ -271,7 +271,7 @@ export const services: Service[] = [
   },
   // Cloud Wave A — hosting, edge, and the three hyperscalers. One card per
   // vendor (no CloudFront / Workers / Bedrock / Azure OpenAI splits).
-  // AWS and Azure ship without a fetcher (custom dashboards, no public JSON).
+  // AWS via health.aws.amazon.com/public/currentevents; Azure via status RSS.
   {
     id: "vercel",
     name: "Vercel",
@@ -353,8 +353,7 @@ export const services: Service[] = [
     updatedAt: "2026-09-05T02:50:00.000Z",
   },
   // Cloud Wave B — remaining core hosts / edge / BaaS with an easy official
-  // feed. Fastly is seeded without a fetcher (status page blocks bots and
-  // has no public JSON).
+  // feed. Fastly is StatusCast HTML (worker UA is blocked; browser UA works).
   {
     id: "heroku",
     name: "Heroku",
@@ -472,7 +471,7 @@ export const services: Service[] = [
   },
   {
     id: "lambda",
-    name: "Lambda",
+    name: "Lambda GPU Cloud",
     category: "cloud",
     statusUrl: "https://status.lambda.ai/",
     status: "operational",

@@ -205,3 +205,26 @@ test("mapRssFeed of an empty feed is operational with no incidents", () => {
   assert.equal(state.incidentTitle, null)
   assert.equal(state.incidents.length, 0)
 })
+
+test("parseFeed + mapRssFeed treat an empty Azure Status RSS as operational", () => {
+  const xml = `<?xml version="1.0" encoding="utf-8"?>
+<rss xmlns:a10="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>Azure Status</title>
+    <link>https://azure.status.microsoft/en-us/status/</link>
+    <description>Azure Status</description>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 06 Sep 2026 12:48:00 Z</lastBuildDate>
+  </channel>
+</rss>`
+  const items = parseFeed(xml)
+  assert.equal(items.length, 0)
+  const state = mapRssFeed(items, {
+    feedUrl: "https://azure.status.microsoft/en-us/status/feed/",
+    feedTitle: "Azure Status",
+    lastBuildDate: "Sun, 06 Sep 2026 12:48:00 Z",
+  })
+  assert.equal(state.status, "operational")
+  assert.equal(state.components.length, 0)
+  assert.equal(state.incidents.length, 0)
+})

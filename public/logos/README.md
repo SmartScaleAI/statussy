@@ -56,7 +56,7 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `oracle-cloud.svg` | Oracle Cloud | `#F80000` | Simple Icons `oracle` path (vendor O) |
 | `hetzner.svg` | Hetzner | `#D50C2D` | Simple Icons `hetzner` |
 | `northflank.svg` | Northflank | Official gradient | Official mark from [northflank.com/images/logo/logo.svg](https://northflank.com/images/logo/logo.svg) |
-| `lambda.svg` | Lambda | `#FFFFFF` | Official λ + frame from [lambda.ai favicon](https://lambda.ai/hubfs/favicon-48x48-1.svg); black tile dropped so the mark reads on dark |
+| `lambda.svg` | Lambda GPU Cloud | `#FFFFFF` | Official λ + frame from [lambda.ai favicon](https://lambda.ai/hubfs/favicon-48x48-1.svg); black tile dropped so the mark reads on dark |
 | `cursor.svg` | Cursor | `#FFFFFF` | Simple Icons `cursor` path; white so official black reads on dark |
 | `devin.svg` | Devin | `#FFFFFF` | LobeHub `devin` (official stacked-facet mark); white on dark |
 | `github.svg` | GitHub | `#FFFFFF` | Simple Icons `github`; white so official `#181717` reads on dark |
