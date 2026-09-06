@@ -1009,6 +1009,25 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("mirakl", "https://status.mirakl.com"),
   statuspageJob("sharetribe", "https://status.sharetribe.com"),
   statuspageJob("printful", "https://www.printfulstatus.com"),
+  // CRM Wave A. Salesforce Trust and Pipedrive / Outreach are
+  // custom HTML (no Statuspage JSON) and stay none. Apollo's
+  // public host serves HTML for /api/v2, so the fetcher hits
+  // apollo.statuspage.io. Attio and Gong are Instatus.
+  statuspageJob("copper", "https://status.copper.com"),
+  statuspageJob("close", "https://status.close.com"),
+  {
+    id: "attio",
+    fetch: () => fetchInstatusState("https://status.attio.com", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  statuspageJob("capsule", "https://status.capsulecrm.com"),
+  statuspageJob("salesloft", "https://status.salesloft.com"),
+  statuspageJob("apollo", "https://apollo.statuspage.io"),
+  {
+    id: "gong",
+    fetch: () => fetchInstatusState("https://status.gong.io", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
 ]
 
 async function fetchService(service: ServiceJob): Promise<boolean> {

@@ -34,6 +34,7 @@ export type ServiceCategory =
   | "collab"
   | "docs"
   | "commerce"
+  | "crm"
 
 export type Service = {
   /** Matches a static mark at `public/logos/{id}.svg`. */
@@ -4029,5 +4030,94 @@ export const services: Service[] = [
     statusUrl: "https://www.printfulstatus.com/",
     status: "operational",
     updatedAt: "2026-09-06T02:15:00.000Z",
+  },
+  // CRM Wave A — CRM platforms, sales CRMs, and sales engagement
+  // with a public status page. HubSpot stays Email. Zendesk /
+  // Intercom / Gorgias stay Support. ActiveCampaign stays Email.
+  // monday.com / ClickUp stay Collab. Salesforce Service Cloud /
+  // Commerce Cloud / Tableau / Quip stay on Salesforce. Zoho CRM
+  // waits (StatusIQ HTML). Freshworks CRM waits (Freshstatus, no
+  // public JSON). Dynamics 365 waits (Office 365 is login-walled).
+  // Insightly waits (wordmark only). Nutshell / HighLevel / Thryv
+  // wait (no isolated official SVG).
+  {
+    id: "salesforce",
+    name: "Salesforce",
+    category: "crm",
+    statusUrl: "https://status.salesforce.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:30:00.000Z",
+  },
+  {
+    id: "pipedrive",
+    name: "Pipedrive",
+    category: "crm",
+    statusUrl: "https://status.pipedrive.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:30:00.000Z",
+  },
+  {
+    id: "copper",
+    name: "Copper",
+    category: "crm",
+    statusUrl: "https://status.copper.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:30:00.000Z",
+  },
+  {
+    id: "close",
+    name: "Close",
+    category: "crm",
+    statusUrl: "https://status.close.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:30:00.000Z",
+  },
+  {
+    id: "attio",
+    name: "Attio",
+    category: "crm",
+    statusUrl: "https://status.attio.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:30:00.000Z",
+  },
+  {
+    id: "capsule",
+    name: "Capsule",
+    category: "crm",
+    statusUrl: "https://status.capsulecrm.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:30:00.000Z",
+  },
+  {
+    id: "salesloft",
+    name: "Salesloft",
+    category: "crm",
+    statusUrl: "https://status.salesloft.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:30:00.000Z",
+  },
+  {
+    id: "outreach",
+    name: "Outreach",
+    category: "crm",
+    statusUrl: "https://status.outreach.io/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:30:00.000Z",
+  },
+  {
+    id: "apollo",
+    name: "Apollo",
+    category: "crm",
+    statusUrl: "https://status.apollo.io/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:30:00.000Z",
+  },
+  {
+    id: "gong",
+    name: "Gong",
+    category: "crm",
+    statusUrl: "https://status.gong.io/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:30:00.000Z",
   },
 ]
