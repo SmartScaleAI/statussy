@@ -1,10 +1,10 @@
 # Statussy
 
-Glanceable “is anything down?” board for AI, Cloud, Developer, Data, Auth, Payments, Observability, and Email services. A SmartScale app, separate from Zerro.
+Glanceable “is anything down?” board for AI, Cloud, Developer, Data, Auth, Payments, Observability, Email, Design, Infra, Flags, Analytics, Security, Support, Collab, Docs, Commerce, and CRM services. A SmartScale app, separate from Zerro.
 
-The board reads **live status from Postgres** for the 231 catalog services (26 AI + 25 Cloud + 30 Developer + 30 Data + 30 Auth + 30 Payments + 30 Observability + 30 Email). AI Wave A: OpenAI, Anthropic, Groq, Cohere, OpenRouter, Perplexity, xAI, DeepSeek, Google Gemini, Mistral; Wave B: Fireworks AI, Together AI, Cerebras, Hugging Face, Replicate, Runway, Ideogram, Stability AI; Wave C: fal, ElevenLabs, MiniMax, Voyage AI, Black Forest Labs, Cartesia, Kimi, Luma. Cloud Wave A: Vercel, Railway, Cloudflare, Render, Fly.io, Netlify, DigitalOcean, Google Cloud, AWS, Azure. Cloud Wave B: Heroku, Linode, Fastly, bunny.net, Deno Deploy, Koyeb, Modal, Firebase. Cloud Wave C: Akamai, Vultr, Scaleway, Oracle Cloud, Hetzner, Northflank, Lambda. Developer Wave A: Cursor, Devin, GitHub, GitLab, CircleCI, npm, Docker, Linear, Sourcegraph, Warp. Developer Wave B: Bitbucket, Buildkite, PyPI, RubyGems, Maven Central, Postman, Augment, Factory, Tabnine, Zed. Developer Wave C: Lovable, Bolt, Replit, Travis CI, Semaphore, Harness, Codefresh, crates.io, Expo, Cloudsmith. Data Wave A: Supabase, Neon, PlanetScale, Convex, Upstash, Redis, Pinecone, MongoDB, CockroachDB, Prisma. Data Wave B: Snowflake, Databricks, ClickHouse, Elastic, Aiven, InfluxDB, Couchbase, Confluent, Tinybird, Zilliz. Data Wave C: Materialize, Turso, Qdrant, Meilisearch, Algolia, Redpanda, SurrealDB, Yugabyte, TiDB, DataStax. Auth Wave A: Auth0, Clerk, WorkOS, Okta, Stytch, Kinde, FusionAuth, Frontegg, PropelAuth, 1Password. Auth Wave B: Descope, Duo, Ping Identity, Doppler, Infisical, Zitadel, JumpCloud, Logto, Magic, Beyond Identity. Auth Wave C: LoginRadius, Scalekit, Transmit Security, SecureAuth, LastPass, Keeper, Yubico, Akeyless, SailPoint, Delinea. Payments Wave A: Stripe, PayPal, Square, Adyen, Paddle, Chargebee, Recurly, Klarna, Plaid, GoCardless. Payments Wave B: Mollie, Polar, RevenueCat, Affirm, FastSpring, Whop, Wise, Authorize.net, Flutterwave, Airwallex. Payments Wave C: Marqeta, Lithic, Worldpay, Spreedly, Finix, Mercado Pago, EBANX, Paysafe, Recharge, Maxio. Observability Wave A: Datadog, Sentry, Grafana, PagerDuty, New Relic, Honeycomb, Splunk, Dynatrace, Better Stack, Axiom. Observability Wave B: Sumo Logic, Coralogix, Rollbar, Bugsnag, incident.io, Mezmo, Airbrake, Checkly, Cribl, logz.io. Observability Wave C: Lumigo, Netdata, Scout, Logit.io, Nobl9, Catchpoint, VictoriaMetrics, Langfuse, Dash0, Embrace. Email Wave A: Twilio, Mailgun, Resend, Klaviyo, Brevo, Customer.io, SparkPost, Braze, Loops, Mailjet. Email Wave B: Knock, Iterable, MailerSend, MailerLite, SMTP2GO, Kit, Front, Omnisend, Postmark, Mailchimp. Email Wave C: ActiveCampaign, GetResponse, Campaign Monitor, Nylas, EmailOctopus, OneSignal, HubSpot, Help Scout, Mailtrap, Substack. The worker fetches every service that has a fetcher; AWS, Azure, Fastly, Replit, Redis, Algolia, DataStax, Okta, PayPal, Adyen, PagerDuty, Checkly, Postmark, Mailchimp, Campaign Monitor, Mailtrap, and Substack are seeded without one (custom dashboards or a status page that blocks programmatic access) and stay on mock until a dedicated fetcher exists. Nothing is scraped from the client. When a service has no snapshot yet, or the database is unreachable, the board still falls back to mock data.
+The board reads **live status from Postgres** for the 488 catalog services (26 AI + 25 Cloud + 30 Developer + 30 Data + 30 Auth + 30 Payments + 30 Observability + 30 Email + 30 Design + 30 Infra + 30 Flags + 30 Analytics + 30 Security + 30 Support + 30 Collab + 10 Docs + 20 Commerce + 17 CRM). AI Wave A: OpenAI, Anthropic, Groq, Cohere, OpenRouter, Perplexity, xAI, DeepSeek, Google Gemini, Mistral; Wave B: Fireworks AI, Together AI, Cerebras, Hugging Face, Replicate, Runway, Ideogram, Stability AI; Wave C: fal, ElevenLabs, MiniMax, Voyage AI, Black Forest Labs, Cartesia, Kimi, Luma. Cloud Wave A: Vercel, Railway, Cloudflare, Render, Fly.io, Netlify, DigitalOcean, Google Cloud, AWS, Azure. Cloud Wave B: Heroku, Linode, Fastly, bunny.net, Deno Deploy, Koyeb, Modal, Firebase. Cloud Wave C: Akamai, Vultr, Scaleway, Oracle Cloud, Hetzner, Northflank, Lambda. Developer Wave A: Cursor, Devin, GitHub, GitLab, CircleCI, npm, Docker, Linear, Sourcegraph, Warp. Developer Wave B: Bitbucket, Buildkite, PyPI, RubyGems, Maven Central, Postman, Augment, Factory, Tabnine, Zed. Developer Wave C: Lovable, Bolt, Replit, Travis CI, Semaphore, Harness, Codefresh, crates.io, Expo, Cloudsmith. Data Wave A: Supabase, Neon, PlanetScale, Convex, Upstash, Redis, Pinecone, MongoDB, CockroachDB, Prisma. Data Wave B: Snowflake, Databricks, ClickHouse, Elastic, Aiven, InfluxDB, Couchbase, Confluent, Tinybird, Zilliz. Data Wave C: Materialize, Turso, Qdrant, Meilisearch, Algolia, Redpanda, SurrealDB, Yugabyte, TiDB, DataStax. Auth Wave A: Auth0, Clerk, WorkOS, Okta, Stytch, Kinde, FusionAuth, Frontegg, PropelAuth, 1Password. Auth Wave B: Descope, Duo, Ping Identity, Doppler, Infisical, Zitadel, JumpCloud, Logto, Magic, Beyond Identity. Auth Wave C: LoginRadius, Scalekit, Transmit Security, SecureAuth, LastPass, Keeper, Yubico, Akeyless, SailPoint, Delinea. Payments Wave A: Stripe, PayPal, Square, Adyen, Paddle, Chargebee, Recurly, Klarna, Plaid, GoCardless. Payments Wave B: Mollie, Polar, RevenueCat, Affirm, FastSpring, Whop, Wise, Authorize.net, Flutterwave, Airwallex. Payments Wave C: Marqeta, Lithic, Worldpay, Spreedly, Finix, Mercado Pago, EBANX, Paysafe, Recharge, Maxio. Observability Wave A: Datadog, Sentry, Grafana, PagerDuty, New Relic, Honeycomb, Splunk, Dynatrace, Better Stack, Axiom. Observability Wave B: Sumo Logic, Coralogix, Rollbar, Bugsnag, incident.io, Mezmo, Airbrake, Checkly, Cribl, logz.io. Observability Wave C: Lumigo, Netdata, Scout, Logit.io, Nobl9, Catchpoint, VictoriaMetrics, Langfuse, Dash0, Embrace. Email Wave A: Twilio, Mailgun, Resend, Klaviyo, Brevo, Customer.io, SparkPost, Braze, Loops, Mailjet. Email Wave B: Knock, Iterable, MailerSend, MailerLite, SMTP2GO, Kit, Front, Omnisend, Postmark, Mailchimp. Email Wave C: ActiveCampaign, GetResponse, Campaign Monitor, Nylas, EmailOctopus, OneSignal, HubSpot, Help Scout, Mailtrap, Substack. Design Wave A: Figma, Canva, Adobe, Sketch, Framer, Miro, Webflow, Lucid, Mural, Frontify. Design Wave B: Penpot, Marvel, Rive, LottieFiles, Balsamiq, Anima, Whimsical, Lunacy, Photopea, Blender. Design Wave C: Moqups, Proto.io, UXPin, Overflow, Axure, Relume, Visily, Plasmic, Beautiful.ai, Jitter. Infra Wave A: Terraform, Pulumi, Vault, Consul, Nomad, Spacelift, Crossplane, Packer, Chef, OpenTofu. Infra Wave B: Ansible, Puppet, Argo CD, Flux, Terragrunt, Env0, Scalr, Salt, Rancher, Vagrant. Infra Wave C: Helm, Teleport, Istio, Linkerd, Cilium, OPA, Kyverno, Traefik, cert-manager, Infracost. Flags Wave A: LaunchDarkly, Optimizely, Statsig, Flagsmith, Unleash, ConfigCat, GrowthBook, DevCycle, Eppo, VWO. Flags Wave B: CloudBees, AB Tasty, Kameleoon, Convert, Monetate, Flipt, Hypertune, Reflag, GO Feature Flag, FeatBit. Flags Wave C: flagd, FeatureHub, Bucketeer, Flipper Cloud, Confidence, Frosmo, Omniconvert, Personyze, Insider One, Bloomreach. Analytics Wave A: Amplitude, Mixpanel, PostHog, Segment, Heap, Pendo, RudderStack, Plausible, Fathom, Matomo. Analytics Wave B: Woopra, Treasure Data, AppsFlyer, Branch, Hightouch, Simple Analytics, Countly, Parse.ly, Umami, GoatCounter. Analytics Wave C: Singular, Airbridge, Kissmetrics, Lytics, Polytomic, Baremetrics, ChartMogul, Quantcast, Metabase, Hex. Security Wave A: Snyk, Wiz, SentinelOne, Semgrep, Veracode, Tenable, Qualys, Vanta, Rapid7, Socket. Security Wave B: Aqua, Orca, Sysdig, GitGuardian, Secureframe, Palo Alto Networks, Imperva, Upwind, FOSSA, Mend. Security Wave C: HUMAN, Tailscale, Twingate, DigiCert, SecurityScorecard, KnowBe4, Chainguard, Bugcrowd, Sonar, Let's Encrypt. Support Wave A: Zendesk, Intercom, Gorgias, Talkdesk, Aircall, LiveChat, Kustomer, Dixa, Kayako, Helpshift. Support Wave B: UserVoice, Ada, Plain, Forethought, Gladly, Genesys, Deskpro, Olark, Chatwoot, HelpDesk. Support Wave C: Tidio, TeamSupport, Dialpad, Khoros, Lime Connect, SysAid, Assembled, Cresta, Observe.AI, Helpjuice. Collab Wave A: Slack, Notion, Jira, Asana, monday.com, ClickUp, Discord, Zoom, Trello, Airtable. Collab Wave B: Confluence, Loom, Coda, Mattermost, Smartsheet, Shortcut, Teamwork, Productboard, Aha!, Hive. Collab Wave C: Calendly, Basecamp, Zulip, Element, Plane, Guru, Tettra, Fireflies, Livestorm, Fellow. Docs Wave A: GitBook, ReadMe, Mintlify, Fern, Archbee, Document360, KnowledgeOwl, Stoplight, SwaggerHub, Bump. Commerce Wave A: Shopify, BigCommerce, Ecwid, Saleor, Medusa, Commerce Layer, Elastic Path, Lightspeed, Swell, VTEX. Commerce Wave B: Nacelle, Volusion, Alokai, SHOPLINE, Tapcart, Pack, Bold Commerce, Mirakl, Sharetribe, Printful. CRM Wave A: Salesforce, Pipedrive, Copper, Close, Attio, Capsule, Salesloft, Outreach, Apollo, Gong. CRM Wave B: Affinity, ZoomInfo, Streak, Clari, Lusha, Teamleader, Orum. The worker fetches every service that has a fetcher; AWS, Azure, Fastly, Replit, Redis, Algolia, DataStax, Okta, PayPal, Adyen, PagerDuty, Checkly, Postmark, Mailchimp, Campaign Monitor, Mailtrap, Substack, Adobe, Sketch, Penpot, Rive, LottieFiles, Whimsical, Lunacy, Photopea, Blender, Moqups, Proto.io, UXPin, Overflow, Axure, Relume, Visily, Plasmic, OpenTofu, Ansible, Argo CD, Flux, Terragrunt, Env0, Salt, Rancher, Vagrant, Helm, Istio, Linkerd, Cilium, OPA, Kyverno, Traefik, cert-manager, Infracost, Unleash, ConfigCat, GrowthBook, Eppo, VWO, AB Tasty, Convert, Flipt, Hypertune, GO Feature Flag, FeatBit, flagd, FeatureHub, Bucketeer, Flipper Cloud, Confidence, Frosmo, Personyze, Insider One, PostHog, Fathom, Matomo, Simple Analytics, Countly, Parse.ly, Umami, GoatCounter, Kissmetrics, ChartMogul, Salesforce, Pipedrive, and Outreach are seeded without one (custom dashboards or a status page that blocks programmatic access) and stay on mock until a dedicated fetcher exists. Nothing is scraped from the client. When a service has no snapshot yet, or the database is unreachable, the board still falls back to mock data.
 
-GitHub is one card (Copilot, Actions, and Codespaces are components). Devin covers Desktop and Cloud; Windsurf is the legacy name and is not a separate card. Codex / Claude Code / Amazon Q stay on their AI / Cloud parents. Auth0 and Okta are separate cards; Supabase Auth, Firebase Auth, and Cognito stay on their Data / Cloud parents. Braintree and Venmo stay on PayPal. Afterpay stays on Square. Lemon Squeezy stays on Polar. CloudWatch, Azure Monitor, and GCP Operations stay on their Cloud parents. Elastic Observability stays on Elastic. Observe stays on Snowflake. Splunk On-Call stays on Splunk. xMatters stays on Everbridge. ThousandEyes waits (Cisco). Vault waits for Infra. SendGrid stays on Twilio. SES stays on AWS. Mandrill stays on Mailchimp. Gmail / Workspace stay off / on Google Cloud.
+GitHub is one card (Copilot, Actions, and Codespaces are components). Devin covers Desktop and Cloud; Windsurf is the legacy name and is not a separate card. Codex / Claude Code / Amazon Q stay on their AI / Cloud parents. Auth0 and Okta are separate cards; Supabase Auth, Firebase Auth, and Cognito stay on their Data / Cloud parents. Braintree and Venmo stay on PayPal. Afterpay stays on Square. Lemon Squeezy stays on Polar. CloudWatch, Azure Monitor, and GCP Operations stay on their Cloud parents. Elastic Observability stays on Elastic. Observe stays on Snowflake. Splunk On-Call stays on Splunk. xMatters stays on Everbridge. ThousandEyes waits (Cisco). Vault is Infra. CloudFormation / CDK stay on AWS. ARM stays on Azure. Deployment Manager stays on GCP. Docker and Harness stay Developer. SendGrid stays on Twilio. SES stays on AWS. Mandrill stays on Mailchimp. Gmail / Workspace stay off / on Google Cloud. FigJam / Dev Mode / Figma Slides stay on Figma. Photoshop / Illustrator / XD / Express stay on Adobe. Lucidspark stays on Lucid. Affinity Photo stays on Canva. Affinity CRM is the affinity.co card. Abstract and InVision stay off (sunset). Spline waits (no official vector). Zeplin, ProtoPie, and Builder.io wait. Dagger / Earthly wait (CI). Boundary waits (no official vector). Atlantis waits (CNCF art is a traced island). StrongDM waits (no official vector). Spinnaker waits (CD). Kong / NGINX stay traffic (Cloud). Octopus stays Developer. Split stays on Harness (`status.split.io` redirects to Harness). Amplitude / PostHog / Mixpanel are Analytics (Amplitude Experiment and PostHog flags stay on those cards). Firebase Remote Config stays on Firebase. Vercel Flags stay on Vercel. Taplytics is DevCycle. SiteSpect sunset into Monetate Forte. Dynamic Yield waits (no official vector). Adobe Target stays on Adobe. OpenFeature is a spec. Prefab / Reforge wait. Intellimize is Webflow Optimize. Mutiny discontinued. Convertize is Glassbox. Leanplum is CleverTap. Clerk.io waits (recs). Google Analytics waits. Firebase Analytics stays on Firebase. Adobe Analytics stays on Adobe. FullStory / Hotjar / Contentsquare wait (session replay). Heap stays on Heap (own status page). June / Freshpaint / Indicative stay on Amplitude. Census waits (status page is now Fivetran Activations). Snowplow waits (no public status). mParticle waits (login-walled Statuspage). Looker stays on Google Cloud. Tableau stays on Salesforce. Chartbeat / Piano / Amperity / BlueConic / Adjust wait (no official vector). Quantum Metric / Glassbox wait (session replay). CleverTap / MoEngage stay engagement. CrowdStrike waits (no reachable public status JSON). Drata waits (no official SVG). Sprinto waits (no official SVG). Endor waits (no isolated official mark). Abnormal waits (no official SVG). Recorded Future waits (no official SVG). Identity / secrets / PAM stay Auth. Vault / cert-manager stay Infra. Defender / Sentinel / Entra stay Azure; GuardDuty / WAF / Shield stay AWS. Cloudflare / Fastly / Akamai WAF stay on those cards. GitHub Advanced Security / Dependabot stay GitHub; GitLab SAST stays GitLab. Splunk / Datadog Security / Elastic Security stay Observability. Prisma Cloud waits (Prisma is Data). Checkmarx / HackerOne / Zscaler / Proofpoint / Falco wait (status and/or SVG). CyberArk stays Auth. Lacework is Fortinet FortiCNAPP. Trivy stays on Aqua. Mandiant stays Google. Help Scout / Front / HubSpot stay Email. PagerDuty / incident.io stay Observability. Linear stays Developer. Figma / Miro / Lucid / Mural / Whimsical stay Design. Microsoft Teams waits (Office 365 status is login-walled). Google Meet stays off / on Google Cloud. Wrike / Webex / Whereby / Rocket.Chat / Height / Todoist / Evernote / Cal.com wait (no easy public JSON). Otter / Grain wait (Statuspage JSON, no isolated official SVG). GitBook is Docs. Dropbox / Box wait (file storage). Quip waits (Salesforce). Jira Service Management waits (Atlassian). Salesforce Service Cloud waits (Tableau already stays on Salesforce). Freshdesk waits (Freshstatus JSON is authenticated). ServiceNow waits (no public status JSON). Crisp waits (Vigil HTML). Zoho Desk waits (StatusIQ HTML). Podium waits (Instatus JSON, no official SVG). Groove / tawk.to wait (PNG lockups). Sprinklr waits (CX suite; no isolated official SVG). Drift waits (status.io host does not resolve). LivePerson waits (status host is HTML, no `/api/v2`). Nextiva waits (wordmark only). Yellow.ai waits (Instatus JSON, no official SVG). Sierra waits (empty Statuspage). Decagon waits (Better Stack, no isolated official SVG). Docs is documentation platforms, knowledge bases, help-center builders, and API/docs portals. Notion / Confluence / Coda / Guru / Tettra stay Collab. Helpjuice / Zendesk Guide / Intercom Articles / Freshdesk KB stay Support. Help Scout Docs stays Email. GitHub / GitLab wiki and Postman docs stay Developer. Google Docs / Word / Loop / SharePoint stay off / on Workspace and Office. Dropbox Paper / Quip stay file storage / Salesforce. Contentful / Sanity / Storyblok / Strapi / Prismic / Contentstack stay headless CMS. Ghost / WordPress stay publishing CMS. ClickUp Docs stays on ClickUp. WalkMe / Whatfix stay digital adoption. Redocly / Read the Docs / HelpDocs / Slite / Slab / Outline / Nuclino / Paligo / ClickHelp / Bloomfire / Scalar / Obsidian Publish wait (no easy public JSON). Scribe / Tango / Apidog wait (HTML status, no `/api/v2`). IT Glue waits (inactive Statuspage). SwaggerHub is one card (the SmartBear page is named Swagger); do not add a second SmartBear card. Commerce is storefronts, ecommerce platforms, headless commerce, commerce APIs, marketplace platforms, and merch/POD. Stripe / PayPal / Square stay Payments. Shopify Payments / Shop Pay stay on Shopify. Klaviyo stays Email. Gorgias stays Support. Magento / Adobe Commerce stay on Adobe. Salesforce Commerce Cloud waits (Salesforce). Webflow Ecommerce stays on Webflow. WooCommerce waits (inactive Statuspage). Centra waits (Instatus JSON, wordmark only). Shogun waits (wordmark only). Marketplacer waits (no official SVG). Shopware waits (Instatus JSON). commercetools / Spryker / PrestaShop wait (no easy public Statuspage JSON). Squarespace / Wix stay website builders. NetSuite is ERP. Etsy is a marketplace destination. Yotpo / Okendo / Judge.me / LoyaltyLion wait (reviews / loyalty). ShipStation / ShipBob / Avalara / TaxJar / Global-e wait (shipping / tax). Vue Storefront stays on Alokai. CRM is CRM platforms, sales CRMs, sales engagement, and revenue intelligence. Affinity here is affinity.co (relationship CRM), not the photo editor on Canva. HubSpot stays Email. Zendesk / Intercom / Gorgias stay Support. ActiveCampaign stays Email. monday.com / ClickUp stay Collab. Salesforce Service Cloud / Commerce Cloud / Tableau / Quip stay on Salesforce. Zoho CRM waits (StatusIQ HTML). Freshworks CRM waits (Freshstatus, no public JSON). Dynamics 365 waits (Office 365 is login-walled). Insightly waits (wordmark only). Nutshell / HighLevel / Thryv / Keap wait (no isolated official SVG). SugarCRM waits (no public Statuspage JSON). Folk / Twenty wait (no public JSON).
 
 ## Run
 
@@ -23,7 +23,7 @@ npm run build
 
 Live-data foundation for the board: a Railway Postgres database plus a small Node
 worker in [`worker/`](worker/). The worker owns the schema (`services`,
-`service_snapshots`, `components`, `incidents`, `service_suggestions`), seeds the 231 board services,
+`service_snapshots`, `components`, `incidents`, `service_suggestions`), seeds the 488 board services,
 and ticks on a configurable interval (default every 5 minutes). Each tick fetches
 live status for services with a fetcher — OpenAI, Anthropic, Groq, Cohere,
 Fireworks, Cerebras, Replicate, Runway, Ideogram, Stability, ElevenLabs,
@@ -96,7 +96,98 @@ Embrace), and Dash0 via `https://dash0status.com` (the public host
   (the public host redirects `/api/v2`), Email Wave C Statuspage hosts
   (ActiveCampaign, GetResponse, EmailOctopus, OneSignal, HubSpot,
   Help Scout), and Nylas via `https://status-v3.nylas.com`
-  (the public host redirects)
+  (the public host redirects), Design Wave A Statuspage hosts
+  (Figma, Canva, Miro, Webflow, Lucid, Mural, Frontify), and Framer
+  via Better Stack `index.json`, Design Wave B Statuspage hosts
+  (Marvel, Balsamiq, Anima), Design Wave C Statuspage hosts
+  (Beautiful.ai, Jitter via `jitter.statuspage.io`), Infra Wave A
+  Statuspage hosts (Terraform / Vault / Consul / Nomad / Packer via
+  `status.hashicorp.com`, Pulumi, Chef, Spacelift via
+  `spacelift.statuspage.io`, Crossplane via `status.upbound.io`),
+  Infra Wave B Statuspage hosts (Puppet via `puppet.statuspage.io`,
+  Scalr via `status.scalr.io`),   Infra Wave C Statuspage hosts
+  (Teleport via `status.goteleport.com`), Flags Wave A
+  Statuspage hosts (LaunchDarkly, Optimizely, Statsig,
+  Flagsmith), DevCycle via Status.io
+  (`api.status.io/1.0/status/{pageId}`), Flags Wave B
+  Statuspage hosts (CloudBees via `www.cloudbeesstatus.com`,
+  Kameleoon via `kameleoon.statuspage.io`, Monetate via
+  `monetate.statuspage.io`), Reflag via Instatus,
+  Flags Wave C Statuspage hosts (Bloomreach), Omniconvert via
+  Better Stack `index.json`, Analytics Wave A Statuspage hosts
+  (Amplitude, Mixpanel via `www.mixpanelstatus.com`, Segment,
+  Heap, Pendo, RudderStack), Plausible via Better Stack
+  `index.json`, Analytics Wave B Statuspage hosts (Woopra,
+  Treasure Data via `status.treasure.ai`, AppsFlyer, Branch,
+  Hightouch via `status.hightouch.io`), Analytics Wave C
+  Statuspage hosts (Singular, Airbridge, Lytics via
+  `lytics.statuspage.io`, Polytomic, Baremetrics, Quantcast,
+  Metabase, Hex), Security Wave A Statuspage hosts (Snyk, Wiz,
+  SentinelOne, Semgrep, Veracode, Tenable, Qualys, Vanta,
+  Rapid7, Socket), Security Wave B Statuspage hosts (Aqua,
+  Orca, Sysdig, GitGuardian, Secureframe, Palo Alto Networks,
+  Imperva, Upwind, FOSSA, Mend), Security Wave C Statuspage
+  hosts (HUMAN, Tailscale, Twingate, DigiCert,
+  SecurityScorecard, KnowBe4, Bugcrowd, Sonar), Chainguard
+  via Better Stack `index.json`, Let's Encrypt via Status.io
+  (`api.status.io/1.0/status/{pageId}`), Support Wave A
+  Statuspage hosts (Gorgias, Talkdesk, Aircall, LiveChat,
+  Kustomer, Dixa, Kayako, Helpshift), Intercom via
+  `www.finstatus.com` (the public `intercomstatus.com` host
+  redirects `/api/v2`), Zendesk via `/api/ssp/services.json`
+  and `/api/ssp/incidents.json`, Support Wave B Statuspage
+  hosts (UserVoice, Ada, Plain, Forethought, Gladly via
+  `gladly.statuspage.io`, Genesys via `status.mypurecloud.com`,
+  Deskpro, Olark, HelpDesk), Chatwoot via Better Stack
+  `index.json`, Support Wave C Statuspage hosts (Tidio,
+  TeamSupport, Dialpad, Khoros, Lime Connect, Assembled,
+  Cresta, Observe.AI, Helpjuice), SysAid via Instatus,
+  Collab Wave A Statuspage hosts (Notion, Jira via
+  `jira-software.status.atlassian.com`, Asana, monday.com,
+  Discord, Zoom, Trello via `trello.status.atlassian.com`,
+  Airtable), ClickUp via `clickup.statuspage.io` (the public
+  host redirects `/api/v2`), Slack via
+  `slack-status.com/api/v2.0.0/current`,
+  Collab Wave B Statuspage hosts (Confluence via
+  `confluence.status.atlassian.com`, Loom via
+  `loom.status.atlassian.com`, Coda, Mattermost,
+  Smartsheet, Shortcut, Teamwork, Productboard,
+  Aha!, Hive),
+  Collab Wave C Statuspage hosts (Calendly via
+  `calendlystatus.com` — the public host serves HTML for
+  `/api/v2`, Basecamp via `www.37status.com`, Zulip,
+  Element, Plane, Guru, Tettra, Livestorm, Fellow,
+  Fireflies via `fireflies.statuspage.io` — the public host
+  has no `/api/v2`),
+  Docs Wave A Statuspage hosts (GitBook via
+  `www.gitbookstatus.com`, ReadMe via `www.readmestatus.com`,
+  Mintlify, Fern via `status.buildwithfern.com`, Archbee,
+  Stoplight via `stoplight.status.smartbear.com`, SwaggerHub
+  via `swagger.status.smartbear.com`, KnowledgeOwl via
+  `knowledgeowl.statuspage.io` — the public host login-walls,
+  Document360 via `document360.statuspage.io` — the public
+  host is HTML, Bump via `bump.statuspage.io` — the public
+  host is HTML),
+  Commerce Wave A Statuspage hosts (Shopify via
+  `www.shopifystatus.com`, BigCommerce, Ecwid, Saleor,
+  Medusa via `status.medusajs.com`, Commerce Layer,
+  Elastic Path, Lightspeed via `status.lightspeedhq.com`,
+  Swell via `status.swell.store`, VTEX),
+  Commerce Wave B Statuspage hosts (Nacelle, Volusion, Alokai,
+  SHOPLINE via `status.shopline.com`, Tapcart via
+  `tapcart.statuspage.io` — the public host does not resolve,
+  Pack via `status.packdigital.com`, Bold Commerce, Mirakl,
+  Sharetribe, Printful via `www.printfulstatus.com`),
+  CRM Wave A Statuspage hosts (Copper, Close via
+  `status.close.com`, Capsule via `status.capsulecrm.com`,
+  Salesloft, Apollo via `apollo.statuspage.io` — the public
+  host serves HTML for `/api/v2`), Attio and Gong via Instatus.
+  Salesforce Trust, Pipedrive, and Outreach stay none
+  (custom HTML, no Statuspage JSON),
+  CRM Wave B Statuspage hosts (Affinity via
+  `status.affinity.co`, ZoomInfo, Streak, Clari via
+  `trust.clari.com`, Lusha, Teamleader via
+  `status.teamleader.eu`, Orum)
 — and upserts snapshot,
 component, and incident rows. On a failed fetch the worker keeps last-known rows
 and flags the latest snapshot `stale`.
@@ -118,7 +209,7 @@ and flags the latest snapshot `stale`.
 cd worker
 npm install
 export DATABASE_URL=postgres://user:pass@localhost:5432/statussy
-npm run migrate   # apply migrations + seed the 231 services, then exit
+npm run migrate   # apply migrations + seed the 488 services, then exit
 npm run dev       # migrate, seed, tick on the interval, serve /healthz
 ```
 
@@ -207,7 +298,7 @@ its slot now holds the live Health chicklet.
 {
   id: "service-id",
   name: "Service Name",
-  category: "ai", // or "cloud" | "developer" | "data" | "auth" | "payments" | "observability" | "email"
+  category: "ai", // or "cloud" | "developer" | "data" | "auth" | "payments" | "observability" | "email" | "design" | "infra" | "flags" | "analytics" | "security" | "support" | "collab" | "docs"
   statusUrl: "https://status.example.com/",
   status: "operational", // operational | degraded | partial_outage | major_outage | maintenance
   incidentTitle: "Optional short incident title",
