@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 49 35" role="img" aria-hidden="true">
+  <title>Treasure Data</title>
+  <defs>
+    <linearGradient id="linear-gradient" x1="8.77" y1="24.99" x2="36.37" y2="-2.61" gradientUnits="userSpaceOnUse">
+      <stop offset=".03" stop-color="#ff86b4"/>
+      <stop offset=".04" stop-color="#fa84b7"/>
+      <stop offset=".16" stop-color="#c572dd"/>
+      <stop offset=".25" stop-color="#a468f5"/>
+      <stop offset=".31" stop-color="#9864ff"/>
+      <stop offset=".38" stop-color="#8470ff"/>
+      <stop offset=".68" stop-color="#3d9cff"/>
+      <stop offset=".89" stop-color="#11b8ff"/>
+      <stop offset="1" stop-color="#00c3ff"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-2" x1="27.59" y1="6.2" x2="27.59" y2="-2.87" gradientUnits="userSpaceOnUse">
+      <stop offset=".07" stop-color="#fff"/>
+      <stop offset=".89" stop-color="#00baff"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-3" x1="37.86" y1="5.64" x2="53.11" y2="5.64" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff"/>
+      <stop offset=".89" stop-color="#30c4ff"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-4" x1="26.59" y1="19.19" x2="44.85" y2="22.6" gradientUnits="userSpaceOnUse">
+      <stop offset=".03" stop-color="#7b32dc"/>
+      <stop offset=".98" stop-color="#32bdff"/>
+    </linearGradient>
+  </defs>
+  <path d="M26.13,32.45l21.56-21.56c.9-.9.9-2.36,0-3.26l-5.66-5.66c-.7-.7-1.65-1.09-2.64-1.09H9.61c-.99,0-1.94.39-2.64,1.09L1.31,7.63c-.9.9-.9,2.36,0,3.26l21.56,21.56c.9.9,2.36.9,3.26,0Z" style="fill:url(#linear-gradient);"/>
+  <path d="M6.81,2.12c.78-.78,1.9-1.12,2.98-.9l37.44,7.61c.75.15,1.1.94.82,1.58.51-.88.39-2.03-.36-2.78l-5.66-5.66c-.7-.7-1.65-1.09-2.64-1.09H9.61c-.99,0-1.94.39-2.64,1.09l-.16.16Z" style="fill:url(#linear-gradient-2); opacity:.4;"/>
+  <path d="M40.13,2.51l-2.19,4.43,9.3,1.89c.75.15,1.1.94.82,1.58.51-.88.39-2.03-.36-2.78l-5.66-5.66c-.7-.7-1.65-1.09-2.64-1.09h-.29c.84,0,1.39.89,1.02,1.64Z" style="fill:url(#linear-gradient-3); opacity:.6;"/>
+  <path d="M48.06,10.41c.28-.63-.08-1.43-.82-1.58l-9.3-1.89-12.49,25.22c-.35.71-1.14,1-1.83.79.84.35,1.83.18,2.51-.5l21.56-21.56c.15-.15.27-.31.36-.48h0Z" style="fill:url(#linear-gradient-4);"/>
+</svg>
