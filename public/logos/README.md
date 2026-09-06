@@ -457,5 +457,42 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `stoplight.svg` | Stoplight | `#149CF4` | Official mark from [stoplight.io Stoplight Logo.svg](https://stoplight.io/) |
 | `swaggerhub.svg` | SwaggerHub | `#85EA2D` | Simple Icons `swagger` (Swagger / SwaggerHub mark) |
 | `bump.svg` | Bump | `#FFFFFF` | Official mark from [bump.sh/favicon.svg](https://bump.sh/favicon.svg); official `#22222A` knocked to white |
+| `shopify.svg` | Shopify | `#7AB55C` | Simple Icons `shopify` |
+| `bigcommerce.svg` | BigCommerce | `#FFFFFF` | Simple Icons `bigcommerce`; official `#121118` knocked to white |
+| `ecwid.svg` | Ecwid | `#FFFFFF` | Official bag from [ecwid.com favicon.svg](https://don16obqbay2c.cloudfront.net/favicons/favicon.svg) (rounded tile and wordmark dropped) |
+| `saleor.svg` | Saleor | `#FFFFFF` | Official parallelogram from [docs.saleor.io/img/logo.svg](https://docs.saleor.io/img/logo.svg) (wordmark dropped); official `#161A1E` knocked to white |
+| `medusa.svg` | Medusa | `#FFFFFF` | Simple Icons `medusa`; official black knocked to white |
+| `commercelayer.svg` | Commerce Layer | `#FFFFFF` | Official mark from [commercelayer.io/favicon.svg](https://commercelayer.io/favicon.svg); official `#101111` knocked to white |
+| `elasticpath.svg` | Elastic Path | `#2BCC7E` | Official chevron from [developer.elasticpath.com/logo/dark.svg](https://developer.elasticpath.com/logo/dark.svg) (wordmark dropped) |
+| `lightspeed.svg` | Lightspeed | `#E81C1C` | Official mark from [lightspeedhq.com/favicon.svg](https://www.lightspeedhq.com/favicon.svg) |
+| `swell.svg` | Swell | `#FFFFFF` | Official S from [swell.is/swell-logo.svg](https://www.swell.is/swell-logo.svg) (wordmark dropped) |
+| `vtex.svg` | VTEX | `#ED125F` | Simple Icons `vtex` |
+| `nacelle.svg` | Nacelle | `#5029F1` / `#A40DCE` / `#00D085` | Official orb from [nacelle.com logo.svg](https://nacelle.com/hubfs/Nacelle%20Logo/logo.svg) (wordmark dropped) |
+| `volusion.svg` | Volusion | `#8759F2` / `#FF3E80` / `#FFC300` / `#00D4E6` | Official diamond from [volusion.com color-logo](https://media.volusion.com/image/upload/v1754318723/logos/color-logo_owvv3n.svg) (wordmark dropped) |
+| `alokai.svg` | Alokai | `#0AD36B` | Official mark from [alokai-logo.svg](https://images.contentstack.io/v3/assets/bltb1a38d5d52a9d1a1/blt847d04e30da9e1dc/65dc9501f86c24118b8df9d8/alokai-logo.svg) (wordmark dropped) |
+| `shopline.svg` | SHOPLINE | `#333F48` | Official tag from [shoplineapp.com sprite logo](https://cdn.shoplineapp.com/assets/sprite/logo-48b2fd01fa2653845ef016f51c2afd24348e24d3baa800648ba700ddb313867e.svg) (wordmark dropped) |
+| `tapcart.svg` | Tapcart | `#3F1EFB` | Official mark from [tapcart.com favicon.svg](https://cdn.prod.website-files.com/616f0a7a027baaf59a43390b/62293c4fecc5b94c611bc4e0_favicon.svg) |
+| `pack.svg` | Pack | `#00BE8E` | Official hex from [packdigital.com/icon.svg](https://www.packdigital.com/icon.svg) (rounded tile dropped) |
+| `bold.svg` | Bold Commerce | `#E60046` | Official BOLD mark from [developer.boldcommerce.com/assets/images/logo.svg](https://developer.boldcommerce.com/assets/images/logo.svg) (Commerce wordmark dropped) |
+| `mirakl.svg` | Mirakl | `#FFFFFF` | Official globe from [mirakl.com favicon-light.svg](https://www.mirakl.com/media/favicons/favicon-light.svg); official `#03182F` knocked to white |
+| `sharetribe.svg` | Sharetribe | `#F7615E` | Official mark from [sharetribe.com/safari-pinned-tab.svg](https://www.sharetribe.com/safari-pinned-tab.svg) |
+| `printful.svg` | Printful | Official triangle colors | Official mark from [printful.com logo-icon.svg](https://static.cdn.printful.com/static/v879/images/layout/logo-icon.svg) |
+| `salesforce.svg` | Salesforce | `#00B3FF` | Official cloud from [salesforce.com logo-salesforce-no-type.svg](https://wp.sfdcdigital.com/en-us/wp-content/uploads/sites/4/2026/05/logo-salesforce-no-type.svg) (wordmark dropped) |
+| `pipedrive.svg` | Pipedrive | `#017737` | Official P from the [Wikimedia Pipedrive lockup](https://commons.wikimedia.org/wiki/File:Pipedrive_logo.svg) (wordmark dropped) |
+| `copper.svg` | Copper | `#FF3465` | Official colon from [copper.com logo](https://cdn.prod.website-files.com/69bdc11d6d8dca48c8a32ff4/69c58163b6548ea11daddf60_copper%20logo%20-%20black.svg) (wordmark dropped) |
+| `close.svg` | Close | `#4EC375` / `#1463FF` / `#FFBC00` | Official overlapping-circle mark from [close.com logo-dark-large.svg](https://cdn.prod.website-files.com/61717799a852418a278cfa9b/6876a6daecee99d3bff05939_logo-dark-large.svg) (wordmark dropped) |
+| `attio.svg` | Attio | `#FFFFFF` | Official crystal from [attio.com Storyblok attio.svg](https://a.storyblok.com/f/234930/18x18/cfb7753a31/attio.svg); official `#232529` knocked to white |
+| `capsule.svg` | Capsule | `#453DD8` | Official mark from [app.capsulecrm.com/favicon.svg](https://app.capsulecrm.com/favicon.svg) (rounded tile dropped) |
+| `salesloft.svg` | Salesloft | `#FFFFFF` | Official constellation from [salesloft.com/icon.svg](https://www.salesloft.com/icon.svg) (rounded tile dropped); official `#181818` knocked to white |
+| `outreach.svg` | Outreach | `#FFFFFF` | Official mark from [status.outreach.io](https://status.outreach.io/bfe7482c1d714fd2.svg); light lockup knocked to white |
+| `apollo.svg` | Apollo | `#FFFFFF` | Official mark from [apollo.io logo.svg](https://www.apollo.io/_next/static/media/logo.0pq8s8~3b84w1.svg); official `#1F1F1E` knocked to white |
+| `gong.svg` | Gong | `#FFFFFF` | Official mark from [gong.io/marketing-assets/favicon.svg](https://www.gong.io/marketing-assets/favicon.svg) (rounded tile dropped) |
+| `affinity.svg` | Affinity | `#2665F1` | Official geometric mark from the [affinity.co](https://www.affinity.co/) lockup (wordmark dropped). Not Simple Icons `affinity` (photo editor). |
+| `zoominfo.svg` | ZoomInfo | `#EA1B15` | Official Z from [zoominfo.com zoominfo-red-logomark.svg](https://www.zoominfo.com/) (rounded tile dropped) |
+| `streak.svg` | Streak | `#F5A623` / `#00A99D` / `#4A90E2` | Official kanban cards from the [streak.com](https://www.streak.com/) lockup (wordmark + rounded tile dropped) |
+| `clari.svg` | Clari | `#00D7B8` / `#5F3AD7` / `#0280FF` / `#FFFFFF` | Official fan from [clari.com logo-white.svg](https://www.clari.com/) (wordmark dropped) |
+| `lusha.svg` | Lusha | `#863FFF` | Official bird from the [lusha.com](https://www.lusha.com/) 2026 mark (tile dropped) |
+| `teamleader.svg` | Teamleader | `#00B2B2` | Official chevrons from [teamleader.eu icon.svg](https://www.teamleader.eu/) (circle tile dropped) |
+| `orum.svg` | Orum | `#FCFF70` | Official petals from the [orum.com](https://www.orum.com/) favicon (dark tile dropped) |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.
