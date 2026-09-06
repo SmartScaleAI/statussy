@@ -99,6 +99,28 @@ test("extractIncidentStatus recognizes resolved, ongoing and vendor states", () 
   assert.equal(extractIncidentStatus(makeItem({ categories: ["resolved"] })), "resolved")
   // Nothing recognizable -> treated as an open incident.
   assert.equal(extractIncidentStatus(makeItem({ text: "something broke" })), "investigating")
+  // PayPal (SMA-75) puts lifecycle in the title prefix.
+  assert.equal(
+    extractIncidentStatus(
+      makeItem({ title: "Resolved: Impact to Refunds", text: "The issue has been resolved." }),
+    ),
+    "resolved",
+  )
+  assert.equal(
+    extractIncidentStatus(
+      makeItem({
+        title: "Initial Notification: PayPal Live Site Maintenance",
+        text: "Initial Notification: routine maintenance",
+      }),
+    ),
+    "investigating",
+  )
+  assert.equal(
+    extractIncidentStatus(
+      makeItem({ title: "Postponed: Venmo Maintenance", text: "Postponed: next week" }),
+    ),
+    "completed",
+  )
 })
 
 test("extractIncidentStatus reads Rootly [State] prefixes (Replit)", () => {
@@ -217,6 +239,28 @@ test("mapRssFeed respects maxIncidents and skips id-less items", () => {
     state.incidents.map((i) => i.externalId),
     ["a", "b"],
   )
+})
+
+test("parseFeed + mapRssFeed reads the PayPal RSS fixture", async () => {
+  const xml = await readFile(join(FIXTURES, "paypal-feed.rss"), "utf8")
+  const items = parseFeed(xml)
+  assert.equal(items.length, 3)
+  assert.equal(items[0].externalId, "https://www.paypal-status.com/history/eventdetails/108260")
+  assert.match(items[0].title, /^Initial Notification:/)
+  assert.match(items[0].text, /routine maintenance/)
+
+  const state = mapRssFeed(items, {
+    feedUrl: "https://www.paypal-status.com/feed/rss",
+    feedTitle: "PayPal Status - Event History",
+    lastBuildDate: "Sun, 06 Sep 2026 12:58:31 GMT",
+  })
+
+  assert.equal(state.status, "maintenance")
+  assert.equal(state.incidentTitle, "Initial Notification: PayPal Live Site Maintenance (PP-LIVE-108260)")
+  assert.equal(state.incidents.length, 3)
+  assert.equal(state.incidents[0].status, "investigating")
+  assert.equal(state.incidents[1].status, "resolved")
+  assert.equal(state.incidents[2].status, "completed")
 })
 
 test("mapRssFeed of an empty feed is operational with no incidents", () => {

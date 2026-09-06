@@ -165,7 +165,6 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `whop.svg` | Whop | `#FA4616` | Official brandmark from [brand.whop.com](https://brand.whop.com/images/logos/whop_brandmark_orange.svg) (Vermilion) |
 | `wise.svg` | Wise | `#9FE870` / `#163300` | Official mark from [Wise wise-mark.svg](https://dq8dwmysp7hk1.cloudfront.net/logos/wise-mark.svg) |
 | `authorize-net.svg` | Authorize.net | `#FFFFFF` / `#0075FF` / `#FFC300` | Official wordmark from the [authorize.net](https://www.authorize.net/content/dam/anet-redesign/anet-logo-footer.svg) footer lockup (Visa solution line dropped); white + official dots so the dark-footer lockup reads on dark |
-| `flutterwave.svg` | Flutterwave | `#009A46` / `#FF5805` / `#F5AFCB` / `#FF9B00` | Official arc mark from [flutterwave.com/images/logo/full.svg](https://flutterwave.com/images/logo/full.svg) (wordmark dropped) |
 | `airwallex.svg` | Airwallex | Official orange–red gradient | Official A from the [airwallex/airwallex-marketplace](https://github.com/airwallex/airwallex-marketplace/blob/master/plugins/airwallex-dev/assets/logo.svg) lockup (wordmark dropped) |
 | `marqeta.svg` | Marqeta | `#FFFFFF` | Official M from the [marqeta.com](https://www.marqeta.com/) Contentful lockup (wordmark dropped); white so official `#272358` reads on dark |
 | `lithic.svg` | Lithic | `#F5F2F0` | Official parallelograms from [lithic-com/api-demo](https://github.com/lithic-com/api-demo/blob/master/public/Lithic-light-logo-mark.svg) (on-dark mark) |

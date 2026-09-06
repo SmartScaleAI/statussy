@@ -1,12 +1,14 @@
 /**
- * RSS/Atom status-feed fetcher + mapper (SMA-22: xAI + DeepSeek).
+ * RSS/Atom status-feed fetcher + mapper (SMA-22: xAI + DeepSeek;
+ * SMA-69: Replit Rootly history RSS; SMA-75: PayPal `/feed/rss` + `/feed/atom`).
  *
  * Unlike Statuspage-compatible services there is no summary endpoint: the feed is a
  * flat list of incident items. Each item embeds its lifecycle state in the
  * description HTML ("Status: RESOLVED" for xAI, "<strong>Status:</strong>
- * resolved" for DeepSeek), so we strip tags and parse best-effort. Overall
- * service status is derived from open (unresolved) incidents; a clean feed
- * means operational. Components are intentionally not extracted — neither
+ * resolved" for DeepSeek), a Rootly `[Resolved]` prefix (Replit), or a
+ * title/body colon prefix (PayPal), so we strip tags and parse best-effort.
+ * Overall service status is derived from open (unresolved) incidents; a clean
+ * feed means operational. Components are intentionally not extracted — neither
  * feed carries a reliable component grid (out of scope per SMA-22).
  */
 
@@ -194,12 +196,43 @@ function extractRootlyBracketStatus(text: string): string | null {
 }
 
 /**
+ * PayPal titles/bodies use a lifecycle prefix instead of "Status:":
+ * "Resolved:", "Initial Notification:", "Postponed:".
+ */
+function lifecycleFromPrefix(text: string): string | null {
+  const prefix = text
+    .match(
+      /^(resolved|postponed|cancelled|canceled|identified|monitoring|investigating|initial notification|update(?:\s+\d+)?)\s*:/i,
+    )?.[1]
+    ?.trim()
+    .toLowerCase()
+  if (!prefix) {
+    return null
+  }
+  if (prefix === "resolved") {
+    return "resolved"
+  }
+  if (prefix === "postponed" || prefix === "cancelled" || prefix === "canceled") {
+    return "completed"
+  }
+  if (prefix === "identified" || prefix === "monitoring") {
+    return prefix
+  }
+  return "investigating"
+}
+
+/**
  * Extract the incident lifecycle state from an item. Both xAI and DeepSeek
  * embed a "Status: <state>" line in the description; xAI additionally tags
- * a "resolved" category and a "Resolved: <date>" line. Rootly (Replit)
- * prefixes the body with `[Resolved]` / `[Investigating]`.
+ * a "resolved" category and a "Resolved: <date>" line. PayPal (SMA-75)
+ * puts the lifecycle in the title prefix. Rootly (Replit) prefixes the
+ * body with `[Resolved]` / `[Investigating]`.
  */
 export function extractIncidentStatus(item: RssItem): string {
+  const fromTitle = lifecycleFromPrefix(item.title)
+  if (fromTitle) {
+    return fromTitle
+  }
   const bracket = extractRootlyBracketStatus(item.text)
   if (bracket) {
     return bracket
@@ -216,6 +249,10 @@ export function extractIncidentStatus(item: RssItem): string {
   }
   if (/^resolved:\s*\S/im.test(item.text)) {
     return "resolved"
+  }
+  const fromText = lifecycleFromPrefix(item.text)
+  if (fromText) {
+    return fromText
   }
   // Unrecognized state word (e.g. a vendor-specific label): keep it verbatim
   // so the UI can show it; unknown words are treated as open incidents.

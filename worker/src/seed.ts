@@ -11,7 +11,7 @@ import type pg from "pg"
  * Windsurf is the legacy Devin Desktop name and is not seeded separately.
  * GitHub Copilot is a GitHub component, not its own card.
  *
- * `category` defaults to `ai` when omitted. PayPal, Adyen, Adobe,
+ * `category` defaults to `ai` when omitted. Adobe,
  * Sketch, Penpot, Rive, LottieFiles, Whimsical, Lunacy, Photopea,
  * Blender, Moqups, Proto.io, UXPin, Overflow, Axure, Relume, Visily,
  * Plasmic
@@ -984,7 +984,7 @@ export const SERVICE_SEED = [
     name: "PayPal",
     category: "payments",
     statusUrl: "https://www.paypal-status.com/",
-    fetcherType: "none",
+    fetcherType: "rss",
   },
   {
     id: "square",
@@ -998,7 +998,7 @@ export const SERVICE_SEED = [
     name: "Adyen",
     category: "payments",
     statusUrl: "https://status.adyen.com/",
-    fetcherType: "none",
+    fetcherType: "adyen",
   },
   {
     id: "paddle",
@@ -1096,13 +1096,6 @@ export const SERVICE_SEED = [
     name: "Authorize.net",
     category: "payments",
     statusUrl: "https://status.authorize.net/",
-    fetcherType: "statuspage",
-  },
-  {
-    id: "flutterwave",
-    name: "Flutterwave",
-    category: "payments",
-    statusUrl: "https://status.flutterwave.com/",
     fetcherType: "statuspage",
   },
   {
@@ -3270,7 +3263,7 @@ export const SERVICE_SEED = [
   },
 ] as const
 
-/** Dropped in SMA-45 / SMA-72 / SMA-73: marketing/docs homepages or no pollable board. */
+/** Dropped in SMA-45 / SMA-72 / SMA-73 / SMA-75: no pollable board or inactive Statuspage. */
 export const REMOVED_SERVICE_IDS = [
   "umami",
   "goatcounter",
@@ -3299,6 +3292,7 @@ export const REMOVED_SERVICE_IDS = [
   "opa",
   "kyverno",
   "cert-manager",
+  "flutterwave",
 ] as const
 
 function seedCategory(service: { id: string }): string {
