@@ -3143,7 +3143,7 @@ export const SERVICE_SEED = [
     name: "Document360",
     category: "docs",
     statusUrl: "https://status.document360.com/",
-    fetcherType: "statuspage",
+    fetcherType: "admin_labs",
   },
   {
     id: "knowledgeowl",
@@ -3161,7 +3161,7 @@ export const SERVICE_SEED = [
   },
   {
     id: "swaggerhub",
-    name: "SwaggerHub",
+    name: "Swagger",
     category: "docs",
     statusUrl: "https://swagger.status.smartbear.com/",
     fetcherType: "statuspage",
@@ -3171,7 +3171,7 @@ export const SERVICE_SEED = [
     name: "Bump",
     category: "docs",
     statusUrl: "https://status.bump.sh/",
-    fetcherType: "statuspage",
+    fetcherType: "uptime_com",
   },
   {
     id: "shopify",

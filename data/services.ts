@@ -3754,7 +3754,9 @@ export const services: Service[] = [
     updatedAt: "2026-09-06T01:30:00.000Z",
   },
   // Docs Wave A — documentation platforms, knowledge bases, and
-  // API/docs portals with public Statuspage JSON. Notion /
+  // API/docs portals. Most rows are Statuspage. Document360 is
+  // Admin Labs HTML. Bump is Uptime.com (status.bump.sh).
+  // SwaggerHub is seeded as Swagger (SmartBear rebrand). Notion /
   // Confluence / Coda / Guru / Tettra stay Collab. Helpjuice
   // stays Support. Help Scout Docs stays Email. Postman docs
   // stay Developer. Headless CMS and Ghost stay off.
@@ -3824,7 +3826,7 @@ export const services: Service[] = [
   },
   {
     id: "swaggerhub",
-    name: "SwaggerHub",
+    name: "Swagger",
     category: "docs",
     statusUrl: "https://swagger.status.smartbear.com/",
     status: "operational",
