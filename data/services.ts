@@ -3054,10 +3054,12 @@ export const services: Service[] = [
     updatedAt: "2026-09-06T00:00:00.000Z",
   },
   {
+    // Public Fin status host. Worker fetches www.finstatus.com
+    // because intercomstatus.com/api/v2 returns HTML (SMA-61/77).
     id: "intercom",
-    name: "Intercom",
+    name: "Intercom Fin",
     category: "support",
-    statusUrl: "https://www.intercomstatus.com/",
+    statusUrl: "https://www.finstatus.com/",
     status: "operational",
     updatedAt: "2026-09-06T00:00:00.000Z",
   },
@@ -3158,7 +3160,7 @@ export const services: Service[] = [
   },
   {
     id: "forethought",
-    name: "Forethought",
+    name: "Forethought AI",
     category: "support",
     statusUrl: "https://status.forethought.ai/",
     status: "operational",

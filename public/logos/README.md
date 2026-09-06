@@ -360,7 +360,7 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `sonar.svg` | Sonar | `#FD3456` | Simple Icons `sonar` |
 | `lets-encrypt.svg` | Let's Encrypt | `#003A70` + `#FFA400` | Official lock from [letsencrypt.org/images/le-logo-lockonly.svg](https://letsencrypt.org/images/le-logo-lockonly.svg) |
 | `zendesk.svg` | Zendesk | `#FFFFFF` | Simple Icons `zendesk`; official `#03363D` knocked to white |
-| `intercom.svg` | Intercom | `#6AFDEF` | Simple Icons `intercom` |
+| `intercom.svg` | Intercom Fin | `#6AFDEF` | Simple Icons `intercom` |
 | `gorgias.svg` | Gorgias | `#FFFFFF` | Official chat window from [gorgias.com Gorgias Logo - Black.svg](https://www.gorgias.com/) (wordmark dropped); official black knocked to white |
 | `talkdesk.svg` | Talkdesk | `#5405BD` | Official three-dot mark from [talkdesk.com talkdesk_logo-4.svg](https://www.talkdesk.com/) (wordmark dropped) |
 | `aircall.svg` | Aircall | `#00B388` | Simple Icons `aircall` |
@@ -372,7 +372,7 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `uservoice.svg` | UserVoice | `#FF6720` | Simple Icons `uservoice` |
 | `ada.svg` | Ada | `#FFFFFF` | Official mark from [docs.ada.cx logo-light.svg](https://docs.ada.cx/) (wordmark dropped); official `#0A0B0C` knocked to white |
 | `plain.svg` | Plain | `#1AD379` | Official mark from [plain.com wordmark](https://www.plain.com/) (letters dropped) |
-| `forethought.svg` | Forethought | `#FFFFFF` | Official stacked-brick mark from [forethought.ai Isolation_Mode.svg](https://www.forethought.ai/) (wordmark dropped); official `#F7FDFC` knocked to white |
+| `forethought.svg` | Forethought AI | `#FFFFFF` | Official stacked-brick mark from [forethought.ai Isolation_Mode.svg](https://www.forethought.ai/) (wordmark dropped); official `#F7FDFC` knocked to white |
 | `gladly.svg` | Gladly | `#74AA9C` + white | Official mark from [gladly.com](https://www.gladly.com/) |
 | `genesys.svg` | Genesys | `#FF451A` | Official G from [genesys.com genesys-com-full-color.svg](https://www.genesys.com/) (wordmark dropped) |
 | `deskpro.svg` | Deskpro | `#FFFFFF` | Official D from [deskpro.com Deskpro/deskpro-logo.svg](https://www.deskpro.com/) (wordmark dropped); official `#090C2F` knocked to white |
