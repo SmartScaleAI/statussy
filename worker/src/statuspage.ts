@@ -353,3 +353,71 @@ export async function fetchStatuspageGroupState(
   const { root, summary, incidents } = await fetchStatuspagePayloads(baseUrl, options)
   return mapStatuspageGroup(summary, incidents, root, filter)
 }
+
+export type StatuspageNameFilter = {
+  /** Case-insensitive substring matched against component and incident names. */
+  nameIncludes: string
+}
+
+/** Leaf components whose name mentions the product (not group headers). */
+export function selectStatuspageNamedComponents(
+  components: StatuspageComponent[] | null | undefined,
+  nameIncludes: string,
+): StatuspageComponent[] {
+  const needle = nameIncludes.toLowerCase()
+  return (components ?? []).filter(
+    (component) =>
+      component.group !== true &&
+      Boolean(component.id) &&
+      Boolean(component.name) &&
+      component.name.toLowerCase().includes(needle),
+  )
+}
+
+function openIncidentStatus(impact: string | null): ServiceStatus {
+  return impact ? mapIndicator(impact) : "degraded"
+}
+
+/**
+ * Map one product slice of a shared Statuspage (e.g. HashiCorp HCP).
+ * Overall status comes from matching components + open incidents, not
+ * the host-page HCP rollup. Empty matches stay operational — do not
+ * clone the shared indicator.
+ */
+export function mapStatuspageNameFilter(
+  summary: StatuspageSummary,
+  incidents: StatuspageIncident[],
+  baseUrl: string,
+  filter: StatuspageNameFilter,
+): MappedServiceState {
+  const children = selectStatuspageNamedComponents(summary.components, filter.nameIncludes)
+  const componentIds = new Set(children.map((component) => component.id))
+  const filteredIncidents = incidents.filter((incident) =>
+    incidentTouchesComponents(incident, componentIds, filter.nameIncludes),
+  )
+  const mapped = mapStatuspage({ ...summary, components: children }, filteredIncidents, baseUrl)
+  const fromComponents = worstStatus(mapped.components.map((component) => component.status))
+  const fromIncidents = worstStatus(
+    mapped.incidents
+      .filter((incident) => OPEN_INCIDENT_STATUSES.has(incident.status))
+      .map((incident) => openIncidentStatus(incident.impact)),
+  )
+  return {
+    ...mapped,
+    status: worstStatus([fromComponents, fromIncidents]),
+    detail: {
+      ...mapped.detail,
+      source: "statuspage_name",
+      nameIncludes: filter.nameIncludes,
+    },
+  }
+}
+
+export async function fetchStatuspageNameFilterState(
+  baseUrl: string,
+  options: FetchOptions,
+  filter: StatuspageNameFilter,
+): Promise<MappedServiceState> {
+  const { root, summary, incidents } = await fetchStatuspagePayloads(baseUrl, options)
+  return mapStatuspageNameFilter(summary, incidents, root, filter)
+}

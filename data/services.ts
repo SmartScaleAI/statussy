@@ -2235,11 +2235,12 @@ export const services: Service[] = [
   },
   // Infra Wave A — where you provision, configure, and secret the
   // running app (IaC, schedulers, service discovery, vaults). One
-  // card per HashiCorp product (Terraform vs Vault fail independently).
-  // CloudFormation / CDK stay on AWS. ARM stays on Azure. Deployment
-  // Manager stays on GCP. Docker stays Developer. Harness stays
-  // Developer. Kubernetes is not a vendor card. Dagger, Earthly,
-  // Boundary, Atlantis, and Spinnaker wait.
+  // card per HashiCorp product; each filters status.hashicorp.com
+  // (SMA-73) so Terraform / Vault / Consul / Nomad / Packer do not
+  // clone the HCP rollup. CloudFormation / CDK stay on AWS. ARM
+  // stays on Azure. Deployment Manager stays on GCP. Docker stays
+  // Developer. Harness stays Developer. Kubernetes is not a vendor
+  // card. Dagger, Earthly, Boundary, Atlantis, and Spinnaker wait.
   {
     id: "terraform",
     name: "Terraform",
@@ -2320,47 +2321,16 @@ export const services: Service[] = [
     status: "operational",
     updatedAt: "2026-09-05T20:00:00.000Z",
   },
-  // Infra Wave B — config management, GitOps, IaC wrappers, and
-  // Terraform automation peers. Red Hat's org-wide Statuspage is
-  // too broad for Ansible. Dagger / Earthly wait (CI). Boundary
+  // Infra Wave B — remaining config / Terraform-automation peers
+  // with a live board. Ansible / Argo CD / Flux / Terragrunt /
+  // Salt / Rancher / Vagrant were dropped (SMA-73: project or
+  // marketing homepages). Dagger / Earthly wait (CI). Boundary
   // waits (no official vector). Atlantis / Spinnaker wait.
-  {
-    id: "ansible",
-    name: "Ansible",
-    category: "infra",
-    statusUrl: "https://www.ansible.com/",
-    status: "operational",
-    updatedAt: "2026-09-05T20:10:00.000Z",
-  },
   {
     id: "puppet",
     name: "Puppet",
     category: "infra",
     statusUrl: "https://puppet.statuspage.io/",
-    status: "operational",
-    updatedAt: "2026-09-05T20:10:00.000Z",
-  },
-  {
-    id: "argo-cd",
-    name: "Argo CD",
-    category: "infra",
-    statusUrl: "https://argo-cd.readthedocs.io/en/stable/",
-    status: "operational",
-    updatedAt: "2026-09-05T20:10:00.000Z",
-  },
-  {
-    id: "flux",
-    name: "Flux",
-    category: "infra",
-    statusUrl: "https://fluxcd.io/",
-    status: "operational",
-    updatedAt: "2026-09-05T20:10:00.000Z",
-  },
-  {
-    id: "terragrunt",
-    name: "Terragrunt",
-    category: "infra",
-    statusUrl: "https://terragrunt.gruntwork.io/",
     status: "operational",
     updatedAt: "2026-09-05T20:10:00.000Z",
   },
@@ -2380,89 +2350,18 @@ export const services: Service[] = [
     status: "operational",
     updatedAt: "2026-09-05T20:10:00.000Z",
   },
-  {
-    id: "salt",
-    name: "Salt",
-    category: "infra",
-    statusUrl: "https://saltproject.io/",
-    status: "operational",
-    updatedAt: "2026-09-05T20:10:00.000Z",
-  },
-  {
-    id: "rancher",
-    name: "Rancher",
-    category: "infra",
-    statusUrl: "https://www.rancher.com/",
-    status: "operational",
-    updatedAt: "2026-09-05T20:10:00.000Z",
-  },
-  {
-    id: "vagrant",
-    name: "Vagrant",
-    category: "infra",
-    statusUrl: "https://www.vagrantup.com/",
-    status: "operational",
-    updatedAt: "2026-09-05T20:10:00.000Z",
-  },
-  // Infra Wave C — k8s packaging, mesh, CNI, policy, certs, ingress,
-  // infra access, and IaC cost. Teleport is Statuspage. Helm /
-  // Istio / Linkerd / Cilium / OPA / Kyverno / Traefik /
-  // cert-manager / Infracost are none. Atlantis waits (CNCF art
-  // is a traced island). StrongDM waits (no official vector).
-  // Kong / NGINX stay traffic (Cloud). Octopus / Spinnaker stay CD.
-  {
-    id: "helm",
-    name: "Helm",
-    category: "infra",
-    statusUrl: "https://helm.sh/",
-    status: "operational",
-    updatedAt: "2026-09-05T20:20:00.000Z",
-  },
+  // Infra Wave C — infra access, ingress, and IaC cost. Teleport
+  // is Teleport Cloud (status.teleport.sh). Traefik is OpenStatus.
+  // Infracost is Better Stack. Helm / Istio / Linkerd / Cilium /
+  // OPA / Kyverno / cert-manager were dropped (SMA-73: no board).
+  // Atlantis waits (CNCF art is a traced island). StrongDM waits
+  // (no official vector). Kong / NGINX stay traffic (Cloud).
+  // Octopus / Spinnaker stay CD.
   {
     id: "teleport",
     name: "Teleport",
     category: "infra",
-    statusUrl: "https://status.goteleport.com/",
-    status: "operational",
-    updatedAt: "2026-09-05T20:20:00.000Z",
-  },
-  {
-    id: "istio",
-    name: "Istio",
-    category: "infra",
-    statusUrl: "https://istio.io/",
-    status: "operational",
-    updatedAt: "2026-09-05T20:20:00.000Z",
-  },
-  {
-    id: "linkerd",
-    name: "Linkerd",
-    category: "infra",
-    statusUrl: "https://linkerd.io/",
-    status: "operational",
-    updatedAt: "2026-09-05T20:20:00.000Z",
-  },
-  {
-    id: "cilium",
-    name: "Cilium",
-    category: "infra",
-    statusUrl: "https://cilium.io/",
-    status: "operational",
-    updatedAt: "2026-09-05T20:20:00.000Z",
-  },
-  {
-    id: "opa",
-    name: "OPA",
-    category: "infra",
-    statusUrl: "https://www.openpolicyagent.org/",
-    status: "operational",
-    updatedAt: "2026-09-05T20:20:00.000Z",
-  },
-  {
-    id: "kyverno",
-    name: "Kyverno",
-    category: "infra",
-    statusUrl: "https://kyverno.io/",
+    statusUrl: "https://status.teleport.sh/",
     status: "operational",
     updatedAt: "2026-09-05T20:20:00.000Z",
   },
@@ -2470,15 +2369,7 @@ export const services: Service[] = [
     id: "traefik",
     name: "Traefik",
     category: "infra",
-    statusUrl: "https://traefik.io/",
-    status: "operational",
-    updatedAt: "2026-09-05T20:20:00.000Z",
-  },
-  {
-    id: "cert-manager",
-    name: "cert-manager",
-    category: "infra",
-    statusUrl: "https://cert-manager.io/",
+    statusUrl: "https://status.traefik.io/",
     status: "operational",
     updatedAt: "2026-09-05T20:20:00.000Z",
   },
@@ -2486,7 +2377,7 @@ export const services: Service[] = [
     id: "infracost",
     name: "Infracost",
     category: "infra",
-    statusUrl: "https://www.infracost.io/",
+    statusUrl: "https://status.infracost.io/",
     status: "operational",
     updatedAt: "2026-09-05T20:20:00.000Z",
   },
@@ -2896,7 +2787,7 @@ export const services: Service[] = [
   },
   // Security Wave A — scanners / CNAPP / EDR / vuln / compliance /
   // supply chain that go dark. Identity / secrets / PAM stay Auth.
-  // Vault / cert-manager stay Infra. Cloudflare / AWS / Azure /
+  // Vault stays Infra. Cloudflare / AWS / Azure /
   // Fastly / Akamai security products stay on those Cloud cards.
   // GitHub Advanced Security / Dependabot stay GitHub; GitLab SAST
   // stays GitLab. Splunk / Datadog Security / Elastic Security stay
