@@ -80,9 +80,13 @@
  * Campaign Monitor via StatusCast `/rss`, Mailtrap via Sorry™,
  * Substack via substack.statuspage.io; Design
  * Wave A — Figma, Canva, Miro, Webflow, Lucid, Mural, and Frontify
- * via Statuspage, Framer via Better Stack `index.json`; Design Wave B
- * — Marvel, Balsamiq, and Anima via Statuspage; Design Wave C —
- * Beautiful.ai and Jitter via Statuspage; Infra Wave A — Terraform,
+ * via Statuspage, Framer via Better Stack `index.json`, Adobe via
+ * SnowServiceRegistry + StatusEvents, Sketch via Instatus; Design
+ * Wave B — Marvel, Balsamiq, and Anima via Statuspage, Rive via
+ * Instatus, LottieFiles via Checkly client-payload, Whimsical via
+ * SorryApp HTML, Blender via Uptime Kuma; Design Wave C —
+ * Beautiful.ai and Jitter via Statuspage, UXPin via
+ * api.uxpin.com/status/services; Infra Wave A — Terraform,
  * Vault, Consul, Nomad, and Packer via HashiCorp Statuspage name
  * filters (SMA-73), Pulumi and Chef via Statuspage, Spacelift via
  * spacelift.statuspage.io (status.spacelift.io has no DNS),
@@ -129,9 +133,7 @@
  * Gladly (gladly.statuspage.io), Genesys (mypurecloud.com),
  * Deskpro, Olark, and HelpDesk via Statuspage, Chatwoot
  * via Better Stack `index.json`.
- * Adobe, Sketch, Penpot, Rive, LottieFiles,
- * Whimsical, Lunacy, Photopea, Blender, Moqups, Proto.io, UXPin,
- * Overflow, Axure, Relume, Visily, Plasmic
+ * Remaining rows without a dedicated fetcher
  * are seeded
  * without a fetcher) and writes snapshots, components,
  * and incidents to Postgres.
@@ -140,6 +142,8 @@
 import { createServer } from "node:http"
 import { loadConfig } from "./config.js"
 import { createPool } from "./db.js"
+import { fetchAdobeState } from "./adobe.js"
+import { fetchChecklyClientState } from "./checkly-client.js"
 import { fetchChecklyNuxtState } from "./checkly-nuxt.js"
 import { fetchPagerDutyState } from "./pagerduty.js"
 import { fetchInstatusState } from "./instatus.js"
@@ -179,9 +183,12 @@ import { fetchOracleCloudState } from "./oracle-cloud.js"
 import { fetchAwsState } from "./aws.js"
 import { fetchRailwayState } from "./railway.js"
 import { fetchStatuscastState, fetchStatusCastState } from "./statuscast.js"
+import { fetchBlenderState } from "./uptime-kuma.js"
+import { fetchUxpinState } from "./uxpin.js"
 import { fetchVultrState } from "./vultr.js"
 import { fetchRedisState } from "./redis.js"
 import { fetchAlgoliaState } from "./algolia.js"
+import { fetchWhimsicalState } from "./whimsical.js"
 import { fetchBetterstackState } from "./betterstack.js"
 import { fetchOutreachState } from "./outreach.js"
 import { fetchSalesforceState } from "./salesforce.js"
@@ -251,9 +258,7 @@ type ServiceJob = {
 
 // Board services with a fetcher (26 AI + Cloud / Developer / Data / Auth /
 // Payments / Observability Waves A–C + Email Waves A–C + Design Waves
-// A–C + Infra Waves A–C; Adobe, Sketch,
-// Penpot, Rive, LottieFiles, Whimsical, Lunacy, Photopea, Blender,
-// Moqups, Proto.io, UXPin, Overflow, Axure, Relume, Visily, Plasmic,
+// A–C + Infra Waves A–C;
 // Unleash, ConfigCat, GrowthBook, Eppo, VWO, AB Tasty, Convert,
 // Flipt, Hypertune, GO Feature Flag, FeatBit, flagd, FeatureHub,
 // Bucketeer, Flipper Cloud, Confidence, Frosmo, Personyze, and
@@ -811,10 +816,20 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("substack", "https://substack.statuspage.io"),
   // Design Wave A. FigJam / Dev Mode stay on Figma. Photoshop /
   // Illustrator / XD stay on Adobe. Lucidspark stays on Lucid. Spline
-  // waits (no official vector). Adobe's custom SPA and Sketch's
-  // summary.json have no existing fetcher. Framer is Better Stack.
+  // waits (no official vector). Adobe is SnowServiceRegistry +
+  // StatusEvents. Sketch is Instatus. Framer is Better Stack.
   statuspageJob("figma", "https://status.figma.com"),
   statuspageJob("canva", "https://www.canvastatus.com"),
+  {
+    id: "adobe",
+    fetch: () => fetchAdobeState(fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  {
+    id: "sketch",
+    fetch: () => fetchInstatusState("https://status.sketch.com", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
   {
     id: "framer",
     fetch: () =>
@@ -827,14 +842,43 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("mural", "https://status.mural.co"),
   statuspageJob("frontify", "https://status.frontify.com"),
   // Design Wave B. Affinity stays on Canva. Abstract / InVision stay
-  // off (sunset). Spline still waits. Rive is summary.json only.
-  // LottieFiles / Penpot / Whimsical / Lunacy / Photopea / Blender
-  // have no Statuspage /api/v2.
+  // off (sunset). Spline still waits. Penpot / Lunacy / Photopea
+  // dropped (no status board). Rive is Instatus; LottieFiles is the
+  // Checkly client-payload path (SSR off — do not reuse checkly_nuxt);
+  // Whimsical is SorryApp HTML; Blender is Uptime Kuma.
   statuspageJob("marvel", "https://status.marvelapp.com"),
+  {
+    id: "rive",
+    fetch: () => fetchInstatusState("https://status.rive.app", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  {
+    id: "lottiefiles",
+    fetch: () =>
+      fetchChecklyClientState("https://status.lottiefiles.com", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
   statuspageJob("balsamiq", "https://status.balsamiq.com"),
   statuspageJob("anima", "https://status.animaapp.com"),
+  {
+    id: "whimsical",
+    fetch: () => fetchWhimsicalState(fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  {
+    id: "blender",
+    fetch: () => fetchBlenderState(fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
   // Design Wave C. Spline still waits. Zeplin / ProtoPie / Builder.io
-  // wait. Jitter's public host has no /api/v2; hit jitter.statuspage.io.
+  // wait. Moqups / Proto.io / Overflow / Axure / Relume / Visily /
+  // Plasmic dropped (no status board). UXPin is api.uxpin.com/status.
+  // Jitter's public host has no /api/v2; hit jitter.statuspage.io.
+  {
+    id: "uxpin",
+    fetch: () => fetchUxpinState(fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
   statuspageJob("beautiful-ai", "https://status.beautiful.ai"),
   statuspageJob("jitter", "https://jitter.statuspage.io"),
   // Infra Wave A. HashiCorp products share one Statuspage; each

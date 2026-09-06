@@ -2058,18 +2058,10 @@ export const services: Service[] = [
     status: "operational",
     updatedAt: "2026-09-05T19:00:00.000Z",
   },
-  // Design Wave B — open-source draw, prototype, motion assets that
-  // ship in the UI, wireframe, design-to-code, and 3D DCC. Affinity
-  // stays on Canva. Abstract and InVision stay off (sunset). Spline
-  // still waits (no official vector).
-  {
-    id: "penpot",
-    name: "Penpot",
-    category: "design",
-    statusUrl: "https://penpot.app/",
-    status: "operational",
-    updatedAt: "2026-09-05T19:10:00.000Z",
-  },
+  // Design Wave B — prototype, motion assets that ship in the UI,
+  // wireframe, and 3D DCC. Affinity stays on Canva. Abstract and
+  // InVision stay off (sunset). Spline still waits (no official
+  // vector). Penpot / Lunacy / Photopea dropped (no status board).
   {
     id: "marvel",
     name: "Marvel",
@@ -2119,22 +2111,6 @@ export const services: Service[] = [
     updatedAt: "2026-09-05T19:10:00.000Z",
   },
   {
-    id: "lunacy",
-    name: "Lunacy",
-    category: "design",
-    statusUrl: "https://icons8.com/lunacy",
-    status: "operational",
-    updatedAt: "2026-09-05T19:10:00.000Z",
-  },
-  {
-    id: "photopea",
-    name: "Photopea",
-    category: "design",
-    statusUrl: "https://www.photopea.com/",
-    status: "operational",
-    updatedAt: "2026-09-05T19:10:00.000Z",
-  },
-  {
     id: "blender",
     name: "Blender",
     category: "design",
@@ -2142,70 +2118,16 @@ export const services: Service[] = [
     status: "operational",
     updatedAt: "2026-09-05T19:10:00.000Z",
   },
-  // Design Wave C — remaining wireframe, proto, user-flow, visual
-  // builders, and motion that ships in the UI. Spline still waits
-  // (no official vector). Zeplin, ProtoPie, and Builder.io wait.
-  {
-    id: "moqups",
-    name: "Moqups",
-    category: "design",
-    statusUrl: "https://moqups.com/",
-    status: "operational",
-    updatedAt: "2026-09-05T19:20:00.000Z",
-  },
-  {
-    id: "proto-io",
-    name: "Proto.io",
-    category: "design",
-    statusUrl: "https://proto.io/",
-    status: "operational",
-    updatedAt: "2026-09-05T19:20:00.000Z",
-  },
+  // Design Wave C — remaining proto / visual builders and motion
+  // that ships in the UI. Spline still waits (no official vector).
+  // Zeplin, ProtoPie, and Builder.io wait. Moqups / Proto.io /
+  // Overflow / Axure / Relume / Visily / Plasmic dropped (no
+  // status board).
   {
     id: "uxpin",
     name: "UXPin",
     category: "design",
-    statusUrl: "https://www.uxpin.com/",
-    status: "operational",
-    updatedAt: "2026-09-05T19:20:00.000Z",
-  },
-  {
-    id: "overflow",
-    name: "Overflow",
-    category: "design",
-    statusUrl: "https://overflow.io/",
-    status: "operational",
-    updatedAt: "2026-09-05T19:20:00.000Z",
-  },
-  {
-    id: "axure",
-    name: "Axure",
-    category: "design",
-    statusUrl: "https://www.axure.com/",
-    status: "operational",
-    updatedAt: "2026-09-05T19:20:00.000Z",
-  },
-  {
-    id: "relume",
-    name: "Relume",
-    category: "design",
-    statusUrl: "https://www.relume.io/",
-    status: "operational",
-    updatedAt: "2026-09-05T19:20:00.000Z",
-  },
-  {
-    id: "visily",
-    name: "Visily",
-    category: "design",
-    statusUrl: "https://www.visily.ai/",
-    status: "operational",
-    updatedAt: "2026-09-05T19:20:00.000Z",
-  },
-  {
-    id: "plasmic",
-    name: "Plasmic",
-    category: "design",
-    statusUrl: "https://www.plasmic.app/",
+    statusUrl: "https://status.uxpin.com/",
     status: "operational",
     updatedAt: "2026-09-05T19:20:00.000Z",
   },
