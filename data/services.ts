@@ -69,12 +69,13 @@ export const services: Service[] = [
     updatedAt: "2026-09-03T21:28:00.000Z",
   },
   {
+    // Cloud/Vertex Gemini (Agent Platform, Code Assist, Enterprise) — not AI Studio.
     id: "google-gemini",
     name: "Google Gemini",
     category: "ai",
-    statusUrl: "https://aistudio.google.com/status",
+    statusUrl: "https://status.cloud.google.com/",
     status: "degraded",
-    incidentTitle: "Elevated latency on generateContent",
+    incidentTitle: "Vertex AI Gemini API customers experiencing increased error rates.",
     updatedAt: "2026-09-03T20:55:00.000Z",
   },
   {
@@ -87,7 +88,7 @@ export const services: Service[] = [
   },
   {
     id: "mistral",
-    name: "Mistral",
+    name: "Mistral AI",
     category: "ai",
     statusUrl: "https://status.mistral.ai/",
     status: "operational",
@@ -227,6 +228,8 @@ export const services: Service[] = [
     updatedAt: "2026-09-05T02:20:00.000Z",
   },
   {
+    // Public status host for humans. Worker fetches voyageai-status.statuspage.io
+    // because status.voyageai.com/api/v2 times out (SMA-43).
     id: "voyage",
     name: "Voyage AI",
     category: "ai",

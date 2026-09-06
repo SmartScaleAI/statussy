@@ -1,13 +1,15 @@
 /**
  * Google Cloud Status fetcher + mapper (SMA-26, Google Gemini).
  *
- * Vertex Gemini (and sibling Gemini* Cloud products) have no dedicated
+ * Cloud/Vertex Gemini (and sibling Gemini* Cloud products) have no dedicated
  * Statuspage. Google publishes a public incidents feed:
  *   https://status.cloud.google.com/incidents.json
  * plus a product catalog at products.json. We treat an incident as Gemini-
- * relevant when it lists Vertex Gemini API (`Z0FZJAMvEB4j3NbCJs6B`) or
- * another product whose title contains "Gemini". Open incidents (`end`
- * null/absent) drive overall status; a quiet feed is operational.
+ * relevant when it lists Gemini on Agent Platform (`Z0FZJAMvEB4j3NbCJs6B`,
+ * formerly titled Vertex Gemini API) or another product whose title contains
+ * "Gemini". This is Cloud Gemini — not consumer Gemini / AI Studio. Open
+ * incidents (`end` null/absent) drive overall status; a quiet feed is
+ * operational.
  *
  * products.json is best-effort: a failure still yields a snapshot from
  * incidents.json, with components synthesized from the incident payload.
@@ -21,7 +23,7 @@ import type {
   ServiceStatus,
 } from "./statuspage.js"
 
-/** Vertex Gemini API — the product id Statussy tracks as Google Gemini. */
+/** Gemini on Agent Platform — the product id Statussy tracks as Google Gemini. */
 export const VERTEX_GEMINI_API_PRODUCT_ID = "Z0FZJAMvEB4j3NbCJs6B"
 
 export const GOOGLE_CLOUD_STATUS_ORIGIN = "https://status.cloud.google.com"
@@ -62,7 +64,7 @@ function worst(a: ServiceStatus, b: ServiceStatus): ServiceStatus {
   return SEVERITY_RANK[b] > SEVERITY_RANK[a] ? b : a
 }
 
-/** True when the Cloud Status product is Vertex Gemini API or a Gemini* sibling. */
+/** True when the Cloud Status product is Gemini on Agent Platform or a Gemini* sibling. */
 export function isGeminiProduct(product: Pick<GoogleCloudProduct, "id" | "title" | "current_title">): boolean {
   if (product.id === VERTEX_GEMINI_API_PRODUCT_ID) return true
   const title = product.title ?? ""
@@ -160,12 +162,12 @@ function geminiProductsFromCatalog(products: GoogleCloudProduct[]): GoogleCloudP
     seen.add(product.id)
     out.push(product)
   }
-  // Always surface Vertex Gemini API even if the catalog omitted it.
+  // Always surface Gemini on Agent Platform even if the catalog omitted it.
   if (!seen.has(VERTEX_GEMINI_API_PRODUCT_ID)) {
     out.unshift({
       id: VERTEX_GEMINI_API_PRODUCT_ID,
-      title: "Vertex Gemini API",
-      current_title: "Vertex Gemini API",
+      title: "Gemini on Agent Platform",
+      current_title: "Gemini on Agent Platform",
     })
   }
   return out

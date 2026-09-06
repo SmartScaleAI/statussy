@@ -248,9 +248,10 @@ const SERVICE_JOBS: ServiceJob[] = [
     "https://status.deepseek.com/feed.atom",
   ]),
   {
-    // SMA-26: Gemini via Google Cloud Status incidents.json. The feed mixes
-    // historical incidents; we persist Gemini-relevant rows and resolve any
-    // previously open ones that drop out of the open set.
+    // SMA-26 / SMA-43: Cloud/Vertex Gemini via Google Cloud Status
+    // incidents.json (not AI Studio). The feed mixes historical incidents;
+    // we persist Gemini-relevant rows and resolve any previously open ones
+    // that drop out of the open set.
     id: "google-gemini",
     fetch: () => fetchGoogleCloudGeminiState(fetchOptions()),
     persistOptions: { resolveMissingIncidents: true },
@@ -283,8 +284,8 @@ const SERVICE_JOBS: ServiceJob[] = [
     fetch: () => fetchBetterstackState("https://status.huggingface.co", fetchOptions()),
     persistOptions: { resolveMissingIncidents: true },
   },
-  // Wave C — Statuspage-compatible pages. Voyage's custom domain times out on
-  // /api/v2, so the fetcher hits the Statuspage host directly.
+  // Wave C — Statuspage-compatible pages. Voyage's public host times out on
+  // /api/v2, so keep the Statuspage-host bypass (do not use status.voyageai.com).
   statuspageJob("elevenlabs", "https://status.elevenlabs.io"),
   statuspageJob("minimax", "https://status.minimax.io"),
   statuspageJob("voyage", "https://voyageai-status.statuspage.io"),
