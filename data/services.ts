@@ -4120,4 +4120,66 @@ export const services: Service[] = [
     status: "operational",
     updatedAt: "2026-09-06T02:30:00.000Z",
   },
+  // CRM Wave B — remaining CRM / sales-intel vendors with a
+  // public Statuspage JSON API and an official isolated SVG.
+  // Affinity here is affinity.co (relationship CRM), not the
+  // photo editor that stays on Canva. Zoho CRM, Freshworks CRM,
+  // Dynamics 365, Insightly, Nutshell, HighLevel, Thryv, Keap,
+  // SugarCRM, Folk, and Twenty still wait.
+  {
+    id: "affinity",
+    name: "Affinity",
+    category: "crm",
+    statusUrl: "https://status.affinity.co/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:45:00.000Z",
+  },
+  {
+    id: "zoominfo",
+    name: "ZoomInfo",
+    category: "crm",
+    statusUrl: "https://status.zoominfo.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:45:00.000Z",
+  },
+  {
+    id: "streak",
+    name: "Streak",
+    category: "crm",
+    statusUrl: "https://status.streak.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:45:00.000Z",
+  },
+  {
+    id: "clari",
+    name: "Clari",
+    category: "crm",
+    statusUrl: "https://trust.clari.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:45:00.000Z",
+  },
+  {
+    id: "lusha",
+    name: "Lusha",
+    category: "crm",
+    statusUrl: "https://status.lusha.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:45:00.000Z",
+  },
+  {
+    id: "teamleader",
+    name: "Teamleader",
+    category: "crm",
+    statusUrl: "https://status.teamleader.eu/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:45:00.000Z",
+  },
+  {
+    id: "orum",
+    name: "Orum",
+    category: "crm",
+    statusUrl: "https://status.orum.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T02:45:00.000Z",
+  },
 ]

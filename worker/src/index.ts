@@ -1028,6 +1028,16 @@ const SERVICE_JOBS: ServiceJob[] = [
     fetch: () => fetchInstatusState("https://status.gong.io", fetchOptions()),
     persistOptions: { resolveMissingIncidents: true },
   },
+  // CRM Wave B. All seven are Statuspage. Clari's public host
+  // is trust.clari.com (also on clari.statuspage.io). Affinity
+  // here is affinity.co, not the photo editor on Canva.
+  statuspageJob("affinity", "https://status.affinity.co"),
+  statuspageJob("zoominfo", "https://status.zoominfo.com"),
+  statuspageJob("streak", "https://status.streak.com"),
+  statuspageJob("clari", "https://trust.clari.com"),
+  statuspageJob("lusha", "https://status.lusha.com"),
+  statuspageJob("teamleader", "https://status.teamleader.eu"),
+  statuspageJob("orum", "https://status.orum.com"),
 ]
 
 async function fetchService(service: ServiceJob): Promise<boolean> {

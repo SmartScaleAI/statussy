@@ -3404,6 +3404,55 @@ export const SERVICE_SEED = [
     statusUrl: "https://status.gong.io/",
     fetcherType: "instatus",
   },
+  {
+    id: "affinity",
+    name: "Affinity",
+    category: "crm",
+    statusUrl: "https://status.affinity.co/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "zoominfo",
+    name: "ZoomInfo",
+    category: "crm",
+    statusUrl: "https://status.zoominfo.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "streak",
+    name: "Streak",
+    category: "crm",
+    statusUrl: "https://status.streak.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "clari",
+    name: "Clari",
+    category: "crm",
+    statusUrl: "https://trust.clari.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "lusha",
+    name: "Lusha",
+    category: "crm",
+    statusUrl: "https://status.lusha.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "teamleader",
+    name: "Teamleader",
+    category: "crm",
+    statusUrl: "https://status.teamleader.eu/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "orum",
+    name: "Orum",
+    category: "crm",
+    statusUrl: "https://status.orum.com/",
+    fetcherType: "statuspage",
+  },
 ] as const
 
 function seedCategory(service: { id: string }): string {
