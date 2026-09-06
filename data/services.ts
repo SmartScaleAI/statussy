@@ -1476,7 +1476,7 @@ export const services: Service[] = [
   // and on-call the app dies on. One card per vendor. CloudWatch / Azure
   // Monitor / GCP Operations stay on their Cloud parents. Elastic
   // Observability stays on Elastic. Opsgenie waits (Atlassian). PagerDuty
-  // has no public JSON (custom page).
+  // is live via /api/services + /api/impacted_services.
   {
     id: "datadog",
     name: "Datadog",
@@ -1559,8 +1559,8 @@ export const services: Service[] = [
   },
   // Observability Wave B — more logs, error tracking, incident command,
   // synthetics, and telemetry pipelines. Observe stays on Snowflake.
-  // Splunk On-Call stays on Splunk. Checkly has no public JSON (own Nuxt
-  // page).
+  // Splunk On-Call stays on Splunk. Checkly is live via checkly_nuxt at
+  // is.checkly.online (catalog URL stays status.checklyhq.com).
   {
     id: "sumo-logic",
     name: "Sumo Logic",

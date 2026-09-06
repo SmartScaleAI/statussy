@@ -1,0 +1,52 @@
+{
+  "services": [
+    {
+      "name": "Events API (US)",
+      "id": "PDACBTY",
+      "is_active": true,
+      "display_name": "Events API (US)",
+      "status_page_id": "P67C5DQ",
+      "business_service_id": "PNPW0OI"
+    },
+    {
+      "name": "Events API (EU)",
+      "id": "PA1RAE8",
+      "is_active": true,
+      "display_name": "Events API (EU)",
+      "status_page_id": "P67C5DQ",
+      "business_service_id": "PEEWKFZ"
+    },
+    {
+      "name": "SMS (US)",
+      "id": "PK7GWG9",
+      "is_active": true,
+      "display_name": "SMS (US)",
+      "status_page_id": "P67C5DQ",
+      "business_service_id": "PVT9ERK"
+    },
+    {
+      "name": "Web Application (US)",
+      "id": "PWS3A1I",
+      "is_active": true,
+      "display_name": "Web Application (US)",
+      "status_page_id": "P67C5DQ",
+      "business_service_id": "PX129L4"
+    },
+    {
+      "name": "Push (US)",
+      "id": "P63OY6Y",
+      "is_active": true,
+      "display_name": "Push (US)",
+      "status_page_id": "P67C5DQ",
+      "business_service_id": "PJ8MB6O"
+    },
+    {
+      "name": " Incident Timeline and Alert Logs (US)",
+      "id": "PXMJ5Y2",
+      "is_active": true,
+      "display_name": " Incident Timeline and Alert Logs (US)",
+      "status_page_id": "P67C5DQ",
+      "business_service_id": "PPXB24O"
+    }
+  ]
+}

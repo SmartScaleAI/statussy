@@ -1,14 +1,16 @@
 /**
- * Checkly Nuxt status-page fetcher (SMA-25, Mistral).
+ * Checkly Nuxt status-page fetcher (SMA-25 Mistral; SMA-74 Checkly).
  *
- * status.mistral.ai is a Checkly-hosted Nuxt SPA. There is no public JSON
- * API: /summary.json, RSS, and Instatus-style endpoints all return HTML.
- * Checkly's Status Pages REST API requires auth and is out of scope.
+ * Checkly-hosted Nuxt SPAs (status.mistral.ai, is.checkly.online) have no
+ * public JSON API: /summary.json, RSS, and Instatus-style endpoints all
+ * return HTML. Checkly's Status Pages REST API requires auth and is out
+ * of scope.
  *
  * The only public surface is the page HTML, which embeds a Nuxt 3
  * `__NUXT_DATA__` JSON payload (flattened integer-ref array) carrying:
- *   - unresolved-incidents-{pageId}
- *   - uptime-{pageId}        (component groups + 90-day uptime %)
+ *   - unresolved-incidents-{pageId}[-v3]
+ *   - uptime-{pageId}[-v3]   (grouped metadata/uptime, or v3 flat
+ *     `components` + `uptime` arrays on Checkly's own page)
  *   - maintenance-windows-{slug}
  *   - status-page-resolver-{domain}
  *
@@ -376,6 +378,35 @@ function readGroups(list: unknown): UptimeGroup[] {
   return groups
 }
 
+function readFlatComponents(uptimeNode: Record<string, unknown>): ChecklyComponent[] {
+  const rows = Array.isArray(uptimeNode.components) ? uptimeNode.components : []
+  const uptimeById = new Map<string, number>()
+  if (Array.isArray(uptimeNode.uptime)) {
+    for (const item of uptimeNode.uptime) {
+      const mapped = readService(item, 0)
+      if (mapped && mapped.uptime !== null) uptimeById.set(mapped.id, mapped.uptime)
+    }
+  }
+
+  const components: Array<ChecklyComponent & { order: number }> = []
+  for (const [index, item] of rows.entries()) {
+    if (!isRecord(item)) continue
+    if (item.hidden === true) continue
+    const id = asString(item.id)
+    const name = asString(item.name)
+    if (!id || !name) continue
+    components.push({
+      id,
+      name,
+      uptime: asNumber(item.uptime) ?? uptimeById.get(id) ?? null,
+      groupName: asString(item.groupName) ?? asString(item.group_name),
+      order: asNumber(item.displayOrder) ?? asNumber(item.order) ?? index,
+    })
+  }
+  components.sort((a, b) => a.order - b.order)
+  return components.map(({ order: _order, ...component }) => component)
+}
+
 function readComponents(uptimeNode: unknown): ChecklyComponent[] {
   if (!isRecord(uptimeNode)) return []
   const metadataGroups = readGroups(uptimeNode.metadata)
@@ -401,7 +432,10 @@ function readComponents(uptimeNode: unknown): ChecklyComponent[] {
       })
     }
   }
-  return components
+  if (components.length > 0) return components
+  // SMA-74: Checkly's own page ships v3 flat `components` + `uptime` arrays
+  // (no metadata groups). Mistral still uses the grouped shape above.
+  return readFlatComponents(uptimeNode)
 }
 
 /** Parse Checkly page HTML into the structured fields we persist. */

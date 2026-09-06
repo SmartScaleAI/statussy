@@ -58,10 +58,12 @@
  * Statuspage (Maxio's public host times out on /api/v2, so the fetcher
  * hits maxio.statuspage.io); Observability Wave A — Datadog, Sentry,
  * Grafana, New Relic, Honeycomb, Splunk, and Axiom via Statuspage,
+ * PagerDuty via /api/services + /api/impacted_services,
  * Dynatrace via Status.io, Better Stack via Better Stack `index.json`;
  * Observability Wave B — Sumo Logic, Coralogix, Rollbar, Bugsnag
  * (bugsnag.status.smartbear.com), incident.io, Mezmo, Airbrake, Cribl,
- * and logz.io via Statuspage; Observability Wave C — Lumigo, Netdata,
+ * and logz.io via Statuspage, Checkly via Checkly/Nuxt at
+ * is.checkly.online; Observability Wave C — Lumigo, Netdata,
  * Scout, Logit.io, Nobl9, Catchpoint, VictoriaMetrics, Langfuse, and
  * Embrace via Statuspage, Dash0 via dash0status.com (the public host
  * redirects /api/v2); Email Wave A — Twilio, Mailgun, Klaviyo, Brevo,
@@ -126,7 +128,7 @@
  * Gladly (gladly.statuspage.io), Genesys (mypurecloud.com),
  * Deskpro, Olark, and HelpDesk via Statuspage, Chatwoot
  * via Better Stack `index.json`.
- * PayPal, Adyen, PagerDuty, Checkly, Adobe, Sketch, Penpot, Rive, LottieFiles,
+ * PayPal, Adyen, Adobe, Sketch, Penpot, Rive, LottieFiles,
  * Whimsical, Lunacy, Photopea, Blender, Moqups, Proto.io, UXPin,
  * Overflow, Axure, Relume, Visily, Plasmic
  * are seeded
@@ -138,6 +140,7 @@ import { createServer } from "node:http"
 import { loadConfig } from "./config.js"
 import { createPool } from "./db.js"
 import { fetchChecklyNuxtState } from "./checkly-nuxt.js"
+import { fetchPagerDutyState } from "./pagerduty.js"
 import { fetchInstatusState } from "./instatus.js"
 import { runMigrations } from "./migrate.js"
 import { fetchRssState } from "./rss.js"
@@ -246,7 +249,7 @@ type ServiceJob = {
 
 // Board services with a fetcher (26 AI + Cloud / Developer / Data / Auth /
 // Payments / Observability Waves A–C + Email Waves A–C + Design Waves
-// A–C + Infra Waves A–C; PayPal, Adyen, PagerDuty, Checkly, Adobe, Sketch,
+// A–C + Infra Waves A–C; PayPal, Adyen, Adobe, Sketch,
 // Penpot, Rive, LottieFiles, Whimsical, Lunacy, Photopea, Blender,
 // Moqups, Proto.io, UXPin, Overflow, Axure, Relume, Visily, Plasmic,
 // Unleash, ConfigCat, GrowthBook, Eppo, VWO, AB Tasty, Convert,
@@ -669,13 +672,21 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("paysafe", "https://status.paysafe.com"),
   statuspageJob("recharge", "https://status.getrecharge.com"),
   statuspageJob("maxio", "https://maxio.statuspage.io"),
-  // Observability Wave A. PagerDuty is none (custom page, no public JSON).
-  // Splunk's public status.splunk.com is marketing HTML; the live Cloud
-  // Platform page is Statuspage. Dynatrace is Status.io
+  // Observability Wave A. PagerDuty is its own page: /api/services +
+  // /api/impacted_services (empty impact list = operational). Splunk's
+  // public status.splunk.com is marketing HTML; the live Cloud Platform
+  // page is Statuspage. Dynatrace is Status.io
   // (status.dynatrace.com → dynatrace.status.io).
   statuspageJob("datadog", "https://status.datadoghq.com"),
   statuspageJob("sentry", "https://status.sentry.io"),
   statuspageJob("grafana", "https://status.grafana.com"),
+  {
+    // SMA-74: PagerDuty public JSON. Impacted rows drop out when clear,
+    // so ones that disappear are resolved at persist time.
+    id: "pagerduty",
+    fetch: () => fetchPagerDutyState(fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
   statuspageJob("new-relic", "https://status.newrelic.com"),
   statuspageJob("honeycomb", "https://status.honeycomb.io"),
   statuspageJob("splunk", "https://status.splunkcloud.com"),
@@ -696,7 +707,8 @@ const SERVICE_JOBS: ServiceJob[] = [
     persistOptions: { resolveMissingIncidents: true },
   },
   statuspageJob("axiom", "https://status.axiom.co"),
-  // Observability Wave B. Checkly is none (own Nuxt page, no public JSON).
+  // Observability Wave B. Checkly's catalog URL redirects to
+  // is.checkly.online (Checkly/Nuxt, same scrape as Mistral).
   // Bugsnag's public host redirects; hit the SmartBear Statuspage host.
   statuspageJob("sumo-logic", "https://status.sumologic.com"),
   statuspageJob("coralogix", "https://status.coralogix.com"),
@@ -705,6 +717,14 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("incident-io", "https://status.incident.io"),
   statuspageJob("mezmo", "https://status.mezmo.com"),
   statuspageJob("airbrake", "https://status.airbrake.io"),
+  {
+    // SMA-74: Checkly via Checkly/Nuxt HTML at is.checkly.online.
+    // Catalog URL stays status.checklyhq.com (301). Payload only lists
+    // *unresolved* incidents.
+    id: "checkly",
+    fetch: () => fetchChecklyNuxtState("https://is.checkly.online", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
   statuspageJob("cribl", "https://status.cribl.cloud"),
   statuspageJob("logz", "https://status.logz.io"),
   // Observability Wave C. Dash0's public host redirects /api/v2; hit

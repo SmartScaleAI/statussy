@@ -11,8 +11,7 @@ import type pg from "pg"
  * Windsurf is the legacy Devin Desktop name and is not seeded separately.
  * GitHub Copilot is a GitHub component, not its own card.
  *
- * `category` defaults to `ai` when omitted. PayPal, Adyen, PagerDuty, Checkly,
- * Adobe,
+ * `category` defaults to `ai` when omitted. PayPal, Adyen, Adobe,
  * Sketch, Penpot, Rive, LottieFiles, Whimsical, Lunacy, Photopea,
  * Blender, Moqups, Proto.io, UXPin, Overflow, Axure, Relume, Visily,
  * Plasmic
@@ -1209,7 +1208,7 @@ export const SERVICE_SEED = [
     name: "PagerDuty",
     category: "observability",
     statusUrl: "https://status.pagerduty.com/",
-    fetcherType: "none",
+    fetcherType: "pagerduty",
   },
   {
     id: "new-relic",
@@ -1307,7 +1306,7 @@ export const SERVICE_SEED = [
     name: "Checkly",
     category: "observability",
     statusUrl: "https://status.checklyhq.com/",
-    fetcherType: "none",
+    fetcherType: "checkly_nuxt",
   },
   {
     id: "cribl",
