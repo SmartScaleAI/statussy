@@ -228,3 +228,35 @@ test("parseFeed + mapRssFeed treat an empty Azure Status RSS as operational", ()
   assert.equal(state.components.length, 0)
   assert.equal(state.incidents.length, 0)
 })
+
+test("parseFeed and mapRssFeed read Freshservice status.fireflies.ai RSS", async () => {
+  const xml = await readFile(join(FIXTURES, "fireflies-feed.rss"), "utf8")
+  const items = parseFeed(xml)
+
+  assert.equal(items.length, 2)
+  assert.equal(items[0].externalId, "https://status.fireflies.ai/incidents/2")
+  assert.equal(
+    items[0].title,
+    "Desktop App, Mobile App, Chrome Extension Processing Outage",
+  )
+  assert.equal(items[0].link, "https://status.fireflies.ai/incidents/2")
+  assert.deepEqual(items[0].categories, ["incident"])
+  assert.match(items[0].text, /investigating an issue affecting meeting processing/)
+
+  const state = mapRssFeed(items, {
+    feedUrl: "https://status.fireflies.ai/rss",
+    feedTitle: "fireflies status",
+    lastBuildDate: null,
+  })
+  // Freshservice RSS has no Status: line; items stay open and the
+  // outage title classifies as partial_outage.
+  assert.equal(state.status, "partial_outage")
+  assert.equal(
+    state.incidentTitle,
+    "Desktop App, Mobile App, Chrome Extension Processing Outage",
+  )
+  assert.equal(state.incidents[0]?.status, "investigating")
+  assert.equal(state.incidents[0]?.url, "https://status.fireflies.ai/incidents/2")
+  assert.equal(state.detail.source, "rss")
+  assert.equal(state.detail.feedUrl, "https://status.fireflies.ai/rss")
+})

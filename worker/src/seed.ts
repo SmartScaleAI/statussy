@@ -2934,7 +2934,7 @@ export const SERVICE_SEED = [
     name: "ClickUp",
     category: "collab",
     statusUrl: "https://status.clickup.com/",
-    fetcherType: "statuspage",
+    fetcherType: "status_io",
   },
   {
     id: "discord",
@@ -3088,7 +3088,7 @@ export const SERVICE_SEED = [
     name: "Fireflies",
     category: "collab",
     statusUrl: "https://status.fireflies.ai/",
-    fetcherType: "statuspage",
+    fetcherType: "rss",
   },
   {
     id: "livestorm",

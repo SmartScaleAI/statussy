@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>fireflies status</title>
+    <link>https://status.fireflies.ai/</link>
+    <language>en-us</language>
+    <atom:link href="https://status.fireflies.ai/rss" rel="self"/>
+    <item>
+      <title>Desktop App, Mobile App, Chrome Extension Processing Outage</title>
+      <description>We are investigating an issue affecting meeting processing across our Desktop app, mobile app, and browser extension. Some users may see recordings fail to process or appear with zero files.
+
+Our engineering team has identified the incident and is actively working to restore service.
+
+We will provide another update as soon as we have more information.</description>
+      <pubDate>Tue, 25 Aug 2026 11:30:00 +0000</pubDate>
+      <guid>https://status.fireflies.ai/incidents/2</guid>
+      <link>https://status.fireflies.ai/incidents/2</link>
+      <category>Incident</category>
+    </item>
+    <item>
+      <title>Test incident</title>
+      <description>Test</description>
+      <pubDate>Wed, 12 Aug 2026 14:12:00 +0000</pubDate>
+      <guid>https://status.fireflies.ai/incidents/1</guid>
+      <link>https://status.fireflies.ai/incidents/1</link>
+      <category>Incident</category>
+    </item>
+  </channel>
+</rss>
