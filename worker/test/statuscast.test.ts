@@ -1,12 +1,16 @@
 import assert from "node:assert/strict"
 import test from "node:test"
 import {
+  extractStatusCastStatus,
+  mapStatusCastFeed,
   mapStatuscastHtml,
   mapStatuscastLabel,
   parseStatuscastHero,
   parseStatuscastIncidents,
+  statusCastIncidentId,
   statuscastPaintsCard,
 } from "../src/statuscast.js"
+import { parseFeed, type RssItem } from "../src/rss.js"
 
 const FASTLY_HTML = `
 <body class="sc-state-normal">
@@ -87,4 +91,114 @@ test("mapStatuscastHtml paints an in-progress disruption", () => {
 
 test("mapStatuscastHtml throws when the hero is missing", () => {
   assert.throws(() => mapStatuscastHtml("<html><body>nope</body></html>", "https://example.test"))
+})
+
+function item(overrides: Partial<RssItem>): RssItem {
+  return {
+    externalId: "/706835/1601159",
+    title: "Microsoft delivery delays — customer update",
+    link: "https://status.campaignmonitor.com/incident/706835",
+    publishedAt: "Fri, 04 Sep 2026 06:22:00 -0700",
+    text: "We are continuing to monitor delivery of emails to Microsoft domains.",
+    categories: [],
+    ...overrides,
+  }
+}
+
+const STATUSCAST_RSS = `<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0" xmlns:sc="http://statuscast.com">
+  <channel>
+    <title>Marigold rss feed</title>
+    <lastBuildDate>Sun, 06 Sep 2026 05:58:40 -0700</lastBuildDate>
+    <item>
+      <title>Microsoft delivery delays &#x2014; customer update</title>
+      <description>&lt;p&gt;We are continuing to monitor delivery of emails to Microsoft domains. Whilst we have seen some improvement, there unfortunately continues to be a proportion of emails not being delivered successfully.&lt;/p&gt;</description>
+      <link>https://status.campaignmonitor.com/incident/706835</link>
+      <guid isPermaLink="false">/706835/1601159</guid>
+      <pubDate>Fri, 04 Sep 2026 06:22:00 -0700</pubDate>
+    </item>
+    <item>
+      <title>Microsoft delivery delays &#x2014; customer update</title>
+      <description>&lt;p&gt;We're aware of an issue currently affecting email delivery to Microsoft domains.&lt;/p&gt;</description>
+      <link>https://status.campaignmonitor.com/incident/706835</link>
+      <guid isPermaLink="false">/706835/1601034</guid>
+      <pubDate>Fri, 04 Sep 2026 04:20:00 -0700</pubDate>
+    </item>
+    <item>
+      <title>Scheduled Maintenance</title>
+      <description>&lt;p&gt;We have completed our scheduled maintenance. Emails that were queued may have been delayed.&lt;/p&gt;</description>
+      <link>https://status.campaignmonitor.com/incident/697722</link>
+      <guid isPermaLink="false">/697722/1583868</guid>
+      <pubDate>Sat, 08 Aug 2026 22:10:00 -0700</pubDate>
+    </item>
+    <item>
+      <title>Customers are unable to login to accounts</title>
+      <description>&lt;p&gt;The application is now working normally and customers can now login without any issues.&lt;/p&gt;</description>
+      <link>https://status.campaignmonitor.com/incident/692706</link>
+      <guid isPermaLink="false">/692706/1570509</guid>
+      <pubDate>Thu, 16 Jul 2026 05:16:00 -0700</pubDate>
+    </item>
+  </channel>
+</rss>
+`
+
+test("statusCastIncidentId reads the incident path or guid", () => {
+  assert.equal(statusCastIncidentId(item({})), "706835")
+  assert.equal(
+    statusCastIncidentId(
+      item({
+        link: null,
+        externalId: "/697722/1583868",
+      }),
+    ),
+    "697722",
+  )
+})
+
+test("extractStatusCastStatus treats continuing-monitor updates as open", () => {
+  assert.equal(extractStatusCastStatus(item({})), "investigating")
+})
+
+test("extractStatusCastStatus treats completed maintenance as resolved", () => {
+  assert.equal(
+    extractStatusCastStatus(
+      item({
+        title: "Scheduled Maintenance",
+        text: "We have completed our scheduled maintenance. Emails that were queued may have been delayed.",
+      }),
+    ),
+    "resolved",
+  )
+})
+
+test("extractStatusCastStatus treats restored login as resolved", () => {
+  assert.equal(
+    extractStatusCastStatus(
+      item({
+        title: "Customers are unable to login to accounts",
+        text: "The application is now working normally and customers can now login without any issues.",
+      }),
+    ),
+    "resolved",
+  )
+})
+
+test("mapStatusCastFeed groups updates and keeps the open Microsoft delay", () => {
+  const items = parseFeed(STATUSCAST_RSS)
+  const state = mapStatusCastFeed(items, {
+    feedUrl: "https://status.campaignmonitor.com/rss",
+    feedTitle: "Marigold rss feed",
+    lastBuildDate: "Sun, 06 Sep 2026 05:58:40 -0700",
+  })
+
+  assert.equal(state.detail.source, "statuscast")
+  assert.equal(state.components.length, 0)
+  assert.equal(state.incidents.length, 3)
+  assert.equal(state.incidents[0].externalId, "706835")
+  assert.equal(state.incidents[0].status, "investigating")
+  assert.equal(state.incidents[1].externalId, "697722")
+  assert.equal(state.incidents[1].status, "resolved")
+  assert.equal(state.incidents[2].status, "resolved")
+  assert.equal(state.status, "degraded")
+  assert.match(state.incidentTitle ?? "", /Microsoft delivery delays/)
 })

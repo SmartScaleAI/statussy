@@ -12,7 +12,7 @@ import type pg from "pg"
  * GitHub Copilot is a GitHub component, not its own card.
  *
  * `category` defaults to `ai` when omitted. PayPal, Adyen, PagerDuty, Checkly,
- * Postmark, Mailchimp, Campaign Monitor, Mailtrap, Substack, Adobe,
+ * Adobe,
  * Sketch, Penpot, Rive, LottieFiles, Whimsical, Lunacy, Photopea,
  * Blender, Moqups, Proto.io, UXPin, Overflow, Axure, Relume, Visily,
  * Plasmic, OpenTofu, Ansible, Argo CD, Flux, Terragrunt, Env0, Salt,
@@ -1525,18 +1525,20 @@ export const SERVICE_SEED = [
     fetcherType: "statuspage",
   },
   {
+    // SMA-71: Sorry™ /api/v1 (same family as Pipedrive).
     id: "postmark",
     name: "Postmark",
     category: "email",
     statusUrl: "https://status.postmarkapp.com/",
-    fetcherType: "none",
+    fetcherType: "sorry",
   },
   {
+    // SMA-71: StatusCake HTML. No public JSON/RSS.
     id: "mailchimp",
     name: "Mailchimp",
     category: "email",
     statusUrl: "https://status.mailchimp.com/",
-    fetcherType: "none",
+    fetcherType: "statuscake",
   },
   {
     id: "activecampaign",
@@ -1553,11 +1555,12 @@ export const SERVICE_SEED = [
     fetcherType: "statuspage",
   },
   {
+    // SMA-71: StatusCast /rss (HTML + /api/v2 403). Keep the product name.
     id: "campaign-monitor",
     name: "Campaign Monitor",
     category: "email",
     statusUrl: "https://status.campaignmonitor.com/",
-    fetcherType: "none",
+    fetcherType: "statuscast",
   },
   {
     id: "nylas",
@@ -1595,18 +1598,21 @@ export const SERVICE_SEED = [
     fetcherType: "statuspage",
   },
   {
+    // SMA-71: same Sorry™ family as Postmark / Pipedrive.
     id: "mailtrap",
     name: "Mailtrap",
     category: "email",
     statusUrl: "https://status.mailtrap.info/",
-    fetcherType: "none",
+    fetcherType: "sorry",
   },
   {
+    // Catalog URL is the public host. Worker must keep substack.statuspage.io
+    // — status.substack.com redirects and strips /api/v2 (SMA-71).
     id: "substack",
     name: "Substack",
     category: "email",
     statusUrl: "https://status.substack.com/",
-    fetcherType: "none",
+    fetcherType: "statuspage",
   },
   // Design Wave A. FigJam / Dev Mode stay on Figma. Photoshop /
   // Illustrator / XD stay on Adobe. Lucidspark stays on Lucid. Spline

@@ -70,9 +70,12 @@
  * customerio.statuspage.io (the public host has no /api/v2); Email
  * Wave B — Knock, Iterable, MailerSend, MailerLite, Kit, Front, and
  * Omnisend via Statuspage, SMTP2GO via smtp2gostatus.com (the public
- * host redirects /api/v2); Email Wave C — ActiveCampaign, GetResponse,
+ * host redirects /api/v2), Postmark via Sorry™ `/api/v1`, Mailchimp
+ * via StatusCake HTML; Email Wave C — ActiveCampaign, GetResponse,
  * EmailOctopus, OneSignal, HubSpot, and Help Scout via Statuspage,
- * Nylas via status-v3.nylas.com (status.nylas.com redirects); Design
+ * Nylas via status-v3.nylas.com (status.nylas.com redirects),
+ * Campaign Monitor via StatusCast `/rss`, Mailtrap via Sorry™,
+ * Substack via substack.statuspage.io; Design
  * Wave A — Figma, Canva, Miro, Webflow, Lucid, Mural, and Frontify
  * via Statuspage, Framer via Better Stack `index.json`; Design Wave B
  * — Marvel, Balsamiq, and Anima via Statuspage; Design Wave C —
@@ -117,8 +120,7 @@
  * Gladly (gladly.statuspage.io), Genesys (mypurecloud.com),
  * Deskpro, Olark, and HelpDesk via Statuspage, Chatwoot
  * via Better Stack `index.json`.
- * PayPal, Adyen, PagerDuty, Checkly, Postmark, Mailchimp, Campaign Monitor,
- * Mailtrap, Substack, Adobe, Sketch, Penpot, Rive, LottieFiles,
+ * PayPal, Adyen, PagerDuty, Checkly, Adobe, Sketch, Penpot, Rive, LottieFiles,
  * Whimsical, Lunacy, Photopea, Blender, Moqups, Proto.io, UXPin,
  * Overflow, Axure, Relume, Visily, Plasmic, OpenTofu, Ansible, Argo
  * CD, Flux, Terragrunt, Env0, Salt, Rancher, Vagrant, Helm, Istio,
@@ -138,6 +140,7 @@ import { fetchChecklyNuxtState } from "./checkly-nuxt.js"
 import { fetchInstatusState } from "./instatus.js"
 import { runMigrations } from "./migrate.js"
 import { fetchRssState } from "./rss.js"
+import { fetchStatusCakeState } from "./statuscake.js"
 import { seedServices } from "./seed.js"
 import { fetchOnlineOrNotState } from "./onlineornot.js"
 import {
@@ -169,7 +172,7 @@ import { fetchOktaState } from "./okta.js"
 import { fetchOracleCloudState } from "./oracle-cloud.js"
 import { fetchAwsState } from "./aws.js"
 import { fetchRailwayState } from "./railway.js"
-import { fetchStatuscastState } from "./statuscast.js"
+import { fetchStatuscastState, fetchStatusCastState } from "./statuscast.js"
 import { fetchVultrState } from "./vultr.js"
 import { fetchRedisState } from "./redis.js"
 import { fetchAlgoliaState } from "./algolia.js"
@@ -238,8 +241,7 @@ type ServiceJob = {
 
 // Board services with a fetcher (26 AI + Cloud / Developer / Data / Auth /
 // Payments / Observability Waves A–C + Email Waves A–C + Design Waves
-// A–C + Infra Waves A–C; PayPal, Adyen, PagerDuty, Checkly, Postmark,
-// Mailchimp, Campaign Monitor, Mailtrap, Substack, Adobe, Sketch,
+// A–C + Infra Waves A–C; PayPal, Adyen, PagerDuty, Checkly, Adobe, Sketch,
 // Penpot, Rive, LottieFiles, Whimsical, Lunacy, Photopea, Blender,
 // Moqups, Proto.io, UXPin, Overflow, Axure, Relume, Visily, Plasmic,
 // OpenTofu, Ansible, Argo CD, Flux, Terragrunt, Env0, Salt, Rancher,
@@ -727,7 +729,7 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("mailjet", "https://status.mailjet.com"),
   // Email Wave B. Courier waits (no official vector). Mandrill stays
   // on Mailchimp. SMTP2GO's public host redirects; hit smtp2gostatus.com.
-  // Postmark and Mailchimp are custom pages with no /api/v2.
+  // Postmark is Sorry™; Mailchimp is StatusCake HTML (SMA-71).
   statuspageJob("knock", "https://status.knock.app"),
   statuspageJob("iterable", "https://status.iterable.com"),
   statuspageJob("mailersend", "https://status.mailersend.com"),
@@ -736,17 +738,39 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("kit", "https://status.kit.com"),
   statuspageJob("front", "https://www.frontstatus.com"),
   statuspageJob("omnisend", "https://status.omnisend.com"),
+  {
+    id: "postmark",
+    fetch: () => fetchSorryState("https://status.postmarkapp.com", fetchOptions()),
+  },
+  {
+    // Events drop off the 7-day StatusCake diary.
+    id: "mailchimp",
+    fetch: () => fetchStatusCakeState("https://status.mailchimp.com", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
   // Email Wave C. Courier / Drip / AWeber / Constant Contact / Beehiiv
   // wait (no official vector). Nylas's public host redirects; hit
-  // status-v3.nylas.com. Campaign Monitor 403s /api/v2. Mailtrap and
-  // Substack are custom pages with no Statuspage /api/v2.
+  // status-v3.nylas.com. Campaign Monitor /api/v2 403s — use StatusCast
+  // /rss. Mailtrap is Sorry™. Substack's public host strips /api/v2;
+  // hit substack.statuspage.io (SMA-71).
   statuspageJob("activecampaign", "https://status.activecampaign.com"),
   statuspageJob("getresponse", "https://status.getresponse.com"),
+  {
+    id: "campaign-monitor",
+    fetch: () =>
+      fetchStatusCastState(["https://status.campaignmonitor.com/rss"], fetchOptions()),
+  },
   statuspageJob("nylas", "https://status-v3.nylas.com"),
   statuspageJob("emailoctopus", "https://status.emailoctopus.com"),
   statuspageJob("onesignal", "https://status.onesignal.com"),
   statuspageJob("hubspot", "https://status.hubspot.com"),
   statuspageJob("help-scout", "https://status.helpscout.com"),
+  {
+    id: "mailtrap",
+    fetch: () => fetchSorryState("https://status.mailtrap.info", fetchOptions()),
+  },
+  // Catalog URL is status.substack.com (redirects and strips /api/v2).
+  statuspageJob("substack", "https://substack.statuspage.io"),
   // Design Wave A. FigJam / Dev Mode stay on Figma. Photoshop /
   // Illustrator / XD stay on Adobe. Lucidspark stays on Lucid. Spline
   // waits (no official vector). Adobe's custom SPA and Sketch's
