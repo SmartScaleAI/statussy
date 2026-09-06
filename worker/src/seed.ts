@@ -5,7 +5,8 @@ import type pg from "pg"
  * Auth / Payments / Observability Waves A–C + Email Waves A–C +
  * Design Waves A–C + Infra Waves A–C + Flags Waves A–C +
  * Analytics Waves A–C + Security Waves A–C + Support Waves A–C +
- * Collab Waves A–C + Docs Wave A + Commerce Waves A–B).
+ * Collab Waves A–C + Docs Wave A + Commerce Waves A–B +
+ * CRM Wave A).
  * Mirrors the ids in the Next.js app's data/services.ts (and public/logos/{id}.svg).
  * Windsurf is the legacy Devin Desktop name and is not seeded separately.
  * GitHub Copilot is a GitHub component, not its own card.
@@ -3331,6 +3332,125 @@ export const SERVICE_SEED = [
     name: "Printful",
     category: "commerce",
     statusUrl: "https://www.printfulstatus.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "salesforce",
+    name: "Salesforce",
+    category: "crm",
+    statusUrl: "https://status.salesforce.com/",
+    fetcherType: "none",
+  },
+  {
+    id: "pipedrive",
+    name: "Pipedrive",
+    category: "crm",
+    statusUrl: "https://status.pipedrive.com/",
+    fetcherType: "none",
+  },
+  {
+    id: "copper",
+    name: "Copper",
+    category: "crm",
+    statusUrl: "https://status.copper.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "close",
+    name: "Close",
+    category: "crm",
+    statusUrl: "https://status.close.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "attio",
+    name: "Attio",
+    category: "crm",
+    statusUrl: "https://status.attio.com/",
+    fetcherType: "instatus",
+  },
+  {
+    id: "capsule",
+    name: "Capsule",
+    category: "crm",
+    statusUrl: "https://status.capsulecrm.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "salesloft",
+    name: "Salesloft",
+    category: "crm",
+    statusUrl: "https://status.salesloft.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "outreach",
+    name: "Outreach",
+    category: "crm",
+    statusUrl: "https://status.outreach.io/",
+    fetcherType: "none",
+  },
+  {
+    id: "apollo",
+    name: "Apollo",
+    category: "crm",
+    statusUrl: "https://status.apollo.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "gong",
+    name: "Gong",
+    category: "crm",
+    statusUrl: "https://status.gong.io/",
+    fetcherType: "instatus",
+  },
+  {
+    id: "affinity",
+    name: "Affinity",
+    category: "crm",
+    statusUrl: "https://status.affinity.co/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "zoominfo",
+    name: "ZoomInfo",
+    category: "crm",
+    statusUrl: "https://status.zoominfo.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "streak",
+    name: "Streak",
+    category: "crm",
+    statusUrl: "https://status.streak.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "clari",
+    name: "Clari",
+    category: "crm",
+    statusUrl: "https://trust.clari.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "lusha",
+    name: "Lusha",
+    category: "crm",
+    statusUrl: "https://status.lusha.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "teamleader",
+    name: "Teamleader",
+    category: "crm",
+    statusUrl: "https://status.teamleader.eu/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "orum",
+    name: "Orum",
+    category: "crm",
+    statusUrl: "https://status.orum.com/",
     fetcherType: "statuspage",
   },
 ] as const

@@ -477,5 +477,22 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `mirakl.svg` | Mirakl | `#FFFFFF` | Official globe from [mirakl.com favicon-light.svg](https://www.mirakl.com/media/favicons/favicon-light.svg); official `#03182F` knocked to white |
 | `sharetribe.svg` | Sharetribe | `#F7615E` | Official mark from [sharetribe.com/safari-pinned-tab.svg](https://www.sharetribe.com/safari-pinned-tab.svg) |
 | `printful.svg` | Printful | Official triangle colors | Official mark from [printful.com logo-icon.svg](https://static.cdn.printful.com/static/v879/images/layout/logo-icon.svg) |
+| `salesforce.svg` | Salesforce | `#00B3FF` | Official cloud from [salesforce.com logo-salesforce-no-type.svg](https://wp.sfdcdigital.com/en-us/wp-content/uploads/sites/4/2026/05/logo-salesforce-no-type.svg) (wordmark dropped) |
+| `pipedrive.svg` | Pipedrive | `#017737` | Official P from the [Wikimedia Pipedrive lockup](https://commons.wikimedia.org/wiki/File:Pipedrive_logo.svg) (wordmark dropped) |
+| `copper.svg` | Copper | `#FF3465` | Official colon from [copper.com logo](https://cdn.prod.website-files.com/69bdc11d6d8dca48c8a32ff4/69c58163b6548ea11daddf60_copper%20logo%20-%20black.svg) (wordmark dropped) |
+| `close.svg` | Close | `#4EC375` / `#1463FF` / `#FFBC00` | Official overlapping-circle mark from [close.com logo-dark-large.svg](https://cdn.prod.website-files.com/61717799a852418a278cfa9b/6876a6daecee99d3bff05939_logo-dark-large.svg) (wordmark dropped) |
+| `attio.svg` | Attio | `#FFFFFF` | Official crystal from [attio.com Storyblok attio.svg](https://a.storyblok.com/f/234930/18x18/cfb7753a31/attio.svg); official `#232529` knocked to white |
+| `capsule.svg` | Capsule | `#453DD8` | Official mark from [app.capsulecrm.com/favicon.svg](https://app.capsulecrm.com/favicon.svg) (rounded tile dropped) |
+| `salesloft.svg` | Salesloft | `#FFFFFF` | Official constellation from [salesloft.com/icon.svg](https://www.salesloft.com/icon.svg) (rounded tile dropped); official `#181818` knocked to white |
+| `outreach.svg` | Outreach | `#FFFFFF` | Official mark from [status.outreach.io](https://status.outreach.io/bfe7482c1d714fd2.svg); light lockup knocked to white |
+| `apollo.svg` | Apollo | `#FFFFFF` | Official mark from [apollo.io logo.svg](https://www.apollo.io/_next/static/media/logo.0pq8s8~3b84w1.svg); official `#1F1F1E` knocked to white |
+| `gong.svg` | Gong | `#FFFFFF` | Official mark from [gong.io/marketing-assets/favicon.svg](https://www.gong.io/marketing-assets/favicon.svg) (rounded tile dropped) |
+| `affinity.svg` | Affinity | `#2665F1` | Official geometric mark from the [affinity.co](https://www.affinity.co/) lockup (wordmark dropped). Not Simple Icons `affinity` (photo editor). |
+| `zoominfo.svg` | ZoomInfo | `#EA1B15` | Official Z from [zoominfo.com zoominfo-red-logomark.svg](https://www.zoominfo.com/) (rounded tile dropped) |
+| `streak.svg` | Streak | `#F5A623` / `#00A99D` / `#4A90E2` | Official kanban cards from the [streak.com](https://www.streak.com/) lockup (wordmark + rounded tile dropped) |
+| `clari.svg` | Clari | `#00D7B8` / `#5F3AD7` / `#0280FF` / `#FFFFFF` | Official fan from [clari.com logo-white.svg](https://www.clari.com/) (wordmark dropped) |
+| `lusha.svg` | Lusha | `#863FFF` | Official bird from the [lusha.com](https://www.lusha.com/) 2026 mark (tile dropped) |
+| `teamleader.svg` | Teamleader | `#00B2B2` | Official chevrons from [teamleader.eu icon.svg](https://www.teamleader.eu/) (circle tile dropped) |
+| `orum.svg` | Orum | `#FCFF70` | Official petals from the [orum.com](https://www.orum.com/) favicon (dark tile dropped) |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.
