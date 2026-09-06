@@ -201,6 +201,53 @@ test("extractNuxtData throws when __NUXT_DATA__ is missing", () => {
   assert.throws(() => extractNuxtData("<html><body>nope</body></html>"), /No __NUXT_DATA__/)
 })
 
+test("parseChecklyNuxtHtml reads Checkly's own v3 flat components list", () => {
+  const payload = [
+    ["ShallowReactive", 1],
+    { data: 2 },
+    {
+      "status-page-resolver-is.checkly.online": 3,
+      "uptime-page-v3": 6,
+      "unresolved-incidents-page-v3": 20,
+      "maintenance-windows-v3-status": 22,
+    },
+    { statusPage: 4 },
+    { id: 5, name: 5, customDomain: 5 },
+    "is.checkly.online",
+    { components: 7, uptime: 16, partialError: 19 },
+    [8, 12],
+    { id: 9, name: 10, displayOrder: 11, hidden: 19 },
+    "api-1",
+    "API",
+    0,
+    { id: 13, name: 14, displayOrder: 15, hidden: 19 },
+    "web-1",
+    "Web Application",
+    1,
+    [17],
+    { id: 9, name: 10, uptime: 18 },
+    99.5,
+    false,
+    { incidents: 21 },
+    [],
+    { active: 21 },
+  ]
+  const html = `<script id="__NUXT_DATA__">${JSON.stringify(payload)}</script>`
+  const page = parseChecklyNuxtHtml(html)
+  assert.equal(page.statusPage?.customDomain, "is.checkly.online")
+  assert.deepEqual(
+    page.components.map((component) => ({
+      id: component.id,
+      name: component.name,
+      uptime: component.uptime,
+    })),
+    [
+      { id: "api-1", name: "API", uptime: 99.5 },
+      { id: "web-1", name: "Web Application", uptime: null },
+    ],
+  )
+})
+
 test("parseChecklyNuxtHtml throws when the payload has no components", () => {
   const empty = [
     ["ShallowReactive", 1],
