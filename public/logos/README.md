@@ -397,5 +397,15 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `dixa.svg` | Dixa | `#FFFFFF` | Official mark from [dixa.com logo.svg](https://www.dixa.com/) (wordmark dropped); official `#171512` knocked to white |
 | `kayako.svg` | Kayako | `#FFFFFF` | Official K from [kayako.com kayako-one-logo-light.svg](https://kayako.com/) (wordmark dropped) |
 | `helpshift.svg` | Helpshift | `#0042FF` + white | Official mark from [helpshift.com Logo-Helpshift.svg](https://www.helpshift.com/) |
+| `uservoice.svg` | UserVoice | `#FF6720` | Simple Icons `uservoice` |
+| `ada.svg` | Ada | `#FFFFFF` | Official mark from [docs.ada.cx logo-light.svg](https://docs.ada.cx/) (wordmark dropped); official `#0A0B0C` knocked to white |
+| `plain.svg` | Plain | `#1AD379` | Official mark from [plain.com wordmark](https://www.plain.com/) (letters dropped) |
+| `forethought.svg` | Forethought | `#FFFFFF` | Official stacked-brick mark from [forethought.ai Isolation_Mode.svg](https://www.forethought.ai/) (wordmark dropped); official `#F7FDFC` knocked to white |
+| `gladly.svg` | Gladly | `#74AA9C` + white | Official mark from [gladly.com](https://www.gladly.com/) |
+| `genesys.svg` | Genesys | `#FF451A` | Official G from [genesys.com genesys-com-full-color.svg](https://www.genesys.com/) (wordmark dropped) |
+| `deskpro.svg` | Deskpro | `#FFFFFF` | Official D from [deskpro.com Deskpro/deskpro-logo.svg](https://www.deskpro.com/) (wordmark dropped); official `#090C2F` knocked to white |
+| `olark.svg` | Olark | Official rainbow | Official bird from [olark.com olark-rainbow-logo.svg](https://www.olark.com/) |
+| `chatwoot.svg` | Chatwoot | `#1F93FF` | Simple Icons `chatwoot` |
+| `helpdesk.svg` | HelpDesk | `#2FC774` | Official ticket from [helpdesk.com/helpdesk-logo.svg](https://www.helpdesk.com/helpdesk-logo.svg) (wordmark dropped) |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.

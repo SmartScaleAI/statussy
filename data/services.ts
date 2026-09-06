@@ -3336,4 +3336,91 @@ export const services: Service[] = [
     status: "operational",
     updatedAt: "2026-09-06T00:00:00.000Z",
   },
+  // Support Wave B — more helpdesk / live chat / contact-center
+  // SaaS with a public JSON feed + official SVG. Podium waits
+  // (Instatus JSON, no official SVG). Tidio / TeamSupport /
+  // Groove / tawk.to wait (PNG lockups). Sprinklr waits (CX
+  // suite; no isolated official SVG). Drift waits (status.io
+  // host does not resolve). Freshdesk / ServiceNow / Crisp /
+  // Zoho Desk still wait.
+  {
+    id: "uservoice",
+    name: "UserVoice",
+    category: "support",
+    statusUrl: "https://status.uservoice.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T00:00:00.000Z",
+  },
+  {
+    id: "ada",
+    name: "Ada",
+    category: "support",
+    statusUrl: "https://status.ada.support/",
+    status: "operational",
+    updatedAt: "2026-09-06T00:00:00.000Z",
+  },
+  {
+    id: "plain",
+    name: "Plain",
+    category: "support",
+    statusUrl: "https://status.plain.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T00:00:00.000Z",
+  },
+  {
+    id: "forethought",
+    name: "Forethought",
+    category: "support",
+    statusUrl: "https://status.forethought.ai/",
+    status: "operational",
+    updatedAt: "2026-09-06T00:00:00.000Z",
+  },
+  {
+    id: "gladly",
+    name: "Gladly",
+    category: "support",
+    statusUrl: "https://gladly.statuspage.io/",
+    status: "operational",
+    updatedAt: "2026-09-06T00:00:00.000Z",
+  },
+  {
+    id: "genesys",
+    name: "Genesys",
+    category: "support",
+    statusUrl: "https://status.mypurecloud.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T00:00:00.000Z",
+  },
+  {
+    id: "deskpro",
+    name: "Deskpro",
+    category: "support",
+    statusUrl: "https://deskprostatus.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T00:00:00.000Z",
+  },
+  {
+    id: "olark",
+    name: "Olark",
+    category: "support",
+    statusUrl: "https://status.olark.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T00:00:00.000Z",
+  },
+  {
+    id: "chatwoot",
+    name: "Chatwoot",
+    category: "support",
+    statusUrl: "https://status.chatwoot.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T00:00:00.000Z",
+  },
+  {
+    id: "helpdesk",
+    name: "HelpDesk",
+    category: "support",
+    statusUrl: "https://status.helpdesk.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T00:00:00.000Z",
+  },
 ]

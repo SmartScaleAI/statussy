@@ -4,7 +4,7 @@ import type pg from "pg"
  * Static registry of board services (26 AI + Cloud / Developer / Data /
  * Auth / Payments / Observability Waves A–C + Email Waves A–C +
  * Design Waves A–C + Infra Waves A–C + Flags Waves A–C +
- * Analytics Waves A–C + Security Waves A–C + Support Wave A).
+ * Analytics Waves A–C + Security Waves A–C + Support Waves A–B).
  * Mirrors the ids in the Next.js app's data/services.ts (and public/logos/{id}.svg).
  * Windsurf is the legacy Devin Desktop name and is not seeded separately.
  * GitHub Copilot is a GitHub component, not its own card.
@@ -2770,6 +2770,76 @@ export const SERVICE_SEED = [
     name: "Helpshift",
     category: "support",
     statusUrl: "https://status.helpshift.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "uservoice",
+    name: "UserVoice",
+    category: "support",
+    statusUrl: "https://status.uservoice.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "ada",
+    name: "Ada",
+    category: "support",
+    statusUrl: "https://status.ada.support/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "plain",
+    name: "Plain",
+    category: "support",
+    statusUrl: "https://status.plain.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "forethought",
+    name: "Forethought",
+    category: "support",
+    statusUrl: "https://status.forethought.ai/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "gladly",
+    name: "Gladly",
+    category: "support",
+    statusUrl: "https://gladly.statuspage.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "genesys",
+    name: "Genesys",
+    category: "support",
+    statusUrl: "https://status.mypurecloud.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "deskpro",
+    name: "Deskpro",
+    category: "support",
+    statusUrl: "https://deskprostatus.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "olark",
+    name: "Olark",
+    category: "support",
+    statusUrl: "https://status.olark.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "chatwoot",
+    name: "Chatwoot",
+    category: "support",
+    statusUrl: "https://status.chatwoot.com/",
+    fetcherType: "betterstack",
+  },
+  {
+    id: "helpdesk",
+    name: "HelpDesk",
+    category: "support",
+    statusUrl: "https://status.helpdesk.com/",
     fetcherType: "statuspage",
   },
 ] as const

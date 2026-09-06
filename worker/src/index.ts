@@ -100,7 +100,11 @@
  * (Statuspage-compatible incident.io page), Kustomer, Dixa,
  * Kayako, and Helpshift via Statuspage, Intercom via
  * www.finstatus.com (the public intercomstatus.com host
- * redirects /api/v2 to HTML), Zendesk via /api/ssp.
+ * redirects /api/v2 to HTML), Zendesk via /api/ssp;
+ * Support Wave B — UserVoice, Ada, Plain, Forethought,
+ * Gladly (gladly.statuspage.io), Genesys (mypurecloud.com),
+ * Deskpro, Olark, and HelpDesk via Statuspage, Chatwoot
+ * via Better Stack `index.json`.
  * AWS, Azure, Fastly, Replit, Redis, Algolia, DataStax, Okta, PayPal,
  * Adyen, PagerDuty, Checkly, Postmark, Mailchimp, Campaign Monitor,
  * Mailtrap, Substack, Adobe, Sketch, Penpot, Rive, LottieFiles,
@@ -866,6 +870,30 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("dixa", "https://status.dixa.io"),
   statuspageJob("kayako", "https://status.kayako.com"),
   statuspageJob("helpshift", "https://status.helpshift.com"),
+  // Support Wave B. UserVoice / Ada / Plain / Forethought /
+  // Gladly / Genesys / Deskpro / Olark / HelpDesk are
+  // Statuspage (Gladly's public host is gladly.statuspage.io;
+  // Genesys Cloud publishes on status.mypurecloud.com; Plain
+  // and HelpDesk are Statuspage-compatible). Chatwoot is
+  // Better Stack `index.json`. Podium waits (Instatus JSON,
+  // no official SVG). Tidio / TeamSupport / Groove / tawk.to
+  // wait (PNG lockups). Sprinklr waits (CX suite). Drift
+  // waits (status.io host does not resolve).
+  statuspageJob("uservoice", "https://status.uservoice.com"),
+  statuspageJob("ada", "https://status.ada.support"),
+  statuspageJob("plain", "https://status.plain.com"),
+  statuspageJob("forethought", "https://status.forethought.ai"),
+  statuspageJob("gladly", "https://gladly.statuspage.io"),
+  statuspageJob("genesys", "https://status.mypurecloud.com"),
+  statuspageJob("deskpro", "https://deskprostatus.com"),
+  statuspageJob("olark", "https://status.olark.com"),
+  {
+    id: "chatwoot",
+    fetch: () =>
+      fetchBetterstackState("https://status.chatwoot.com", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  statuspageJob("helpdesk", "https://status.helpdesk.com"),
 ]
 
 async function fetchService(service: ServiceJob): Promise<boolean> {
