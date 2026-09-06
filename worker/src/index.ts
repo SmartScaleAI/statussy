@@ -14,11 +14,13 @@
  * Stack `index.json`; Wave C Statuspage — ElevenLabs, MiniMax, Voyage, Black
  * Forest Labs, Cartesia, Kimi; fal via Instatus; Cloud Wave A — Vercel,
  * Cloudflare, Render, Fly.io, Netlify, DigitalOcean via Statuspage, Railway
- * via api.railwaystatus.com, Google Cloud via incidents.json; Cloud Wave B —
- * Linode and bunny.net via Statuspage, Heroku via Status API v4, Deno Deploy
- * and Koyeb via Instatus, Modal via Better Stack, Firebase via
+ * via api.railwaystatus.com, Google Cloud via incidents.json, AWS via
+ * health.aws.amazon.com/public/currentevents, Azure via status RSS;
+ * Cloud Wave B — Linode and bunny.net via Statuspage, Heroku via Status
+ * API v4, Fastly via StatusCast HTML, Deno Deploy and Koyeb via Instatus,
+ * Modal via Better Stack, Firebase via
  * status.firebase.google.com incidents.json; Cloud Wave C — Akamai,
- * Scaleway, and Lambda via Statuspage, Northflank via Instatus, Vultr via
+ * Scaleway, and Lambda GPU Cloud via Statuspage, Northflank via Instatus, Vultr via
  * status.json, Oracle Cloud via ocistatus status.json, Hetzner via the
  * official page's __NEXT_DATA__; Developer Wave A — Cursor, Devin, GitHub,
  * CircleCI, npm, Docker, Linear, Sourcegraph, and Warp via Statuspage,
@@ -110,7 +112,7 @@
  * Gladly (gladly.statuspage.io), Genesys (mypurecloud.com),
  * Deskpro, Olark, and HelpDesk via Statuspage, Chatwoot
  * via Better Stack `index.json`.
- * AWS, Azure, Fastly, Replit, Redis, Algolia, DataStax, PayPal,
+ * Replit, Redis, Algolia, DataStax, PayPal,
  * Adyen, PagerDuty, Checkly, Postmark, Mailchimp, Campaign Monitor,
  * Mailtrap, Substack, Adobe, Sketch, Penpot, Rive, LottieFiles,
  * Whimsical, Lunacy, Photopea, Blender, Moqups, Proto.io, UXPin,
@@ -159,7 +161,9 @@ import { fetchSlackState } from "./slack.js"
 import { fetchHetznerState } from "./hetzner.js"
 import { fetchOktaState } from "./okta.js"
 import { fetchOracleCloudState } from "./oracle-cloud.js"
+import { fetchAwsState } from "./aws.js"
 import { fetchRailwayState } from "./railway.js"
+import { fetchStatuscastState } from "./statuscast.js"
 import { fetchVultrState } from "./vultr.js"
 import { fetchBetterstackState } from "./betterstack.js"
 import { fetchFathomState } from "./fathom.js"
@@ -218,7 +222,7 @@ type ServiceJob = {
 
 // Board services with a fetcher (26 AI + Cloud / Developer / Data / Auth /
 // Payments / Observability Waves A–C + Email Waves A–C + Design Waves
-// A–C + Infra Waves A–C; AWS, Azure, Fastly, Replit, Redis, Algolia,
+// A–C + Infra Waves A–C; Replit, Redis, Algolia,
 // DataStax, PayPal, Adyen, PagerDuty, Checkly, Postmark,
 // Mailchimp, Campaign Monitor, Mailtrap, Substack, Adobe, Sketch,
 // Penpot, Rive, LottieFiles, Whimsical, Lunacy, Photopea, Blender,
@@ -340,12 +344,34 @@ const SERVICE_JOBS: ServiceJob[] = [
     fetch: () => fetchGoogleCloudPlatformState(fetchOptions()),
     persistOptions: { resolveMissingIncidents: true },
   },
-  // Cloud Wave B. Fastly has no public JSON and blocks the worker UA.
+  {
+    // SMA-63: UTF-16 currentevents JSON. Empty list = operational.
+    // Dropped events are resolved at persist time.
+    id: "aws",
+    fetch: () => fetchAwsState(fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  {
+    // SMA-63: Azure Status RSS. Empty feed = operational; no component grid.
+    id: "azure",
+    fetch: () =>
+      fetchRssState(
+        ["https://azure.status.microsoft/en-us/status/feed/"],
+        fetchOptions(),
+      ),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  // Cloud Wave B. Fastly is StatusCast HTML (browser UA; worker UA 403s).
   statuspageJob("linode", "https://status.linode.com"),
   statuspageJob("bunny", "https://status.bunny.net"),
   {
     id: "heroku",
     fetch: () => fetchHerokuState(fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  {
+    id: "fastly",
+    fetch: () => fetchStatuscastState("https://www.fastlystatus.com", fetchOptions()),
     persistOptions: { resolveMissingIncidents: true },
   },
   {
