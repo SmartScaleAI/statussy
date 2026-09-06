@@ -5,7 +5,7 @@ import type pg from "pg"
  * Auth / Payments / Observability Waves A–C + Email Waves A–C +
  * Design Waves A–C + Infra Waves A–C + Flags Waves A–C +
  * Analytics Waves A–C + Security Waves A–C + Support Waves A–C +
- * Collab Waves A–B).
+ * Collab Waves A–C).
  * Mirrors the ids in the Next.js app's data/services.ts (and public/logos/{id}.svg).
  * Windsurf is the legacy Devin Desktop name and is not seeded separately.
  * GitHub Copilot is a GitHub component, not its own card.
@@ -3051,6 +3051,76 @@ export const SERVICE_SEED = [
     name: "Hive",
     category: "collab",
     statusUrl: "https://status.hive.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "calendly",
+    name: "Calendly",
+    category: "collab",
+    statusUrl: "https://calendlystatus.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "basecamp",
+    name: "Basecamp",
+    category: "collab",
+    statusUrl: "https://www.37status.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "zulip",
+    name: "Zulip",
+    category: "collab",
+    statusUrl: "https://status.zulip.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "element",
+    name: "Element",
+    category: "collab",
+    statusUrl: "https://status.element.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "plane",
+    name: "Plane",
+    category: "collab",
+    statusUrl: "https://status.plane.so/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "guru",
+    name: "Guru",
+    category: "collab",
+    statusUrl: "https://status.getguru.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "tettra",
+    name: "Tettra",
+    category: "collab",
+    statusUrl: "https://status.tettra.co/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "fireflies",
+    name: "Fireflies",
+    category: "collab",
+    statusUrl: "https://status.fireflies.ai/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "livestorm",
+    name: "Livestorm",
+    category: "collab",
+    statusUrl: "https://status.livestorm.co/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "fellow",
+    name: "Fellow",
+    category: "collab",
+    statusUrl: "https://status.fellow.ai/",
     fetcherType: "statuspage",
   },
 ] as const

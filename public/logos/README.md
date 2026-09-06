@@ -437,5 +437,15 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `productboard.svg` | Productboard | `#0071E1` + `#FFC600` + `#F84136` | Official mark from [productboard.com/favicon.svg](https://www.productboard.com/favicon.svg) |
 | `aha.svg` | Aha! | `#FFFFFF` + `#d34cf9` → `#0889f0` | Official A + sparkle from [aha.io](https://www.aha.io/) (wordmark dropped); official `currentColor` A knocked to white |
 | `hive.svg` | Hive | `#FBC67A` → `#FFA561` | Official bars from [hive.com](https://www.hive.com/) wordmark (letters dropped). Simple Icons `hive` is Hive Home, not Hive.com |
+| `calendly.svg` | Calendly | `#006BFF` | Simple Icons `calendly` |
+| `basecamp.svg` | Basecamp | `#FFFFFF` | Simple Icons `basecamp`; official `#1D2D35` knocked to white |
+| `zulip.svg` | Zulip | `#6492FE` | Simple Icons `zulip` |
+| `element.svg` | Element | `#0DBD8B` | Simple Icons `element` |
+| `plane.svg` | Plane | `#FFFFFF` | Simple Icons `plane`; official `#121212` knocked to white |
+| `guru.svg` | Guru | `#FFFFFF` | Official G from [getguru.com Guru logo.svg](https://www.getguru.com/) (blob tile dropped); official white on dark |
+| `tettra.svg` | Tettra | `#F62888` + `#F8BFD9` + `#FFFFFF` | Official T from [tettra.com tettra-logo-fuchsia.svg](https://tettra.com/wp-content/themes/tettra-2016/images/2023/tettra-logo-fuchsia.svg) (wordmark dropped); official `#171627` outline knocked to white |
+| `fireflies.svg` | Fireflies | Official magenta → blue | Official mark from [fireflies.ai logo-full-color.svg](https://fireflies.ai/images/logo-full-color.svg) (wordmark dropped) |
+| `livestorm.svg` | Livestorm | `#FFFFFF` | Official bars + dot from [livestorm.co/favicon.svg](https://livestorm.co/favicon.svg) (circular tile dropped) |
+| `fellow.svg` | Fellow | `#FFFFFF` | Official mark from [fellow.ai](https://fellow.ai/) |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.

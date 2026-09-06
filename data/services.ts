@@ -3685,4 +3685,90 @@ export const services: Service[] = [
     status: "operational",
     updatedAt: "2026-09-06T01:20:00.000Z",
   },
+  // Collab Wave C — only vendors with public Statuspage JSON (or a
+  // Statuspage host the public page redirects away from). Microsoft
+  // Teams waits (Office 365 status is login-walled). Wrike / Webex /
+  // Whereby / Rocket.Chat / Height / Todoist / Evernote / Cal.com
+  // wait (no easy public JSON). Dropbox / Box stay file storage.
+  // Quip stays on Salesforce. GitBook stays Developer.
+  {
+    id: "calendly",
+    name: "Calendly",
+    category: "collab",
+    statusUrl: "https://calendlystatus.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:30:00.000Z",
+  },
+  {
+    id: "basecamp",
+    name: "Basecamp",
+    category: "collab",
+    statusUrl: "https://www.37status.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:30:00.000Z",
+  },
+  {
+    id: "zulip",
+    name: "Zulip",
+    category: "collab",
+    statusUrl: "https://status.zulip.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:30:00.000Z",
+  },
+  {
+    id: "element",
+    name: "Element",
+    category: "collab",
+    statusUrl: "https://status.element.io/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:30:00.000Z",
+  },
+  {
+    id: "plane",
+    name: "Plane",
+    category: "collab",
+    statusUrl: "https://status.plane.so/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:30:00.000Z",
+  },
+  {
+    id: "guru",
+    name: "Guru",
+    category: "collab",
+    statusUrl: "https://status.getguru.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:30:00.000Z",
+  },
+  {
+    id: "tettra",
+    name: "Tettra",
+    category: "collab",
+    statusUrl: "https://status.tettra.co/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:30:00.000Z",
+  },
+  {
+    id: "fireflies",
+    name: "Fireflies",
+    category: "collab",
+    statusUrl: "https://status.fireflies.ai/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:30:00.000Z",
+  },
+  {
+    id: "livestorm",
+    name: "Livestorm",
+    category: "collab",
+    statusUrl: "https://status.livestorm.co/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:30:00.000Z",
+  },
+  {
+    id: "fellow",
+    name: "Fellow",
+    category: "collab",
+    statusUrl: "https://status.fellow.ai/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:30:00.000Z",
+  },
 ]

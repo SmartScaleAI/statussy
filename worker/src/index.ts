@@ -951,6 +951,21 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("productboard", "https://status.productboard.com"),
   statuspageJob("aha", "https://status.aha.io"),
   statuspageJob("hive", "https://status.hive.com"),
+  // Collab Wave C. All ten are Statuspage. Calendly's public host
+  // (`status.calendly.com`) serves HTML for `/api/v2`; the fetcher
+  // uses calendlystatus.com. Fireflies' public host has no `/api/v2`;
+  // the fetcher uses fireflies.statuspage.io. Basecamp publishes on
+  // the 37signals page (`www.37status.com`).
+  statuspageJob("calendly", "https://calendlystatus.com"),
+  statuspageJob("basecamp", "https://www.37status.com"),
+  statuspageJob("zulip", "https://status.zulip.com"),
+  statuspageJob("element", "https://status.element.io"),
+  statuspageJob("plane", "https://status.plane.so"),
+  statuspageJob("guru", "https://status.getguru.com"),
+  statuspageJob("tettra", "https://status.tettra.co"),
+  statuspageJob("fireflies", "https://fireflies.statuspage.io"),
+  statuspageJob("livestorm", "https://status.livestorm.co"),
+  statuspageJob("fellow", "https://status.fellow.ai"),
 ]
 
 async function fetchService(service: ServiceJob): Promise<boolean> {
