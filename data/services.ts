@@ -32,6 +32,7 @@ export type ServiceCategory =
   | "security"
   | "support"
   | "collab"
+  | "docs"
 
 export type Service = {
   /** Matches a static mark at `public/logos/{id}.svg`. */
@@ -3690,7 +3691,7 @@ export const services: Service[] = [
   // Teams waits (Office 365 status is login-walled). Wrike / Webex /
   // Whereby / Rocket.Chat / Height / Todoist / Evernote / Cal.com
   // wait (no easy public JSON). Dropbox / Box stay file storage.
-  // Quip stays on Salesforce. GitBook stays Developer.
+  // Quip stays on Salesforce. GitBook is Docs.
   {
     id: "calendly",
     name: "Calendly",
@@ -3770,5 +3771,90 @@ export const services: Service[] = [
     statusUrl: "https://status.fellow.ai/",
     status: "operational",
     updatedAt: "2026-09-06T01:30:00.000Z",
+  },
+  // Docs Wave A — documentation platforms, knowledge bases, and
+  // API/docs portals with public Statuspage JSON. Notion /
+  // Confluence / Coda / Guru / Tettra stay Collab. Helpjuice
+  // stays Support. Help Scout Docs stays Email. Postman docs
+  // stay Developer. Headless CMS and Ghost stay off.
+  {
+    id: "gitbook",
+    name: "GitBook",
+    category: "docs",
+    statusUrl: "https://www.gitbookstatus.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:45:00.000Z",
+  },
+  {
+    id: "readme",
+    name: "ReadMe",
+    category: "docs",
+    statusUrl: "https://www.readmestatus.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:45:00.000Z",
+  },
+  {
+    id: "mintlify",
+    name: "Mintlify",
+    category: "docs",
+    statusUrl: "https://status.mintlify.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:45:00.000Z",
+  },
+  {
+    id: "fern",
+    name: "Fern",
+    category: "docs",
+    statusUrl: "https://status.buildwithfern.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:45:00.000Z",
+  },
+  {
+    id: "archbee",
+    name: "Archbee",
+    category: "docs",
+    statusUrl: "https://status.archbee.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:45:00.000Z",
+  },
+  {
+    id: "document360",
+    name: "Document360",
+    category: "docs",
+    statusUrl: "https://status.document360.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:45:00.000Z",
+  },
+  {
+    id: "knowledgeowl",
+    name: "KnowledgeOwl",
+    category: "docs",
+    statusUrl: "https://knowledgeowl.statuspage.io/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:45:00.000Z",
+  },
+  {
+    id: "stoplight",
+    name: "Stoplight",
+    category: "docs",
+    statusUrl: "https://stoplight.status.smartbear.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:45:00.000Z",
+  },
+  {
+    id: "swaggerhub",
+    name: "SwaggerHub",
+    category: "docs",
+    statusUrl: "https://swagger.status.smartbear.com/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:45:00.000Z",
+  },
+  {
+    id: "bump",
+    name: "Bump",
+    category: "docs",
+    statusUrl: "https://status.bump.sh/",
+    status: "operational",
+    updatedAt: "2026-09-06T01:45:00.000Z",
   },
 ]

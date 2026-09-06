@@ -966,6 +966,22 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("fireflies", "https://fireflies.statuspage.io"),
   statuspageJob("livestorm", "https://status.livestorm.co"),
   statuspageJob("fellow", "https://status.fellow.ai"),
+  // Docs Wave A. All ten are Statuspage. Document360 and Bump
+  // public hosts serve HTML for `/api/v2`; fetchers use
+  // document360.statuspage.io and bump.statuspage.io.
+  // KnowledgeOwl's public host login-walls, so the card and
+  // fetcher use knowledgeowl.statuspage.io. Stoplight and
+  // SwaggerHub publish on SmartBear-hosted pages.
+  statuspageJob("gitbook", "https://www.gitbookstatus.com"),
+  statuspageJob("readme", "https://www.readmestatus.com"),
+  statuspageJob("mintlify", "https://status.mintlify.com"),
+  statuspageJob("fern", "https://status.buildwithfern.com"),
+  statuspageJob("archbee", "https://status.archbee.com"),
+  statuspageJob("document360", "https://document360.statuspage.io"),
+  statuspageJob("knowledgeowl", "https://knowledgeowl.statuspage.io"),
+  statuspageJob("stoplight", "https://stoplight.status.smartbear.com"),
+  statuspageJob("swaggerhub", "https://swagger.status.smartbear.com"),
+  statuspageJob("bump", "https://bump.statuspage.io"),
 ]
 
 async function fetchService(service: ServiceJob): Promise<boolean> {

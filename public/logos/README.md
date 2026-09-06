@@ -447,5 +447,15 @@ One static SVG per board service. Filename = `Service.id` from `data/services.ts
 | `fireflies.svg` | Fireflies | Official magenta → blue | Official mark from [fireflies.ai logo-full-color.svg](https://fireflies.ai/images/logo-full-color.svg) (wordmark dropped) |
 | `livestorm.svg` | Livestorm | `#FFFFFF` | Official bars + dot from [livestorm.co/favicon.svg](https://livestorm.co/favicon.svg) (circular tile dropped) |
 | `fellow.svg` | Fellow | `#FFFFFF` | Official mark from [fellow.ai](https://fellow.ai/) |
+| `gitbook.svg` | GitBook | `#BBDDE5` | Simple Icons `gitbook` |
+| `readme.svg` | ReadMe | `#018EF5` | Simple Icons `readme` |
+| `mintlify.svg` | Mintlify | `#18E299` | Simple Icons `mintlify` |
+| `fern.svg` | Fern | `#51C233` | Official leaf from the [buildwithfern.com](https://buildwithfern.com/) header lockup (wordmark dropped) |
+| `archbee.svg` | Archbee | `#2166AE` | Official hex from [archbee.com/archbee-logo.svg](https://www.archbee.com/archbee-logo.svg) (wordmark dropped) |
+| `document360.svg` | Document360 | `#8005D8` | Official 360 mark from [document360.com logo.svg](https://document360.com/wp-content/themes/document360/images/logo.svg) (wordmark dropped) |
+| `knowledgeowl.svg` | KnowledgeOwl | `#FFFFFF` | Official owl from [KnowledgeOwl login `ko-logo-white.svg`](https://dyzz9obi78pm5.cloudfront.net/app/image/id/579e5c9732131c3836dfd8e8/n/ko-logo-white.svg) (wordmark dropped) |
+| `stoplight.svg` | Stoplight | `#149CF4` | Official mark from [stoplight.io Stoplight Logo.svg](https://stoplight.io/) |
+| `swaggerhub.svg` | SwaggerHub | `#85EA2D` | Simple Icons `swagger` (Swagger / SwaggerHub mark) |
+| `bump.svg` | Bump | `#FFFFFF` | Official mark from [bump.sh/favicon.svg](https://bump.sh/favicon.svg); official `#22222A` knocked to white |
 
 Rendered centered above the service name (`/logos/{id}.svg`) without a circular clip so the full mark stays visible.

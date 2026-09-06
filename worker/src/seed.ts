@@ -5,7 +5,7 @@ import type pg from "pg"
  * Auth / Payments / Observability Waves A–C + Email Waves A–C +
  * Design Waves A–C + Infra Waves A–C + Flags Waves A–C +
  * Analytics Waves A–C + Security Waves A–C + Support Waves A–C +
- * Collab Waves A–C).
+ * Collab Waves A–C + Docs Wave A).
  * Mirrors the ids in the Next.js app's data/services.ts (and public/logos/{id}.svg).
  * Windsurf is the legacy Devin Desktop name and is not seeded separately.
  * GitHub Copilot is a GitHub component, not its own card.
@@ -3121,6 +3121,76 @@ export const SERVICE_SEED = [
     name: "Fellow",
     category: "collab",
     statusUrl: "https://status.fellow.ai/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "gitbook",
+    name: "GitBook",
+    category: "docs",
+    statusUrl: "https://www.gitbookstatus.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "readme",
+    name: "ReadMe",
+    category: "docs",
+    statusUrl: "https://www.readmestatus.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "mintlify",
+    name: "Mintlify",
+    category: "docs",
+    statusUrl: "https://status.mintlify.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "fern",
+    name: "Fern",
+    category: "docs",
+    statusUrl: "https://status.buildwithfern.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "archbee",
+    name: "Archbee",
+    category: "docs",
+    statusUrl: "https://status.archbee.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "document360",
+    name: "Document360",
+    category: "docs",
+    statusUrl: "https://status.document360.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "knowledgeowl",
+    name: "KnowledgeOwl",
+    category: "docs",
+    statusUrl: "https://knowledgeowl.statuspage.io/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "stoplight",
+    name: "Stoplight",
+    category: "docs",
+    statusUrl: "https://stoplight.status.smartbear.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "swaggerhub",
+    name: "SwaggerHub",
+    category: "docs",
+    statusUrl: "https://swagger.status.smartbear.com/",
+    fetcherType: "statuspage",
+  },
+  {
+    id: "bump",
+    name: "Bump",
+    category: "docs",
+    statusUrl: "https://status.bump.sh/",
     fetcherType: "statuspage",
   },
 ] as const
