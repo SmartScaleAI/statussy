@@ -82,12 +82,16 @@
  * Wave C — Bloomreach via Statuspage, Omniconvert via Better Stack
  * `index.json`; Analytics Wave A — Amplitude, Mixpanel via
  * www.mixpanelstatus.com, Segment, Heap, Pendo, and RudderStack via
- * Statuspage, Plausible via Better Stack `index.json`; Analytics
- * Wave B — Woopra, Treasure Data via status.treasure.ai, AppsFlyer,
- * Branch, and Hightouch via status.hightouch.io; Analytics
- * Wave C — Singular, Airbridge, Lytics via
- * lytics.statuspage.io, Polytomic, Baremetrics, Quantcast,
- * Metabase, and Hex via Statuspage; Security Wave A — Snyk,
+ * Statuspage, Plausible via Better Stack `index.json`, PostHog via
+ * incident.io `/api/v1/summary`, Fathom via `/json`, Matomo via
+ * StatusIQ RSS; Analytics Wave B — Woopra, Treasure Data via
+ * status.treasure.ai, AppsFlyer, Branch, and Hightouch via
+ * status.hightouch.io, Simple Analytics via the Jekyll diary,
+ * Parse.ly via StatusIQ RSS; Analytics Wave C — Singular,
+ * Airbridge, Polytomic, Baremetrics, Quantcast, Metabase, and Hex
+ * via Statuspage, Lytics via the Contentstack Lytics group,
+ * Kissmetrics via Pulsetic, ChartMogul via Statuspal HTML;
+ * Security Wave A — Snyk,
  * Wiz, SentinelOne, Semgrep, Veracode, Tenable, Qualys, Vanta,
  * Rapid7, and Socket via Statuspage; Security Wave B —
  * Aqua, Orca, Sysdig, GitGuardian, Secureframe, Palo Alto
@@ -115,9 +119,7 @@
  * Unleash, ConfigCat, GrowthBook, Eppo, VWO, AB Tasty, Convert,
  * Flipt, Hypertune, GO Feature Flag, FeatBit, flagd, FeatureHub,
  * Bucketeer, Flipper Cloud, Confidence, Frosmo, Personyze,
- * Insider One, PostHog, Fathom, Matomo, Simple Analytics,
- * Countly, Parse.ly, Umami, GoatCounter, Kissmetrics, and
- * ChartMogul are seeded
+ * Insider One are seeded
  * without a fetcher) and writes snapshots, components,
  * and incidents to Postgres.
  * A tiny HTTP server exposes /healthz.
@@ -158,7 +160,19 @@ import { fetchOracleCloudState } from "./oracle-cloud.js"
 import { fetchRailwayState } from "./railway.js"
 import { fetchVultrState } from "./vultr.js"
 import { fetchBetterstackState } from "./betterstack.js"
-import { fetchStatuspageState } from "./statuspage.js"
+import { fetchFathomState } from "./fathom.js"
+import { fetchIncidentioState } from "./incidentio.js"
+import { fetchPulseticState } from "./pulsetic.js"
+import { fetchSimpleAnalyticsState } from "./simpleanalytics.js"
+import { fetchStatusiqState } from "./statusiq.js"
+import { fetchStatuspalState } from "./statuspal.js"
+import {
+  CONTENTSTACK_STATUS_PAGE,
+  LYTICS_GROUP_ID,
+  LYTICS_GROUP_NAME,
+  fetchStatuspageGroupState,
+  fetchStatuspageState,
+} from "./statuspage.js"
 import {
   markServiceStale,
   persistServiceState,
@@ -752,8 +766,9 @@ const SERVICE_JOBS: ServiceJob[] = [
   // Analytics Wave A. Amplitude / Mixpanel / Segment / Heap /
   // Pendo / RudderStack are Statuspage. Mixpanel's public host is
   // www.mixpanelstatus.com (status.mixpanel.com redirects).
-  // Plausible is Better Stack. PostHog / Fathom / Matomo are none
-  // (PostHog is incident.io HTML; no public JSON).
+  // Plausible is Better Stack. PostHog is incident.io
+  // /api/v1/summary (no component grid). Fathom is /json.
+  // Matomo is StatusIQ RSS.
   statuspageJob("amplitude", "https://status.amplitude.com"),
   statuspageJob("mixpanel", "https://www.mixpanelstatus.com"),
   statuspageJob("segment", "https://status.segment.com"),
@@ -766,28 +781,67 @@ const SERVICE_JOBS: ServiceJob[] = [
       fetchBetterstackState("https://status.plausible.io", fetchOptions()),
     persistOptions: { resolveMissingIncidents: true },
   },
+  {
+    id: "posthog",
+    fetch: () =>
+      fetchIncidentioState("https://www.posthogstatus.com", fetchOptions()),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  {
+    id: "fathom",
+    fetch: () => fetchFathomState("https://status.usefathom.com", fetchOptions()),
+  },
+  {
+    id: "matomo",
+    fetch: () => fetchStatusiqState("https://status.matomo.cloud", fetchOptions()),
+  },
   // Analytics Wave B. Woopra / Treasure Data / AppsFlyer /
   // Branch / Hightouch are Statuspage. Treasure Data's public
   // host is status.treasure.ai. Hightouch is status.hightouch.io.
-  // Simple Analytics / Countly / Parse.ly / Umami / GoatCounter
-  // are none (no public JSON; Umami and GoatCounter have no
-  // incident board).
+  // Simple Analytics is the Jekyll incident diary. Parse.ly is
+  // StatusIQ RSS. Umami / GoatCounter / Countly were removed
+  // (SMA-45: no usable live board).
   statuspageJob("woopra", "https://status.woopra.com"),
   statuspageJob("treasuredata", "https://status.treasure.ai"),
   statuspageJob("appsflyer", "https://status.appsflyer.com"),
   statuspageJob("branch", "https://status.branch.io"),
   statuspageJob("hightouch", "https://status.hightouch.io"),
-  // Analytics Wave C. Singular / Airbridge / Lytics /
-  // Polytomic / Baremetrics / Quantcast / Metabase / Hex
-  // are Statuspage. Lytics is lytics.statuspage.io
-  // (status.lytics.com has no DNS). Kissmetrics /
-  // ChartMogul are none (Kissmetrics is custom HTML;
-  // ChartMogul is Statuspal HTML).
+  {
+    id: "simpleanalytics",
+    fetch: () =>
+      fetchSimpleAnalyticsState("https://status.simpleanalytics.com", fetchOptions()),
+  },
+  {
+    id: "parsely",
+    fetch: () => fetchStatusiqState("https://status.parsely.com", fetchOptions()),
+  },
+  // Analytics Wave C. Singular / Airbridge / Polytomic /
+  // Baremetrics / Quantcast / Metabase / Hex are Statuspage.
+  // Lytics is the Contentstack Lytics group (API, Collect API,
+  // Web Application, Data Pipeline) — not lytics.statuspage.io.
+  // Kissmetrics is Pulsetic. ChartMogul is Statuspal HTML.
   statuspageJob("singular", "https://status.singular.net"),
   statuspageJob("airbridge", "https://status.airbridge.io"),
-  statuspageJob("lytics", "https://lytics.statuspage.io"),
+  {
+    id: "lytics",
+    fetch: () =>
+      fetchStatuspageGroupState(CONTENTSTACK_STATUS_PAGE, fetchOptions(), {
+        groupId: LYTICS_GROUP_ID,
+        groupName: LYTICS_GROUP_NAME,
+      }),
+  },
   statuspageJob("polytomic", "https://status.polytomic.com"),
   statuspageJob("baremetrics", "https://status.baremetrics.com"),
+  {
+    id: "kissmetrics",
+    fetch: () =>
+      fetchPulseticState("status.kissmetrics.io", fetchOptions(), "https://status.kissmetrics.io/"),
+    persistOptions: { resolveMissingIncidents: true },
+  },
+  {
+    id: "chartmogul",
+    fetch: () => fetchStatuspalState("https://status.chartmogul.com", fetchOptions()),
+  },
   statuspageJob("quantcast", "https://status.quantcast.com"),
   statuspageJob("metabase", "https://status.metabase.com"),
   statuspageJob("hex", "https://status.hex.tech"),
