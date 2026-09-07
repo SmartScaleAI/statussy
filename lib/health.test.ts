@@ -31,26 +31,39 @@ test("no components + none open → No incidents (never a fake 100%)", () => {
   assert.ok(!display.title.toLowerCase().includes("component health"))
 })
 
-test("no components + open incidents → count mode (never a fake 0%)", () => {
+test("no components + open incidents → N incidents (never a fake 0%)", () => {
   const twoOpen = resolveHealthChicklet("partial_outage", 0, 0, 2)
-  assert.deepEqual(twoOpen, { kind: "incidents", count: 2 })
+  assert.deepEqual(twoOpen, {
+    kind: "incidents",
+    count: 2,
+    countedIncidents: true,
+  })
   const display = describeChicklet(twoOpen)
   assert.equal(display.label, null)
-  assert.equal(display.value, "2 open")
+  assert.equal(display.value, "2 incidents")
   assert.equal(display.healthPct, null)
   assert.ok(display.title.includes("2 open incidents"))
   assert.ok(!display.title.toLowerCase().includes("component health"))
 
   const oneOpen = describeChicklet(resolveHealthChicklet("degraded", 0, 0, 1))
-  assert.equal(oneOpen.value, "1 open")
+  assert.equal(oneOpen.value, "1 incident")
   assert.ok(oneOpen.title.includes("1 open incident"))
 })
 
-test("no components, no incident rows, non-operational status → 1 open", () => {
+test("status-only signal without incident rows → open-events copy", () => {
   // Some feeds signal a problem without parseable incident rows; "No
-  // incidents" would be dishonest there.
+  // incidents" would be dishonest and "1 incident" would mislabel.
   const signaled = resolveHealthChicklet("major_outage", 0, 0, 0)
-  assert.deepEqual(signaled, { kind: "incidents", count: 1 })
+  assert.deepEqual(signaled, {
+    kind: "incidents",
+    count: 1,
+    countedIncidents: false,
+  })
+  const display = describeChicklet(signaled)
+  assert.equal(display.label, null)
+  assert.equal(display.value, "1 open event")
+  assert.ok(!display.title.toLowerCase().includes("component health"))
+  assert.ok(!display.value.includes("incident"))
 })
 
 test("unknown status with no data stays in No incidents mode", () => {

@@ -2,8 +2,11 @@
  * Health chicklet resolution (SMA-31 live Health, SMA-79 honest modes).
  *
  * Same chicklet slot, three modes:
- * 1. Component rows exist → Health % (operational ÷ total, "Component health").
- * 2. No component rows + open incidents → "N open" (incident count).
+ * 1. Component rows exist → Health % (operational ÷ total; tooltip/aria say
+ *    "Component health" — the on-card label stays "Health").
+ * 2. No component rows + open incidents → "N incidents". When the count is
+ *    not backed by tracked incident rows (status-only signal), the copy is
+ *    "N open events" instead, so "incidents" never mislabels.
  * 3. No component rows + none open → "No incidents".
  *
  * Health % is only ever computed from real component rows — never faked as
@@ -12,7 +15,16 @@
 
 export type HealthChicklet =
   | { kind: "health"; operational: number; total: number }
-  | { kind: "incidents"; count: number }
+  | {
+      kind: "incidents"
+      count: number
+      /**
+       * True when `count` comes from tracked incident rows; false when it is
+       * synthesized from a non-operational overall status alone, where
+       * "incidents" would mislabel (copy switches to "open events").
+       */
+      countedIncidents: boolean
+    }
   | { kind: "clear" }
 
 /**
@@ -32,9 +44,13 @@ export function resolveHealthChicklet(
   if (total > 0) {
     return { kind: "health", operational, total }
   }
+  if (openIncidents > 0) {
+    return { kind: "incidents", count: openIncidents, countedIncidents: true }
+  }
   const eventSignaled = status !== "operational" && status !== "unknown"
-  const count = Math.max(openIncidents, eventSignaled ? 1 : 0)
-  return count > 0 ? { kind: "incidents", count } : { kind: "clear" }
+  return eventSignaled
+    ? { kind: "incidents", count: 1, countedIncidents: false }
+    : { kind: "clear" }
 }
 
 /** What the card renders for one chicklet: slot label, value, tooltip/aria. */
@@ -57,15 +73,27 @@ export function describeChicklet(chicklet: HealthChicklet): ChickletDisplay {
         title: `Component health — ${chicklet.operational} of ${chicklet.total} components operational. Live snapshot, not historical uptime.`,
         healthPct: (chicklet.operational / chicklet.total) * 100,
       }
-    case "incidents":
+    case "incidents": {
+      const noun = chicklet.countedIncidents
+        ? chicklet.count === 1
+          ? "incident"
+          : "incidents"
+        : chicklet.count === 1
+          ? "open event"
+          : "open events"
       return {
         label: null,
-        value: `${chicklet.count} open`,
-        title: `${chicklet.count} open ${
-          chicklet.count === 1 ? "incident" : "incidents"
-        } — this service reports no component grid.`,
+        value: `${chicklet.count} ${noun}`,
+        title: chicklet.countedIncidents
+          ? `${chicklet.count} open ${
+              chicklet.count === 1 ? "incident" : "incidents"
+            } — this service reports no component grid.`
+          : `${chicklet.count} open ${
+              chicklet.count === 1 ? "event" : "events"
+            } signaled by overall status — this service reports no component grid or incident list.`,
         healthPct: null,
       }
+    }
     case "clear":
       return {
         label: null,
