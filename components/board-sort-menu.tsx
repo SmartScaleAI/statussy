@@ -95,11 +95,20 @@ export function BoardSortMenu({
     <DropdownMenu>
       <DropdownMenuTrigger
         render={
-          <Button type="button" variant="outline" className="h-10 shrink-0" />
+          <Button
+            type="button"
+            variant="outline"
+            aria-label={`Sort by, ${label}`}
+            className="h-10 shrink-0 max-md:w-10 max-md:px-0"
+          />
         }
       >
-        <ArrowUpDownIcon data-icon="inline-start" />
-        Sort by · {label}
+        <ArrowUpDownIcon />
+        {/*
+          Below `md` (768px) the trigger is icon-only; the aria-label above
+          keeps the current sort mode in the accessible name.
+        */}
+        <span className="max-md:hidden">Sort by · {label}</span>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-44">
         <DropdownMenuGroup>

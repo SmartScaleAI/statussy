@@ -3,8 +3,10 @@
 import {
   Children,
   isValidElement,
+  useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type KeyboardEvent,
   type ReactNode,
@@ -79,6 +81,33 @@ export function StatusBoardGrid({
     .map((item) => cardsById.get(item.id))
     .filter((card): card is ReactNode => card != null)
 
+  const chicletScrollerRef = useRef<HTMLDivElement>(null)
+  const [chicletFade, setChicletFade] = useState({ start: false, end: false })
+
+  const updateChicletFade = useCallback(() => {
+    const el = chicletScrollerRef.current
+    if (!el) {
+      return
+    }
+    const maxScroll = el.scrollWidth - el.clientWidth
+    const start = el.scrollLeft > 1
+    const end = el.scrollLeft < maxScroll - 1
+    setChicletFade((prev) =>
+      prev.start === start && prev.end === end ? prev : { start, end }
+    )
+  }, [])
+
+  useEffect(() => {
+    const el = chicletScrollerRef.current
+    if (!el) {
+      return
+    }
+    updateChicletFade()
+    const observer = new ResizeObserver(updateChicletFade)
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [updateChicletFade, options])
+
   function onChicletKeyDown(event: KeyboardEvent<HTMLDivElement>) {
     if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") {
       return
@@ -129,9 +158,27 @@ export function StatusBoardGrid({
             <BoardSortMenu sortBy={sortBy} onSortByChange={setSortBy} />
           </div>
           <div
+            ref={chicletScrollerRef}
             role="radiogroup"
             aria-label="Filter by category"
-            className="flex flex-wrap items-center gap-1"
+            className={cn(
+              // Single row: overflow scrolls horizontally with the scrollbar
+              // hidden cross-browser. 28px mask fades blend the chips into the
+              // board-paper surface behind them (position-conditional: start →
+              // right fade, mid → both, end → left fade).
+              "-my-1 flex flex-nowrap items-center gap-1 overflow-x-auto py-1",
+              "[scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden",
+              chicletFade.start &&
+                chicletFade.end &&
+                "[mask-image:linear-gradient(to_right,transparent,black_28px,black_calc(100%-28px),transparent)]",
+              chicletFade.start &&
+                !chicletFade.end &&
+                "[mask-image:linear-gradient(to_right,transparent,black_28px)]",
+              !chicletFade.start &&
+                chicletFade.end &&
+                "[mask-image:linear-gradient(to_right,black_calc(100%-28px),transparent)]"
+            )}
+            onScroll={updateChicletFade}
             onKeyDown={onChicletKeyDown}
           >
             {options.map((id) => {
