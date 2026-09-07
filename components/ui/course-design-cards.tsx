@@ -15,9 +15,11 @@
 
 import { ArrowUpRightIcon, StarIcon } from "lucide-react"
 import Link from "next/link"
+import { useSearchParams } from "next/navigation"
 import React, { type MouseEvent } from "react"
 
 import { useFavoriteServices } from "@/components/favorite-services"
+import { CATEGORY_PARAM } from "@/lib/board-filter"
 
 function stopCardNavigation(event: MouseEvent) {
   event.stopPropagation()
@@ -106,6 +108,15 @@ const Card: React.FC<CardProps> = ({ data }) => {
     title: "No live data for this service yet.",
   }
 
+  // Carry the board's active category onto the detail route so its Back link
+  // can restore the filter (SMA-89). The detail page validates the slug.
+  const searchParams = useSearchParams()
+  const activeCategory = searchParams.get(CATEGORY_PARAM)
+  const detailHrefWithCategory =
+    detailHref && activeCategory
+      ? `${detailHref}?${CATEGORY_PARAM}=${encodeURIComponent(activeCategory)}`
+      : detailHref
+
   const identity = (
     <>
       {imgSrc1 ? (
@@ -124,9 +135,9 @@ const Card: React.FC<CardProps> = ({ data }) => {
 
   return (
     <div className={`card ${colorClass}`}>
-      {detailHref ? (
+      {detailHrefWithCategory ? (
         <Link
-          href={detailHref}
+          href={detailHrefWithCategory}
           className="card-hit-target"
           aria-label={`${title} status details`}
         >

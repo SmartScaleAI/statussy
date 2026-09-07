@@ -1,5 +1,28 @@
 export const ALL_CATEGORY = "all"
 
+/** Query param carrying the active board category (SMA-89). */
+export const CATEGORY_PARAM = "category"
+
+/**
+ * Normalize a raw `?category=` value to a known category slug. Anything
+ * unknown (missing, repeated, or not in the registry) falls back to All.
+ */
+export function parseCategoryParam(
+  raw: string | string[] | null | undefined,
+  categories: string[]
+): string {
+  return typeof raw === "string" && categories.includes(raw)
+    ? raw
+    : ALL_CATEGORY
+}
+
+/** Board URL that restores the given category filter; All is the bare board. */
+export function boardHref(category: string): string {
+  return category === ALL_CATEGORY
+    ? "/"
+    : `/?${CATEGORY_PARAM}=${encodeURIComponent(category)}`
+}
+
 /** Client-safe slice of a board card — no live-status / pg imports. */
 export type BoardFilterItem = {
   id: string
