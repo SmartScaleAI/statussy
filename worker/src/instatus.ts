@@ -10,6 +10,7 @@
  * like OnlineOrNot, the feed only lists *active* incidents, so ones that
  * drop out are resolved at persist time (resolveMissingIncidents).
  */
+import { fetchJsonConditional } from "./http.js"
 import type {
   FetchOptions,
   MappedComponent,
@@ -160,17 +161,9 @@ export function mapInstatus(
   }
 }
 
-async function fetchJson<T>(url: string, options: FetchOptions): Promise<T> {
-  const res = await fetch(url, {
-    headers: { accept: "application/json", "user-agent": options.userAgent },
-    signal: AbortSignal.timeout(options.timeoutMs),
-    redirect: "follow",
-  })
-  if (!res.ok) {
-    throw new Error(`GET ${url} -> HTTP ${res.status}`)
-  }
-  return (await res.json()) as T
-}
+// SMA-100: Instatus feeds are CDN-friendly for 304s — conditional GETs
+// reuse the cached body when validators match.
+const fetchJson = fetchJsonConditional
 
 /**
  * Fetch and map live state for one Instatus service.

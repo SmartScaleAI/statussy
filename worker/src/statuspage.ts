@@ -6,6 +6,7 @@
  * Statuspage-API-compatible but does not embed incidents in summary.json,
  * so incidents are always fetched from the dedicated endpoint.
  */
+import { fetchJsonConditional } from "./http.js"
 
 import type { TickDedupe } from "./tick-dedupe.js"
 
@@ -189,17 +190,9 @@ export type FetchOptions = {
   maxIncidents?: number
 }
 
-async function fetchJson<T>(url: string, options: FetchOptions): Promise<T> {
-  const res = await fetch(url, {
-    headers: { accept: "application/json", "user-agent": options.userAgent },
-    signal: AbortSignal.timeout(options.timeoutMs),
-    redirect: "follow",
-  })
-  if (!res.ok) {
-    throw new Error(`GET ${url} -> HTTP ${res.status}`)
-  }
-  return (await res.json()) as T
-}
+// SMA-100: Statuspage CDNs honor ETag / Last-Modified, so GETs are
+// conditional — a 304 reuses the cached body for that URL.
+const fetchJson = fetchJsonConditional
 
 export type StatuspagePayloads = {
   root: string
