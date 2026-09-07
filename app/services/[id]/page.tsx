@@ -1,4 +1,4 @@
-import { ArrowUpRightIcon } from "lucide-react"
+import { ArrowLeftIcon, ArrowUpRightIcon } from "lucide-react"
 import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
@@ -176,6 +176,7 @@ export default async function ServiceDetailPage({ params }: PageProps) {
               "border-border bg-[var(--bg-footer)] text-foreground"
             )}
           >
+            <ArrowLeftIcon data-icon="inline-start" aria-hidden="true" />
             Back
           </Link>
           <a
