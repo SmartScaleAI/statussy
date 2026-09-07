@@ -1,6 +1,6 @@
 /**
  * Client-safe board sort (SMA-40). Filter first (search ∧ category), then sort
- * the visible set. Same helpers apply to All Services and My Services.
+ * the visible set. Same helpers apply to All Services and My Stack.
  *
  * Issues first (SMA-80): status severity rank first (`STATUS_RANK` — Major →
  * Partial → Degraded → Maintenance → Unknown → Live). When status ties,

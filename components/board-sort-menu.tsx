@@ -59,7 +59,7 @@ function writeSortBy(sortBy: SortBy) {
 }
 
 /**
- * Shared All Services / My Services sort. Persists in `statussy:sortBy`.
+ * Shared All Services / My Stack sort. Persists in `statussy:sortBy`.
  * First visit (no key) is Issues first.
  */
 export function useBoardSort() {
