@@ -12,9 +12,9 @@
 import { Pool } from "pg"
 
 import type { ServiceStatus } from "@/data/services"
-import { resolveLiveHealth } from "@/lib/health"
+import { resolveHealthChicklet, type HealthChicklet } from "@/lib/health"
 
-export { resolveLiveHealth }
+export { resolveHealthChicklet }
 
 /** Board-facing status: worker enum adds 'unknown' on failed first fetch. */
 export type LiveStatus = ServiceStatus | "unknown"
@@ -27,12 +27,11 @@ export type LiveSnapshot = {
   stale: boolean
   fetchedAt: Date
   /**
-   * Live Health (SMA-31): operational components ÷ total current `components`
-   * rows. This is a live snapshot of component health, not historical uptime
-   * or a vendor SLA. When the service has no component rows, fallback is
-   * 1/1 if latest overall status is `operational`, else 0/1.
+   * Health chicklet (SMA-31/SMA-79): Health % from current `components` rows
+   * when the service has any; otherwise the open-incident count ("N open" /
+   * "No incidents"). Health % is never faked from the overall status alone.
    */
-  health: { operational: number; total: number }
+  chicklet: HealthChicklet
 }
 
 const LIVE_STATUSES: readonly LiveStatus[] = [
@@ -55,7 +54,12 @@ type SnapshotRow = {
   fetched_at: Date
   operational: string | null
   total: string | null
+  open_incidents: string | null
 }
+
+/** Vendor lifecycle states that mean an incident is over even when the feed
+ *  omits `resolved_at`. */
+const CLOSED_INCIDENT_STATUSES = ["resolved", "completed", "postmortem"]
 
 declare global {
   // Singleton pool that survives dev HMR reloads.
@@ -152,7 +156,8 @@ function toLiveStatus(status: string): LiveStatus {
 
 /**
  * Latest snapshot per service plus live Health from current `components`
- * rows (SMA-31). Returns an empty map when no database is configured or the
+ * rows (SMA-31) and the open-incident count for the no-grid chicklet modes
+ * (SMA-79). Returns an empty map when no database is configured or the
  * read fails, so the board can fall back to mock data.
  */
 export async function getLiveSnapshots(): Promise<Map<string, LiveSnapshot>> {
@@ -176,11 +181,20 @@ export async function getLiveSnapshots(): Promise<Map<string, LiveSnapshot>> {
                 count(*) AS total
          FROM components
          GROUP BY service_id
+       ),
+       open_incidents AS (
+         SELECT service_id, count(*) AS open_incidents
+         FROM incidents
+         WHERE resolved_at IS NULL
+           AND status != ALL($1::text[])
+         GROUP BY service_id
        )
        SELECT l.service_id, l.status, l.incident_title, l.stale, l.fetched_at,
-              h.operational, h.total
+              h.operational, h.total, o.open_incidents
        FROM latest l
-       LEFT JOIN health h USING (service_id)`
+       LEFT JOIN health h USING (service_id)
+       LEFT JOIN open_incidents o USING (service_id)`,
+      [CLOSED_INCIDENT_STATUSES]
     )
 
     const snapshots = new Map<string, LiveSnapshot>()
@@ -192,10 +206,11 @@ export async function getLiveSnapshots(): Promise<Map<string, LiveSnapshot>> {
         incidentTitle: row.incident_title,
         stale: row.stale,
         fetchedAt: row.fetched_at,
-        health: resolveLiveHealth(
+        chicklet: resolveHealthChicklet(
           status,
           Number(row.operational ?? 0),
-          Number(row.total ?? 0)
+          Number(row.total ?? 0),
+          Number(row.open_incidents ?? 0)
         ),
       })
     }
@@ -214,9 +229,7 @@ export function isSnapshotStale(
   snapshot: Pick<LiveSnapshot, "stale" | "fetchedAt">,
   now = Date.now()
 ) {
-  return (
-    snapshot.stale || now - snapshot.fetchedAt.getTime() > STALE_AFTER_MS
-  )
+  return snapshot.stale || now - snapshot.fetchedAt.getTime() > STALE_AFTER_MS
 }
 
 export type ServiceComponent = {
@@ -267,10 +280,6 @@ type DetailSnapshotRow = Omit<
   SnapshotRow,
   "service_id" | "operational" | "total"
 >
-
-/** Vendor lifecycle states that mean an incident is over even when the feed
- *  omits `resolved_at`. */
-const CLOSED_INCIDENT_STATUSES = ["resolved", "completed", "postmortem"]
 
 /**
  * Deep-dive read for `/services/[id]` (SMA-17): latest snapshot, current

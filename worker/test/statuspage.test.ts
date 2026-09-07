@@ -97,6 +97,29 @@ test("mapStatuspage handles an all-operational page with no incidents", () => {
   assert.equal(state.components.length, 1)
 })
 
+test("mapStatuspage drops group headers from components (SMA-79)", () => {
+  // Cloudflare-style page: group headers duplicate their leaves and
+  // inflated the Health denominator.
+  const summary: StatuspageSummary = {
+    page: { url: "https://www.cloudflarestatus.com/" },
+    status: { indicator: "minor", description: "Minor Service Outage" },
+    components: [
+      { id: "grp", name: "Cloudflare Sites and Services", status: "degraded_performance", group: true, position: 0 },
+      { id: "cdn", name: "CDN/Cache", status: "degraded_performance", group_id: "grp", position: 1 },
+      { id: "dns", name: "DNS", status: "operational", group_id: "grp", position: 2 },
+      { id: "api", name: "API", status: "operational", position: 3 },
+    ],
+  }
+  const state = mapStatuspage(summary, [], "https://www.cloudflarestatus.com")
+  assert.deepEqual(
+    state.components.map((c) => c.externalId),
+    ["cdn", "dns", "api"],
+  )
+  // Health denominator: 2 of 3 leaves operational — the degraded group
+  // header no longer double-counts its leaf.
+  assert.equal(state.components.filter((c) => c.status === "operational").length, 2)
+})
+
 test("mapStatuspage ignores resolved incidents for the headline", async () => {
   const { summary, incidents } = await loadFixtures()
   const resolvedOnly = incidents.filter((i) => i.status === "resolved")

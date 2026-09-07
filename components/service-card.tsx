@@ -24,7 +24,7 @@ export function ServiceCard({ service }: { service: BoardService }) {
           id: service.id,
           colorClass: STATUS_COLOR[service.status],
           title: service.name,
-          healthLabel: service.healthLabel ?? undefined,
+          chicklet: service.chicklet,
           stale: service.stale,
           imgSrc1: `/logos/${service.id}.svg`,
           imgAlt1: "",

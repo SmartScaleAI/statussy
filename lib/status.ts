@@ -1,6 +1,8 @@
 import type { Service, ServiceStatus } from "@/data/services"
+import type { ChickletDisplay } from "@/lib/health"
 
 export type { Service, ServiceCategory, ServiceStatus } from "@/data/services"
+export type { ChickletDisplay } from "@/lib/health"
 
 /**
  * Card status: mock statuses plus 'unknown' from the live worker schema.
@@ -17,12 +19,13 @@ export type BoardService = Omit<Service, "status"> & {
   /** Worker flagged the snapshot stale, or it is older than the threshold. */
   stale: boolean
   /**
-   * Live Health chicklet (SMA-31): operational components ÷ total current
-   * components, formatted as a percent. Null until a live snapshot exists
-   * (mock fallback shows an em-dash). This is a live snapshot, not
-   * historical uptime or a vendor SLA.
+   * Health chicklet (SMA-31/SMA-79): "Health X%" from current component rows,
+   * "N open" when the service has no component grid but open incidents, or
+   * "No incidents" when quiet with no grid. Never faked from overall status.
+   * `healthPct` is only set in the component-health mode (drives Health %
+   * sort); the incident modes fall back to status-based ordering.
    */
-  healthLabel: string | null
+  chicklet: ChickletDisplay
 }
 
 /** Lower number = more urgent. Non-operational statuses sort above healthy. */

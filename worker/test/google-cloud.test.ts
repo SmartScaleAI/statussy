@@ -154,7 +154,7 @@ test("mapGoogleCloud synthesizes Gemini components when the catalog is missing",
   )
 })
 
-test("mapGoogleCloudPlatform includes Compute Engine and ignores informational rollup", async () => {
+test("mapGoogleCloudPlatform keeps incidents/status but persists no component grid", async () => {
   const { incidents, products } = await loadFixtures()
   const state = mapGoogleCloudPlatform(incidents, products)
 
@@ -164,11 +164,25 @@ test("mapGoogleCloudPlatform includes Compute Engine and ignores informational r
   assert.ok(state.incidents.some((incident) => incident.externalId === "open-compute"))
   assert.ok(state.incidents.some((incident) => incident.externalId === "open-gemini-code-assist"))
 
-  const byName = new Map(state.components.map((component) => [component.name, component]))
-  assert.equal(byName.get("Google Compute Engine")?.status, "major_outage")
-  assert.equal(byName.get("Gemini on Agent Platform")?.status, "partial_outage")
-  assert.equal(byName.has("Gemini Code Assist"), false)
-  assert.equal(byName.has("Gemini Enterprise"), false)
+  // SMA-79: affected-only rows were a dishonest Health denominator. No rows
+  // are persisted — the board shows the incident-count chicklet instead.
+  assert.equal(state.components.length, 0)
+})
+
+test("mapGoogleCloudPlatform single-product outage cannot read as Health 0%", () => {
+  const incidents: GoogleCloudIncident[] = [
+    {
+      id: "one-product",
+      external_desc: "Compute Engine outage",
+      status_impact: "SERVICE_OUTAGE",
+      affected_products: [{ id: "L3ggmi3Jy4xJmgodFA9K", title: "Google Compute Engine" }],
+    },
+  ]
+  const state = mapGoogleCloudPlatform(incidents, [])
+  assert.equal(state.status, "major_outage")
+  // Previously this yielded one non-operational component (0/1 → 0%).
+  assert.equal(state.components.length, 0)
+  assert.equal(state.detail.openIncidentCount, 1)
 })
 
 test("mapGoogleCloudPlatform stays operational when only informational incidents are open", () => {

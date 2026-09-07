@@ -196,8 +196,13 @@ type MapGoogleCloudScope = MapGoogleCloudOptions & {
    * paint the whole Google Cloud card. Gemini still treats them as degraded.
    */
   ignoreInformationalForOverall?: boolean
-  /** Avoid dumping the full Cloud product catalog as Health components. */
-  componentsFromAffectedOnly?: boolean
+  /**
+   * Persist no component grid at all (SMA-79). The full Cloud catalog is too
+   * big to dump as Health components, and affected-only rows made a dishonest
+   * Health denominator (a single-product outage read as Health 0%). With no
+   * rows the board shows the incident-count chicklet instead of Health %.
+   */
+  omitComponents?: boolean
   alwaysIncludeProducts?: GoogleCloudProduct[]
 }
 
@@ -254,15 +259,8 @@ function mapGoogleCloudScoped(
 
   const catalog = Array.isArray(products) && products.length > 0 ? products : null
   let componentProducts: GoogleCloudProduct[]
-  if (options.componentsFromAffectedOnly) {
-    const byId = new Map<string, GoogleCloudProduct>()
-    for (const incident of statusIncidents) {
-      for (const product of incident.affected_products ?? []) {
-        if (!product.id || !options.matchesProduct(product) || byId.has(product.id)) continue
-        byId.set(product.id, product)
-      }
-    }
-    componentProducts = [...byId.values()]
+  if (options.omitComponents) {
+    componentProducts = []
   } else if (catalog) {
     componentProducts = geminiProductsFromCatalog(catalog)
   } else {
@@ -335,8 +333,9 @@ export function mapGoogleCloud(
 /**
  * Platform-wide Google Cloud card. Includes every product. Informational /
  * low-severity notices stay in the incident list but do not roll up to the
- * card. Components are only products currently affected by a disruption,
- * outage, or maintenance — not the full catalog.
+ * card. No component grid is persisted (SMA-79): the full catalog is too big
+ * for Health rows and affected-only rows made a single-product outage read as
+ * Health 0%, so the board's incident-count chicklet covers this card.
  */
 export function mapGoogleCloudPlatform(
   incidents: GoogleCloudIncident[],
@@ -347,7 +346,7 @@ export function mapGoogleCloudPlatform(
     ...options,
     matchesProduct: () => true,
     ignoreInformationalForOverall: true,
-    componentsFromAffectedOnly: true,
+    omitComponents: true,
   })
 }
 

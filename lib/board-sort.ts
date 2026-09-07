@@ -8,8 +8,9 @@
  * operational services with no incident rank below. Within a group, Name A–Z.
  *
  * Name A–Z: `localeCompare` on `name`.
- * Health %: lowest resolved percent first; ties by Name A–Z. Missing live
- * health uses the worker fallback — 100 when operational, otherwise 0.
+ * Health %: lowest resolved percent first; ties by Name A–Z. Services with no
+ * component-health percent (no-grid incident chicklet modes, mock fallback)
+ * rank as 100 when operational, otherwise 0.
  */
 
 export const SORT_BY_KEY = "statussy:sortBy"
@@ -45,17 +46,6 @@ export function isSortBy(value: unknown): value is SortBy {
 /** Invalid or missing storage → Issues first (first-visit default). */
 export function parseSortBy(raw: string | null | undefined): SortBy {
   return isSortBy(raw) ? raw : DEFAULT_SORT_BY
-}
-
-/** `formatHealth` strings like "94.1%" → 94.1; junk / empty → null. */
-export function parseHealthLabel(
-  label: string | null | undefined
-): number | null {
-  if (!label) {
-    return null
-  }
-  const n = Number.parseFloat(label)
-  return Number.isFinite(n) ? n : null
 }
 
 export function serviceHasIssues(item: {
