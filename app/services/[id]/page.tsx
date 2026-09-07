@@ -7,7 +7,7 @@ import { connection } from "next/server"
 import { SiteFooter } from "@/components/site-footer"
 import { SiteHeader } from "@/components/site-header"
 import { buttonVariants } from "@/components/ui/button"
-import { chicletHoverClass, chicletSelectedClass } from "@/lib/chiclet"
+import { chicletHoverClass } from "@/lib/chiclet"
 import { services } from "@/data/services"
 import {
   getServiceLiveDetail,
@@ -170,7 +170,10 @@ export default async function ServiceDetailPage({ params }: PageProps) {
             className={cn(
               buttonVariants({ variant: "ghost", size: "default" }),
               chicletHoverClass,
-              chicletSelectedClass
+              // SMA-88: keep the selected-chip fill, but use the thin gray
+              // card border (border-border) instead of the heavier
+              // selected-category border from the board filter.
+              "border-border bg-[var(--bg-footer)] text-foreground"
             )}
           >
             Back
