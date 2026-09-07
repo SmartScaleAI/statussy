@@ -1,4 +1,4 @@
-import { ArrowLeftIcon, ArrowUpRightIcon } from "lucide-react"
+import { ArrowUpRightIcon } from "lucide-react"
 import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
@@ -160,49 +160,54 @@ export default async function ServiceDetailPage({ params }: PageProps) {
     <div className="flex min-h-svh flex-col">
       <SiteHeader />
       <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-8 px-6 py-8 sm:py-12">
-        <Link
-          href="/"
-          className="inline-flex w-fit items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
-        >
-          <ArrowLeftIcon aria-hidden="true" className="size-4" />
-          All services
-        </Link>
+        <div className="flex items-center justify-between gap-3">
+          <Link
+            href="/"
+            aria-label="Back to all services"
+            className={cn(
+              buttonVariants({ variant: "ghost", size: "default" }),
+              // Match the selected category chiclet on the board grid.
+              "shrink-0 border-[var(--color-gray-dark)] bg-[var(--bg-footer)] text-foreground",
+              "hover:bg-[var(--bg-footer)] dark:hover:bg-[var(--bg-footer)]"
+            )}
+          >
+            Back
+          </Link>
+          <a
+            href={service.statusUrl}
+            target="_blank"
+            rel="noreferrer"
+            className={cn(
+              buttonVariants({ variant: "default", size: "default" }),
+              "shrink-0"
+            )}
+          >
+            Official status
+            <ArrowUpRightIcon data-icon="inline-end" aria-hidden="true" />
+          </a>
+        </div>
 
         <section className="flex flex-col gap-4" aria-label="Overall status">
-          <div className="flex items-start justify-between gap-3">
-            <div className="flex min-w-0 items-center gap-4">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={`/logos/${service.id}.svg`}
-                alt=""
-                className={cn(
-                  "size-10 shrink-0 object-contain",
-                  // xAI mark is white-on-transparent; invert on light surfaces.
-                  service.id === "xai" && "invert dark:invert-0"
-                )}
-              />
-              <div className="flex flex-col gap-1">
-                <h1 className="font-heading text-2xl font-semibold tracking-tight text-foreground">
-                  {service.name}
-                </h1>
-                <div className="flex flex-wrap items-center gap-2">
-                  <StatusChip status={status} />
-                  {stale ? <StaleBadge /> : null}
-                </div>
+          <div className="flex min-w-0 items-center gap-4">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={`/logos/${service.id}.svg`}
+              alt=""
+              className={cn(
+                "size-10 shrink-0 object-contain",
+                // xAI mark is white-on-transparent; invert on light surfaces.
+                service.id === "xai" && "invert dark:invert-0"
+              )}
+            />
+            <div className="flex flex-col gap-1">
+              <h1 className="font-heading text-2xl font-semibold tracking-tight text-foreground">
+                {service.name}
+              </h1>
+              <div className="flex flex-wrap items-center gap-2">
+                <StatusChip status={status} />
+                {stale ? <StaleBadge /> : null}
               </div>
             </div>
-            <a
-              href={service.statusUrl}
-              target="_blank"
-              rel="noreferrer"
-              className={buttonVariants({
-                variant: "default",
-                size: "default",
-              })}
-            >
-              Official status
-              <ArrowUpRightIcon data-icon="inline-end" aria-hidden="true" />
-            </a>
           </div>
           {incidentTitle ? (
             <p className="text-sm text-muted-foreground">{incidentTitle}</p>
