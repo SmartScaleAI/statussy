@@ -2,8 +2,8 @@
  * Browser-only favorites for the board (SMA-37).
  *
  * Storage keeps insertion order (last-starred appended). `selectFavoriteServices`
- * still returns a stable id-ordered subset; My Stack then applies the shared
- * board sort (SMA-40, `statussy:sortBy`).
+ * still returns a stable id-ordered subset; My Stack then applies its own sort
+ * (SMA-92, `statussy:myStackSortBy`), independent of the board sort.
  */
 
 export const FAVORITE_SERVICE_IDS_KEY = "statussy:favoriteServiceIds"
