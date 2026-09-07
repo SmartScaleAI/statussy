@@ -7,6 +7,12 @@ import { connection } from "next/server"
 import { SiteFooter } from "@/components/site-footer"
 import { SiteHeader } from "@/components/site-header"
 import { buttonVariants } from "@/components/ui/button"
+import {
+  boardHref,
+  CATEGORY_PARAM,
+  distinctCategories,
+  parseCategoryParam,
+} from "@/lib/board-filter"
 import { chicletHoverClass } from "@/lib/chiclet"
 import { services } from "@/data/services"
 import {
@@ -20,6 +26,7 @@ import { cn } from "@/lib/utils"
 
 type PageProps = {
   params: Promise<{ id: string }>
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
 /** Geist accents by severity — matches the board card palette. */
@@ -134,13 +141,24 @@ export async function generateMetadata({
   }
 }
 
-export default async function ServiceDetailPage({ params }: PageProps) {
+export default async function ServiceDetailPage({
+  params,
+  searchParams,
+}: PageProps) {
   const { id } = await params
   // Registry of known services — same source as the board grid.
   const service = services.find((entry) => entry.id === id)
   if (!service) {
     notFound()
   }
+
+  // Back restores the board category the user filtered by (SMA-89). Unknown
+  // or missing slugs validate down to All, i.e. the bare board URL.
+  const backCategory = parseCategoryParam(
+    (await searchParams)[CATEGORY_PARAM],
+    distinctCategories(services)
+  )
+  const backHref = boardHref(backCategory)
 
   // Status must reflect the DB at request time, never a build-time prerender.
   await connection()
@@ -165,7 +183,7 @@ export default async function ServiceDetailPage({ params }: PageProps) {
             wraps Official status under Back on narrow viewports. */}
         <div className="flex items-center justify-between gap-3">
           <Link
-            href="/"
+            href={backHref}
             aria-label="Back to all services"
             className={cn(
               buttonVariants({ variant: "ghost", size: "default" }),

@@ -12,6 +12,7 @@ import {
   type ReactNode,
 } from "react"
 import { SearchIcon } from "lucide-react"
+import { useSearchParams } from "next/navigation"
 
 import { BoardPagination } from "@/components/board-pagination"
 import { BoardSortMenu, useBoardSort } from "@/components/board-sort-menu"
@@ -24,9 +25,12 @@ import {
 import { StatusSummary } from "@/components/status-summary"
 import {
   ALL_CATEGORY,
+  boardHref,
+  CATEGORY_PARAM,
   distinctCategories,
   filterBoardServices,
   formatCategoryLabel,
+  parseCategoryParam,
   summarizeBoardItems,
   type BoardFilterItem,
 } from "@/lib/board-filter"
@@ -48,11 +52,22 @@ export function StatusBoardGrid({
   children: ReactNode
 }) {
   const [query, setQuery] = useState("")
-  const [category, setCategory] = useState(ALL_CATEGORY)
   const [page, setPage] = useState(1)
   const [sortBy, setSortBy] = useBoardSort()
   const categories = useMemo(() => distinctCategories(items), [items])
   const options = useMemo(() => [ALL_CATEGORY, ...categories], [categories])
+  // Category lives in the board URL (SMA-89) so detail → Back and deep links
+  // restore the filter; unknown slugs fall back to All.
+  const searchParams = useSearchParams()
+  const category = parseCategoryParam(
+    searchParams.get(CATEGORY_PARAM),
+    categories
+  )
+  const setCategory = useCallback((next: string) => {
+    // replaceState (not router.replace) keeps chip clicks client-only — no
+    // server refetch — while still syncing useSearchParams here and in cards.
+    window.history.replaceState(null, "", boardHref(next))
+  }, [])
   const visibleItems = useMemo(
     () =>
       sortBoardServices(filterBoardServices(items, query, category), sortBy),

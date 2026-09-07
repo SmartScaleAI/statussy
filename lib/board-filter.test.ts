@@ -3,9 +3,11 @@ import { test } from "node:test"
 
 import {
   ALL_CATEGORY,
+  boardHref,
   distinctCategories,
   filterBoardServices,
   formatCategoryLabel,
+  parseCategoryParam,
   summarizeBoardItems,
 } from "./board-filter.ts"
 
@@ -137,4 +139,20 @@ test("summarizeBoardItems counts the visible filtered set", () => {
     operational: 1,
     issues: 1,
   })
+})
+
+test("parseCategoryParam accepts only known categories (SMA-89)", () => {
+  const categories = distinctCategories(items)
+  assert.equal(parseCategoryParam("ai", categories), "ai")
+  assert.equal(parseCategoryParam("bogus", categories), ALL_CATEGORY)
+  assert.equal(parseCategoryParam("", categories), ALL_CATEGORY)
+  assert.equal(parseCategoryParam(null, categories), ALL_CATEGORY)
+  assert.equal(parseCategoryParam(undefined, categories), ALL_CATEGORY)
+  // Repeated ?category= params arrive as an array — treat as invalid.
+  assert.equal(parseCategoryParam(["ai", "cloud"], categories), ALL_CATEGORY)
+})
+
+test("boardHref: bare board for All, category query otherwise", () => {
+  assert.equal(boardHref(ALL_CATEGORY), "/")
+  assert.equal(boardHref("cloud"), "/?category=cloud")
 })
