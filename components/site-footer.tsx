@@ -1,6 +1,7 @@
 import Link from "next/link"
 
 import { SuggestServiceForm } from "@/components/suggest-service-form"
+import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
 
 const GITHUB_REPO = "https://github.com/SmartScaleAI/statussy"
@@ -32,8 +33,9 @@ export function SiteFooter({
         className
       )}
     >
+      <Separator />
       {showSuggest ? (
-        <div className="course-design-board mt-8">
+        <div className="course-design-board mt-8 sm:mt-12">
           <div className="card plain">
             <div className="suggest-card-body">
               <SuggestServiceForm />
@@ -51,13 +53,22 @@ export function SiteFooter({
           href="/"
           className="flex items-center gap-1.5 font-heading text-sm font-semibold text-foreground"
         >
+          {/* Light: black mark. Dark: white-on-black tile. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/brand/logo-light.svg"
+            alt=""
+            width={16}
+            height={16}
+            className="size-4 dark:hidden"
+          />
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/brand/logo.svg"
             alt=""
             width={16}
             height={16}
-            className="size-4"
+            className="hidden size-4 dark:block"
           />
           Statussy
         </Link>

@@ -1,9 +1,10 @@
 import Link from "next/link"
 
+import { ModeToggle } from "@/components/mode-toggle"
 import { getStatusBoard } from "@/lib/status-board"
 import { formatTimestamp } from "@/lib/status"
 
-/** Shared page chrome: brand mark (links home) + refreshed clock. */
+/** Shared page chrome: brand mark (links home) + refreshed clock + theme toggle. */
 export async function SiteHeader() {
   const { refreshedAt } = await getStatusBoard()
 
@@ -13,20 +14,32 @@ export async function SiteHeader() {
         href="/"
         className="flex items-center gap-2.5 font-heading text-2xl leading-none font-semibold tracking-tight text-foreground"
       >
+        {/* Light: black mark. Dark: white-on-black tile. */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/brand/logo-light.svg"
+          alt=""
+          width={24}
+          height={24}
+          className="size-[1em] dark:hidden"
+        />
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/brand/logo.svg"
           alt=""
           width={24}
           height={24}
-          className="size-[1em]"
+          className="hidden size-[1em] dark:block"
         />
         Statussy
       </Link>
-      <p className="text-xs text-muted-foreground">
-        Refreshed{" "}
-        <time dateTime={refreshedAt}>{formatTimestamp(refreshedAt)}</time>
-      </p>
+      <div className="flex items-center gap-3">
+        <p className="text-xs text-muted-foreground">
+          Refreshed{" "}
+          <time dateTime={refreshedAt}>{formatTimestamp(refreshedAt)}</time>
+        </p>
+        <ModeToggle />
+      </div>
     </header>
   )
 }
