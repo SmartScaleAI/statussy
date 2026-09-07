@@ -1,6 +1,7 @@
 import Link from "next/link"
 
 import { SuggestServiceForm } from "@/components/suggest-service-form"
+import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
 
 const GITHUB_REPO = "https://github.com/SmartScaleAI/statussy"
@@ -32,8 +33,9 @@ export function SiteFooter({
         className
       )}
     >
+      <Separator />
       {showSuggest ? (
-        <div className="course-design-board mt-8">
+        <div className="course-design-board mt-8 sm:mt-12">
           <div className="card plain">
             <div className="suggest-card-body">
               <SuggestServiceForm />

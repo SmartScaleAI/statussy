@@ -164,8 +164,8 @@ export function StatusBoardGrid({
             className={cn(
               // Single row: overflow scrolls horizontally with the scrollbar
               // hidden cross-browser. 28px mask fades blend the chips into the
-              // board-paper surface behind them (position-conditional: start →
-              // right fade, mid → both, end → left fade).
+              // plain bg-background surface behind them (position-conditional:
+              // start → right fade, mid → both, end → left fade).
               "-my-1 flex flex-nowrap items-center gap-1 overflow-x-auto py-1",
               "[scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden",
               chicletFade.start &&
