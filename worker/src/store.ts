@@ -25,9 +25,28 @@ export type PersistOptions = {
 }
 
 /**
+ * Vendors occasionally repeat an external id within one payload. The old
+ * per-row upsert loop let the later row win; a multi-row INSERT .. ON
+ * CONFLICT would instead error ("cannot affect row a second time"), so we
+ * dedupe here keeping the last occurrence.
+ */
+function dedupeByExternalId<T extends { externalId: string }>(rows: T[]): T[] {
+  if (rows.length < 2) return rows
+  const byId = new Map<string, T>()
+  for (const row of rows) byId.set(row.externalId, row)
+  return [...byId.values()]
+}
+
+/**
  * Persist a successful fetch for one service in a single transaction:
  * a fresh snapshot row, upserted components (removing ones the vendor
  * dropped), and upserted incidents.
+ *
+ * SMA-99: components and incidents are written as one multi-row `unnest`
+ * upsert each (a tick is a constant ~6 queries per service instead of
+ * 4 + components + incidents), and `DO UPDATE` carries a `WHERE .. IS
+ * DISTINCT FROM ..` guard so rows whose content didn't change are left
+ * untouched — no `updated_at` rewrite, no WAL/vacuum churn.
  */
 export async function persistServiceState(
   pool: pg.Pool,
@@ -35,6 +54,9 @@ export async function persistServiceState(
   state: PersistableServiceState,
   options: PersistOptions = {},
 ): Promise<void> {
+  const components = dedupeByExternalId(state.components)
+  const incidents = dedupeByExternalId(state.incidents)
+
   const client = await pool.connect()
   try {
     await client.query("BEGIN")
@@ -51,29 +73,41 @@ export async function persistServiceState(
       ],
     )
 
-    for (const component of state.components) {
+    if (components.length > 0) {
       await client.query(
         `INSERT INTO components (service_id, external_id, name, status, position)
-         VALUES ($1, $2, $3, $4, $5)
+         SELECT $1, c.external_id, c.name, c.status::service_status, c.position
+         FROM unnest($2::text[], $3::text[], $4::text[], $5::integer[])
+           AS c(external_id, name, status, position)
          ON CONFLICT (service_id, external_id) DO UPDATE
            SET name = EXCLUDED.name,
                status = EXCLUDED.status,
                position = EXCLUDED.position,
-               updated_at = now()`,
-        [serviceId, component.externalId, component.name, component.status, component.position],
+               updated_at = now()
+           WHERE (components.name, components.status, components.position)
+             IS DISTINCT FROM (EXCLUDED.name, EXCLUDED.status, EXCLUDED.position)`,
+        [
+          serviceId,
+          components.map((c) => c.externalId),
+          components.map((c) => c.name),
+          components.map((c) => c.status),
+          components.map((c) => c.position),
+        ],
       )
     }
     // Components the vendor no longer reports are gone, not "last-known".
     await client.query(
       `DELETE FROM components
        WHERE service_id = $1 AND external_id != ALL($2::text[])`,
-      [serviceId, state.components.map((c) => c.externalId)],
+      [serviceId, components.map((c) => c.externalId)],
     )
 
-    for (const incident of state.incidents) {
+    if (incidents.length > 0) {
       await client.query(
         `INSERT INTO incidents (service_id, external_id, title, status, impact, url, started_at, resolved_at)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+         SELECT $1, i.external_id, i.title, i.status, i.impact, i.url, i.started_at, i.resolved_at
+         FROM unnest($2::text[], $3::text[], $4::text[], $5::text[], $6::text[], $7::timestamptz[], $8::timestamptz[])
+           AS i(external_id, title, status, impact, url, started_at, resolved_at)
          ON CONFLICT (service_id, external_id) DO UPDATE
            SET title = EXCLUDED.title,
                status = EXCLUDED.status,
@@ -81,16 +115,20 @@ export async function persistServiceState(
                url = EXCLUDED.url,
                started_at = EXCLUDED.started_at,
                resolved_at = EXCLUDED.resolved_at,
-               updated_at = now()`,
+               updated_at = now()
+           WHERE (incidents.title, incidents.status, incidents.impact, incidents.url,
+                  incidents.started_at, incidents.resolved_at)
+             IS DISTINCT FROM (EXCLUDED.title, EXCLUDED.status, EXCLUDED.impact, EXCLUDED.url,
+                  EXCLUDED.started_at, EXCLUDED.resolved_at)`,
         [
           serviceId,
-          incident.externalId,
-          incident.title,
-          incident.status,
-          incident.impact,
-          incident.url,
-          incident.startedAt,
-          incident.resolvedAt,
+          incidents.map((i) => i.externalId),
+          incidents.map((i) => i.title),
+          incidents.map((i) => i.status),
+          incidents.map((i) => i.impact),
+          incidents.map((i) => i.url),
+          incidents.map((i) => i.startedAt),
+          incidents.map((i) => i.resolvedAt),
         ],
       )
     }
@@ -104,7 +142,7 @@ export async function persistServiceState(
          WHERE service_id = $1
            AND resolved_at IS NULL
            AND external_id != ALL($2::text[])`,
-        [serviceId, state.incidents.map((i) => i.externalId)],
+        [serviceId, incidents.map((i) => i.externalId)],
       )
     }
 
