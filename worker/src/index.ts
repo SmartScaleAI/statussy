@@ -221,6 +221,7 @@ import {
   type PersistableServiceState,
   type PersistOptions,
 } from "./store.js"
+import { createTickDedupe, type TickDedupe } from "./tick-dedupe.js"
 
 const config = loadConfig()
 const pool = createPool(config.databaseUrl)
@@ -252,7 +253,12 @@ const fetchOptions = () => ({
 
 type ServiceJob = {
   id: string
-  fetch: () => Promise<PersistableServiceState>
+  /**
+   * SMA-96: `shared` is a per-tick dedupe. Jobs whose upstream feed is shared
+   * with other services (HashiCorp family, Google Cloud / Gemini) pass it to
+   * their fetcher so the URL is hit once per tick; single-feed jobs ignore it.
+   */
+  fetch: (shared: TickDedupe) => Promise<PersistableServiceState>
   persistOptions?: PersistOptions
 }
 
@@ -306,7 +312,7 @@ const SERVICE_JOBS: ServiceJob[] = [
     // we persist Gemini-relevant rows and resolve any previously open ones
     // that drop out of the open set.
     id: "google-gemini",
-    fetch: () => fetchGoogleCloudGeminiState(fetchOptions()),
+    fetch: (shared) => fetchGoogleCloudGeminiState(fetchOptions(), shared),
     persistOptions: { resolveMissingIncidents: true },
   },
   {
@@ -374,7 +380,7 @@ const SERVICE_JOBS: ServiceJob[] = [
   {
     // Platform-wide GCP card. Informational notices stay off the rollup.
     id: "google-cloud",
-    fetch: () => fetchGoogleCloudPlatformState(fetchOptions()),
+    fetch: (shared) => fetchGoogleCloudPlatformState(fetchOptions(), shared),
     persistOptions: { resolveMissingIncidents: true },
   },
   {
@@ -424,7 +430,7 @@ const SERVICE_JOBS: ServiceJob[] = [
   },
   {
     id: "firebase",
-    fetch: () => fetchFirebaseState(fetchOptions()),
+    fetch: (shared) => fetchFirebaseState(fetchOptions(), shared),
     persistOptions: { resolveMissingIncidents: true },
   },
   // Cloud Wave C — Statuspage-compatible hosts plus custom official JSON.
@@ -888,41 +894,56 @@ const SERVICE_JOBS: ServiceJob[] = [
   // OpenTofu is Better Stack index.json.
   {
     id: "terraform",
-    fetch: () =>
-      fetchStatuspageNameFilterState("https://status.hashicorp.com", fetchOptions(), {
-        nameIncludes: "Terraform",
-      }),
+    fetch: (shared) =>
+      fetchStatuspageNameFilterState(
+        "https://status.hashicorp.com",
+        fetchOptions(),
+        { nameIncludes: "Terraform" },
+        shared,
+      ),
   },
   statuspageJob("pulumi", "https://status.pulumi.com"),
   {
     id: "vault",
-    fetch: () =>
-      fetchStatuspageNameFilterState("https://status.hashicorp.com", fetchOptions(), {
-        nameIncludes: "Vault",
-      }),
+    fetch: (shared) =>
+      fetchStatuspageNameFilterState(
+        "https://status.hashicorp.com",
+        fetchOptions(),
+        { nameIncludes: "Vault" },
+        shared,
+      ),
   },
   {
     id: "consul",
-    fetch: () =>
-      fetchStatuspageNameFilterState("https://status.hashicorp.com", fetchOptions(), {
-        nameIncludes: "Consul",
-      }),
+    fetch: (shared) =>
+      fetchStatuspageNameFilterState(
+        "https://status.hashicorp.com",
+        fetchOptions(),
+        { nameIncludes: "Consul" },
+        shared,
+      ),
   },
   {
     id: "nomad",
-    fetch: () =>
-      fetchStatuspageNameFilterState("https://status.hashicorp.com", fetchOptions(), {
-        nameIncludes: "Nomad",
-      }),
+    fetch: (shared) =>
+      fetchStatuspageNameFilterState(
+        "https://status.hashicorp.com",
+        fetchOptions(),
+        { nameIncludes: "Nomad" },
+        shared,
+      ),
   },
   statuspageJob("spacelift", "https://spacelift.statuspage.io"),
   statuspageJob("crossplane", "https://status.upbound.io"),
   {
     id: "packer",
-    fetch: () =>
-      fetchStatuspageNameFilterState("https://status.hashicorp.com", fetchOptions(), {
-        nameIncludes: "Packer",
-      }),
+    fetch: (shared) =>
+      fetchStatuspageNameFilterState(
+        "https://status.hashicorp.com",
+        fetchOptions(),
+        { nameIncludes: "Packer" },
+        shared,
+      ),
   },
   statuspageJob("chef", "https://status.chef.io"),
   {
@@ -1417,9 +1438,9 @@ const SERVICE_JOBS: ServiceJob[] = [
   statuspageJob("orum", "https://status.orum.com"),
 ]
 
-async function fetchService(service: ServiceJob): Promise<boolean> {
+async function fetchService(service: ServiceJob, shared: TickDedupe): Promise<boolean> {
   try {
-    const fetched = await service.fetch()
+    const fetched = await service.fetch(shared)
     await persistServiceState(
       pool,
       service.id,
@@ -1443,8 +1464,11 @@ async function fetchService(service: ServiceJob): Promise<boolean> {
 async function runTick(): Promise<void> {
   const tickNumber = ++state.tickCount
   try {
+    // Fresh dedupe per tick: shared feeds are fetched once and stay as fresh
+    // as any solo fetch this tick would be.
+    const shared = createTickDedupe()
     const results = await Promise.all(
-      SERVICE_JOBS.map((service) => fetchService(service)),
+      SERVICE_JOBS.map((service) => fetchService(service, shared)),
     )
     const okCount = results.filter(Boolean).length
     state.lastTickAt = new Date()

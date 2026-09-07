@@ -7,6 +7,8 @@
  * so incidents are always fetched from the dedicated endpoint.
  */
 
+import type { TickDedupe } from "./tick-dedupe.js"
+
 export type ServiceStatus =
   | "operational"
   | "degraded"
@@ -208,12 +210,26 @@ export type StatuspagePayloads = {
 /**
  * Fetch Statuspage summary + incidents without mapping. Shared by the
  * full-page fetcher and the group filter used for Lytics on Contentstack.
+ * Pass a `dedupe` (SMA-96) when several services read the same page — e.g.
+ * the HashiCorp products on status.hashicorp.com — so the payload is fetched
+ * once per tick and reused.
  */
 export async function fetchStatuspagePayloads(
   baseUrl: string,
   options: FetchOptions,
+  dedupe?: TickDedupe,
 ): Promise<StatuspagePayloads> {
   const root = baseUrl.replace(/\/+$/, "")
+  if (dedupe) {
+    return dedupe.fetch(`statuspage:${root}`, () => fetchStatuspagePayloadsDirect(root, options))
+  }
+  return fetchStatuspagePayloadsDirect(root, options)
+}
+
+async function fetchStatuspagePayloadsDirect(
+  root: string,
+  options: FetchOptions,
+): Promise<StatuspagePayloads> {
   const summary = await fetchJson<StatuspageSummary>(`${root}/api/v2/summary.json`, options)
   if (!summary || typeof summary !== "object" || !summary.status) {
     throw new Error(`Unexpected summary.json payload from ${root}`)
@@ -422,7 +438,8 @@ export async function fetchStatuspageNameFilterState(
   baseUrl: string,
   options: FetchOptions,
   filter: StatuspageNameFilter,
+  dedupe?: TickDedupe,
 ): Promise<MappedServiceState> {
-  const { root, summary, incidents } = await fetchStatuspagePayloads(baseUrl, options)
+  const { root, summary, incidents } = await fetchStatuspagePayloads(baseUrl, options, dedupe)
   return mapStatuspageNameFilter(summary, incidents, root, filter)
 }
