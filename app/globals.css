@@ -182,15 +182,6 @@
   --card-wash-red: 40%;
 }
 
-/* xAI mark is white-on-transparent; invert it on light card surfaces only. */
-.course-design-board img[data-service="xai"] {
-  filter: invert(1);
-}
-
-.dark .course-design-board img[data-service="xai"] {
-  filter: none;
-}
-
 .course-design-board a {
   text-decoration: none;
   display: inline-block;

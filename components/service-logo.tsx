@@ -1,3 +1,4 @@
+import { logoInvertClass } from "@/lib/light-logo-ids"
 import { cn } from "@/lib/utils"
 
 /**
@@ -22,7 +23,8 @@ export function ServiceLogo({
       alt=""
       width={24}
       height={24}
-      className={cn("size-6 shrink-0", className)}
+      // SMA-93: white-on-transparent marks invert on light surfaces.
+      className={cn("size-6 shrink-0", logoInvertClass(id), className)}
       aria-hidden="true"
       data-service={id}
       title={name}
