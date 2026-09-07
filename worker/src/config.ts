@@ -4,10 +4,16 @@ export type Config = {
   port: number
   fetchTimeoutMs: number
   fetchUserAgent: string
+  /** Max in-flight service fetches per tick (SMA-100). */
+  fetchConcurrency: number
+  /** Random 0..N ms delay before each fetch starts, to smooth bursts. */
+  fetchJitterMs: number
 }
 
 const DEFAULT_REFRESH_INTERVAL_SECONDS = 300
 const DEFAULT_FETCH_TIMEOUT_MS = 10_000
+const DEFAULT_FETCH_CONCURRENCY = 40
+const DEFAULT_FETCH_JITTER_MS = 250
 const DEFAULT_FETCH_USER_AGENT =
   "statussy-worker/0.1 (+https://github.com/SmartScaleAI/statussy)"
 
@@ -46,11 +52,35 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
 
   const fetchUserAgent = env.FETCH_USER_AGENT?.trim() || DEFAULT_FETCH_USER_AGENT
 
+  let fetchConcurrency = DEFAULT_FETCH_CONCURRENCY
+  if (env.FETCH_CONCURRENCY !== undefined) {
+    const parsed = Number(env.FETCH_CONCURRENCY)
+    if (!Number.isInteger(parsed) || parsed <= 0) {
+      throw new Error(
+        `FETCH_CONCURRENCY must be a positive integer, got ${JSON.stringify(env.FETCH_CONCURRENCY)}`,
+      )
+    }
+    fetchConcurrency = parsed
+  }
+
+  let fetchJitterMs = DEFAULT_FETCH_JITTER_MS
+  if (env.FETCH_JITTER_MS !== undefined) {
+    const parsed = Number(env.FETCH_JITTER_MS)
+    if (!Number.isInteger(parsed) || parsed < 0) {
+      throw new Error(
+        `FETCH_JITTER_MS must be a non-negative integer, got ${JSON.stringify(env.FETCH_JITTER_MS)}`,
+      )
+    }
+    fetchJitterMs = parsed
+  }
+
   return {
     databaseUrl,
     refreshIntervalSeconds,
     port,
     fetchTimeoutMs,
     fetchUserAgent,
+    fetchConcurrency,
+    fetchJitterMs,
   }
 }

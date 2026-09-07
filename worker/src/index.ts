@@ -142,6 +142,7 @@
 import { createServer } from "node:http"
 import { loadConfig } from "./config.js"
 import { createPool } from "./db.js"
+import { drainConditionalFetchStats } from "./http.js"
 import { fetchAdobeState } from "./adobe.js"
 import { fetchChecklyClientState } from "./checkly-client.js"
 import { fetchChecklyNuxtState } from "./checkly-nuxt.js"
@@ -234,7 +235,7 @@ const state = {
 }
 
 console.log(
-  `[worker] starting (interval=${config.refreshIntervalSeconds}s, port=${config.port})`,
+  `[worker] starting (interval=${config.refreshIntervalSeconds}s, port=${config.port}, concurrency=${config.fetchConcurrency}, jitter=${config.fetchJitterMs}ms)`,
 )
 
 const applied = await runMigrations(pool)
@@ -1461,25 +1462,72 @@ async function fetchService(service: ServiceJob, shared: TickDedupe): Promise<bo
   }
 }
 
+/** Random 0..maxMs delay so job starts inside a tick do not burst at once. */
+function jitter(maxMs: number): Promise<void> {
+  if (maxMs <= 0) return Promise.resolve()
+  return new Promise((resolve) => setTimeout(resolve, Math.random() * maxMs))
+}
+
+/**
+ * SMA-100: run `fn` over `items` with at most `limit` in flight. A simple
+ * shared-cursor worker pool — no external dependency, preserves result order.
+ */
+async function mapWithConcurrency<T, R>(
+  items: readonly T[],
+  limit: number,
+  fn: (item: T) => Promise<R>,
+): Promise<R[]> {
+  const results = new Array<R>(items.length)
+  let nextIndex = 0
+  const workerCount = Math.max(1, Math.min(limit, items.length))
+  await Promise.all(
+    Array.from({ length: workerCount }, async () => {
+      while (nextIndex < items.length) {
+        const index = nextIndex++
+        results[index] = await fn(items[index])
+      }
+    }),
+  )
+  return results
+}
+
+// SMA-100: if a tick somehow outlives the refresh interval, skip the next
+// interval instead of piling a second fan-out on top of the first.
+let tickInProgress = false
+
 async function runTick(): Promise<void> {
+  if (tickInProgress) {
+    console.warn("[tick] previous tick still running — skipping this interval")
+    return
+  }
+  tickInProgress = true
   const tickNumber = ++state.tickCount
+  const startedAtMs = Date.now()
   try {
-    // Fresh dedupe per tick: shared feeds are fetched once and stay as fresh
-    // as any solo fetch this tick would be.
+    // Fresh dedupe per tick (SMA-96): shared feeds are fetched once and stay
+    // as fresh as any solo fetch this tick would be.
     const shared = createTickDedupe()
-    const results = await Promise.all(
-      SERVICE_JOBS.map((service) => fetchService(service, shared)),
+    const results = await mapWithConcurrency(
+      SERVICE_JOBS,
+      config.fetchConcurrency,
+      async (service) => {
+        await jitter(config.fetchJitterMs)
+        return fetchService(service, shared)
+      },
     )
     const okCount = results.filter(Boolean).length
+    const conditional = drainConditionalFetchStats()
     state.lastTickAt = new Date()
     state.lastTickOk = okCount === results.length
     console.log(
-      `[tick] #${tickNumber} done ok=${okCount}/${results.length} at=${state.lastTickAt.toISOString()}`,
+      `[tick] #${tickNumber} done ok=${okCount}/${results.length} in=${Date.now() - startedAtMs}ms 304s=${conditional.notModified}/${conditional.requests} at=${state.lastTickAt.toISOString()}`,
     )
   } catch (err) {
     state.lastTickAt = new Date()
     state.lastTickOk = false
     console.error(`[tick] #${tickNumber} failed: ${(err as Error).message}`)
+  } finally {
+    tickInProgress = false
   }
 }
 

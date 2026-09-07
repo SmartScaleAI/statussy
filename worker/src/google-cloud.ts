@@ -15,6 +15,7 @@
  * incidents.json, with components synthesized from the incident payload.
  */
 
+import { fetchJsonConditional } from "./http.js"
 import type {
   FetchOptions,
   MappedComponent,
@@ -363,17 +364,9 @@ export function parseProductsPayload(body: unknown): GoogleCloudProduct[] {
   return []
 }
 
-async function fetchJson<T>(url: string, options: FetchOptions): Promise<T> {
-  const res = await fetch(url, {
-    headers: { accept: "application/json", "user-agent": options.userAgent },
-    signal: AbortSignal.timeout(options.timeoutMs),
-    redirect: "follow",
-  })
-  if (!res.ok) {
-    throw new Error(`GET ${url} -> HTTP ${res.status}`)
-  }
-  return (await res.json()) as T
-}
+// SMA-100: Cloud Status JSON is CDN-served — conditional GETs reuse the
+// cached body on 304.
+const fetchJson = fetchJsonConditional
 
 type GoogleCloudPayloads = { incidents: GoogleCloudIncident[]; products: GoogleCloudProduct[] }
 
