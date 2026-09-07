@@ -26,7 +26,7 @@ export type BoardService = Omit<Service, "status"> & {
 }
 
 /** Lower number = more urgent. Non-operational statuses sort above healthy. */
-const STATUS_RANK: Record<BoardStatus, number> = {
+export const STATUS_RANK: Record<BoardStatus, number> = {
   major_outage: 0,
   partial_outage: 1,
   degraded: 2,

@@ -46,6 +46,12 @@ const mixed: BoardSortItem[] = [
     hasActiveIncident: true,
   }),
   item({ id: "anthropic", name: "Anthropic", healthPct: 100 }),
+  item({
+    id: "zeta",
+    name: "Zeta AI",
+    status: "partial_outage",
+    healthPct: 60,
+  }),
 ]
 
 test("parseSortBy defaults to Issues first", () => {
@@ -83,17 +89,52 @@ test("serviceHasIssues: non-operational or active incident", () => {
   )
 })
 
-test("Issues first: issues above healthy, Name A–Z within each group", () => {
+test("Issues first: severity rank beats Name A–Z (SMA-80)", () => {
+  // Alphabetical-within-issues would put "Zeta AI" last in the issues
+  // group; severity puts its partial outage right below the major outage.
   assert.deepEqual(
     sortBoardServices(mixed, "issues-first").map((row) => row.name),
-    ["DeepSeek", "Google Gemini", "OpenRouter", "Anthropic", "OpenAI"]
+    [
+      "DeepSeek",
+      "Zeta AI",
+      "Google Gemini",
+      "OpenRouter",
+      "Anthropic",
+      "OpenAI",
+    ]
+  )
+})
+
+test("Issues first: Major → Partial → Degraded → Maintenance → Unknown → Live", () => {
+  const board = [
+    item({ id: "live", name: "Alpha Live" }),
+    item({ id: "unknown", name: "Unknown Co", status: "unknown" }),
+    item({ id: "maint", name: "Maint Co", status: "maintenance" }),
+    item({ id: "degraded", name: "Alpha", status: "degraded" }),
+    item({ id: "partial", name: "Partial Co", status: "partial_outage" }),
+    item({ id: "major", name: "Zorro", status: "major_outage" }),
+    // Operational with an active incident: status ties with Live rows, but
+    // the incident tiebreak keeps it just above fully healthy cards.
+    item({ id: "incident", name: "Ok But Incident", hasActiveIncident: true }),
+  ]
+  assert.deepEqual(
+    sortBoardServices(board, "issues-first").map((row) => row.name),
+    [
+      "Zorro",
+      "Partial Co",
+      "Alpha",
+      "Maint Co",
+      "Unknown Co",
+      "Ok But Incident",
+      "Alpha Live",
+    ]
   )
 })
 
 test("Name A–Z is alphabetical by service name", () => {
   assert.deepEqual(
     sortBoardServices(mixed, "name").map((row) => row.name),
-    ["Anthropic", "DeepSeek", "Google Gemini", "OpenAI", "OpenRouter"]
+    ["Anthropic", "DeepSeek", "Google Gemini", "OpenAI", "OpenRouter", "Zeta AI"]
   )
 })
 

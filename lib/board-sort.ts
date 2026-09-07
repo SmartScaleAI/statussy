@@ -2,15 +2,18 @@
  * Client-safe board sort (SMA-40). Filter first (search ∧ category), then sort
  * the visible set. Same helpers apply to All Services and My Services.
  *
- * Issues first: a service ranks in the issues group when its overall status is
- * not `operational`, or `hasActiveIncident` is true (board maps this from a
- * non-empty `incidentTitle` — the live snapshot / mock incident line). Fully
- * operational services with no incident rank below. Within a group, Name A–Z.
+ * Issues first (SMA-80): status severity rank first (`STATUS_RANK` — Major →
+ * Partial → Degraded → Maintenance → Unknown → Live). When status ties,
+ * `hasActiveIncident` true sorts before false, so an operational card with an
+ * active incident (board maps this from a non-empty `incidentTitle`) still
+ * ranks just above fully healthy rows. Then Name A–Z.
  *
  * Name A–Z: `localeCompare` on `name`.
  * Health %: lowest resolved percent first; ties by Name A–Z. Missing live
  * health uses the worker fallback — 100 when operational, otherwise 0.
  */
+
+import { STATUS_RANK, type BoardStatus } from "./status.ts"
 
 export const SORT_BY_KEY = "statussy:sortBy"
 
@@ -65,6 +68,11 @@ export function serviceHasIssues(item: {
   return item.status !== "operational" || item.hasActiveIncident
 }
 
+/** Unrecognized status strings rank as `unknown` (between maintenance and Live). */
+export function resolveStatusRank(status: string): number {
+  return STATUS_RANK[status as BoardStatus] ?? STATUS_RANK.unknown
+}
+
 export function resolveSortHealth(item: {
   status: string
   healthPct: number | null
@@ -94,9 +102,13 @@ export function sortBoardServices<T extends BoardSortItem>(
       }
       return byName(a, b)
     }
-    const issueDelta = Number(serviceHasIssues(b)) - Number(serviceHasIssues(a))
-    if (issueDelta !== 0) {
-      return issueDelta
+    const rank = resolveStatusRank(a.status) - resolveStatusRank(b.status)
+    if (rank !== 0) {
+      return rank
+    }
+    const incident = Number(b.hasActiveIncident) - Number(a.hasActiveIncident)
+    if (incident !== 0) {
+      return incident
     }
     return byName(a, b)
   })
