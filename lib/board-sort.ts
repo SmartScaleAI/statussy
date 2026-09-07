@@ -30,6 +30,19 @@ export const SORT_BY_LABEL: Record<SortBy, string> = {
   health: "Health %",
 }
 
+/** My Stack sort (SMA-92) persists separately from the board sort. */
+export const MY_STACK_SORT_BY_KEY = "statussy:myStackSortBy"
+
+/** My Stack is a short pinned list, so Health % is left off the menu. */
+export const MY_STACK_SORT_BY_VALUES = [
+  "issues-first",
+  "name",
+] as const satisfies readonly SortBy[]
+
+export type MyStackSortBy = (typeof MY_STACK_SORT_BY_VALUES)[number]
+
+export const DEFAULT_MY_STACK_SORT_BY: MyStackSortBy = "issues-first"
+
 /** Client-safe sort fields — no live-status / pg imports. */
 export type BoardSortItem = {
   id: string
@@ -49,6 +62,20 @@ export function isSortBy(value: unknown): value is SortBy {
 /** Invalid or missing storage → Issues first (first-visit default). */
 export function parseSortBy(raw: string | null | undefined): SortBy {
   return isSortBy(raw) ? raw : DEFAULT_SORT_BY
+}
+
+export function isMyStackSortBy(value: unknown): value is MyStackSortBy {
+  return (
+    typeof value === "string" &&
+    (MY_STACK_SORT_BY_VALUES as readonly string[]).includes(value)
+  )
+}
+
+/** Invalid or missing storage (including board-only sorts) → Issues first. */
+export function parseMyStackSortBy(
+  raw: string | null | undefined
+): MyStackSortBy {
+  return isMyStackSortBy(raw) ? raw : DEFAULT_MY_STACK_SORT_BY
 }
 
 export function serviceHasIssues(item: {

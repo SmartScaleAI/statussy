@@ -3,10 +3,14 @@ import { test } from "node:test"
 
 import { selectFavoriteServices } from "./favorite-services.ts"
 import {
+  DEFAULT_MY_STACK_SORT_BY,
   DEFAULT_SORT_BY,
+  MY_STACK_SORT_BY_KEY,
+  parseMyStackSortBy,
   parseSortBy,
   resolveSortHealth,
   serviceHasIssues,
+  SORT_BY_KEY,
   sortBoardServices,
   type BoardSortItem,
 } from "./board-sort.ts"
@@ -180,7 +184,22 @@ test("missing healthPct uses operational → 100, else 0", () => {
   )
 })
 
-test("My Stack: favorite subset then the shared board sort", () => {
+test("parseMyStackSortBy defaults to Issues first; board-only sorts rejected", () => {
+  assert.equal(parseMyStackSortBy(null), DEFAULT_MY_STACK_SORT_BY)
+  assert.equal(parseMyStackSortBy(undefined), "issues-first")
+  assert.equal(parseMyStackSortBy("nope"), "issues-first")
+  // Health % is a board-only sort — not offered for the short pinned list.
+  assert.equal(parseMyStackSortBy("health"), "issues-first")
+  assert.equal(parseMyStackSortBy("name"), "name")
+  assert.equal(parseMyStackSortBy("issues-first"), "issues-first")
+})
+
+test("My Stack sort persists under its own key (SMA-92)", () => {
+  assert.equal(MY_STACK_SORT_BY_KEY, "statussy:myStackSortBy")
+  assert.notEqual(MY_STACK_SORT_BY_KEY, SORT_BY_KEY)
+})
+
+test("My Stack: favorite subset then the My Stack sort", () => {
   const pinned = selectFavoriteServices(mixed, [
     "openai",
     "deepseek",
@@ -189,6 +208,10 @@ test("My Stack: favorite subset then the shared board sort", () => {
   assert.deepEqual(
     sortBoardServices(pinned, "issues-first").map((row) => row.name),
     ["DeepSeek", "Anthropic", "OpenAI"]
+  )
+  assert.deepEqual(
+    sortBoardServices(pinned, "name").map((row) => row.name),
+    ["Anthropic", "DeepSeek", "OpenAI"]
   )
 })
 

@@ -2,7 +2,7 @@
 
 import { Children, isValidElement, useMemo, type ReactNode } from "react"
 
-import { useBoardSort } from "@/components/board-sort-menu"
+import { MyStackSortMenu, useMyStackSort } from "@/components/board-sort-menu"
 import { useFavoriteServices } from "@/components/favorite-services"
 import { StatusSummary } from "@/components/status-summary"
 import { sortBoardServices, type BoardSortItem } from "@/lib/board-sort"
@@ -22,7 +22,7 @@ export function MyServices({
   children: ReactNode
 }) {
   const { favoriteIds } = useFavoriteServices()
-  const [sortBy] = useBoardSort()
+  const [sortBy, setSortBy] = useMyStackSort()
   const favorites = useMemo(
     () => sortBoardServices(selectFavoriteServices(items, favoriteIds), sortBy),
     [favoriteIds, items, sortBy]
@@ -49,12 +49,18 @@ export function MyServices({
       aria-labelledby="my-services-heading"
     >
       <div className="flex flex-col gap-3">
-        <h2
-          id="my-services-heading"
-          className="font-heading text-lg font-semibold tracking-tight text-foreground"
-        >
-          My Stack
-        </h2>
+        <div className="flex items-center justify-between gap-2">
+          <h2
+            id="my-services-heading"
+            className="font-heading text-lg font-semibold tracking-tight text-foreground"
+          >
+            My Stack
+          </h2>
+          {/* Nothing to reorder while the stack is empty, so hide the sort. */}
+          {!empty && (
+            <MyStackSortMenu sortBy={sortBy} onSortByChange={setSortBy} />
+          )}
+        </div>
         <StatusSummary
           operational={summary.operational}
           issues={summary.issues}

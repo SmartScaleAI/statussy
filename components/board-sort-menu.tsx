@@ -13,81 +13,110 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
+  MY_STACK_SORT_BY_KEY,
+  MY_STACK_SORT_BY_VALUES,
+  parseMyStackSortBy,
   parseSortBy,
   SORT_BY_KEY,
   SORT_BY_LABEL,
   SORT_BY_VALUES,
+  type MyStackSortBy,
   type SortBy,
 } from "@/lib/board-sort"
 
-const listeners = new Set<() => void>()
+/** localStorage-synced sort state; one store per storage key. */
+function createSortStore(storageKey: string) {
+  const listeners = new Set<() => void>()
 
-function emitSortChange() {
-  for (const listener of listeners) {
-    listener()
-  }
-}
-
-function subscribeSortBy(listener: () => void) {
-  listeners.add(listener)
-  const onStorage = (event: StorageEvent) => {
-    if (event.key === null || event.key === SORT_BY_KEY) {
+  function emit() {
+    for (const listener of listeners) {
       listener()
     }
   }
-  window.addEventListener("storage", onStorage)
-  return () => {
-    listeners.delete(listener)
-    window.removeEventListener("storage", onStorage)
+
+  return {
+    subscribe(listener: () => void) {
+      listeners.add(listener)
+      const onStorage = (event: StorageEvent) => {
+        if (event.key === null || event.key === storageKey) {
+          listener()
+        }
+      }
+      window.addEventListener("storage", onStorage)
+      return () => {
+        listeners.delete(listener)
+        window.removeEventListener("storage", onStorage)
+      }
+    },
+    getSnapshot() {
+      try {
+        return window.localStorage.getItem(storageKey)
+      } catch {
+        return null
+      }
+    },
+    getServerSnapshot() {
+      return null
+    },
+    write(value: string) {
+      try {
+        window.localStorage.setItem(storageKey, value)
+      } catch {
+        // Private mode / quota: keep the last persisted value.
+      }
+      emit()
+    },
   }
 }
 
-function getSortBySnapshot() {
-  try {
-    return window.localStorage.getItem(SORT_BY_KEY)
-  } catch {
-    return null
-  }
-}
+type SortStore = ReturnType<typeof createSortStore>
 
-function getSortByServerSnapshot() {
-  return null
-}
+const boardSortStore = createSortStore(SORT_BY_KEY)
+const myStackSortStore = createSortStore(MY_STACK_SORT_BY_KEY)
 
-function writeSortBy(sortBy: SortBy) {
-  window.localStorage.setItem(SORT_BY_KEY, sortBy)
-}
-
-/**
- * Shared All Services / My Stack sort. Persists in `statussy:sortBy`.
- * First visit (no key) is Issues first.
- */
-export function useBoardSort() {
+function useStoredSort<T extends string>(
+  store: SortStore,
+  parse: (raw: string | null) => T
+) {
   const raw = useSyncExternalStore(
-    subscribeSortBy,
-    getSortBySnapshot,
-    getSortByServerSnapshot
+    store.subscribe,
+    store.getSnapshot,
+    store.getServerSnapshot
   )
-  const sortBy = useMemo(() => parseSortBy(raw), [raw])
+  const sortBy = useMemo(() => parse(raw), [parse, raw])
 
-  const setSortBy = useCallback((next: SortBy) => {
-    try {
-      writeSortBy(next)
-    } catch {
-      // Private mode / quota: keep the last persisted value.
-    }
-    emitSortChange()
-  }, [])
+  const setSortBy = useCallback((next: T) => store.write(next), [store])
 
   return [sortBy, setSortBy] as const
 }
 
-export function BoardSortMenu({
+/**
+ * All Services board sort. Persists in `statussy:sortBy`.
+ * First visit (no key) is Issues first.
+ */
+export function useBoardSort() {
+  return useStoredSort(boardSortStore, parseSortBy)
+}
+
+/**
+ * My Stack-only sort (SMA-92) — independent of the board sort. Persists in
+ * `statussy:myStackSortBy`; first visit (no key) is Issues first.
+ */
+export function useMyStackSort() {
+  return useStoredSort(myStackSortStore, parseMyStackSortBy)
+}
+
+function SortMenu<T extends SortBy>({
   sortBy,
+  values,
   onSortByChange,
+  ariaContext,
 }: {
-  sortBy: SortBy
-  onSortByChange: (next: SortBy) => void
+  sortBy: T
+  values: readonly T[]
+  onSortByChange: (next: T) => void
+  /** Accessible-name prefix, e.g. "Sort by" / "Sort My Stack by". */
+  ariaContext: string
 }) {
   const label = SORT_BY_LABEL[sortBy]
 
@@ -98,7 +127,7 @@ export function BoardSortMenu({
           <Button
             type="button"
             variant="outline"
-            aria-label={`Sort by, ${label}`}
+            aria-label={`${ariaContext}, ${label}`}
             className="h-10 shrink-0 max-md:w-10 max-md:px-0"
           />
         }
@@ -114,11 +143,14 @@ export function BoardSortMenu({
         <DropdownMenuGroup>
           <DropdownMenuRadioGroup
             value={sortBy}
-            onValueChange={(value) =>
-              onSortByChange(parseSortBy(String(value)))
-            }
+            onValueChange={(value) => {
+              const next = values.find((candidate) => candidate === value)
+              if (next) {
+                onSortByChange(next)
+              }
+            }}
           >
-            {SORT_BY_VALUES.map((value) => (
+            {values.map((value) => (
               <DropdownMenuRadioItem key={value} value={value} closeOnClick>
                 {SORT_BY_LABEL[value]}
               </DropdownMenuRadioItem>
@@ -127,5 +159,39 @@ export function BoardSortMenu({
         </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
+  )
+}
+
+export function BoardSortMenu({
+  sortBy,
+  onSortByChange,
+}: {
+  sortBy: SortBy
+  onSortByChange: (next: SortBy) => void
+}) {
+  return (
+    <SortMenu
+      sortBy={sortBy}
+      values={SORT_BY_VALUES}
+      onSortByChange={onSortByChange}
+      ariaContext="Sort by"
+    />
+  )
+}
+
+export function MyStackSortMenu({
+  sortBy,
+  onSortByChange,
+}: {
+  sortBy: MyStackSortBy
+  onSortByChange: (next: MyStackSortBy) => void
+}) {
+  return (
+    <SortMenu
+      sortBy={sortBy}
+      values={MY_STACK_SORT_BY_VALUES}
+      onSortByChange={onSortByChange}
+      ariaContext="Sort My Stack by"
+    />
   )
 }
