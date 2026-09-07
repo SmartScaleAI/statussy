@@ -53,13 +53,22 @@ export function SiteFooter({
           href="/"
           className="flex items-center gap-1.5 font-heading text-sm font-semibold text-foreground"
         >
+          {/* Light: black mark. Dark: white-on-black tile. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/brand/logo-light.svg"
+            alt=""
+            width={16}
+            height={16}
+            className="size-4 dark:hidden"
+          />
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/brand/logo.svg"
             alt=""
             width={16}
             height={16}
-            className="size-4"
+            className="hidden size-4 dark:block"
           />
           Statussy
         </Link>
