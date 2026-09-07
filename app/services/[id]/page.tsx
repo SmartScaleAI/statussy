@@ -21,6 +21,7 @@ import {
   type LiveStatus,
   type ServiceIncident,
 } from "@/lib/live-status"
+import { logoInvertClass } from "@/lib/light-logo-ids"
 import { formatTimestamp, STATUS_LABEL, type BoardStatus } from "@/lib/status"
 import { cn } from "@/lib/utils"
 
@@ -219,8 +220,8 @@ export default async function ServiceDetailPage({
               alt=""
               className={cn(
                 "size-10 shrink-0 object-contain",
-                // xAI mark is white-on-transparent; invert on light surfaces.
-                service.id === "xai" && "invert dark:invert-0"
+                // SMA-93: white-on-transparent marks invert on light surfaces.
+                logoInvertClass(service.id)
               )}
             />
             <div className="flex flex-col gap-1">

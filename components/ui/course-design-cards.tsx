@@ -20,6 +20,8 @@ import React, { type MouseEvent } from "react"
 
 import { useFavoriteServices } from "@/components/favorite-services"
 import { CATEGORY_PARAM } from "@/lib/board-filter"
+import { logoInvertClass } from "@/lib/light-logo-ids"
+import { cn } from "@/lib/utils"
 
 function stopCardNavigation(event: MouseEvent) {
   event.stopPropagation()
@@ -123,7 +125,8 @@ const Card: React.FC<CardProps> = ({ data }) => {
         // Decorative when alt is empty — title is already on the card.
         // eslint-disable-next-line @next/next/no-img-element
         <img
-          className="card-logo"
+          // SMA-93: white-on-transparent marks flip to black on light cards.
+          className={cn("card-logo", logoInvertClass(String(data.id)))}
           src={imgSrc1}
           alt={imgAlt1 || ""}
           data-service={data.id}
