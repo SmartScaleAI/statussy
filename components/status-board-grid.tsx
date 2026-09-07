@@ -3,8 +3,10 @@
 import {
   Children,
   isValidElement,
+  useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type KeyboardEvent,
   type ReactNode,
@@ -34,6 +36,52 @@ import { cn } from "@/lib/utils"
 
 export type BoardGridItem = BoardFilterItem & BoardSortItem
 
+// ~28px edge fade (Avery UX lock). A CSS mask fades the chips themselves, so
+// the fade always matches the board surface instead of overlaying a color.
+const CHIP_FADE_MASKS = {
+  both: "[mask-image:linear-gradient(to_right,transparent,black_28px,black_calc(100%_-_28px),transparent)]",
+  left: "[mask-image:linear-gradient(to_right,transparent,black_28px)]",
+  right:
+    "[mask-image:linear-gradient(to_right,black_calc(100%_-_28px),transparent)]",
+} as const
+
+/**
+ * Tracks whether a horizontal scroller has overflow on each side, so edge
+ * fades can be conditional: at start → right only, mid → both, end → left
+ * only.
+ */
+function useScrollEdges(deps: readonly unknown[]) {
+  const scrollerRef = useRef<HTMLDivElement | null>(null)
+  const [edges, setEdges] = useState({ left: false, right: false })
+
+  const updateEdges = useCallback(() => {
+    const el = scrollerRef.current
+    if (!el) {
+      return
+    }
+    const maxScroll = el.scrollWidth - el.clientWidth
+    setEdges({
+      left: el.scrollLeft > 1,
+      right: el.scrollLeft < maxScroll - 1,
+    })
+  }, [])
+
+  useEffect(() => {
+    const el = scrollerRef.current
+    if (!el) {
+      return
+    }
+    updateEdges()
+    const observer = new ResizeObserver(updateEdges)
+    observer.observe(el)
+    return () => observer.disconnect()
+    // Re-measure when the scroller contents change (e.g. category list).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [updateEdges, ...deps])
+
+  return { scrollerRef, edges, updateEdges }
+}
+
 export function StatusBoardGrid({
   items,
   children,
@@ -47,6 +95,11 @@ export function StatusBoardGrid({
   const [sortBy, setSortBy] = useBoardSort()
   const categories = useMemo(() => distinctCategories(items), [items])
   const options = useMemo(() => [ALL_CATEGORY, ...categories], [categories])
+  const {
+    scrollerRef: chipScrollerRef,
+    edges: chipEdges,
+    updateEdges: updateChipEdges,
+  } = useScrollEdges([options])
   const visibleItems = useMemo(
     () =>
       sortBoardServices(filterBoardServices(items, query, category), sortBy),
@@ -129,9 +182,23 @@ export function StatusBoardGrid({
             <BoardSortMenu sortBy={sortBy} onSortByChange={setSortBy} />
           </div>
           <div
+            ref={chipScrollerRef}
             role="radiogroup"
             aria-label="Filter by category"
-            className="flex flex-wrap items-center gap-1"
+            className={cn(
+              // Single row: horizontal scroll with the scrollbar hidden
+              // (touch/trackpad/wheel and arrow-key nav still scroll).
+              "-mx-1 -my-1 flex flex-nowrap items-center gap-1 overflow-x-auto px-1 py-1",
+              "[-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
+              chipEdges.left && chipEdges.right
+                ? CHIP_FADE_MASKS.both
+                : chipEdges.left
+                  ? CHIP_FADE_MASKS.left
+                  : chipEdges.right
+                    ? CHIP_FADE_MASKS.right
+                    : undefined
+            )}
+            onScroll={updateChipEdges}
             onKeyDown={onChicletKeyDown}
           >
             {options.map((id) => {

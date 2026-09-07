@@ -95,11 +95,18 @@ export function BoardSortMenu({
     <DropdownMenu>
       <DropdownMenuTrigger
         render={
-          <Button type="button" variant="outline" className="h-10 shrink-0" />
+          <Button
+            type="button"
+            variant="outline"
+            // Icon-only below `md` (768px, per Avery UX lock); the aria-label
+            // keeps the current mode audible for screen readers.
+            aria-label={`Sort by, ${label}`}
+            className="h-10 shrink-0 max-md:w-10 max-md:px-0"
+          />
         }
       >
-        <ArrowUpDownIcon data-icon="inline-start" />
-        Sort by · {label}
+        <ArrowUpDownIcon />
+        <span className="hidden md:inline">Sort by · {label}</span>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-44">
         <DropdownMenuGroup>
