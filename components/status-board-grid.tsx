@@ -32,6 +32,7 @@ import {
 } from "@/lib/board-filter"
 import { paginateItems } from "@/lib/board-pagination"
 import { sortBoardServices, type BoardSortItem } from "@/lib/board-sort"
+import { chicletHoverClass, chicletSelectedClass } from "@/lib/chiclet"
 import { cn } from "@/lib/utils"
 
 export type BoardGridItem = BoardFilterItem & BoardSortItem
@@ -198,9 +199,8 @@ export function StatusBoardGrid({
                   tabIndex={selected ? 0 : -1}
                   onClick={() => setCategory(id)}
                   className={cn(
-                    "hover:bg-[var(--bg-footer)] dark:hover:bg-[var(--bg-footer)]",
-                    selected &&
-                      "border-[var(--color-gray-dark)] bg-[var(--bg-footer)] text-foreground"
+                    chicletHoverClass,
+                    selected && chicletSelectedClass
                   )}
                 >
                   {formatCategoryLabel(id)}
