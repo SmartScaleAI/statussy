@@ -218,6 +218,12 @@ Embrace), and Dash0 via `https://dash0status.com` (the public host
 component, and incident rows. On a failed fetch the worker keeps last-known rows
 and flags the latest snapshot `stale`.
 
+Snapshot retention (SMA-98): each tick also deletes `service_snapshots` rows
+older than **30 days** (each service's latest snapshot is always kept). The
+30-day window is **intentional** — it feeds upcoming history metrics/visuals —
+so do not shorten it without a product decision. Components and incidents are
+already bounded by upsert and are not pruned.
+
 ### Environment variables
 
 | Variable | Where | Purpose |
