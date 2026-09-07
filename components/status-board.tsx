@@ -22,7 +22,7 @@ function toSortFields(item: {
 }
 
 export async function StatusBoard() {
-  const { items } = await getStatusBoard()
+  const { items, refreshedAt } = await getStatusBoard()
 
   return (
     <FavoriteServicesProvider>
@@ -41,6 +41,7 @@ export async function StatusBoard() {
               ...toSortFields(item),
               category: item.category,
             }))}
+            refreshedAt={refreshedAt}
           >
             {items.map((service) => (
               <ServiceCard key={service.id} service={service} />

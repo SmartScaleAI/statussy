@@ -12,6 +12,7 @@
 import { Pool } from "pg"
 
 import type { ServiceStatus } from "@/data/services"
+import { BOARD_STALE_AFTER_MS } from "@/lib/board-freshness"
 import { resolveHealthChicklet, type HealthChicklet } from "@/lib/health"
 
 export { resolveHealthChicklet }
@@ -43,8 +44,12 @@ const LIVE_STATUSES: readonly LiveStatus[] = [
   "unknown",
 ]
 
-/** Worker cron runs every 5m — 3 missed ticks means the data is stale. */
-export const STALE_AFTER_MS = 15 * 60 * 1000
+/**
+ * Worker cron runs every 5m — 3 missed ticks means the data is stale.
+ * Shared with the board-level freshness signal (SMA-83) so per-card and
+ * board staleness never drift apart.
+ */
+export const STALE_AFTER_MS = BOARD_STALE_AFTER_MS
 
 type SnapshotRow = {
   service_id: string

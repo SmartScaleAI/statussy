@@ -66,6 +66,14 @@ export const getStatusBoard = cache(async function getStatusBoard() {
   )
 
   const liveCount = items.filter((item) => item.live).length
+  // Board freshness (SMA-83): the newest successful snapshot fetch across
+  // live services — "when did the worker last land board data?". Not page
+  // render time (which would never age) and not a worker tick that failed to
+  // write. It keeps aging when the worker/poller dies, which is exactly what
+  // the board-stale signal watches. Mock fallback uses the static mock stamp,
+  // so a board with no live data reads as stale — honest, since it isn't
+  // fresh. One healthy vendor fetch is enough to count as a board update;
+  // individual failing vendors stay flagged by their per-card Stale state.
   const refreshedAt = items
     .filter((item) => item.live)
     .map((item) => item.updatedAt)
