@@ -22,6 +22,7 @@ import type {
   MappedServiceState,
   ServiceStatus,
 } from "./statuspage.js"
+import type { TickDedupe } from "./tick-dedupe.js"
 
 /** Gemini on Agent Platform — the product id Statussy tracks as Google Gemini. */
 export const VERTEX_GEMINI_API_PRODUCT_ID = "Z0FZJAMvEB4j3NbCJs6B"
@@ -374,11 +375,30 @@ async function fetchJson<T>(url: string, options: FetchOptions): Promise<T> {
   return (await res.json()) as T
 }
 
+type GoogleCloudPayloads = { incidents: GoogleCloudIncident[]; products: GoogleCloudProduct[] }
+
+/**
+ * Fetch incidents.json (+ best-effort products.json) for one Cloud Status
+ * origin. Pass a `dedupe` (SMA-96) when several cards read the same origin —
+ * the Google Cloud and Gemini cards both read status.cloud.google.com — so
+ * the multi-MB payload is fetched once per tick and reused.
+ */
 async function fetchGoogleCloudPayloads(
   options: FetchOptions,
   origin: string = GOOGLE_CLOUD_STATUS_ORIGIN,
-): Promise<{ incidents: GoogleCloudIncident[]; products: GoogleCloudProduct[] }> {
+  dedupe?: TickDedupe,
+): Promise<GoogleCloudPayloads> {
   const root = origin.replace(/\/+$/, "")
+  if (dedupe) {
+    return dedupe.fetch(`google_cloud:${root}`, () => fetchGoogleCloudPayloadsDirect(root, options))
+  }
+  return fetchGoogleCloudPayloadsDirect(root, options)
+}
+
+async function fetchGoogleCloudPayloadsDirect(
+  root: string,
+  options: FetchOptions,
+): Promise<GoogleCloudPayloads> {
   const incidents = await fetchJson<unknown>(`${root}/incidents.json`, options)
   if (!Array.isArray(incidents)) {
     throw new Error(`Unexpected incidents.json payload from ${root}`)
@@ -401,8 +421,11 @@ async function fetchGoogleCloudPayloads(
  * payload so the caller can keep last-known rows and mark the snapshot stale.
  * products.json is optional (logged + skipped on failure).
  */
-export async function fetchGoogleCloudGeminiState(options: FetchOptions): Promise<MappedServiceState> {
-  const { incidents, products } = await fetchGoogleCloudPayloads(options)
+export async function fetchGoogleCloudGeminiState(
+  options: FetchOptions,
+  dedupe?: TickDedupe,
+): Promise<MappedServiceState> {
+  const { incidents, products } = await fetchGoogleCloudPayloads(options, GOOGLE_CLOUD_STATUS_ORIGIN, dedupe)
   return mapGoogleCloud(incidents, products, {
     pageUrl: GOOGLE_CLOUD_STATUS_ORIGIN,
     maxIncidents: options.maxIncidents,
@@ -412,8 +435,9 @@ export async function fetchGoogleCloudGeminiState(options: FetchOptions): Promis
 /** Fetch and map the platform-wide Google Cloud card (Cloud Wave A). */
 export async function fetchGoogleCloudPlatformState(
   options: FetchOptions,
+  dedupe?: TickDedupe,
 ): Promise<MappedServiceState> {
-  const { incidents, products } = await fetchGoogleCloudPayloads(options)
+  const { incidents, products } = await fetchGoogleCloudPayloads(options, GOOGLE_CLOUD_STATUS_ORIGIN, dedupe)
   return mapGoogleCloudPlatform(incidents, products, {
     pageUrl: GOOGLE_CLOUD_STATUS_ORIGIN,
     maxIncidents: options.maxIncidents,
@@ -421,8 +445,11 @@ export async function fetchGoogleCloudPlatformState(
 }
 
 /** Firebase Hosting / BaaS card — same Cloud Status JSON, Firebase origin. */
-export async function fetchFirebaseState(options: FetchOptions): Promise<MappedServiceState> {
-  const { incidents, products } = await fetchGoogleCloudPayloads(options, FIREBASE_STATUS_ORIGIN)
+export async function fetchFirebaseState(
+  options: FetchOptions,
+  dedupe?: TickDedupe,
+): Promise<MappedServiceState> {
+  const { incidents, products } = await fetchGoogleCloudPayloads(options, FIREBASE_STATUS_ORIGIN, dedupe)
   return mapGoogleCloudPlatform(incidents, products, {
     pageUrl: FIREBASE_STATUS_ORIGIN,
     maxIncidents: options.maxIncidents,
