@@ -2,7 +2,7 @@
  * Browser-only favorites for the board (SMA-37).
  *
  * Storage keeps insertion order (last-starred appended). `selectFavoriteServices`
- * still returns a stable id-ordered subset; My Services then applies the shared
+ * still returns a stable id-ordered subset; My Stack then applies the shared
  * board sort (SMA-40, `statussy:sortBy`).
  */
 

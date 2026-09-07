@@ -180,7 +180,7 @@ test("missing healthPct uses operational → 100, else 0", () => {
   )
 })
 
-test("My Services: favorite subset then the shared board sort", () => {
+test("My Stack: favorite subset then the shared board sort", () => {
   const pinned = selectFavoriteServices(mixed, [
     "openai",
     "deepseek",

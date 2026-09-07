@@ -53,7 +53,7 @@ export function MyServices({
           id="my-services-heading"
           className="font-heading text-lg font-semibold tracking-tight text-foreground"
         >
-          My Services
+          My Stack
         </h2>
         <StatusSummary
           operational={summary.operational}
