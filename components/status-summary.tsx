@@ -1,12 +1,15 @@
+import { BoardFreshness } from "@/components/board-freshness"
 import { Separator } from "@/components/ui/separator"
-import { formatTimestamp } from "@/lib/status"
 import { cn } from "@/lib/utils"
 
 type StatusSummaryProps = {
   operational: number
   issues: number
   total: number
-  /** Optional. The board clock lives in the site header (one clock). */
+  /**
+   * Optional. The one board-level freshness stamp (SMA-83) — only the
+   * All Services summary passes it, so the board has a single clock.
+   */
   refreshedAt?: string
 }
 
@@ -46,12 +49,7 @@ export function StatusSummary({
             </>
           )}
         </p>
-        {refreshedAt ? (
-          <p className="text-xs text-muted-foreground">
-            Refreshed{" "}
-            <time dateTime={refreshedAt}>{formatTimestamp(refreshedAt)}</time>
-          </p>
-        ) : null}
+        {refreshedAt ? <BoardFreshness refreshedAt={refreshedAt} /> : null}
       </div>
       <Separator />
     </div>

@@ -38,9 +38,12 @@ export type BoardGridItem = BoardFilterItem & BoardSortItem
 
 export function StatusBoardGrid({
   items,
+  refreshedAt,
   children,
 }: {
   items: BoardGridItem[]
+  /** Last successful board update — rendered as the board freshness stamp. */
+  refreshedAt: string
   children: ReactNode
 }) {
   const [query, setQuery] = useState("")
@@ -136,6 +139,7 @@ export function StatusBoardGrid({
           operational={summary.operational}
           issues={summary.issues}
           total={summary.total}
+          refreshedAt={refreshedAt}
         />
       </div>
       <div className="flex flex-col gap-6">

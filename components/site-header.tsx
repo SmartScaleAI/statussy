@@ -1,13 +1,12 @@
 import Link from "next/link"
 
 import { ModeToggle } from "@/components/mode-toggle"
-import { getStatusBoard } from "@/lib/status-board"
-import { formatTimestamp } from "@/lib/status"
 
-/** Shared page chrome: brand mark (links home) + refreshed clock + theme toggle. */
-export async function SiteHeader() {
-  const { refreshedAt } = await getStatusBoard()
-
+/**
+ * Shared page chrome: brand mark (links home) + theme toggle. The board
+ * freshness stamp lives with the All Services summary (SMA-83), not here.
+ */
+export function SiteHeader() {
   return (
     <header className="flex h-14 w-full items-center justify-between px-4 sm:h-16 sm:px-5">
       <Link
@@ -33,13 +32,7 @@ export async function SiteHeader() {
         />
         Statussy
       </Link>
-      <div className="flex items-center gap-3">
-        <p className="text-xs text-muted-foreground">
-          Refreshed{" "}
-          <time dateTime={refreshedAt}>{formatTimestamp(refreshedAt)}</time>
-        </p>
-        <ModeToggle />
-      </div>
+      <ModeToggle />
     </header>
   )
 }
