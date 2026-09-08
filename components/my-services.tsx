@@ -16,15 +16,15 @@ export type MyServiceItem = BoardSortItem & {
 
 function MyStackLoader() {
   return (
-    <div className="flex justify-center pt-1 pb-10">
+    <div className="flex justify-center pt-8 pb-10">
       {/* Decorative: sr-only text is the accessible name. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src="/brand/my-stack-loader.gif"
         alt=""
-        width={48}
-        height={48}
-        className="size-12"
+        width={32}
+        height={32}
+        className="size-8"
       />
       <span className="sr-only">Loading your stack</span>
     </div>
