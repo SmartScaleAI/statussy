@@ -1,3 +1,8 @@
+export type ResendMailConfig = {
+  apiKey: string
+  from: string
+}
+
 export type Config = {
   databaseUrl: string
   refreshIntervalSeconds: number
@@ -8,6 +13,10 @@ export type Config = {
   fetchConcurrency: number
   /** Random 0..N ms delay before each fetch starts, to smooth bursts. */
   fetchJitterMs: number
+  /** Optional. Worker skip-sends digests when unset (SMA-115). */
+  resend: ResendMailConfig | null
+  /** Public board origin used in digest links. */
+  publicSiteUrl: string
 }
 
 const DEFAULT_REFRESH_INTERVAL_SECONDS = 300
@@ -82,5 +91,21 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
     fetchUserAgent,
     fetchConcurrency,
     fetchJitterMs,
+    resend: resolveResendConfig(env),
+    publicSiteUrl: resolvePublicSiteUrl(env),
   }
+}
+
+function resolveResendConfig(env: NodeJS.ProcessEnv): ResendMailConfig | null {
+  const apiKey = env.RESEND_API_KEY?.trim() ?? ""
+  const from = (env.RESEND_FROM ?? env.RESEND_FROM_EMAIL)?.trim() ?? ""
+  if (!apiKey || !from) {
+    return null
+  }
+  return { apiKey, from }
+}
+
+function resolvePublicSiteUrl(env: NodeJS.ProcessEnv): string {
+  const raw = (env.STATUSSY_URL ?? env.BETTER_AUTH_URL ?? "https://www.statussy.com").trim()
+  return raw.replace(/\/$/, "") || "https://www.statussy.com"
 }

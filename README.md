@@ -224,6 +224,13 @@ older than **30 days** (each service's latest snapshot is always kept). The
 so do not shorten it without a product decision. Components and incidents are
 already bounded by upsert and are not pruned.
 
+After the poll settles, the worker sends **opt-in My Stack email digests**
+(SMA-115): users who enabled the settings toggle get **one** Resend email
+when a starred service newly enters Major or Partial. Recoveries, still-bad,
+and Degraded-only are skipped. The same snapshot set is idempotent
+(`digest_sends`). Missing Resend env on the worker skips sends; the tick
+still succeeds.
+
 ### Environment variables
 
 | Variable | Where | Purpose |
@@ -231,8 +238,9 @@ already bounded by upsert and are not pruned.
 | `DATABASE_URL` | Railway (worker, read/write) and Vercel (Next.js app) | Postgres connection string. The app reads live status and inserts footer **Suggest a Service** rows into `service_suggestions` (it does not write the `services` catalog). On Railway, reference the Postgres service (`${{Postgres.DATABASE_URL}}`, private network). On Vercel, use the Railway Postgres **`DATABASE_PUBLIC_URL`** — see [Point Vercel at Railway Postgres](#point-vercel-at-railway-postgres). Also used by Better Auth (SMA-103) for `user` / `session` / `account` / `verification`. |
 | `BETTER_AUTH_SECRET` | Vercel (Next.js app) | Better Auth signing secret. At least 32 characters (`openssl rand -base64 32`). Required for login. |
 | `BETTER_AUTH_URL` | Vercel (Next.js app) | Public site origin Better Auth uses for callbacks. Production users land on **www** (`https://www.statussy.com`, no trailing slash). Apex (`https://statussy.com`) 308s to www. |
-| `RESEND_API_KEY` | Vercel (Next.js app) | Resend API key for magic-link email. Required for `POST /api/auth/sign-in/magic-link`. |
-| `RESEND_FROM` | Vercel (Next.js app) | Verified Resend from address, e.g. `Statussy <noreply@statussy.com>`. `RESEND_FROM_EMAIL` is accepted as an alias. |
+| `RESEND_API_KEY` | Vercel (Next.js app) and Railway (worker) | Resend API key. App: magic-link email (`POST /api/auth/sign-in/magic-link`). Worker: opt-in My Stack digests (SMA-115). Missing on the worker skips digest sends; the tick still succeeds. |
+| `RESEND_FROM` | Vercel (Next.js app) and Railway (worker) | Verified Resend from address, e.g. `Statussy <noreply@statussy.com>`. `RESEND_FROM_EMAIL` is accepted as an alias. |
+| `STATUSSY_URL` | Railway (worker) | Public board origin used in digest links, e.g. `https://www.statussy.com` (no trailing slash). Optional; falls back to `BETTER_AUTH_URL`, then `https://www.statussy.com`. |
 | `GOOGLE_CLIENT_ID` | Vercel (Next.js app) | Google OAuth client ID. Authorized redirect: `{BETTER_AUTH_URL}/api/auth/callback/google`. |
 | `GOOGLE_CLIENT_SECRET` | Vercel (Next.js app) | Google OAuth client secret. |
 | `GITHUB_CLIENT_ID` | Vercel (Next.js app) | GitHub OAuth app client ID. Callback: `{BETTER_AUTH_URL}/api/auth/callback/github`. |
@@ -271,6 +279,8 @@ environment (Preview is not enough for `www.statussy.com`), then redeploy:
    boot. Confirm Railway worker logs: `[migrate] applied: 0007_better_auth.sql`
    (or “no pending migrations” after the first apply). `0008_user_favorites.sql`
    FKs to `"user"`, so a successful SMA-104 deploy implies 0007 ran.
+   `0009_user_digest_prefs.sql` adds opt-in digest prefs + the send ledger
+   (SMA-115); same CASCADE on account delete.
 
 Missing Resend env now returns **400** with
 `Email sign-in is not configured. Set RESEND_API_KEY and/or RESEND_FROM…`

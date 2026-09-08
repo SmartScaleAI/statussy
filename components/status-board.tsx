@@ -1,5 +1,6 @@
 import { Suspense } from "react"
 
+import { DigestOptInBanner } from "@/components/digest-opt-in-banner"
 import { FavoriteServicesProvider } from "@/components/favorite-services"
 import { MyServices } from "@/components/my-services"
 import { ServiceCard } from "@/components/service-card"
@@ -29,6 +30,7 @@ export async function StatusBoard() {
   return (
     <FavoriteServicesProvider>
       <div className="course-design-board flex flex-col gap-8">
+        <DigestOptInBanner />
         <MyServices items={items.map((item) => toSortFields(item))}>
           {items.map((service) => (
             <ServiceCard key={service.id} service={service} />
