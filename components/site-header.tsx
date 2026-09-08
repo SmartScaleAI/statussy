@@ -1,10 +1,11 @@
 import Link from "next/link"
 
+import { AuthControls } from "@/components/auth-controls"
 import { ModeToggle } from "@/components/mode-toggle"
 
 /**
- * Shared page chrome: brand mark (links home) + theme toggle. The board
- * freshness stamp lives with the All Services summary (SMA-83), not here.
+ * Shared page chrome: brand mark (links home) + theme toggle + login.
+ * The board freshness stamp lives with the All Services summary (SMA-83).
  */
 export function SiteHeader() {
   return (
@@ -32,7 +33,10 @@ export function SiteHeader() {
         />
         Statussy
       </Link>
-      <ModeToggle />
+      <div className="flex items-center gap-2">
+        <ModeToggle />
+        <AuthControls />
+      </div>
     </header>
   )
 }

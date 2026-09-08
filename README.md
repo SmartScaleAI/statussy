@@ -23,7 +23,8 @@ npm run build
 
 Live-data foundation for the board: a Railway Postgres database plus a small Node
 worker in [`worker/`](worker/). The worker owns the schema (`services`,
-`service_snapshots`, `components`, `incidents`, `service_suggestions`), seeds the 450 board services,
+`service_snapshots`, `components`, `incidents`, `service_suggestions`, plus Better Auth
+`user` / `session` / `account` / `verification`), seeds the 450 board services,
 and ticks on a configurable interval (default every 5 minutes). Each tick fetches
 live status for services with a fetcher — OpenAI, Anthropic, Groq, Cohere,
 Fireworks, Cerebras, Replicate, Runway, Ideogram, Stability, ElevenLabs,
@@ -228,7 +229,13 @@ already bounded by upsert and are not pruned.
 
 | Variable | Where | Purpose |
 | --- | --- | --- |
-| `DATABASE_URL` | Railway (worker, read/write) and Vercel (Next.js app) | Postgres connection string. The app reads live status and inserts footer **Suggest a Service** rows into `service_suggestions` (it does not write the `services` catalog). On Railway, reference the Postgres service (`${{Postgres.DATABASE_URL}}`, private network). On Vercel, use the Railway Postgres **`DATABASE_PUBLIC_URL`** — see [Point Vercel at Railway Postgres](#point-vercel-at-railway-postgres). |
+| `DATABASE_URL` | Railway (worker, read/write) and Vercel (Next.js app) | Postgres connection string. The app reads live status, inserts footer **Suggest a Service** rows into `service_suggestions`, and stores Better Auth users/sessions (it does not write the `services` catalog). On Railway, reference the Postgres service (`${{Postgres.DATABASE_URL}}`, private network). On Vercel, use the Railway Postgres **`DATABASE_PUBLIC_URL`** — see [Point Vercel at Railway Postgres](#point-vercel-at-railway-postgres). |
+| `BETTER_AUTH_SECRET` | Vercel (Next.js app) | Better Auth signing secret (at least 32 characters, e.g. `openssl rand -base64 32`). Required for login. Never commit this value. |
+| `BETTER_AUTH_URL` | Vercel (Next.js app) | Public origin Better Auth uses for OAuth/magic-link callbacks, e.g. `https://statussy.com` (or `http://localhost:3000` locally). Callback URLs are `{BETTER_AUTH_URL}/api/auth/callback/google` and `/api/auth/callback/github`. |
+| `RESEND_API_KEY` | Vercel (Next.js app) | Resend API key used to send email magic links. |
+| `RESEND_FROM_EMAIL` | Vercel (Next.js app) | Verified Resend from address. Optional; defaults to `Statussy <noreply@statussy.com>`. |
+| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Vercel (Next.js app) | Google OAuth Web client. Authorized redirect: `{BETTER_AUTH_URL}/api/auth/callback/google`. |
+| `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET` | Vercel (Next.js app) | GitHub OAuth app. Authorization callback: `{BETTER_AUTH_URL}/api/auth/callback/github`. Include `user:email` (OAuth app) or Email addresses: Read-only (GitHub App). |
 | `SLACK_WEBHOOK_URL` | Vercel (Next.js app) | Incoming webhook targeting `_alerts`. Posted after each successful suggestion insert (name, email if present, timestamp). Optional locally — a missing webhook logs a warning and still stores the row. |
 | `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` | Vercel (Next.js app) | PostHog project token for Web analytics (autocapture + pageviews). Optional locally — a missing token skips init. `NEXT_PUBLIC_POSTHOG_KEY` is accepted as an alias. Do not commit the token. |
 | `NEXT_PUBLIC_POSTHOG_HOST` | Vercel (Next.js app) | PostHog ingestion host, e.g. `https://us.i.posthog.com` (US Cloud) or `https://eu.i.posthog.com` (EU). Optional; the SDK defaults to US Cloud. |
