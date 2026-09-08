@@ -51,7 +51,7 @@ export function MyServices({
       <div className="flex flex-col gap-3">
         <h2
           id="my-services-heading"
-          className="font-heading text-lg font-semibold tracking-tight text-foreground"
+          className="font-heading text-lg font-semibold tracking-tight text-foreground md:text-xl"
         >
           My Stack
         </h2>
