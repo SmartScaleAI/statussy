@@ -218,6 +218,12 @@ Embrace), and Dash0 via `https://dash0status.com` (the public host
 component, and incident rows. On a failed fetch the worker keeps last-known rows
 and flags the latest snapshot `stale`.
 
+Snapshot retention (SMA-98): each tick also deletes `service_snapshots` rows
+older than **30 days** (each service's latest snapshot is always kept). The
+30-day window is **intentional** — it feeds upcoming history metrics/visuals —
+so do not shorten it without a product decision. Components and incidents are
+already bounded by upsert and are not pruned.
+
 ### Environment variables
 
 | Variable | Where | Purpose |
@@ -294,11 +300,30 @@ silently rendering mock data.
 
 ## Board data: live + mock fallback
 
-[`getStatusBoard()`](lib/status.ts) is the only read path the UI uses. On each
-request it reads the latest `service_snapshots` row per service from Postgres
+[`getStatusBoard()`](lib/status.ts) is the only read path the UI uses. It
+reads the latest `service_snapshots` row per service from Postgres
 (server-side only, via `DATABASE_URL` — see
 [`lib/live-status.ts`](lib/live-status.ts)) and merges it over the mock
 registry in [`data/services.ts`](data/services.ts).
+
+### Page cache (60s ISR)
+
+The board (`/`, `/services`) and detail pages (`/services/[id]`) export
+`revalidate = 60` (SMA-97): Vercel serves them from the Next.js page cache and
+re-renders each route at most once a minute, so repeated hits (including bots)
+don't each cost a function invocation plus a Postgres round trip over the
+public proxy. The worker only writes every 5 minutes, so a view that is up to
+60s older than an uncached render stays well inside the freshness floor; the
+freshness stamp and Stale badges are computed from snapshot timestamps in the
+DB, not from render time, so their semantics are unchanged.
+
+Client-side features are unaffected by the cache because they never render on
+the server: My Stack favorites and the sort order live in `localStorage`,
+theme switching is `next-themes` on the client, and the `?category=` filter
+(SMA-89) is read with `useSearchParams` inside client components. The cached
+shell can't know the query string, so the All Services grid and the detail
+page's Back link hydrate behind `<Suspense>` boundaries and apply the filter
+on the client — one shared cached page serves every `?category=` variant.
 
 Fallback policy (SMA-18):
 

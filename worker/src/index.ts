@@ -219,6 +219,8 @@ import {
 import {
   markServiceStale,
   persistServiceState,
+  pruneOldSnapshots,
+  SNAPSHOT_RETENTION_DAYS,
   type PersistableServiceState,
   type PersistOptions,
 } from "./store.js"
@@ -1516,6 +1518,17 @@ async function runTick(): Promise<void> {
       },
     )
     const okCount = results.filter(Boolean).length
+    // SMA-98: retention prune. A failed prune must not fail the tick.
+    try {
+      const pruned = await pruneOldSnapshots(pool)
+      if (pruned > 0) {
+        console.log(
+          `[prune] removed ${pruned} snapshots older than ${SNAPSHOT_RETENTION_DAYS}d`,
+        )
+      }
+    } catch (err) {
+      console.error(`[prune] failed: ${(err as Error).message}`)
+    }
     const conditional = drainConditionalFetchStats()
     state.lastTickAt = new Date()
     state.lastTickOk = okCount === results.length

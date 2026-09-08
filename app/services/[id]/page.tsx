@@ -1,19 +1,16 @@
-import { ArrowLeftIcon, ArrowUpRightIcon } from "lucide-react"
+import { ArrowUpRightIcon } from "lucide-react"
 import type { Metadata } from "next"
-import Link from "next/link"
 import { notFound } from "next/navigation"
-import { connection } from "next/server"
+import { Suspense } from "react"
 
+import {
+  BackToBoardLink,
+  BackToBoardLinkFallback,
+} from "@/components/board-back-link"
 import { SiteFooter } from "@/components/site-footer"
 import { SiteHeader } from "@/components/site-header"
 import { buttonVariants } from "@/components/ui/button"
-import {
-  boardHref,
-  CATEGORY_PARAM,
-  distinctCategories,
-  parseCategoryParam,
-} from "@/lib/board-filter"
-import { chicletHoverClass } from "@/lib/chiclet"
+import { distinctCategories } from "@/lib/board-filter"
 import { services } from "@/data/services"
 import {
   getServiceLiveDetail,
@@ -27,7 +24,24 @@ import { cn } from "@/lib/utils"
 
 type PageProps = {
   params: Promise<{ id: string }>
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}
+
+/**
+ * ISR (SMA-97): serve detail pages from the Vercel/Next page cache and
+ * re-render each at most every 60s — same window and rationale as the board
+ * (`app/page.tsx`). Must stay a literal for static analysis.
+ */
+export const revalidate = 60
+
+/**
+ * Empty on purpose: with ~450 registry services (3 DB queries each), build
+ * would hammer Postgres prerendering pages nobody visits. An empty array
+ * keeps the route on the static/ISR path (without it Next renders the route
+ * dynamically on every hit), and each page renders on first visit, then
+ * stays cached for the 60s window.
+ */
+export function generateStaticParams(): Array<{ id: string }> {
+  return []
 }
 
 /** Geist accents by severity — matches the board card palette. */
@@ -142,10 +156,7 @@ export async function generateMetadata({
   }
 }
 
-export default async function ServiceDetailPage({
-  params,
-  searchParams,
-}: PageProps) {
+export default async function ServiceDetailPage({ params }: PageProps) {
   const { id } = await params
   // Registry of known services — same source as the board grid.
   const service = services.find((entry) => entry.id === id)
@@ -153,16 +164,10 @@ export default async function ServiceDetailPage({
     notFound()
   }
 
-  // Back restores the board category the user filtered by (SMA-89). Unknown
-  // or missing slugs validate down to All, i.e. the bare board URL.
-  const backCategory = parseCategoryParam(
-    (await searchParams)[CATEGORY_PARAM],
-    distinctCategories(services)
-  )
-  const backHref = boardHref(backCategory)
-
-  // Status must reflect the DB at request time, never a build-time prerender.
-  await connection()
+  // No `connection()` gate (SMA-97): the route is ISR-cached (see
+  // `revalidate` above), so this DB read runs at most ~once a minute per
+  // service. Timestamps and the Stale badge come from the snapshot itself,
+  // so a ≤60s-old cached view keeps honest, DB-driven freshness.
   const detail = await getServiceLiveDetail(id)
   const snapshot = detail?.snapshot ?? null
 
@@ -183,21 +188,14 @@ export default async function ServiceDetailPage({
         {/* Both controls are shrink-0 via buttonVariants, so the row never
             wraps Official status under Back on narrow viewports. */}
         <div className="flex items-center justify-between gap-3">
-          <Link
-            href={backHref}
-            aria-label="Back to all services"
-            className={cn(
-              buttonVariants({ variant: "ghost", size: "default" }),
-              chicletHoverClass,
-              // SMA-88: keep the selected-chip fill, but use the thin gray
-              // card border (border-border) instead of the heavier
-              // selected-category border from the board filter.
-              "border-border bg-[var(--bg-footer)] text-foreground"
-            )}
-          >
-            <ArrowLeftIcon data-icon="inline-start" aria-hidden="true" />
-            Back
-          </Link>
+          {/* Back restores the board category filter (SMA-89). The category
+              is read from the URL on the client so the cached page (SMA-97)
+              stays shared across ?category= variants; the fallback is the
+              same chip pointing at the bare board. Arrow lives on the
+              client chip (SMA-94) so the cached shell and hydrated link match. */}
+          <Suspense fallback={<BackToBoardLinkFallback />}>
+            <BackToBoardLink categories={distinctCategories(services)} />
+          </Suspense>
           <a
             href={service.statusUrl}
             target="_blank"

@@ -18,11 +18,12 @@ const TICK_MS = 30_000
  * Stale (worker/poller dead or aged data) = a loud "Updates delayed" chip.
  *
  * SSR + hydrate: the server prerenders the label from its own clock and the
- * client re-computes every `TICK_MS` after mount. The two clocks can
- * disagree by a minute bucket, so the label carries
- * `suppressHydrationWarning`; the fresh/stale branch only flips if the
- * 15-minute threshold is crossed in the seconds between prerender and
- * hydration, which React recovers from with a client render.
+ * client re-computes every `TICK_MS` after mount. With the 60s board cache
+ * (SMA-97) the prerender can be up to a minute older than the view, so the
+ * clocks can disagree by a minute bucket or two; the label carries
+ * `suppressHydrationWarning`. The fresh/stale branch only flips if the
+ * 15-minute threshold is crossed between prerender and hydration (now at
+ * most ~60s apart), which React recovers from with a client render.
  */
 export function BoardFreshness({ refreshedAt }: { refreshedAt: string }) {
   const [now, setNow] = useState(() => Date.now())
