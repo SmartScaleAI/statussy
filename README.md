@@ -224,6 +224,8 @@ and flags the latest snapshot `stale`.
 | --- | --- | --- |
 | `DATABASE_URL` | Railway (worker, read/write) and Vercel (Next.js app) | Postgres connection string. The app reads live status and inserts footer **Suggest a Service** rows into `service_suggestions` (it does not write the `services` catalog). On Railway, reference the Postgres service (`${{Postgres.DATABASE_URL}}`, private network). On Vercel, use the Railway Postgres **`DATABASE_PUBLIC_URL`** — see [Point Vercel at Railway Postgres](#point-vercel-at-railway-postgres). |
 | `SLACK_WEBHOOK_URL` | Vercel (Next.js app) | Incoming webhook targeting `_alerts`. Posted after each successful suggestion insert (name, email if present, timestamp). Optional locally — a missing webhook logs a warning and still stores the row. |
+| `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` | Vercel (Next.js app) | PostHog project token for Web analytics (autocapture + pageviews). Optional locally — a missing token skips init. `NEXT_PUBLIC_POSTHOG_KEY` is accepted as an alias. Do not commit the token. |
+| `NEXT_PUBLIC_POSTHOG_HOST` | Vercel (Next.js app) | PostHog ingestion host, e.g. `https://us.i.posthog.com` (US Cloud) or `https://eu.i.posthog.com` (EU). Optional; the SDK defaults to US Cloud. |
 | `REFRESH_INTERVAL_SECONDS` | Railway (worker) | Seconds between cron ticks. Optional, defaults to `300` (5 minutes). |
 | `PORT` | Railway (worker) | Injected by Railway; the health endpoint listens on it (defaults to `8080` locally). |
 | `FETCH_TIMEOUT_MS` | Railway (worker) | Per-request timeout for service status fetches. Optional, defaults to `10000`. |
