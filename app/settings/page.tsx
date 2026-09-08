@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { connection } from "next/server"
 import { redirect } from "next/navigation"
 
+import { BackToBoard } from "@/components/board-back-link"
 import { SettingsForm } from "@/components/settings-form"
 import { SiteFooter } from "@/components/site-footer"
 import { SiteHeader } from "@/components/site-header"
@@ -34,6 +35,8 @@ export default async function SettingsPage() {
       <SiteHeader />
       <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-8 px-6 py-8 sm:py-12">
         <header className="flex flex-col gap-2">
+          {/* SMA-116: same Back chiclet as service detail, always `/`. */}
+          <BackToBoard />
           <h1 className="font-heading text-2xl font-semibold tracking-tight text-foreground">
             Settings
           </h1>
