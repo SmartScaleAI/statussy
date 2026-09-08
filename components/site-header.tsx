@@ -5,7 +5,7 @@ import { ModeToggle } from "@/components/mode-toggle"
 
 /**
  * Shared page chrome: brand mark (links home) + theme toggle + auth.
- * Login sits immediately right of the theme toggle (SMA-103).
+ * Sign In sits immediately right of the theme toggle (SMA-103 / SMA-106).
  * The board freshness stamp lives with the All Services summary (SMA-83).
  */
 export function SiteHeader() {

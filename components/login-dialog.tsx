@@ -127,7 +127,7 @@ export function LoginDialog({
           "max-md:top-0 max-md:left-0 max-md:flex max-md:h-svh max-md:max-h-svh max-md:w-full max-md:max-w-none max-md:translate-x-0 max-md:translate-y-0 max-md:flex-col max-md:justify-center max-md:rounded-none max-md:ring-0"
         )}
       >
-        <DialogHeader className="text-center">
+        <DialogHeader className="text-left">
           <DialogTitle>
             {favorites ? "Sign in to save your stack" : "Sign in"}
           </DialogTitle>
