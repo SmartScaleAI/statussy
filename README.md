@@ -230,9 +230,9 @@ already bounded by upsert and are not pruned.
 | --- | --- | --- |
 | `DATABASE_URL` | Railway (worker, read/write) and Vercel (Next.js app) | Postgres connection string. The app reads live status and inserts footer **Suggest a Service** rows into `service_suggestions` (it does not write the `services` catalog). On Railway, reference the Postgres service (`${{Postgres.DATABASE_URL}}`, private network). On Vercel, use the Railway Postgres **`DATABASE_PUBLIC_URL`** — see [Point Vercel at Railway Postgres](#point-vercel-at-railway-postgres). Also used by Better Auth (SMA-103) for `user` / `session` / `account` / `verification`. |
 | `BETTER_AUTH_SECRET` | Vercel (Next.js app) | Better Auth signing secret. At least 32 characters (`openssl rand -base64 32`). Required for login. |
-| `BETTER_AUTH_URL` | Vercel (Next.js app) | Public site origin Better Auth uses for callbacks, e.g. `https://statussy.com` (no trailing slash). |
-| `RESEND_API_KEY` | Vercel (Next.js app) | Resend API key for magic-link email. |
-| `RESEND_FROM` | Vercel (Next.js app) | Verified Resend from address, e.g. `Statussy <noreply@statussy.com>`. |
+| `BETTER_AUTH_URL` | Vercel (Next.js app) | Public site origin Better Auth uses for callbacks. Production users land on **www** (`https://www.statussy.com`, no trailing slash). Apex (`https://statussy.com`) 308s to www. |
+| `RESEND_API_KEY` | Vercel (Next.js app) | Resend API key for magic-link email. Required for `POST /api/auth/sign-in/magic-link`. |
+| `RESEND_FROM` | Vercel (Next.js app) | Verified Resend from address, e.g. `Statussy <noreply@statussy.com>`. `RESEND_FROM_EMAIL` is accepted as an alias. |
 | `GOOGLE_CLIENT_ID` | Vercel (Next.js app) | Google OAuth client ID. Authorized redirect: `{BETTER_AUTH_URL}/api/auth/callback/google`. |
 | `GOOGLE_CLIENT_SECRET` | Vercel (Next.js app) | Google OAuth client secret. |
 | `GITHUB_CLIENT_ID` | Vercel (Next.js app) | GitHub OAuth app client ID. Callback: `{BETTER_AUTH_URL}/api/auth/callback/github`. |
@@ -246,6 +246,37 @@ already bounded by upsert and are not pruned.
 | `FETCH_USER_AGENT` | Railway (worker) | User-Agent header sent to service status APIs. Optional, defaults to `statussy-worker/0.1 (+https://github.com/SmartScaleAI/statussy)`. The Checkly/Nuxt fetcher (Mistral + Checkly) always sends a browser-like Chrome UA instead (Cloudflare in front of those pages often challenges bot UAs). |
 
 Login is a header dialog (SMA-103), not a `/login` page. Signed-out users get **Login** to the right of the theme toggle (magic link via Resend, Google, GitHub). A signed-out star opens the same dialog with “Sign in to save your stack” and does not write local favorites. Auth tables are created by worker migration `0007_better_auth.sql`. Server code can read the session with `getAuthSession()` in `lib/auth-session.ts`.
+
+#### Magic-link production checklist (SMA-110)
+
+`POST /api/auth/sign-in/magic-link` throws if Resend is unset (that was a
+bare **500** with an empty body). Set these on the **Vercel Production**
+environment (Preview is not enough for `www.statussy.com`), then redeploy:
+
+1. **`RESEND_API_KEY`** — API key from [Resend](https://resend.com/api-keys).
+2. **`RESEND_FROM`** — a **verified** from address. Fastest test path (sends
+   only to the Resend account email): `Statussy <beth.t@example.com>`.
+   For any recipient: add and verify the `statussy.com` domain in Resend,
+   then use `Statussy <noreply@statussy.com>` (or another address on that
+   domain). `RESEND_FROM_EMAIL` is read as an alias if `RESEND_FROM` is empty.
+3. **`BETTER_AUTH_SECRET`** — ≥32 chars (`openssl rand -base64 32`). Google
+   OAuth already works on prod, so this is likely already set.
+4. **`BETTER_AUTH_URL`** — match the host users hit:
+   `https://www.statussy.com` (no trailing slash). If you change this from
+   the apex value, add the www callbacks on Google/GitHub:
+   `{BETTER_AUTH_URL}/api/auth/callback/google` and
+   `{BETTER_AUTH_URL}/api/auth/callback/github`.
+5. **Auth tables** — worker migration `0007_better_auth.sql` (`user`,
+   `session`, `account`, `verification`). Applied automatically on worker
+   boot. Confirm Railway worker logs: `[migrate] applied: 0007_better_auth.sql`
+   (or “no pending migrations” after the first apply). `0008_user_favorites.sql`
+   FKs to `"user"`, so a successful SMA-104 deploy implies 0007 ran.
+
+Missing Resend env now returns **400** with
+`Email sign-in is not configured. Set RESEND_API_KEY and/or RESEND_FROM…`
+instead of an empty 500. An unverified `RESEND_FROM` domain returns the
+Resend error plus a “verify the RESEND_FROM domain” hint. Check Vercel
+function logs for `[statussy] magic-link` / `[statussy] Resend` / `[statussy] better-auth`.
 
 ### Run the worker locally
 
