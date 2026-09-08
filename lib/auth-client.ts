@@ -5,6 +5,8 @@ export const authClient = createAuthClient({
   plugins: [magicLinkClient()],
 })
 
+export { SIGN_IN_QUERY } from "@/lib/sign-in-methods"
+
 /** Path + query to return to after OAuth / magic-link (stay on this board). */
 export function currentCallbackPath(): string {
   const { pathname, search } = window.location

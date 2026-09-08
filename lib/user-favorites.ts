@@ -101,3 +101,20 @@ export async function toggleUserFavorite(
   client.release()
   return listUserFavoriteIds(userId)
 }
+
+/** Best-effort cleanup before account delete (SMA-108). CASCADE also applies. */
+export async function deleteUserFavorites(userId: string): Promise<void> {
+  const { describeDatabaseTarget, getDatabasePool } = await import("./db.ts")
+  const pool = getDatabasePool()
+  if (!pool) {
+    return
+  }
+  try {
+    await pool.query(`DELETE FROM user_favorites WHERE user_id = $1`, [userId])
+  } catch (err) {
+    console.error(
+      `[statussy] delete user favorites failed (db=${describeDatabaseTarget()})`,
+      err
+    )
+  }
+}
