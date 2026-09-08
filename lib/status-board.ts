@@ -1,5 +1,4 @@
 import { cache } from "react"
-import { connection } from "next/server"
 
 import { LAST_REFRESHED_AT, services, type Service } from "@/data/services"
 import { describeChicklet, type ChickletDisplay } from "@/lib/health"
@@ -29,8 +28,13 @@ function withScopeNote(
 }
 
 export const getStatusBoard = cache(async function getStatusBoard() {
-  // Status must reflect the DB at request time, never a build-time prerender.
-  await connection()
+  // No `connection()` gate here (SMA-97): the board route is ISR-cached with
+  // `revalidate = 60` (see `app/page.tsx`), so this render — including the
+  // Postgres read — runs at most ~once a minute instead of on every hit.
+  // A build-time prerender is fine now: it can be at most 60s older than an
+  // uncached render, well inside the 5m worker cadence. The freshness stamp
+  // stays DB-driven (`refreshedAt` below), so the Stale badge semantics are
+  // unchanged.
   const snapshots = await getLiveSnapshots()
 
   const items = sortServices(

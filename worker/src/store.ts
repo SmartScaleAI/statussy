@@ -156,6 +156,35 @@ export async function persistServiceState(
 }
 
 /**
+ * SMA-98: snapshot retention window. 30 days is INTENTIONAL — Colin wants a
+ * full 30-day history for upcoming history metrics/visuals. Do not shorten
+ * without a product decision.
+ */
+export const SNAPSHOT_RETENTION_DAYS = 30
+
+/**
+ * Delete snapshots older than the retention window to bound DB growth
+ * (~450 inserts/tick with no retention, per SMA-95). Runs once per worker
+ * tick. Each service's latest snapshot is always kept, even if it has aged
+ * past the window (e.g. a retired fetcher), so the board's
+ * latest-snapshot-per-service query never loses a row it displays.
+ * Returns the number of rows deleted.
+ */
+export async function pruneOldSnapshots(pool: pg.Pool): Promise<number> {
+  const { rowCount } = await pool.query(
+    `DELETE FROM service_snapshots
+     WHERE fetched_at < now() - make_interval(days => $1)
+       AND id NOT IN (
+         SELECT DISTINCT ON (service_id) id
+         FROM service_snapshots
+         ORDER BY service_id, fetched_at DESC, id DESC
+       )`,
+    [SNAPSHOT_RETENTION_DAYS],
+  )
+  return rowCount ?? 0
+}
+
+/**
  * On fetch failure: keep all last-known rows untouched and flag the
  * service's latest snapshot as stale. If the service has no snapshot
  * yet, record an 'unknown' stale snapshot so the board shows something.
