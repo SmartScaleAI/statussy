@@ -74,24 +74,48 @@ async function sendMagicLinkEmail({
   }
 }
 
+/** Better Auth throws in production if it falls back to its built-in default. */
+const BUILD_PLACEHOLDER_SECRET = "statussy-build-placeholder-secret-32ch!!"
+
+function resolveAuthSecret(): string {
+  const secret = process.env.BETTER_AUTH_SECRET
+  if (secret) {
+    return secret
+  }
+  if (process.env.NODE_ENV === "production" && !process.env.NEXT_PHASE) {
+    console.error(
+      "[statussy] BETTER_AUTH_SECRET is unset. Set it before enabling login."
+    )
+  }
+  return BUILD_PLACEHOLDER_SECRET
+}
+
 export const auth = betterAuth({
   appName: "Statussy",
   baseURL: process.env.BETTER_AUTH_URL ?? "http://localhost:3000",
-  secret: process.env.BETTER_AUTH_SECRET,
+  secret: resolveAuthSecret(),
   database: authDatabase(),
   trustedOrigins: authTrustedOrigins(),
   emailAndPassword: {
     enabled: false,
   },
   socialProviders: {
-    google: {
-      clientId: process.env.GOOGLE_CLIENT_ID ?? "",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
-    },
-    github: {
-      clientId: process.env.GITHUB_CLIENT_ID ?? "",
-      clientSecret: process.env.GITHUB_CLIENT_SECRET ?? "",
-    },
+    ...(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
+      ? {
+          google: {
+            clientId: process.env.GOOGLE_CLIENT_ID,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+          },
+        }
+      : {}),
+    ...(process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET
+      ? {
+          github: {
+            clientId: process.env.GITHUB_CLIENT_ID,
+            clientSecret: process.env.GITHUB_CLIENT_SECRET,
+          },
+        }
+      : {}),
   },
   account: {
     accountLinking: {
