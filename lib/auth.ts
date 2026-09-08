@@ -1,10 +1,16 @@
 import { betterAuth } from "better-auth"
+import { APIError } from "better-auth/api"
 import { magicLink } from "better-auth/plugins"
 import { nextCookies } from "better-auth/next-js"
 import { Resend } from "resend"
 
 import { getDatabasePool } from "@/lib/db"
 import { resolveSsl } from "@/lib/live-status"
+import {
+  resendConfigErrorMessage,
+  resendDeliveryErrorMessage,
+  resolveResendConfig,
+} from "@/lib/magic-link-email"
 import { Pool } from "pg"
 
 /**
@@ -13,8 +19,8 @@ import { Pool } from "pg"
  * `worker/migrations/0007_better_auth.sql`).
  *
  * Env (never commit values): BETTER_AUTH_SECRET, BETTER_AUTH_URL,
- * RESEND_API_KEY, RESEND_FROM, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET,
- * GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET.
+ * RESEND_API_KEY, RESEND_FROM (RESEND_FROM_EMAIL alias), GOOGLE_CLIENT_ID,
+ * GOOGLE_CLIENT_SECRET, GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET.
  */
 
 function authDatabase(): Pool {
@@ -56,21 +62,28 @@ async function sendMagicLinkEmail({
   email: string
   url: string
 }) {
-  const apiKey = process.env.RESEND_API_KEY
-  const from = process.env.RESEND_FROM
-  if (!apiKey || !from) {
-    throw new Error("Resend is not configured (RESEND_API_KEY / RESEND_FROM)")
+  const config = resolveResendConfig()
+  if (!config.ok) {
+    console.error(
+      `[statussy] magic-link email skipped; missing ${config.missing.join(", ")}`
+    )
+    throw new APIError("BAD_REQUEST", {
+      message: resendConfigErrorMessage(config.missing),
+    })
   }
-  const resend = new Resend(apiKey)
+  const resend = new Resend(config.apiKey)
   const { error } = await resend.emails.send({
-    from,
+    from: config.from,
     to: email,
     subject: "Sign in to Statussy",
     text: `Sign in to Statussy with this link:\n\n${url}\n\nIf you did not request this, you can ignore this email.`,
     html: `<p>Sign in to Statussy with this link:</p><p><a href="${url}">${url}</a></p><p>If you did not request this, you can ignore this email.</p>`,
   })
   if (error) {
-    throw new Error(error.message)
+    console.error("[statussy] Resend rejected magic-link email", error)
+    throw new APIError("BAD_REQUEST", {
+      message: resendDeliveryErrorMessage(error.message),
+    })
   }
 }
 
@@ -96,6 +109,11 @@ export const auth = betterAuth({
   secret: resolveAuthSecret(),
   database: authDatabase(),
   trustedOrigins: authTrustedOrigins(),
+  onAPIError: {
+    onError(error) {
+      console.error("[statussy] better-auth error", error)
+    },
+  },
   emailAndPassword: {
     enabled: false,
   },
