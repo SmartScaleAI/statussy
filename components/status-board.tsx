@@ -51,7 +51,7 @@ export async function StatusBoard() {
               <div className="flex flex-col gap-3">
                 <h2
                   id="all-services-heading"
-                  className="font-heading text-lg font-semibold tracking-tight text-foreground"
+                  className="font-heading text-lg font-semibold tracking-tight text-foreground md:text-xl"
                 >
                   All Services
                 </h2>
