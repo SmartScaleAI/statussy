@@ -10,6 +10,7 @@
  * Star + Official status sit above it and stopPropagation so they stay usable.
  * SMA-36: shelf has no divider; timestamps include a UTC suffix.
  * SMA-37: star toggles localStorage favorites (`statussy:favoriteServiceIds`).
+ * SMA-103: signed-out star opens the login dialog instead of toggling.
  */
 "use client"
 
@@ -19,6 +20,8 @@ import { useSearchParams } from "next/navigation"
 import React, { type MouseEvent } from "react"
 
 import { useFavoriteServices } from "@/components/favorite-services"
+import { useLoginDialog } from "@/components/login-dialog"
+import { authClient } from "@/lib/auth-client"
 import { CATEGORY_PARAM } from "@/lib/board-filter"
 import { logoInvertClass } from "@/lib/light-logo-ids"
 import { cn } from "@/lib/utils"
@@ -67,17 +70,33 @@ interface CardProps {
 
 function FavoriteButton({ serviceId }: { serviceId: string }) {
   const { isFavorited, toggleFavorite } = useFavoriteServices()
+  const { data: session, isPending } = authClient.useSession()
+  const { openLogin } = useLoginDialog()
   const favorited = isFavorited(serviceId)
+  const signedIn = Boolean(session?.user)
 
   return (
     <button
       type="button"
       className={favorited ? "btn-favorite is-favorited" : "btn-favorite"}
       aria-pressed={favorited}
-      aria-label={favorited ? "Remove from favorites" : "Add to favorites"}
+      aria-label={
+        signedIn
+          ? favorited
+            ? "Remove from favorites"
+            : "Add to favorites"
+          : "Sign in to save to My Stack"
+      }
       onClick={(event) => {
         event.preventDefault()
         stopCardNavigation(event)
+        if (isPending) {
+          return
+        }
+        if (!signedIn) {
+          openLogin("favorites")
+          return
+        }
         toggleFavorite(serviceId)
       }}
     >

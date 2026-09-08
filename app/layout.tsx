@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 
+import { LoginDialogProvider } from "@/components/login-dialog"
 import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils"
 
@@ -56,7 +57,9 @@ export default function RootLayout({
       )}
     >
       <body className="min-h-svh bg-background text-foreground">
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <LoginDialogProvider>{children}</LoginDialogProvider>
+        </ThemeProvider>
       </body>
     </html>
   )
