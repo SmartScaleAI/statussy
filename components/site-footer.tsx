@@ -75,15 +75,32 @@ export function SiteFooter({
         <p className="text-center">
           © {new Date().getFullYear()} SmartScale Solutions LLC
         </p>
-        <a
-          href={GITHUB_REPO}
-          target="_blank"
-          rel="noreferrer"
-          className="inline-flex items-center gap-1.5 underline-offset-2 hover:text-foreground hover:underline sm:justify-self-end"
+        <nav
+          aria-label="Legal and source"
+          className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 sm:justify-self-end"
         >
-          <GitHubMark className="size-3.5" />
-          GitHub
-        </a>
+          <Link
+            href="/privacy"
+            className="underline-offset-2 hover:text-foreground hover:underline"
+          >
+            Privacy
+          </Link>
+          <Link
+            href="/terms"
+            className="underline-offset-2 hover:text-foreground hover:underline"
+          >
+            Terms
+          </Link>
+          <a
+            href={GITHUB_REPO}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-1.5 underline-offset-2 hover:text-foreground hover:underline"
+          >
+            <GitHubMark className="size-3.5" />
+            GitHub
+          </a>
+        </nav>
       </div>
     </footer>
   )
