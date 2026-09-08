@@ -34,15 +34,22 @@ export default async function SettingsPage() {
     <div className="flex min-h-svh flex-col">
       <SiteHeader />
       <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-8 px-6 py-8 sm:py-12">
-        <header className="flex flex-col gap-2">
-          {/* SMA-116: same Back chiclet as service detail, always `/`. */}
-          <BackToBoard />
-          <h1 className="font-heading text-2xl font-semibold tracking-tight text-foreground">
-            Settings
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Your email, connected accounts, and account deletion.
-          </p>
+        <header className="flex flex-col gap-4">
+          {/* SMA-116 / SMA-117: same compact Back chiclet as service
+              detail (always `/`). self-start so the column flex does not
+              stretch it into a full-width bar; gap-4 keeps the Settings
+              title from sitting flush on the chip. */}
+          <div className="self-start">
+            <BackToBoard />
+          </div>
+          <div className="flex flex-col gap-2">
+            <h1 className="font-heading text-2xl font-semibold tracking-tight text-foreground">
+              Settings
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              Your email, connected accounts, and account deletion.
+            </p>
+          </div>
         </header>
         <SettingsForm />
       </main>
