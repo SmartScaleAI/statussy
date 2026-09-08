@@ -1,5 +1,7 @@
 "use client"
 
+import Link from "next/link"
+
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
@@ -11,13 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useAuth } from "@/components/auth-provider"
 import { authClient } from "@/lib/auth-client"
-
-function initialsFor(name: string | null | undefined, email: string) {
-  const source = name?.trim() || email
-  const parts = source.split(/[\s@._-]+/).filter(Boolean)
-  const letters = (parts[0]?.[0] ?? "?") + (parts[1]?.[0] ?? "")
-  return letters.toUpperCase()
-}
+import { emailAvatarLetter } from "@/lib/sign-in-methods"
 
 export function AuthHeaderControl() {
   const { isPending, isSignedIn, openLogin } = useAuth()
@@ -41,9 +37,8 @@ export function AuthHeaderControl() {
     )
   }
 
-  const { user } = session
-  const email = user.email ?? ""
-  const label = user.name?.trim() || email
+  const email = session.user.email ?? ""
+  const letter = emailAvatarLetter(email)
 
   return (
     <DropdownMenu>
@@ -51,20 +46,25 @@ export function AuthHeaderControl() {
         render={
           <Button
             type="button"
-            variant="outline"
-            aria-label={`Account, ${label}`}
-            className="h-10 max-w-48 gap-2 px-2"
+            variant="ghost"
+            size="icon"
+            aria-label={email || "Account"}
+            className="size-10 rounded-full"
           />
         }
       >
-        <Avatar size="sm">
-          {user.image ? <AvatarImage src={user.image} alt="" /> : null}
-          <AvatarFallback>{initialsFor(user.name, email)}</AvatarFallback>
+        <Avatar className="size-8">
+          {session.user.image ? (
+            <AvatarImage src={session.user.image} alt="" />
+          ) : null}
+          <AvatarFallback>{letter}</AvatarFallback>
         </Avatar>
-        <span className="hidden truncate sm:inline">{email || label}</span>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-40">
         <DropdownMenuGroup>
+          <DropdownMenuItem render={<Link href="/settings" />}>
+            Settings
+          </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => {
               void authClient.signOut()

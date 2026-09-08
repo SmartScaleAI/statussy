@@ -135,6 +135,11 @@ export const auth = betterAuth({
         }
       : {}),
   },
+  user: {
+    deleteUser: {
+      enabled: true,
+    },
+  },
   account: {
     accountLinking: {
       enabled: true,

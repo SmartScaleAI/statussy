@@ -5,8 +5,9 @@ import { ModeToggle } from "@/components/mode-toggle"
 
 /**
  * Shared page chrome: brand mark (links home) + theme toggle + auth.
- * Sign In sits immediately right of the theme toggle (SMA-103 / SMA-106).
- * The board freshness stamp lives with the All Services summary (SMA-83).
+ * Signed-in chrome is avatar-only (SMA-108). Sign In sits immediately
+ * right of the theme toggle (SMA-103 / SMA-106). The board freshness
+ * stamp lives with the All Services summary (SMA-83).
  */
 export function SiteHeader() {
   return (

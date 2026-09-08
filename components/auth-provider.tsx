@@ -12,6 +12,7 @@ import {
 
 import { authClient } from "@/lib/auth-client"
 import { LoginDialog, type LoginReason } from "@/components/login-dialog"
+import { SignInFromQuery } from "@/components/sign-in-from-query"
 
 type AuthContextValue = {
   isPending: boolean
@@ -49,6 +50,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   return (
     <AuthContext.Provider value={value}>
       {children}
+      <SignInFromQuery />
       <LoginDialog open={open} onOpenChange={setOpen} reason={reason} />
     </AuthContext.Provider>
   )
