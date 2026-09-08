@@ -73,13 +73,33 @@ const trustedOrigins = [
   "http://localhost:3000",
   "https://statussy.com",
   "https://www.statussy.com",
+  "https://*.vercel.app",
   process.env.BETTER_AUTH_URL,
   process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined,
 ].filter((origin): origin is string => Boolean(origin))
 
+/** Only used while `next build` collects page data — never at runtime. */
+const BUILD_PLACEHOLDER_SECRET =
+  "statussy-next-build-placeholder-secret-do-not-use"
+
 export const auth = betterAuth({
   appName: "Statussy",
   database: getAuthPool(),
+  secret:
+    process.env.BETTER_AUTH_SECRET ??
+    (process.env.NEXT_PHASE === "phase-production-build"
+      ? BUILD_PLACEHOLDER_SECRET
+      : undefined),
+  baseURL: {
+    allowedHosts: [
+      "localhost:3000",
+      "localhost",
+      "statussy.com",
+      "www.statussy.com",
+      "*.vercel.app",
+    ],
+    fallback: process.env.BETTER_AUTH_URL || "http://localhost:3000",
+  },
   trustedOrigins,
   advanced: {
     database: {
