@@ -1,12 +1,10 @@
 /**
- * Browser-only favorites for the board (SMA-37).
+ * My Stack favorite helpers (SMA-37 / SMA-104).
  *
- * Storage keeps insertion order (last-starred appended). `selectFavoriteServices`
- * still returns a stable id-ordered subset; My Stack then applies its own sort
- * (SMA-92, `statussy:myStackSortBy`), independent of the board sort.
+ * Signed-in stars persist in Railway Postgres. These helpers stay pure so
+ * the client can optimistic-toggle and `selectFavoriteServices` can filter
+ * the board. Sort preference stays in localStorage (`statussy:myStackSortBy`).
  */
-
-export const FAVORITE_SERVICE_IDS_KEY = "statussy:favoriteServiceIds"
 
 export type FavoriteServiceRef = {
   id: string
@@ -60,11 +58,4 @@ export function selectFavoriteServices<T extends FavoriteServiceRef>(
   return items
     .filter((item) => favorited.has(item.id))
     .sort((a, b) => a.id.localeCompare(b.id))
-}
-
-export function writeFavoriteServiceIds(ids: readonly string[]) {
-  window.localStorage.setItem(
-    FAVORITE_SERVICE_IDS_KEY,
-    serializeFavoriteServiceIds(ids)
-  )
 }
