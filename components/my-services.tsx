@@ -49,22 +49,22 @@ export function MyServices({
       aria-labelledby="my-services-heading"
     >
       <div className="flex flex-col gap-3">
-        <div className="flex items-center justify-between gap-2">
-          <h2
-            id="my-services-heading"
-            className="font-heading text-lg font-semibold tracking-tight text-foreground"
-          >
-            My Stack
-          </h2>
-          {/* Nothing to reorder while the stack is empty, so hide the sort. */}
-          {!empty && (
-            <MyStackSortMenu sortBy={sortBy} onSortByChange={setSortBy} />
-          )}
-        </div>
+        <h2
+          id="my-services-heading"
+          className="font-heading text-lg font-semibold tracking-tight text-foreground"
+        >
+          My Stack
+        </h2>
         <StatusSummary
           operational={summary.operational}
           issues={summary.issues}
           total={summary.total}
+          action={
+            // Nothing to reorder while the stack is empty, so hide the sort.
+            !empty ? (
+              <MyStackSortMenu sortBy={sortBy} onSortByChange={setSortBy} />
+            ) : undefined
+          }
         />
       </div>
       {empty ? (
