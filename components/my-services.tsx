@@ -14,6 +14,23 @@ export type MyServiceItem = BoardSortItem & {
   status: BoardStatus
 }
 
+function MyStackLoader() {
+  return (
+    <div className="flex justify-center pt-1 pb-10">
+      {/* Decorative: sr-only text is the accessible name. */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/brand/my-stack-loader.gif"
+        alt=""
+        width={48}
+        height={48}
+        className="size-12"
+      />
+      <span className="sr-only">Loading your stack</span>
+    </div>
+  )
+}
+
 export function MyServices({
   items,
   children,
@@ -21,7 +38,7 @@ export function MyServices({
   items: MyServiceItem[]
   children: ReactNode
 }) {
-  const { favoriteIds } = useFavoriteServices()
+  const { favoriteIds, isLoading } = useFavoriteServices()
   const [sortBy, setSortBy] = useMyStackSort()
   const favorites = useMemo(
     () => sortBoardServices(selectFavoriteServices(items, favoriteIds), sortBy),
@@ -41,12 +58,14 @@ export function MyServices({
   const cards = favorites
     .map((item) => cardsById.get(item.id))
     .filter((card): card is ReactNode => card != null)
-  const empty = cards.length === 0
+  // Loading is not empty (SMA-111): keep the empty copy off until favorites settle.
+  const empty = !isLoading && cards.length === 0
 
   return (
     <section
-      className={cn("flex flex-col", empty ? "gap-3" : "gap-8")}
+      className={cn("flex flex-col", empty || isLoading ? "gap-3" : "gap-8")}
       aria-labelledby="my-services-heading"
+      aria-busy={isLoading || undefined}
     >
       <div className="flex flex-col gap-3">
         <h2
@@ -60,14 +79,16 @@ export function MyServices({
           issues={summary.issues}
           total={summary.total}
           action={
-            // Nothing to reorder while the stack is empty, so hide the sort.
-            !empty ? (
+            // Nothing to reorder while the stack is empty or still loading.
+            !empty && !isLoading ? (
               <MyStackSortMenu sortBy={sortBy} onSortByChange={setSortBy} />
             ) : undefined
           }
         />
       </div>
-      {empty ? (
+      {isLoading ? (
+        <MyStackLoader />
+      ) : empty ? (
         <p className="pt-1 pb-10 text-sm text-muted-foreground" role="status">
           Star services below to pin them here.
         </p>
