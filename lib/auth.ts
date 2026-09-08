@@ -69,7 +69,9 @@ async function sendMagicLinkEmail({
 
 export const auth = betterAuth({
   database: authDatabase(),
-  secret: process.env.BETTER_AUTH_SECRET,
+  secret:
+    process.env.BETTER_AUTH_SECRET ??
+    "statussy-unconfigured-better-auth-secret",
   baseURL: process.env.BETTER_AUTH_URL,
   trustedOrigins: trustedOrigins(),
   socialProviders: {
