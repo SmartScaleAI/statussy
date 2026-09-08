@@ -1,5 +1,6 @@
 "use server"
 
+import { revalidatePath } from "next/cache"
 import { headers } from "next/headers"
 import { unstable_rethrow } from "next/navigation"
 
@@ -9,12 +10,46 @@ import { listLinkedAccounts } from "@/lib/auth-accounts"
 import {
   canUnlinkSocialProvider,
   isSocialProvider,
+  type LinkedAccount,
   type SocialProvider,
 } from "@/lib/sign-in-methods"
 import { deleteUserFavorites } from "@/lib/user-favorites"
 
 export type AccountActionResult =
   { ok: true } | { ok: false; error: "signed-out" | "last-method" | "failed" }
+
+export type AccountSnapshotResult =
+  | { ok: true; email: string; accounts: LinkedAccount[] }
+  | { ok: false; error: "signed-out" }
+
+/**
+ * Live session snapshot for /settings. Never return PII without a current
+ * cookie — client-cached props from a previous visit are not trusted.
+ */
+export async function getMyAccountSnapshot(): Promise<AccountSnapshotResult> {
+  try {
+    const session = await getAuthSession()
+    if (!session?.user) {
+      return { ok: false, error: "signed-out" }
+    }
+    const accounts = await listLinkedAccounts()
+    return {
+      ok: true,
+      email: session.user.email ?? "",
+      accounts,
+    }
+  } catch (err) {
+    unstable_rethrow(err)
+    console.error("[statussy] getMyAccountSnapshot failed", err)
+    return { ok: false, error: "signed-out" }
+  }
+}
+
+/** Drop cached /settings (and layout) after sign-out or account deletion. */
+export async function invalidateAuthViews(): Promise<void> {
+  revalidatePath("/settings")
+  revalidatePath("/", "layout")
+}
 
 export async function unlinkSocialAccount(
   provider: SocialProvider
@@ -68,6 +103,7 @@ export async function deleteMyAccount(): Promise<AccountActionResult> {
       await ctx.internalAdapter.deleteUser(userId)
       await ctx.internalAdapter.deleteUserSessions(userId)
     }
+    await invalidateAuthViews()
     return { ok: true }
   } catch (err) {
     unstable_rethrow(err)

@@ -1,10 +1,10 @@
 import type { Metadata } from "next"
+import { connection } from "next/server"
 import { redirect } from "next/navigation"
 
 import { SettingsForm } from "@/components/settings-form"
 import { SiteFooter } from "@/components/site-footer"
 import { SiteHeader } from "@/components/site-header"
-import { listLinkedAccounts } from "@/lib/auth-accounts"
 import { getAuthSession } from "@/lib/auth-session"
 import { SIGN_IN_QUERY } from "@/lib/sign-in-methods"
 
@@ -14,14 +14,20 @@ export const metadata: Metadata = {
     "Manage your Statussy account, connected sign-in methods, and data.",
 }
 
+/**
+ * SMA-112: never ISR/static-cache a personalized account page. Wait for the
+ * request so a signed-out cookie cannot reuse another user's RSC payload.
+ */
+export const dynamic = "force-dynamic"
+export const revalidate = 0
+export const fetchCache = "force-no-store"
+
 export default async function SettingsPage() {
+  await connection()
   const session = await getAuthSession()
   if (!session?.user) {
     redirect(`/?${SIGN_IN_QUERY}=1`)
   }
-
-  const accounts = await listLinkedAccounts()
-  const email = session.user.email ?? ""
 
   return (
     <div className="flex min-h-svh flex-col">
@@ -35,7 +41,7 @@ export default async function SettingsPage() {
             Your email, connected accounts, and account deletion.
           </p>
         </header>
-        <SettingsForm email={email} accounts={accounts} />
+        <SettingsForm />
       </main>
       <SiteFooter className="max-w-3xl" showSuggest={false} />
     </div>

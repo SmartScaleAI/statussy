@@ -1,9 +1,13 @@
 "use client"
 
-import { useRouter } from "next/navigation"
-import { useState, type SVGProps } from "react"
+import { usePathname, useRouter } from "next/navigation"
+import { useEffect, useState, type SVGProps } from "react"
 
-import { deleteMyAccount, unlinkSocialAccount } from "@/app/actions/account"
+import {
+  deleteMyAccount,
+  getMyAccountSnapshot,
+  unlinkSocialAccount,
+} from "@/app/actions/account"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -32,6 +36,7 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { authClient } from "@/lib/auth-client"
+import { signOutAndInvalidateViews } from "@/lib/client-sign-out"
 import {
   LAST_METHOD_COPY,
   SIGN_IN_QUERY,
@@ -39,6 +44,7 @@ import {
   type LinkedAccount,
   type SocialProvider,
 } from "@/lib/sign-in-methods"
+import { shouldRenderAccountSettings } from "@/lib/settings-session"
 
 function GoogleMark(props: SVGProps<SVGSVGElement>) {
   return (
@@ -80,21 +86,67 @@ const PROVIDERS: {
   { id: "github", label: "GitHub", Mark: GitHubMark },
 ]
 
-export function SettingsForm({
-  email,
-  accounts,
-}: {
-  email: string
-  accounts: LinkedAccount[]
-}) {
+export function SettingsForm() {
   const router = useRouter()
+  const pathname = usePathname()
+  const { data: session, isPending: sessionPending } = authClient.useSession()
+  const [snapshot, setSnapshot] = useState<{
+    email: string
+    accounts: LinkedAccount[]
+  } | null>(null)
   const [pending, setPending] = useState<
     SocialProvider | "signout" | "delete" | null
   >(null)
   const [error, setError] = useState<string | null>(null)
   const [deleteOpen, setDeleteOpen] = useState(false)
 
+  const hasUser = Boolean(session?.user)
+  const showAccount = shouldRenderAccountSettings({
+    isPending: sessionPending,
+    hasUser,
+  })
   const busy = pending !== null
+
+  useEffect(() => {
+    if (sessionPending) {
+      return
+    }
+    if (!hasUser) {
+      setSnapshot(null)
+      if (pathname === "/settings") {
+        router.replace(`/?${SIGN_IN_QUERY}=1`)
+        router.refresh()
+      }
+      return
+    }
+    let cancelled = false
+    void getMyAccountSnapshot().then((result) => {
+      if (cancelled) {
+        return
+      }
+      if (!result.ok) {
+        setSnapshot(null)
+        router.replace(`/?${SIGN_IN_QUERY}=1`)
+        router.refresh()
+        return
+      }
+      setSnapshot({ email: result.email, accounts: result.accounts })
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [hasUser, pathname, router, sessionPending])
+
+  if (!showAccount || !snapshot) {
+    const waiting = sessionPending || hasUser
+    return (
+      <p className="text-sm text-muted-foreground" role="status">
+        {waiting ? "Loading account…" : "Redirecting to sign in…"}
+      </p>
+    )
+  }
+
+  const { email, accounts } = snapshot
 
   async function onConnect(provider: SocialProvider) {
     setError(null)
@@ -126,14 +178,22 @@ export function SettingsForm({
       )
       return
     }
+    const next = await getMyAccountSnapshot()
+    if (!next.ok) {
+      router.replace(`/?${SIGN_IN_QUERY}=1`)
+      router.refresh()
+      return
+    }
+    setSnapshot({ email: next.email, accounts: next.accounts })
     router.refresh()
   }
 
   async function onSignOut() {
     setError(null)
     setPending("signout")
-    await authClient.signOut()
-    router.push("/")
+    setSnapshot(null)
+    await signOutAndInvalidateViews()
+    router.replace("/")
     router.refresh()
   }
 
@@ -150,9 +210,10 @@ export function SettingsForm({
       setError("Could not delete your account. Try again.")
       return
     }
-    await authClient.signOut()
+    setSnapshot(null)
+    await signOutAndInvalidateViews()
     setDeleteOpen(false)
-    router.push("/")
+    router.replace("/")
     router.refresh()
   }
 
