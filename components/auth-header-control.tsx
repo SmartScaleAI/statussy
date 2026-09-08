@@ -31,11 +31,12 @@ export function AuthHeaderControl() {
     return (
       <Button
         type="button"
-        variant="outline"
+        variant="default"
+        aria-label="Sign In"
         className="h-10"
         onClick={() => openLogin("login")}
       >
-        Login
+        Sign In
       </Button>
     )
   }
