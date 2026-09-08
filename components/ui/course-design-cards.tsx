@@ -10,6 +10,7 @@
  * Star + Official status sit above it and stopPropagation so they stay usable.
  * SMA-36: shelf has no divider; timestamps include a UTC suffix.
  * SMA-37: star toggles localStorage favorites (`statussy:favoriteServiceIds`).
+ * SMA-103: signed-out star opens the login dialog and does not toggle.
  */
 "use client"
 
@@ -18,6 +19,7 @@ import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import React, { type MouseEvent } from "react"
 
+import { useAuth } from "@/components/auth-provider"
 import { useFavoriteServices } from "@/components/favorite-services"
 import { CATEGORY_PARAM } from "@/lib/board-filter"
 import { logoInvertClass } from "@/lib/light-logo-ids"
@@ -67,6 +69,7 @@ interface CardProps {
 
 function FavoriteButton({ serviceId }: { serviceId: string }) {
   const { isFavorited, toggleFavorite } = useFavoriteServices()
+  const { isPending, isSignedIn, openLogin } = useAuth()
   const favorited = isFavorited(serviceId)
 
   return (
@@ -78,6 +81,13 @@ function FavoriteButton({ serviceId }: { serviceId: string }) {
       onClick={(event) => {
         event.preventDefault()
         stopCardNavigation(event)
+        if (isPending) {
+          return
+        }
+        if (!isSignedIn) {
+          openLogin("favorites")
+          return
+        }
         toggleFavorite(serviceId)
       }}
     >

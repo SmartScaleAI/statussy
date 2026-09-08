@@ -228,7 +228,15 @@ already bounded by upsert and are not pruned.
 
 | Variable | Where | Purpose |
 | --- | --- | --- |
-| `DATABASE_URL` | Railway (worker, read/write) and Vercel (Next.js app) | Postgres connection string. The app reads live status and inserts footer **Suggest a Service** rows into `service_suggestions` (it does not write the `services` catalog). On Railway, reference the Postgres service (`${{Postgres.DATABASE_URL}}`, private network). On Vercel, use the Railway Postgres **`DATABASE_PUBLIC_URL`** — see [Point Vercel at Railway Postgres](#point-vercel-at-railway-postgres). |
+| `DATABASE_URL` | Railway (worker, read/write) and Vercel (Next.js app) | Postgres connection string. The app reads live status and inserts footer **Suggest a Service** rows into `service_suggestions` (it does not write the `services` catalog). On Railway, reference the Postgres service (`${{Postgres.DATABASE_URL}}`, private network). On Vercel, use the Railway Postgres **`DATABASE_PUBLIC_URL`** — see [Point Vercel at Railway Postgres](#point-vercel-at-railway-postgres). Also used by Better Auth (SMA-103) for `user` / `session` / `account` / `verification`. |
+| `BETTER_AUTH_SECRET` | Vercel (Next.js app) | Better Auth signing secret. At least 32 characters (`openssl rand -base64 32`). Required for login. |
+| `BETTER_AUTH_URL` | Vercel (Next.js app) | Public site origin Better Auth uses for callbacks, e.g. `https://statussy.com` (no trailing slash). |
+| `RESEND_API_KEY` | Vercel (Next.js app) | Resend API key for magic-link email. |
+| `RESEND_FROM` | Vercel (Next.js app) | Verified Resend from address, e.g. `Statussy <noreply@statussy.com>`. |
+| `GOOGLE_CLIENT_ID` | Vercel (Next.js app) | Google OAuth client ID. Authorized redirect: `{BETTER_AUTH_URL}/api/auth/callback/google`. |
+| `GOOGLE_CLIENT_SECRET` | Vercel (Next.js app) | Google OAuth client secret. |
+| `GITHUB_CLIENT_ID` | Vercel (Next.js app) | GitHub OAuth app client ID. Callback: `{BETTER_AUTH_URL}/api/auth/callback/github`. |
+| `GITHUB_CLIENT_SECRET` | Vercel (Next.js app) | GitHub OAuth app client secret. |
 | `SLACK_WEBHOOK_URL` | Vercel (Next.js app) | Incoming webhook targeting `_alerts`. Posted after each successful suggestion insert (name, email if present, timestamp). Optional locally — a missing webhook logs a warning and still stores the row. |
 | `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` | Vercel (Next.js app) | PostHog project token for Web analytics (autocapture + pageviews). Optional locally — a missing token skips init. `NEXT_PUBLIC_POSTHOG_KEY` is accepted as an alias. Do not commit the token. |
 | `NEXT_PUBLIC_POSTHOG_HOST` | Vercel (Next.js app) | PostHog ingestion host, e.g. `https://us.i.posthog.com` (US Cloud) or `https://eu.i.posthog.com` (EU). Optional; the SDK defaults to US Cloud. |
@@ -236,6 +244,8 @@ already bounded by upsert and are not pruned.
 | `PORT` | Railway (worker) | Injected by Railway; the health endpoint listens on it (defaults to `8080` locally). |
 | `FETCH_TIMEOUT_MS` | Railway (worker) | Per-request timeout for service status fetches. Optional, defaults to `10000`. |
 | `FETCH_USER_AGENT` | Railway (worker) | User-Agent header sent to service status APIs. Optional, defaults to `statussy-worker/0.1 (+https://github.com/SmartScaleAI/statussy)`. The Checkly/Nuxt fetcher (Mistral + Checkly) always sends a browser-like Chrome UA instead (Cloudflare in front of those pages often challenges bot UAs). |
+
+Login is a header dialog (SMA-103), not a `/login` page. Signed-out users get **Login** to the right of the theme toggle (magic link via Resend, Google, GitHub). A signed-out star opens the same dialog with “Sign in to save your stack” and does not write local favorites. Auth tables are created by worker migration `0007_better_auth.sql`. Server code can read the session with `getAuthSession()` in `lib/auth-session.ts`.
 
 ### Run the worker locally
 
