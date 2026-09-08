@@ -128,7 +128,7 @@ export function groupUserDigests(
   return digests
 }
 
-export function digestPollId(snapshotIds: readonly Array<string | number>): string {
+export function digestPollId(snapshotIds: ReadonlyArray<string | number>): string {
   const normalized = [...snapshotIds].map(String).sort().join(",")
   return createHash("sha256").update(normalized).digest("hex")
 }

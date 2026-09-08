@@ -11,11 +11,11 @@ import {
 import { useFavoriteServices } from "@/components/favorite-services"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { shouldShowDigestBanner } from "@/lib/digest-banner"
 import {
   DEFAULT_DIGEST_PREFS,
+  shouldShowDigestBanner,
   type UserDigestPrefs,
-} from "@/lib/user-digest-prefs"
+} from "@/lib/digest-banner"
 
 /**
  * After the first My Stack star: opt-in CTA + dismiss (SMA-115).
@@ -64,8 +64,10 @@ export function DigestOptInBanner() {
     return null
   }
 
+  const currentPrefs = prefs
+
   async function onEnable() {
-    const previous = prefs
+    const previous = currentPrefs
     setPending("enable")
     setPrefs({ ...previous, emailMajorPartial: true })
     const result = await setMyDigestEmail(true)
@@ -81,7 +83,7 @@ export function DigestOptInBanner() {
   }
 
   async function onDismiss() {
-    const previous = prefs
+    const previous = currentPrefs
     setPending("dismiss")
     setPrefs({ ...previous, bannerDismissed: true })
     const result = await dismissDigestBanner()

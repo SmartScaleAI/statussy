@@ -52,7 +52,7 @@ import { shouldRenderAccountSettings } from "@/lib/settings-session"
 import {
   DEFAULT_DIGEST_PREFS,
   type UserDigestPrefs,
-} from "@/lib/user-digest-prefs"
+} from "@/lib/digest-banner"
 
 function GoogleMark(props: SVGProps<SVGSVGElement>) {
   return (

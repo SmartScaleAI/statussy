@@ -2,17 +2,18 @@
  * Per-user My Stack digest prefs (SMA-115).
  * Missing row = email off, banner not dismissed.
  * Always scoped by the Better Auth user id from the session.
+ * Server-only (imports the Postgres pool).
  */
 
-export type UserDigestPrefs = {
-  emailMajorPartial: boolean
-  bannerDismissed: boolean
-}
+import {
+  DEFAULT_DIGEST_PREFS,
+  type UserDigestPrefs,
+} from "./digest-banner.ts"
 
-export const DEFAULT_DIGEST_PREFS: UserDigestPrefs = {
-  emailMajorPartial: false,
-  bannerDismissed: false,
-}
+export {
+  DEFAULT_DIGEST_PREFS,
+  type UserDigestPrefs,
+} from "./digest-banner.ts"
 
 export type DigestPrefsPatch = {
   emailMajorPartial?: boolean
