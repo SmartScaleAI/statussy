@@ -55,7 +55,14 @@ export function BackToBoardLink({ categories }: { categories: string[] }) {
   return <BackChiclet href={boardHref(category)} />
 }
 
-/** Same chip, bare board URL — what the cached HTML shows before hydration. */
-export function BackToBoardLinkFallback() {
+/**
+ * Same chip, always `/`. Settings Back (SMA-116) and the cached detail
+ * shell before hydration (SMA-97).
+ */
+export function BackToBoard() {
   return <BackChiclet href={boardHref(ALL_CATEGORY)} />
+}
+
+export function BackToBoardLinkFallback() {
+  return <BackToBoard />
 }
