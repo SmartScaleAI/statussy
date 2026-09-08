@@ -43,8 +43,9 @@ export async function StatusBoard() {
               know — so this subtree client-renders up to this Suspense
               boundary (SMA-97). The board data is embedded in the cached RSC
               payload, so hydration fills it in without another request. My
-              Stack above is untouched: favorites/sort live in localStorage
-              and render client-side either way. */}
+              Stack above stays client-side (SMA-104): signed-in stars load
+              from Railway via a server action so the 60s ISR cache never
+              embeds a user's stack. Sort stays in localStorage. */}
           <Suspense
             fallback={
               <div className="flex flex-col gap-3">

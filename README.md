@@ -327,13 +327,21 @@ public proxy. The worker only writes every 5 minutes, so a view that is up to
 freshness stamp and Stale badges are computed from snapshot timestamps in the
 DB, not from render time, so their semantics are unchanged.
 
-Client-side features are unaffected by the cache because they never render on
-the server: My Stack favorites and the sort order live in `localStorage`,
-theme switching is `next-themes` on the client, and the `?category=` filter
+Client-side features are unaffected by the cache because they never render
+user-specific data on the server: signed-in My Stack stars load from Railway
+Postgres (`user_favorites`) through a Better Auth–aware server action after
+hydrate, so the shared 60s page cache cannot leak another user's stack. My
+Stack sort order stays in `localStorage` (`statussy:myStackSortBy`) for v1.
+Theme switching is `next-themes` on the client, and the `?category=` filter
 (SMA-89) is read with `useSearchParams` inside client components. The cached
 shell can't know the query string, so the All Services grid and the detail
 page's Back link hydrate behind `<Suspense>` boundaries and apply the filter
 on the client — one shared cached page serves every `?category=` variant.
+
+Signed-out visitors can still use the board; starring does not write
+anonymous / localStorage favorites (sign-in is required — SMA-103). There
+is no localStorage→DB migration. No new env vars: `DATABASE_URL` is the
+existing Railway Postgres URL; the session comes from Better Auth (SMA-103).
 
 Fallback policy (SMA-18):
 

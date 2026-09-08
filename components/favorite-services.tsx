@@ -4,19 +4,18 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
-  useSyncExternalStore,
+  useRef,
+  useState,
   type ReactNode,
 } from "react"
 
-import {
-  FAVORITE_SERVICE_IDS_KEY,
-  parseFavoriteServiceIds,
-  toggleFavoriteServiceId,
-  writeFavoriteServiceIds,
-} from "@/lib/favorite-services"
+import { getMyFavorites, toggleMyFavorite } from "@/app/actions/favorites"
+import { toggleFavoriteServiceId } from "@/lib/favorite-services"
 
 type FavoriteServicesContextValue = {
+  signedIn: boolean
   favoriteIds: readonly string[]
   isFavorited: (id: string) => boolean
   toggleFavorite: (id: string) => void
@@ -25,68 +24,59 @@ type FavoriteServicesContextValue = {
 const FavoriteServicesContext =
   createContext<FavoriteServicesContextValue | null>(null)
 
-const listeners = new Set<() => void>()
+export function FavoriteServicesProvider({
+  children,
+}: {
+  children: ReactNode
+}) {
+  const [signedIn, setSignedIn] = useState(false)
+  const [favoriteIds, setFavoriteIds] = useState<string[]>([])
+  const signedInRef = useRef(false)
 
-function emitFavoriteChange() {
-  for (const listener of listeners) {
-    listener()
-  }
-}
-
-function subscribeFavoriteIds(listener: () => void) {
-  listeners.add(listener)
-  const onStorage = (event: StorageEvent) => {
-    if (event.key === null || event.key === FAVORITE_SERVICE_IDS_KEY) {
-      listener()
+  useEffect(() => {
+    let cancelled = false
+    void getMyFavorites().then((result) => {
+      if (cancelled) {
+        return
+      }
+      signedInRef.current = result.signedIn
+      setSignedIn(result.signedIn)
+      setFavoriteIds(result.favoriteIds)
+    })
+    return () => {
+      cancelled = true
     }
-  }
-  window.addEventListener("storage", onStorage)
-  return () => {
-    listeners.delete(listener)
-    window.removeEventListener("storage", onStorage)
-  }
-}
-
-function getFavoriteIdsSnapshot() {
-  try {
-    return window.localStorage.getItem(FAVORITE_SERVICE_IDS_KEY)
-  } catch {
-    return null
-  }
-}
-
-function getFavoriteIdsServerSnapshot() {
-  return null
-}
-
-export function FavoriteServicesProvider({ children }: { children: ReactNode }) {
-  const raw = useSyncExternalStore(
-    subscribeFavoriteIds,
-    getFavoriteIdsSnapshot,
-    getFavoriteIdsServerSnapshot
-  )
-  const favoriteIds = useMemo(() => parseFavoriteServiceIds(raw), [raw])
+  }, [])
 
   const toggleFavorite = useCallback((id: string) => {
-    const next = toggleFavoriteServiceId(
-      parseFavoriteServiceIds(getFavoriteIdsSnapshot()),
-      id
-    )
-    try {
-      writeFavoriteServiceIds(next)
-    } catch {
-      // Private mode / quota: snapshot stays on the last persisted value.
+    // Signed-out star clicks are owned by SMA-103 (login dialog). Do not
+    // write localStorage or persist anonymous favorites.
+    if (!signedInRef.current) {
+      return
     }
-    emitFavoriteChange()
+    setFavoriteIds((prev) => {
+      const next = toggleFavoriteServiceId(prev, id)
+      void toggleMyFavorite(id).then((result) => {
+        signedInRef.current = result.signedIn
+        setSignedIn(result.signedIn)
+        if (result.signedIn) {
+          setFavoriteIds(result.favoriteIds)
+        } else {
+          setFavoriteIds(prev)
+        }
+      })
+      return next
+    })
   }, [])
 
   const value = useMemo<FavoriteServicesContextValue>(
     () => ({
+      signedIn,
       favoriteIds,
       isFavorited: (itemId) => favoriteIds.includes(itemId),
       toggleFavorite,
     }),
-    [favoriteIds, toggleFavorite]
+    [favoriteIds, signedIn, toggleFavorite]
   )
 
   return (
