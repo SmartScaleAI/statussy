@@ -1,11 +1,13 @@
 "use client"
 
+import { useRouter } from "next/navigation"
 import {
   createContext,
   useCallback,
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react"
@@ -24,6 +26,8 @@ const AuthContext = createContext<AuthContextValue | null>(null)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const { data: session, isPending } = authClient.useSession()
+  const router = useRouter()
+  const wasSignedIn = useRef(false)
   const [open, setOpen] = useState(false)
   const [reason, setReason] = useState<LoginReason>("login")
 
@@ -37,6 +41,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setOpen(false)
     }
   }, [session])
+
+  useEffect(() => {
+    const signedIn = Boolean(session)
+    if (wasSignedIn.current && !signedIn) {
+      router.refresh()
+    }
+    wasSignedIn.current = signedIn
+  }, [router, session])
 
   const value = useMemo<AuthContextValue>(
     () => ({

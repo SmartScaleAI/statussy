@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import { usePathname, useRouter } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -13,11 +14,14 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useAuth } from "@/components/auth-provider"
 import { authClient } from "@/lib/auth-client"
+import { signOutAndInvalidateViews } from "@/lib/client-sign-out"
 import { emailAvatarLetter } from "@/lib/sign-in-methods"
 
 export function AuthHeaderControl() {
   const { isPending, isSignedIn, openLogin } = useAuth()
   const { data: session } = authClient.useSession()
+  const router = useRouter()
+  const pathname = usePathname()
 
   if (isPending) {
     return <div className="size-10" aria-hidden="true" />
@@ -67,7 +71,13 @@ export function AuthHeaderControl() {
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => {
-              void authClient.signOut()
+              void (async () => {
+                await signOutAndInvalidateViews()
+                if (pathname === "/settings") {
+                  router.replace("/")
+                }
+                router.refresh()
+              })()
             }}
           >
             Sign out
