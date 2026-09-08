@@ -1,11 +1,11 @@
 -- SMA-104: signed-in My Stack stars (Railway Postgres).
--- user_id is the Better Auth user id (SMA-103). No FK to "user" so this
--- migration can land independently of auth tables. service_id is the board
--- catalog slug (data/services.ts). Unique pair only — one star per user
--- per service. No anonymous / localStorage rows.
+-- user_id is the Better Auth user id (SMA-103 `user.id`). Runs after
+-- 0007_better_auth.sql so the FK can cascade on account delete.
+-- service_id is the board catalog slug (data/services.ts). Unique pair
+-- only — one star per user per service. No anonymous / localStorage rows.
 
 CREATE TABLE user_favorites (
-  user_id     text NOT NULL,
+  user_id     text NOT NULL REFERENCES "user" ("id") ON DELETE CASCADE,
   service_id  text NOT NULL,
   created_at  timestamptz NOT NULL DEFAULT now(),
   PRIMARY KEY (user_id, service_id),

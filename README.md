@@ -340,8 +340,8 @@ on the client — one shared cached page serves every `?category=` variant.
 
 Signed-out visitors can still use the board; starring does not write
 anonymous / localStorage favorites (sign-in is required — SMA-103). There
-is no localStorage→DB migration. No new env vars: `DATABASE_URL` is the
-existing Railway Postgres URL; the session comes from Better Auth (SMA-103).
+is no localStorage→DB migration. This ticket adds no env vars; session
+comes from Better Auth (`getAuthSession`, SMA-103) and `DATABASE_URL`.
 
 Fallback policy (SMA-18):
 
