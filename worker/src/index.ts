@@ -225,6 +225,7 @@ import {
   type PersistOptions,
 } from "./store.js"
 import { createTickDedupe, type TickDedupe } from "./tick-dedupe.js"
+import { createResendMailer, sendStackDigests } from "./digest.js"
 
 const config = loadConfig()
 const pool = createPool(config.databaseUrl)
@@ -1528,6 +1529,22 @@ async function runTick(): Promise<void> {
       }
     } catch (err) {
       console.error(`[prune] failed: ${(err as Error).message}`)
+    }
+    // SMA-115: one batched digest per opted-in user after the poll settles.
+    try {
+      const digest = await sendStackDigests(pool, {
+        publicSiteUrl: config.publicSiteUrl,
+        mailer: config.resend
+          ? createResendMailer(config.resend.apiKey, config.resend.from)
+          : null,
+      })
+      if (digest.sent > 0 || digest.users > 0) {
+        console.log(
+          `[digest] #${tickNumber} sent=${digest.sent} users=${digest.users} skipped=${digest.skipped}`,
+        )
+      }
+    } catch (err) {
+      console.error(`[digest] failed: ${(err as Error).message}`)
     }
     const conditional = drainConditionalFetchStats()
     state.lastTickAt = new Date()

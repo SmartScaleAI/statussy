@@ -1,3 +1,8 @@
+export type ResendMailConfig = {
+  apiKey: string
+  from: string
+}
+
 export type Config = {
   databaseUrl: string
   refreshIntervalSeconds: number
@@ -8,6 +13,10 @@ export type Config = {
   fetchConcurrency: number
   /** Random 0..N ms delay before each fetch starts, to smooth bursts. */
   fetchJitterMs: number
+  /** Optional. Worker skip-sends digests when unset (SMA-115). */
+  resend: ResendMailConfig | null
+  /** Public board origin used in digest links. */
+  publicSiteUrl: string
 }
 
 const DEFAULT_REFRESH_INTERVAL_SECONDS = 300
@@ -28,7 +37,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
     const parsed = Number(env.REFRESH_INTERVAL_SECONDS)
     if (!Number.isInteger(parsed) || parsed <= 0) {
       throw new Error(
-        `REFRESH_INTERVAL_SECONDS must be a positive integer, got ${JSON.stringify(env.REFRESH_INTERVAL_SECONDS)}`,
+        `REFRESH_INTERVAL_SECONDS must be a positive integer, got ${JSON.stringify(env.REFRESH_INTERVAL_SECONDS)}`
       )
     }
     refreshIntervalSeconds = parsed
@@ -36,7 +45,9 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
 
   const port = env.PORT ? Number(env.PORT) : 8080
   if (!Number.isInteger(port) || port <= 0) {
-    throw new Error(`PORT must be a positive integer, got ${JSON.stringify(env.PORT)}`)
+    throw new Error(
+      `PORT must be a positive integer, got ${JSON.stringify(env.PORT)}`
+    )
   }
 
   let fetchTimeoutMs = DEFAULT_FETCH_TIMEOUT_MS
@@ -44,20 +55,21 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
     const parsed = Number(env.FETCH_TIMEOUT_MS)
     if (!Number.isInteger(parsed) || parsed <= 0) {
       throw new Error(
-        `FETCH_TIMEOUT_MS must be a positive integer, got ${JSON.stringify(env.FETCH_TIMEOUT_MS)}`,
+        `FETCH_TIMEOUT_MS must be a positive integer, got ${JSON.stringify(env.FETCH_TIMEOUT_MS)}`
       )
     }
     fetchTimeoutMs = parsed
   }
 
-  const fetchUserAgent = env.FETCH_USER_AGENT?.trim() || DEFAULT_FETCH_USER_AGENT
+  const fetchUserAgent =
+    env.FETCH_USER_AGENT?.trim() || DEFAULT_FETCH_USER_AGENT
 
   let fetchConcurrency = DEFAULT_FETCH_CONCURRENCY
   if (env.FETCH_CONCURRENCY !== undefined) {
     const parsed = Number(env.FETCH_CONCURRENCY)
     if (!Number.isInteger(parsed) || parsed <= 0) {
       throw new Error(
-        `FETCH_CONCURRENCY must be a positive integer, got ${JSON.stringify(env.FETCH_CONCURRENCY)}`,
+        `FETCH_CONCURRENCY must be a positive integer, got ${JSON.stringify(env.FETCH_CONCURRENCY)}`
       )
     }
     fetchConcurrency = parsed
@@ -68,7 +80,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
     const parsed = Number(env.FETCH_JITTER_MS)
     if (!Number.isInteger(parsed) || parsed < 0) {
       throw new Error(
-        `FETCH_JITTER_MS must be a non-negative integer, got ${JSON.stringify(env.FETCH_JITTER_MS)}`,
+        `FETCH_JITTER_MS must be a non-negative integer, got ${JSON.stringify(env.FETCH_JITTER_MS)}`
       )
     }
     fetchJitterMs = parsed
@@ -82,5 +94,25 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
     fetchUserAgent,
     fetchConcurrency,
     fetchJitterMs,
+    resend: resolveResendConfig(env),
+    publicSiteUrl: resolvePublicSiteUrl(env),
   }
+}
+
+function resolveResendConfig(env: NodeJS.ProcessEnv): ResendMailConfig | null {
+  const apiKey = env.RESEND_API_KEY?.trim() ?? ""
+  const from = (env.RESEND_FROM ?? env.RESEND_FROM_EMAIL)?.trim() ?? ""
+  if (!apiKey || !from) {
+    return null
+  }
+  return { apiKey, from }
+}
+
+function resolvePublicSiteUrl(env: NodeJS.ProcessEnv): string {
+  const raw = (
+    env.STATUSSY_URL ??
+    env.BETTER_AUTH_URL ??
+    "https://www.statussy.com"
+  ).trim()
+  return raw.replace(/\/$/, "") || "https://www.statussy.com"
 }

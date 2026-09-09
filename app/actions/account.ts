@@ -13,6 +13,7 @@ import {
   type LinkedAccount,
   type SocialProvider,
 } from "@/lib/sign-in-methods"
+import { deleteUserDigestPrefs } from "@/lib/user-digest-prefs"
 import { deleteUserFavorites } from "@/lib/user-favorites"
 
 export type AccountActionResult =
@@ -92,6 +93,7 @@ export async function deleteMyAccount(): Promise<AccountActionResult> {
       return { ok: false, error: "signed-out" }
     }
     await deleteUserFavorites(userId)
+    await deleteUserDigestPrefs(userId)
     try {
       await auth.api.deleteUser({
         body: {},
