@@ -22,7 +22,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
 
-export type LoginReason = "login" | "favorites"
+export type LoginReason = "login" | "favorites" | "alerts"
 
 function GoogleMark(props: SVGProps<SVGSVGElement>) {
   return (
@@ -72,7 +72,19 @@ export function LoginDialog({
   const [error, setError] = useState<string | null>(null)
 
   const favorites = reason === "favorites"
+  const alerts = reason === "alerts"
   const busy = pending !== null
+
+  const title = alerts
+    ? "Sign in to enable email alerts"
+    : favorites
+      ? "Sign in to save your stack"
+      : "Sign in"
+  const description = alerts
+    ? "You need an account to get email when My Stack hits a major or partial outage."
+    : favorites
+      ? "You need an account to save favorites to My Stack."
+      : "Use a magic link or continue with Google or GitHub."
 
   async function onMagicLink(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -128,14 +140,8 @@ export function LoginDialog({
         )}
       >
         <DialogHeader className="text-left">
-          <DialogTitle>
-            {favorites ? "Sign in to save your stack" : "Sign in"}
-          </DialogTitle>
-          <DialogDescription>
-            {favorites
-              ? "You need an account to save favorites to My Stack."
-              : "Use a magic link or continue with Google or GitHub."}
-          </DialogDescription>
+          <DialogTitle>{title}</DialogTitle>
+          <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
         <div className="mx-auto flex w-full max-w-sm flex-col gap-4">
           {sentTo ? (

@@ -8,6 +8,7 @@ import {
   getMyAccountSnapshot,
   unlinkSocialAccount,
 } from "@/app/actions/account"
+import { getMyDigestPrefs, setMyDigestEmail } from "@/app/actions/digest-prefs"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -30,11 +31,14 @@ import {
 } from "@/components/ui/card"
 import {
   Field,
+  FieldContent,
+  FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { Switch } from "@/components/ui/switch"
 import { authClient } from "@/lib/auth-client"
 import { signOutAndInvalidateViews } from "@/lib/client-sign-out"
 import {
@@ -44,6 +48,11 @@ import {
   type LinkedAccount,
   type SocialProvider,
 } from "@/lib/sign-in-methods"
+import {
+  DEFAULT_DIGEST_PREFS,
+  persistLocalBannerDismissed,
+  type UserDigestPrefs,
+} from "@/lib/digest-banner"
 import { shouldRenderAccountSettings } from "@/lib/settings-session"
 
 function GoogleMark(props: SVGProps<SVGSVGElement>) {
@@ -94,8 +103,10 @@ export function SettingsForm() {
     email: string
     accounts: LinkedAccount[]
   } | null>(null)
+  const [digestPrefs, setDigestPrefs] =
+    useState<UserDigestPrefs>(DEFAULT_DIGEST_PREFS)
   const [pending, setPending] = useState<
-    SocialProvider | "signout" | "delete" | null
+    SocialProvider | "signout" | "delete" | "digest" | null
   >(null)
   const [error, setError] = useState<string | null>(null)
   const [deleteOpen, setDeleteOpen] = useState(false)
@@ -113,6 +124,7 @@ export function SettingsForm() {
     }
     if (!hasUser) {
       setSnapshot(null)
+      setDigestPrefs(DEFAULT_DIGEST_PREFS)
       if (pathname === "/settings") {
         router.replace(`/?${SIGN_IN_QUERY}=1`)
         router.refresh()
@@ -120,18 +132,27 @@ export function SettingsForm() {
       return
     }
     let cancelled = false
-    void getMyAccountSnapshot().then((result) => {
-      if (cancelled) {
-        return
+    void Promise.all([getMyAccountSnapshot(), getMyDigestPrefs()]).then(
+      ([result, prefs]) => {
+        if (cancelled) {
+          return
+        }
+        if (!result.ok) {
+          setSnapshot(null)
+          setDigestPrefs(DEFAULT_DIGEST_PREFS)
+          router.replace(`/?${SIGN_IN_QUERY}=1`)
+          router.refresh()
+          return
+        }
+        setSnapshot({ email: result.email, accounts: result.accounts })
+        if (prefs.signedIn) {
+          setDigestPrefs({
+            emailMajorPartial: prefs.emailMajorPartial,
+            bannerDismissed: prefs.bannerDismissed,
+          })
+        }
       }
-      if (!result.ok) {
-        setSnapshot(null)
-        router.replace(`/?${SIGN_IN_QUERY}=1`)
-        router.refresh()
-        return
-      }
-      setSnapshot({ email: result.email, accounts: result.accounts })
-    })
+    )
     return () => {
       cancelled = true
     }
@@ -147,6 +168,27 @@ export function SettingsForm() {
   }
 
   const { email, accounts } = snapshot
+
+  async function onToggleDigest(enabled: boolean) {
+    setError(null)
+    setPending("digest")
+    const previous = digestPrefs
+    setDigestPrefs({ ...previous, emailMajorPartial: enabled })
+    const result = await setMyDigestEmail(enabled)
+    setPending(null)
+    if (!result.signedIn) {
+      setDigestPrefs(previous)
+      router.push(`/?${SIGN_IN_QUERY}=1`)
+      return
+    }
+    setDigestPrefs({
+      emailMajorPartial: result.emailMajorPartial,
+      bannerDismissed: result.bannerDismissed,
+    })
+    if (result.emailMajorPartial) {
+      persistLocalBannerDismissed(true)
+    }
+  }
 
   async function onConnect(provider: SocialProvider) {
     setError(null)
@@ -238,6 +280,37 @@ export function SettingsForm() {
               />
             </Field>
           </FieldGroup>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Email alerts</CardTitle>
+          <CardDescription>
+            Optional My Stack digest. Off until you turn it on.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Field orientation="horizontal">
+            <FieldContent>
+              <FieldLabel htmlFor="digest-email">
+                Email me when My Stack has Major/Partial issues
+              </FieldLabel>
+              <FieldDescription>
+                One email after each status check if a starred service newly
+                enters a major or partial outage. Recoveries and degraded-only
+                changes are not emailed yet.
+              </FieldDescription>
+            </FieldContent>
+            <Switch
+              id="digest-email"
+              checked={digestPrefs.emailMajorPartial}
+              disabled={busy}
+              onCheckedChange={(checked) => {
+                void onToggleDigest(checked)
+              }}
+            />
+          </Field>
         </CardContent>
       </Card>
 
