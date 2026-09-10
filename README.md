@@ -225,8 +225,10 @@ so do not shorten it without a product decision. Components and incidents are
 already bounded by upsert and are not pruned.
 
 After the poll settles, the worker sends **opt-in My Stack email digests**
-(SMA-115): users who enabled the banner CTA or settings toggle get **one**
-Resend email when a starred service newly enters Major or Partial.
+(SMA-115 / SMA-118): banner Enable turns master on with **Major on** and
+**Partial off**. Settings has separate toggles. Users get **one** Resend
+email per poll when a starred service newly enters a status they enabled.
+Partial is rate-limited to one email per favorite every **6 hours**.
 Recoveries, still-bad, and Degraded-only are skipped. The same snapshot
 set is idempotent (`digest_sends`). Missing Resend env on the worker skips
 sends; the tick still succeeds.
@@ -280,7 +282,9 @@ environment (Preview is not enough for `www.statussy.com`), then redeploy:
    (or “no pending migrations” after the first apply). `0008_user_favorites.sql`
    FKs to `"user"`, so a successful SMA-104 deploy implies 0007 ran.
    `0009_user_digest_prefs.sql` adds opt-in digest prefs + the send ledger
-   (SMA-115); same CASCADE on account delete.
+   (SMA-115); `0010_digest_major_partial_toggles.sql` splits Major vs
+   Partial toggles and adds the Partial cooldown ledger (SMA-118). Same
+   CASCADE on account delete.
 
 Missing Resend env now returns **400** with
 `Email sign-in is not configured. Set RESEND_API_KEY and/or RESEND_FROM…`

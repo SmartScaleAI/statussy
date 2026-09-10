@@ -1,25 +1,36 @@
 /**
- * Per-user My Stack digest prefs (SMA-115).
+ * Per-user My Stack digest prefs (SMA-115 / SMA-118).
  * Missing row = email off, banner not dismissed.
  * Always scoped by the Better Auth user id from the session.
  * Server-only (imports the Postgres pool).
  */
 
-import { DEFAULT_DIGEST_PREFS, type UserDigestPrefs } from "./digest-banner.ts"
+import {
+  applyDigestPrefsPatch,
+  DEFAULT_DIGEST_PREFS,
+  type DigestPrefsPatch,
+  type UserDigestPrefs,
+} from "./digest-banner.ts"
 
-export { DEFAULT_DIGEST_PREFS, type UserDigestPrefs } from "./digest-banner.ts"
-
-export type DigestPrefsPatch = {
-  emailMajorPartial?: boolean
-  bannerDismissed?: boolean
-}
+export {
+  applyDigestPrefsPatch,
+  DEFAULT_DIGEST_PREFS,
+  OPT_IN_DIGEST_PREFS,
+  pickDigestPrefs,
+  type DigestPrefsPatch,
+  type UserDigestPrefs,
+} from "./digest-banner.ts"
 
 function mapRow(row: {
-  email_major_partial: boolean
+  email_enabled: boolean
+  notify_major: boolean
+  notify_partial: boolean
   banner_dismissed: boolean
 }): UserDigestPrefs {
   return {
-    emailMajorPartial: row.email_major_partial,
+    emailEnabled: row.email_enabled,
+    notifyMajor: row.notify_major,
+    notifyPartial: row.notify_partial,
     bannerDismissed: row.banner_dismissed,
   }
 }
@@ -35,10 +46,12 @@ export async function getUserDigestPrefs(
 
   try {
     const { rows } = await pool.query<{
-      email_major_partial: boolean
+      email_enabled: boolean
+      notify_major: boolean
+      notify_partial: boolean
       banner_dismissed: boolean
     }>(
-      `SELECT email_major_partial, banner_dismissed
+      `SELECT email_enabled, notify_major, notify_partial, banner_dismissed
          FROM user_digest_prefs
         WHERE user_id = $1`,
       [userId]
@@ -68,27 +81,33 @@ export async function setUserDigestPrefs(
   if (!current) {
     return null
   }
-  const next: UserDigestPrefs = {
-    emailMajorPartial: patch.emailMajorPartial ?? current.emailMajorPartial,
-    bannerDismissed:
-      patch.emailMajorPartial === true
-        ? true
-        : (patch.bannerDismissed ?? current.bannerDismissed),
-  }
+  const next = applyDigestPrefsPatch(current, patch)
 
   try {
     const { rows } = await pool.query<{
-      email_major_partial: boolean
+      email_enabled: boolean
+      notify_major: boolean
+      notify_partial: boolean
       banner_dismissed: boolean
     }>(
-      `INSERT INTO user_digest_prefs (user_id, email_major_partial, banner_dismissed)
-       VALUES ($1, $2, $3)
+      `INSERT INTO user_digest_prefs (
+         user_id, email_enabled, notify_major, notify_partial, banner_dismissed
+       )
+       VALUES ($1, $2, $3, $4, $5)
        ON CONFLICT (user_id) DO UPDATE
-         SET email_major_partial = EXCLUDED.email_major_partial,
+         SET email_enabled = EXCLUDED.email_enabled,
+             notify_major = EXCLUDED.notify_major,
+             notify_partial = EXCLUDED.notify_partial,
              banner_dismissed = EXCLUDED.banner_dismissed,
              updated_at = now()
-       RETURNING email_major_partial, banner_dismissed`,
-      [userId, next.emailMajorPartial, next.bannerDismissed]
+       RETURNING email_enabled, notify_major, notify_partial, banner_dismissed`,
+      [
+        userId,
+        next.emailEnabled,
+        next.notifyMajor,
+        next.notifyPartial,
+        next.bannerDismissed,
+      ]
     )
     const row = rows[0]
     return row ? mapRow(row) : next
@@ -113,6 +132,9 @@ export async function deleteUserDigestPrefs(userId: string): Promise<void> {
       userId,
     ])
     await pool.query(`DELETE FROM digest_sends WHERE user_id = $1`, [userId])
+    await pool.query(`DELETE FROM digest_partial_notifies WHERE user_id = $1`, [
+      userId,
+    ])
   } catch (err) {
     console.error(
       `[statussy] delete user digest prefs failed (db=${describeDatabaseTarget()})`,
