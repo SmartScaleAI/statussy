@@ -1530,7 +1530,7 @@ async function runTick(): Promise<void> {
     } catch (err) {
       console.error(`[prune] failed: ${(err as Error).message}`)
     }
-    // SMA-115: one batched digest per opted-in user after the poll settles.
+    // SMA-115 / SMA-118: one batched digest per opted-in user after the poll.
     try {
       const digest = await sendStackDigests(pool, {
         publicSiteUrl: config.publicSiteUrl,

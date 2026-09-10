@@ -8,7 +8,7 @@ import {
   getMyAccountSnapshot,
   unlinkSocialAccount,
 } from "@/app/actions/account"
-import { getMyDigestPrefs, setMyDigestEmail } from "@/app/actions/digest-prefs"
+import { getMyDigestPrefs, setMyDigestNotify } from "@/app/actions/digest-prefs"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -51,6 +51,7 @@ import {
 import {
   DEFAULT_DIGEST_PREFS,
   persistLocalBannerDismissed,
+  pickDigestPrefs,
   type UserDigestPrefs,
 } from "@/lib/digest-banner"
 import { shouldRenderAccountSettings } from "@/lib/settings-session"
@@ -106,7 +107,12 @@ export function SettingsForm() {
   const [digestPrefs, setDigestPrefs] =
     useState<UserDigestPrefs>(DEFAULT_DIGEST_PREFS)
   const [pending, setPending] = useState<
-    SocialProvider | "signout" | "delete" | "digest" | null
+    | SocialProvider
+    | "signout"
+    | "delete"
+    | "digest-major"
+    | "digest-partial"
+    | null
   >(null)
   const [error, setError] = useState<string | null>(null)
   const [deleteOpen, setDeleteOpen] = useState(false)
@@ -146,10 +152,7 @@ export function SettingsForm() {
         }
         setSnapshot({ email: result.email, accounts: result.accounts })
         if (prefs.signedIn) {
-          setDigestPrefs({
-            emailMajorPartial: prefs.emailMajorPartial,
-            bannerDismissed: prefs.bannerDismissed,
-          })
+          setDigestPrefs(pickDigestPrefs(prefs))
         }
       }
     )
@@ -169,23 +172,25 @@ export function SettingsForm() {
 
   const { email, accounts } = snapshot
 
-  async function onToggleDigest(enabled: boolean) {
+  async function onToggleDigest(kind: "major" | "partial", enabled: boolean) {
     setError(null)
-    setPending("digest")
+    setPending(kind === "major" ? "digest-major" : "digest-partial")
     const previous = digestPrefs
-    setDigestPrefs({ ...previous, emailMajorPartial: enabled })
-    const result = await setMyDigestEmail(enabled)
+    setDigestPrefs({
+      ...previous,
+      ...(kind === "major"
+        ? { notifyMajor: enabled }
+        : { notifyPartial: enabled }),
+    })
+    const result = await setMyDigestNotify(kind, enabled)
     setPending(null)
     if (!result.signedIn) {
       setDigestPrefs(previous)
       router.push(`/?${SIGN_IN_QUERY}=1`)
       return
     }
-    setDigestPrefs({
-      emailMajorPartial: result.emailMajorPartial,
-      bannerDismissed: result.bannerDismissed,
-    })
-    if (result.emailMajorPartial) {
+    setDigestPrefs(pickDigestPrefs(result))
+    if (result.emailEnabled) {
       persistLocalBannerDismissed(true)
     }
   }
@@ -287,30 +292,50 @@ export function SettingsForm() {
         <CardHeader>
           <CardTitle>Email alerts</CardTitle>
           <CardDescription>
-            Optional My Stack digest. Off until you turn it on.
+            Optional My Stack digest. After you opt in, Major starts on and
+            Partial stays off.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Field orientation="horizontal">
-            <FieldContent>
-              <FieldLabel htmlFor="digest-email">
-                Email me when My Stack has Major/Partial issues
-              </FieldLabel>
-              <FieldDescription>
-                One email after each status check if a starred service newly
-                enters a major or partial outage. Recoveries and degraded-only
-                changes are not emailed yet.
-              </FieldDescription>
-            </FieldContent>
-            <Switch
-              id="digest-email"
-              checked={digestPrefs.emailMajorPartial}
-              disabled={busy}
-              onCheckedChange={(checked) => {
-                void onToggleDigest(checked)
-              }}
-            />
-          </Field>
+          <FieldGroup>
+            <Field orientation="horizontal">
+              <FieldContent>
+                <FieldLabel htmlFor="digest-major">Major outages</FieldLabel>
+                <FieldDescription>
+                  One email after each status check if a starred service newly
+                  enters a major outage. Recoveries and degraded-only changes
+                  are not emailed.
+                </FieldDescription>
+              </FieldContent>
+              <Switch
+                id="digest-major"
+                checked={digestPrefs.notifyMajor}
+                disabled={busy}
+                onCheckedChange={(checked) => {
+                  void onToggleDigest("major", checked)
+                }}
+              />
+            </Field>
+            <Field orientation="horizontal">
+              <FieldContent>
+                <FieldLabel htmlFor="digest-partial">
+                  Partial outages
+                </FieldLabel>
+                <FieldDescription>
+                  Partial is noisier — multi-region providers can flip often. At
+                  most one Partial email per starred service every 6 hours.
+                </FieldDescription>
+              </FieldContent>
+              <Switch
+                id="digest-partial"
+                checked={digestPrefs.notifyPartial}
+                disabled={busy}
+                onCheckedChange={(checked) => {
+                  void onToggleDigest("partial", checked)
+                }}
+              />
+            </Field>
+          </FieldGroup>
         </CardContent>
       </Card>
 

@@ -1,15 +1,20 @@
 /**
- * My Stack email digests (SMA-115).
+ * My Stack email digests (SMA-115 / SMA-118).
  *
- * After a poll settles: users who opted in get one Resend email if any
- * favorite transitioned *into* Major or Partial from a healthier state.
- * Recoveries, still-bad, Degraded-only, Maintenance, and Live are skipped.
- * `digest_sends (user_id, poll_id)` makes the same snapshot set idempotent.
+ * After a poll settles: opted-in users get one Resend email if a favorite
+ * transitioned *into* Major or Partial from a healthier state and their
+ * toggles allow it. Partial is rate-limited to one email per favorite
+ * every 6 hours. Recoveries, still-bad, Degraded-only, Maintenance, and
+ * Live are skipped. `digest_sends (user_id, poll_id)` makes the same
+ * snapshot set idempotent.
  */
 import { createHash } from "node:crypto"
 import type pg from "pg"
 
 import type { ServiceStatus } from "./statuspage.js"
+
+/** At most one Partial digest email per user+favorite in this window. */
+export const PARTIAL_COOLDOWN_MS = 6 * 60 * 60 * 1000
 
 /** Lower number = more urgent. Matches app `STATUS_RANK` (lib/status.ts). */
 export const STATUS_RANK: Record<ServiceStatus, number> = {
@@ -39,10 +44,17 @@ export type StatusTransition = {
   to: ServiceStatus
 }
 
+export type DigestNotifyPrefs = {
+  notifyMajor: boolean
+  notifyPartial: boolean
+}
+
 export type DigestUser = {
   userId: string
   email: string
   favoriteIds: string[]
+  notifyMajor: boolean
+  notifyPartial: boolean
 }
 
 export type UserDigest = {
@@ -97,6 +109,42 @@ export function collectTransitions(
   return items
 }
 
+export function toEpochMs(value: Date | number): number {
+  return typeof value === "number" ? value : value.getTime()
+}
+
+/** True when the last Partial email for this favorite is still inside 6h. */
+export function isPartialCooldownActive(
+  lastNotifiedAt: Date | number | null | undefined,
+  now: Date | number,
+  cooldownMs = PARTIAL_COOLDOWN_MS
+): boolean {
+  if (lastNotifiedAt == null) {
+    return false
+  }
+  return toEpochMs(now) - toEpochMs(lastNotifiedAt) < cooldownMs
+}
+
+export function filterDigestItems(
+  items: readonly StatusTransition[],
+  prefs: DigestNotifyPrefs,
+  lastPartialAt: ReadonlyMap<string, Date | number>,
+  now: Date | number
+): StatusTransition[] {
+  return items.filter((item) => {
+    if (item.to === "major_outage") {
+      return prefs.notifyMajor
+    }
+    if (item.to === "partial_outage") {
+      if (!prefs.notifyPartial) {
+        return false
+      }
+      return !isPartialCooldownActive(lastPartialAt.get(item.serviceId), now)
+    }
+    return false
+  })
+}
+
 export function digestForUser(
   user: DigestUser,
   transitions: readonly StatusTransition[]
@@ -113,14 +161,38 @@ export function digestForUser(
     })
 }
 
+export function qualifyingDigestItems(
+  user: DigestUser,
+  transitions: readonly StatusTransition[],
+  lastPartialAt: ReadonlyMap<string, Date | number>,
+  now: Date | number
+): StatusTransition[] {
+  return filterDigestItems(
+    digestForUser(user, transitions),
+    { notifyMajor: user.notifyMajor, notifyPartial: user.notifyPartial },
+    lastPartialAt,
+    now
+  )
+}
+
 /** One digest per user — never one email per service. */
 export function groupUserDigests(
   users: readonly DigestUser[],
-  transitions: readonly StatusTransition[]
+  transitions: readonly StatusTransition[],
+  lastPartialAtByUser: ReadonlyMap<
+    string,
+    ReadonlyMap<string, Date | number>
+  > = new Map(),
+  now: Date | number = 0
 ): UserDigest[] {
   const digests: UserDigest[] = []
   for (const user of users) {
-    const items = digestForUser(user, transitions)
+    const items = qualifyingDigestItems(
+      user,
+      transitions,
+      lastPartialAtByUser.get(user.userId) ?? new Map(),
+      now
+    )
     if (items.length > 0) {
       digests.push({ user, items })
     }
@@ -212,6 +284,8 @@ type SubscriberRow = {
   user_id: string
   email: string
   service_id: string
+  notify_major: boolean
+  notify_partial: boolean
 }
 
 export type DigestRunResult = {
@@ -241,6 +315,8 @@ function groupSubscriberRows(rows: SubscriberRow[]): DigestUser[] {
       userId: row.user_id,
       email,
       favoriteIds: [row.service_id],
+      notifyMajor: row.notify_major,
+      notifyPartial: row.notify_partial,
     })
   }
   return [...byUser.values()]
@@ -311,17 +387,27 @@ export async function sendStackDigests(
   }
 
   const { rows: subscriberRows } = await pool.query<SubscriberRow>(
-    `SELECT u.id AS user_id, u.email, uf.service_id
+    `SELECT u.id AS user_id, u.email, uf.service_id,
+            p.notify_major, p.notify_partial
        FROM user_digest_prefs p
        JOIN "user" u ON u.id = p.user_id
        JOIN user_favorites uf ON uf.user_id = p.user_id
-      WHERE p.email_major_partial = true
+      WHERE p.email_enabled = true
+        AND (p.notify_major = true OR p.notify_partial = true)
         AND length(btrim(u.email)) > 0
       ORDER BY u.id, uf.created_at ASC, uf.service_id ASC`
   )
+  const users = groupSubscriberRows(subscriberRows)
+  const lastPartialAtByUser = await loadPartialNotifyTimes(
+    pool,
+    users.map((user) => user.userId)
+  )
+  const now = new Date()
   const digests = groupUserDigests(
-    groupSubscriberRows(subscriberRows),
-    transitions
+    users,
+    transitions,
+    lastPartialAtByUser,
+    now
   )
   if (digests.length === 0) {
     return empty
@@ -329,7 +415,7 @@ export async function sendStackDigests(
 
   if (!options.mailer) {
     console.warn(
-      `[digest] ${digests.length} user(s) have Major/Partial transitions; set RESEND_API_KEY and RESEND_FROM on the worker to send`
+      `[digest] ${digests.length} user(s) have qualifying transitions; set RESEND_API_KEY and RESEND_FROM on the worker to send`
     )
     return { sent: 0, users: digests.length, skipped: digests.length }
   }
@@ -355,6 +441,18 @@ export async function sendStackDigests(
         html: digestHtmlBody(digest.items, options.publicSiteUrl),
       })
       sent += 1
+      try {
+        await recordPartialNotifies(
+          pool,
+          digest.user.userId,
+          digest.items,
+          now
+        )
+      } catch (err) {
+        console.error(
+          `[digest] partial cooldown persist failed user=${digest.user.userId}: ${(err as Error).message}`
+        )
+      }
     } catch (err) {
       await releaseDigestSend(pool, digest.user.userId, pollId).catch(() => {})
       console.error(
@@ -364,6 +462,60 @@ export async function sendStackDigests(
     }
   }
   return { sent, users: digests.length, skipped }
+}
+
+async function loadPartialNotifyTimes(
+  pool: pg.Pool,
+  userIds: string[]
+): Promise<Map<string, Map<string, Date>>> {
+  const byUser = new Map<string, Map<string, Date>>()
+  if (userIds.length === 0) {
+    return byUser
+  }
+  const { rows } = await pool.query<{
+    user_id: string
+    service_id: string
+    last_notified_at: Date
+  }>(
+    `SELECT user_id, service_id, last_notified_at
+       FROM digest_partial_notifies
+      WHERE user_id = ANY($1::text[])`,
+    [userIds]
+  )
+  for (const row of rows) {
+    let inner = byUser.get(row.user_id)
+    if (!inner) {
+      inner = new Map()
+      byUser.set(row.user_id, inner)
+    }
+    inner.set(row.service_id, row.last_notified_at)
+  }
+  return byUser
+}
+
+async function recordPartialNotifies(
+  pool: pg.Pool,
+  userId: string,
+  items: readonly StatusTransition[],
+  notifiedAt: Date
+): Promise<void> {
+  const partials = items.filter((item) => item.to === "partial_outage")
+  if (partials.length === 0) {
+    return
+  }
+  const values: unknown[] = []
+  const tuples = partials.map((item, index) => {
+    const base = index * 3
+    values.push(userId, item.serviceId, notifiedAt)
+    return `($${base + 1}, $${base + 2}, $${base + 3})`
+  })
+  await pool.query(
+    `INSERT INTO digest_partial_notifies (user_id, service_id, last_notified_at)
+     VALUES ${tuples.join(", ")}
+     ON CONFLICT (user_id, service_id)
+     DO UPDATE SET last_notified_at = EXCLUDED.last_notified_at`,
+    values
+  )
 }
 
 export async function claimDigestSend(

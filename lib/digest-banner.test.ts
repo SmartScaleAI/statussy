@@ -1,12 +1,17 @@
 import assert from "node:assert/strict"
 import { test } from "node:test"
 
-import { shouldShowDigestBanner } from "./digest-banner.ts"
+import {
+  applyDigestPrefsPatch,
+  DEFAULT_DIGEST_PREFS,
+  OPT_IN_DIGEST_PREFS,
+  shouldShowDigestBanner,
+} from "./digest-banner.ts"
 
 const signedOut = {
   authPending: false,
   signedIn: false,
-  emailMajorPartial: false,
+  emailEnabled: false,
   bannerDismissed: false,
   prefsReady: false,
   localDismissed: false,
@@ -16,7 +21,7 @@ const signedOut = {
 const signedIn = {
   authPending: false,
   signedIn: true,
-  emailMajorPartial: false,
+  emailEnabled: false,
   bannerDismissed: false,
   prefsReady: true,
   localDismissed: false,
@@ -46,7 +51,7 @@ test("signed-in banner is not gated on favorites", () => {
 
 test("signed-in banner hides when opted in, dismissed, or prefs pending", () => {
   assert.equal(
-    shouldShowDigestBanner({ ...signedIn, emailMajorPartial: true }),
+    shouldShowDigestBanner({ ...signedIn, emailEnabled: true }),
     false
   )
   assert.equal(
@@ -72,4 +77,35 @@ test("banner waits until auth has settled", () => {
     shouldShowDigestBanner({ ...signedIn, authPending: true }),
     false
   )
+})
+
+test("banner Enable applies Major on / Partial off and does not enable Partial", () => {
+  const next = applyDigestPrefsPatch(DEFAULT_DIGEST_PREFS, {
+    emailEnabled: true,
+  })
+  assert.deepEqual(next, OPT_IN_DIGEST_PREFS)
+  assert.equal(next.notifyPartial, false)
+})
+
+test("settings notify-on marks master opted-in without flipping the other toggle", () => {
+  const majorOn = applyDigestPrefsPatch(DEFAULT_DIGEST_PREFS, {
+    notifyMajor: true,
+  })
+  assert.equal(majorOn.emailEnabled, true)
+  assert.equal(majorOn.notifyMajor, true)
+  assert.equal(majorOn.notifyPartial, false)
+  assert.equal(majorOn.bannerDismissed, true)
+
+  const optedIn = applyDigestPrefsPatch(OPT_IN_DIGEST_PREFS, {
+    notifyPartial: true,
+  })
+  assert.equal(optedIn.notifyMajor, true)
+  assert.equal(optedIn.notifyPartial, true)
+
+  const majorOff = applyDigestPrefsPatch(OPT_IN_DIGEST_PREFS, {
+    notifyMajor: false,
+  })
+  assert.equal(majorOff.emailEnabled, true)
+  assert.equal(majorOff.notifyMajor, false)
+  assert.equal(majorOff.notifyPartial, false)
 })

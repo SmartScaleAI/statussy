@@ -1,18 +1,38 @@
 /**
- * Top-of-board email opt-in banner visibility (SMA-115).
+ * Top-of-board email opt-in banner visibility (SMA-115 / SMA-118).
  * Signed-out users see it (CTA → login). Signed-in users see it until
  * they enable alerts or dismiss. Not gated on first favorite.
  * This module is client-safe — no Postgres imports.
  */
 
 export type UserDigestPrefs = {
-  emailMajorPartial: boolean
+  /** Master opt-in. Banner Enable turns this on. */
+  emailEnabled: boolean
+  notifyMajor: boolean
+  notifyPartial: boolean
   bannerDismissed: boolean
 }
 
+export type DigestPrefsPatch = {
+  emailEnabled?: boolean
+  notifyMajor?: boolean
+  notifyPartial?: boolean
+  bannerDismissed?: boolean
+}
+
 export const DEFAULT_DIGEST_PREFS: UserDigestPrefs = {
-  emailMajorPartial: false,
+  emailEnabled: false,
+  notifyMajor: false,
+  notifyPartial: false,
   bannerDismissed: false,
+}
+
+/** After banner/CTA opt-in: master on, Major on, Partial off. */
+export const OPT_IN_DIGEST_PREFS: UserDigestPrefs = {
+  emailEnabled: true,
+  notifyMajor: true,
+  notifyPartial: false,
+  bannerDismissed: true,
 }
 
 /** localStorage key for signed-out (and cross-session) dismiss. */
@@ -45,10 +65,50 @@ export function persistLocalBannerDismissed(dismissed: boolean): void {
   }
 }
 
+/**
+ * Merge a prefs patch. Banner master opt-in (`emailEnabled: true`) applies
+ * Major-on / Partial-off unless the patch sets those flags. Turning either
+ * notify toggle on also marks master opted-in and dismisses the banner.
+ */
+export function applyDigestPrefsPatch(
+  current: UserDigestPrefs,
+  patch: DigestPrefsPatch
+): UserDigestPrefs {
+  const next: UserDigestPrefs = {
+    emailEnabled: patch.emailEnabled ?? current.emailEnabled,
+    notifyMajor: patch.notifyMajor ?? current.notifyMajor,
+    notifyPartial: patch.notifyPartial ?? current.notifyPartial,
+    bannerDismissed: patch.bannerDismissed ?? current.bannerDismissed,
+  }
+  if (patch.emailEnabled === true) {
+    if (patch.notifyMajor === undefined) {
+      next.notifyMajor = true
+    }
+    if (patch.notifyPartial === undefined) {
+      next.notifyPartial = false
+    }
+    next.bannerDismissed = true
+  }
+  if (patch.notifyMajor === true || patch.notifyPartial === true) {
+    next.emailEnabled = true
+    next.bannerDismissed = true
+  }
+  return next
+}
+
+export function pickDigestPrefs(prefs: UserDigestPrefs): UserDigestPrefs {
+  return {
+    emailEnabled: prefs.emailEnabled,
+    notifyMajor: prefs.notifyMajor,
+    notifyPartial: prefs.notifyPartial,
+    bannerDismissed: prefs.bannerDismissed,
+  }
+}
+
 export type DigestBannerState = {
   authPending: boolean
   signedIn: boolean
-  emailMajorPartial: boolean
+  emailEnabled: boolean
   bannerDismissed: boolean
   prefsReady: boolean
   localDismissed: boolean
@@ -64,7 +124,7 @@ export function shouldShowDigestBanner(state: DigestBannerState): boolean {
   }
   return (
     state.prefsReady &&
-    !state.emailMajorPartial &&
+    !state.emailEnabled &&
     !state.bannerDismissed &&
     !state.localDismissed
   )

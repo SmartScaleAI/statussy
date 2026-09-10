@@ -5,23 +5,25 @@ import { XIcon } from "lucide-react"
 
 import {
   dismissDigestBanner,
+  enableMyDigest,
   getMyDigestPrefs,
-  setMyDigestEmail,
 } from "@/app/actions/digest-prefs"
 import { useAuth } from "@/components/auth-provider"
 import { Button } from "@/components/ui/button"
 import {
   DEFAULT_DIGEST_PREFS,
+  OPT_IN_DIGEST_PREFS,
   persistLocalBannerDismissed,
+  pickDigestPrefs,
   readLocalBannerDismissed,
   shouldShowDigestBanner,
   type UserDigestPrefs,
 } from "@/lib/digest-banner"
 
 /**
- * Top-of-board opt-in (SMA-115). Signed-out CTA opens the login dialog.
- * Signed-in CTA enables email alerts immediately. X persists dismiss
- * until they opt in from Settings.
+ * Top-of-board opt-in (SMA-115 / SMA-118). Signed-out CTA opens the login
+ * dialog. Signed-in CTA enables master + Major (Partial stays off). X
+ * persists dismiss until they opt in from Settings.
  */
 export function EmailAlertsBanner() {
   const { isPending, isSignedIn, openLogin } = useAuth()
@@ -48,14 +50,7 @@ export function EmailAlertsBanner() {
       if (cancelled) {
         return
       }
-      setPrefs(
-        result.signedIn
-          ? {
-              emailMajorPartial: result.emailMajorPartial,
-              bannerDismissed: result.bannerDismissed,
-            }
-          : DEFAULT_DIGEST_PREFS
-      )
+      setPrefs(result.signedIn ? pickDigestPrefs(result) : DEFAULT_DIGEST_PREFS)
     })
     return () => {
       cancelled = true
@@ -63,12 +58,7 @@ export function EmailAlertsBanner() {
   }, [isPending, isSignedIn])
 
   useEffect(() => {
-    if (
-      !isSignedIn ||
-      !prefs ||
-      prefs.emailMajorPartial ||
-      prefs.bannerDismissed
-    ) {
+    if (!isSignedIn || !prefs || prefs.emailEnabled || prefs.bannerDismissed) {
       return
     }
     if (!localDismissed) {
@@ -79,10 +69,7 @@ export function EmailAlertsBanner() {
       if (cancelled || !result.signedIn) {
         return
       }
-      setPrefs({
-        emailMajorPartial: result.emailMajorPartial,
-        bannerDismissed: result.bannerDismissed,
-      })
+      setPrefs(pickDigestPrefs(result))
     })
     return () => {
       cancelled = true
@@ -92,8 +79,7 @@ export function EmailAlertsBanner() {
   const visible = shouldShowDigestBanner({
     authPending: isPending,
     signedIn: isSignedIn,
-    emailMajorPartial:
-      prefs?.emailMajorPartial ?? DEFAULT_DIGEST_PREFS.emailMajorPartial,
+    emailEnabled: prefs?.emailEnabled ?? DEFAULT_DIGEST_PREFS.emailEnabled,
     bannerDismissed:
       prefs?.bannerDismissed ?? DEFAULT_DIGEST_PREFS.bannerDismissed,
     prefsReady: prefs != null,
@@ -108,8 +94,8 @@ export function EmailAlertsBanner() {
   async function onEnable() {
     const previous = prefs ?? DEFAULT_DIGEST_PREFS
     setPending("enable")
-    setPrefs({ emailMajorPartial: true, bannerDismissed: true })
-    const result = await setMyDigestEmail(true)
+    setPrefs(OPT_IN_DIGEST_PREFS)
+    const result = await enableMyDigest()
     setPending(null)
     if (!result.signedIn) {
       setPrefs(previous)
@@ -117,10 +103,7 @@ export function EmailAlertsBanner() {
     }
     persistLocalBannerDismissed(true)
     setLocalDismissed(true)
-    setPrefs({
-      emailMajorPartial: result.emailMajorPartial,
-      bannerDismissed: result.bannerDismissed,
-    })
+    setPrefs(pickDigestPrefs(result))
   }
 
   async function onDismiss() {
@@ -138,10 +121,7 @@ export function EmailAlertsBanner() {
       setPrefs(previous)
       return
     }
-    setPrefs({
-      emailMajorPartial: result.emailMajorPartial,
-      bannerDismissed: result.bannerDismissed,
-    })
+    setPrefs(pickDigestPrefs(result))
   }
 
   return (
@@ -173,8 +153,9 @@ export function EmailAlertsBanner() {
             Email alerts for My Stack
           </p>
           <p className="text-sm text-muted-foreground">
-            One email when a starred service newly hits a major or partial
-            outage. Recoveries are not emailed yet.
+            One email when a starred service newly hits a major outage. Partial
+            stays off until you turn it on in Settings. Recoveries are not
+            emailed yet.
           </p>
         </div>
         <div className="flex shrink-0 items-center gap-2">
