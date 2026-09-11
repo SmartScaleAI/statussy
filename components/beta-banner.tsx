@@ -15,7 +15,7 @@ import {
 } from "@/lib/beta-banner"
 
 /**
- * Thin sitewide beta notice under the header (SMA-125). Quiet utility
+ * Thin sitewide beta notice above the header (SMA-126). Quiet utility
  * chrome, dismissible, localStorage so it does not nag every visit.
  */
 export function BetaBanner() {
