@@ -8,8 +8,9 @@ function catalogServiceNames() {
 }
 
 /**
- * Skinny Report / Suggest rail (SMA-120). Sits to the right of the whole
- * board on desktop (My Stack + All Services); stacks below on mobile.
+ * Report / Suggest rail (SMA-120, width SMA-122). Sits to the right of
+ * the whole board on desktop (My Stack + All Services); stacks below on
+ * mobile.
  */
 export function ReportSuggestPanel() {
   return (
