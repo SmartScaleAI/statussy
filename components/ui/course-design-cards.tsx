@@ -8,15 +8,15 @@
  *
  * SMA-33: the whole card is the detail hit target (stretched overlay link).
  * Star + Official status sit above it and stopPropagation so they stay usable.
- * SMA-36: shelf has no divider; timestamps include a UTC suffix.
+ * SMA-36: shelf has no divider. Footer stamp is relative (`Checked 2m ago`).
  * SMA-37: star toggles localStorage favorites (`statussy:favoriteServiceIds`).
  * SMA-103: signed-out star opens the login dialog and does not toggle.
  * SMA-128: star control lives in `FavoriteButton` so the detail page
  * can reuse the same toggle + auth dialog.
+ * SMA-129: Official control is quiet text `Official status ↗` (no extra icon).
  */
 "use client"
 
-import { ArrowUpRightIcon } from "lucide-react"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import React, { type MouseEvent } from "react"
@@ -24,6 +24,7 @@ import React, { type MouseEvent } from "react"
 import { FavoriteButton } from "@/components/favorite-button"
 import { CATEGORY_PARAM } from "@/lib/board-filter"
 import { logoInvertClass } from "@/lib/light-logo-ids"
+import { formatTimestamp } from "@/lib/status"
 import { cn } from "@/lib/utils"
 
 function stopCardNavigation(event: MouseEvent) {
@@ -165,7 +166,11 @@ const Card: React.FC<CardProps> = ({ data }) => {
       </div>
       <div className="card-footer">
         {updatedLabel ? (
-          <time className="updated-at" dateTime={updatedAt} title={updatedAt}>
+          <time
+            className="updated-at"
+            dateTime={updatedAt}
+            title={updatedAt ? formatTimestamp(updatedAt) : undefined}
+          >
             {updatedLabel}
           </time>
         ) : (
@@ -176,16 +181,21 @@ const Card: React.FC<CardProps> = ({ data }) => {
             href={countdownHref}
             className="btn-countdown"
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             onClick={stopCardNavigation}
           >
             {countdownText}
-            <ArrowUpRightIcon aria-hidden="true" />
           </a>
         ) : (
-          <a href="#" className="btn-countdown" onClick={stopCardNavigation}>
+          <a
+            href="#"
+            className="btn-countdown"
+            onClick={(event) => {
+              event.preventDefault()
+              stopCardNavigation(event)
+            }}
+          >
             {countdownText}
-            <ArrowUpRightIcon aria-hidden="true" />
           </a>
         )}
       </div>
