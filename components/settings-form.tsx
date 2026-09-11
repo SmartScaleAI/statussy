@@ -9,6 +9,8 @@ import {
   unlinkSocialAccount,
 } from "@/app/actions/account"
 import { getMyDigestPrefs, setMyDigestNotify } from "@/app/actions/digest-prefs"
+import { getMyWebhookPrefs } from "@/app/actions/webhook-prefs"
+import { WebhookSettings } from "@/components/webhook-settings"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -55,6 +57,11 @@ import {
   type UserDigestPrefs,
 } from "@/lib/digest-banner"
 import { shouldRenderAccountSettings } from "@/lib/settings-session"
+import {
+  DEFAULT_WEBHOOK_PREFS,
+  pickWebhookPrefs,
+  type UserWebhookPrefs,
+} from "@/lib/webhook-prefs"
 
 function GoogleMark(props: SVGProps<SVGSVGElement>) {
   return (
@@ -106,6 +113,9 @@ export function SettingsForm() {
   } | null>(null)
   const [digestPrefs, setDigestPrefs] =
     useState<UserDigestPrefs>(DEFAULT_DIGEST_PREFS)
+  const [webhookPrefs, setWebhookPrefs] = useState<UserWebhookPrefs>(
+    DEFAULT_WEBHOOK_PREFS
+  )
   const [pending, setPending] = useState<
     | SocialProvider
     | "signout"
@@ -131,6 +141,7 @@ export function SettingsForm() {
     if (!hasUser) {
       setSnapshot(null)
       setDigestPrefs(DEFAULT_DIGEST_PREFS)
+      setWebhookPrefs(DEFAULT_WEBHOOK_PREFS)
       if (pathname === "/settings") {
         router.replace(`/?${SIGN_IN_QUERY}=1`)
         router.refresh()
@@ -138,24 +149,30 @@ export function SettingsForm() {
       return
     }
     let cancelled = false
-    void Promise.all([getMyAccountSnapshot(), getMyDigestPrefs()]).then(
-      ([result, prefs]) => {
-        if (cancelled) {
-          return
-        }
-        if (!result.ok) {
-          setSnapshot(null)
-          setDigestPrefs(DEFAULT_DIGEST_PREFS)
-          router.replace(`/?${SIGN_IN_QUERY}=1`)
-          router.refresh()
-          return
-        }
-        setSnapshot({ email: result.email, accounts: result.accounts })
-        if (prefs.signedIn) {
-          setDigestPrefs(pickDigestPrefs(prefs))
-        }
+    void Promise.all([
+      getMyAccountSnapshot(),
+      getMyDigestPrefs(),
+      getMyWebhookPrefs(),
+    ]).then(([result, prefs, webhook]) => {
+      if (cancelled) {
+        return
       }
-    )
+      if (!result.ok) {
+        setSnapshot(null)
+        setDigestPrefs(DEFAULT_DIGEST_PREFS)
+        setWebhookPrefs(DEFAULT_WEBHOOK_PREFS)
+        router.replace(`/?${SIGN_IN_QUERY}=1`)
+        router.refresh()
+        return
+      }
+      setSnapshot({ email: result.email, accounts: result.accounts })
+      if (prefs.signedIn) {
+        setDigestPrefs(pickDigestPrefs(prefs))
+      }
+      if (webhook.signedIn) {
+        setWebhookPrefs(pickWebhookPrefs(webhook))
+      }
+    })
     return () => {
       cancelled = true
     }
@@ -293,7 +310,7 @@ export function SettingsForm() {
           <CardTitle>Email alerts</CardTitle>
           <CardDescription>
             Optional My Stack digest. After you opt in, Major starts on and
-            Partial stays off.
+            Partial stays off. Webhook alerts use these same toggles.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -338,6 +355,13 @@ export function SettingsForm() {
           </FieldGroup>
         </CardContent>
       </Card>
+
+      <WebhookSettings
+        initialPrefs={webhookPrefs}
+        onSignedOut={() => {
+          router.push(`/?${SIGN_IN_QUERY}=1`)
+        }}
+      />
 
       <Card>
         <CardHeader>

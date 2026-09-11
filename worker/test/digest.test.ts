@@ -21,12 +21,15 @@ import {
   withLatestIncidents,
   filterDigestItems,
   groupUserDigests,
+  mergeAlertUsers,
+  planUserAlerts,
   isDigestTransition,
   isLiveStatus,
   liveServiceIdsFromPairs,
   qualifyingDigestItems,
   unmuteRecovered,
   pairsFromSnapshotRows,
+  type AlertChannelUser,
   type DigestUser,
   type StatusTransition,
 } from "../src/digest.js"
@@ -628,3 +631,83 @@ test("createResendMailer posts Statussy from and List-Unsubscribe, never smartai
     "<https://www.statussy.com/settings>"
   )
 })
+
+function channelUser(
+  userId: string,
+  favoriteIds: string[],
+  channels: { email?: boolean; webhook?: boolean }
+): AlertChannelUser {
+  return {
+    ...user(userId, `${userId}@example.com`, favoriteIds),
+    emailEnabled: Boolean(channels.email),
+    webhookEnabled: Boolean(channels.webhook),
+    ...(channels.webhook
+      ? {
+          webhookUrl: "https://hooks.slack.com/services/T000/B000/xxx",
+          webhookSecret: "stsy_secret",
+        }
+      : {}),
+  }
+}
+
+test("mergeAlertUsers unions email and webhook subscribers", () => {
+  const merged = mergeAlertUsers(
+    [user("u1", "a@example.com", ["openai"])],
+    [
+      channelUser("u1", ["openai", "anthropic"], { webhook: true }),
+      channelUser("u2", ["vercel"], { webhook: true }),
+    ]
+  )
+  assert.equal(merged.length, 2)
+  const both = merged.find((row) => row.userId === "u1")
+  assert.equal(both?.emailEnabled, true)
+  assert.equal(both?.webhookEnabled, true)
+  assert.deepEqual(both?.favoriteIds, ["openai", "anthropic"])
+  const hookOnly = merged.find((row) => row.userId === "u2")
+  assert.equal(hookOnly?.emailEnabled, false)
+  assert.equal(hookOnly?.webhookEnabled, true)
+})
+
+test("email and webhook share mute-until-Live and batch one payload", () => {
+  const transitions = collectTransitions([
+    {
+      serviceId: "openai",
+      name: "OpenAI",
+      previous: "operational",
+      current: "major_outage",
+    },
+    {
+      serviceId: "anthropic",
+      name: "Anthropic",
+      previous: "operational",
+      current: "partial_outage",
+    },
+  ])
+  const first = planUserAlerts(
+    [channelUser("u1", ["openai", "anthropic"], { email: true, webhook: true })],
+    transitions
+  )
+  assert.equal(first.length, 1)
+  assert.deepEqual(
+    first[0]?.items.map((item) => item.serviceId),
+    ["openai", "anthropic"]
+  )
+  assert.equal(first[0]?.user.emailEnabled, true)
+  assert.equal(first[0]?.user.webhookEnabled, true)
+
+  const muted = new Map([["u1", new Set(["openai", "anthropic"])]])
+  const second = planUserAlerts(
+    [channelUser("u1", ["openai", "anthropic"], { email: true, webhook: true })],
+    transitions,
+    muted
+  )
+  assert.deepEqual(second, [])
+
+  const webhookOnly = planUserAlerts(
+    [channelUser("u2", ["openai"], { webhook: true })],
+    transitions,
+    new Map([["u2", new Set(["openai"])]])
+  )
+  assert.deepEqual(webhookOnly, [])
+})
+
