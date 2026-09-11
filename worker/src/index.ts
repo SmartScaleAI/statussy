@@ -1542,9 +1542,14 @@ async function runTick(): Promise<void> {
             )
           : null,
       })
-      if (digest.sent > 0 || digest.users > 0) {
+      if (
+        digest.sent > 0 ||
+        digest.users > 0 ||
+        digest.webhooksSent > 0 ||
+        digest.webhooksFailed > 0
+      ) {
         console.log(
-          `[digest] #${tickNumber} sent=${digest.sent} users=${digest.users} skipped=${digest.skipped}`,
+          `[digest] #${tickNumber} sent=${digest.sent} users=${digest.users} skipped=${digest.skipped} webhooks=${digest.webhooksSent} webhookFails=${digest.webhooksFailed}`,
         )
       }
     } catch (err) {

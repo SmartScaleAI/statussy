@@ -12,7 +12,7 @@ import { SIGN_IN_QUERY } from "@/lib/sign-in-methods"
 export const metadata: Metadata = {
   title: "Settings · Statussy",
   description:
-    "Manage your Statussy account, My Stack email alerts, connected sign-in methods, and data.",
+    "Manage your Statussy account, My Stack email and webhook alerts, connected sign-in methods, and data.",
 }
 
 /**
@@ -47,8 +47,8 @@ export default async function SettingsPage() {
               Settings
             </h1>
             <p className="text-sm text-muted-foreground">
-              Your email, My Stack alerts, connected accounts, and account
-              deletion.
+              Your email, My Stack email and webhook alerts, connected accounts,
+              and account deletion.
             </p>
           </div>
         </header>

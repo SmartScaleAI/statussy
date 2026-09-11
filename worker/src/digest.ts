@@ -1,15 +1,18 @@
 /**
- * My Stack email digests (SMA-115 / SMA-118 / SMA-131 / SMA-132 / SMA-135).
+ * My Stack email digests + outbound webhooks
+ * (SMA-115 / SMA-118 / SMA-131 / SMA-132 / SMA-135 / SMA-137).
  *
- * After a poll settles: opted-in users get one Resend email if a favorite
- * transitioned *into* Major or Partial from a healthier state and their
- * toggles allow it. Once a favorite is included, it is muted until that
- * service recovers to Live (operational). Partial and Major share that
- * episode rule. Recoveries, still-bad, Degraded-only, Maintenance, and
- * Live are skipped. `digest_sends (user_id, poll_id)` makes the same
- * snapshot set idempotent.
+ * After a poll settles: opted-in users get one Resend email and/or one
+ * batched HTTPS POST if a favorite transitioned *into* Major or Partial
+ * from a healthier state and their toggles allow it. Once a favorite is
+ * included on either channel, it is muted until that service recovers to
+ * Live (operational). Partial and Major share that episode rule.
+ * Recoveries, still-bad, Degraded-only, Maintenance, and Live are skipped.
+ * `digest_sends` / `webhook_sends` (user_id, poll_id) make the same
+ * snapshot set idempotent per channel.
  *
  * HTML/text bodies live in digest-email.ts (Grok-like black column).
+ * Webhook payload + HMAC live in webhook.ts.
  */
 import { createHash } from "node:crypto"
 import type pg from "pg"
@@ -21,6 +24,16 @@ import {
   digestTextBody,
 } from "./digest-email.js"
 import type { ServiceStatus } from "./statuspage.js"
+import {
+  buildWebhookPayload,
+  buildWebhookServices,
+  claimWebhookSend,
+  deliverWebhook,
+  recordWebhookFailure,
+  recordWebhookSuccess,
+  releaseWebhookSend,
+  serializeWebhookPayload,
+} from "./webhook.js"
 
 export {
   digestAttentionTitle,
@@ -59,6 +72,8 @@ export type StatusTransition = {
   to: ServiceStatus
   /** Vendor status page, when known. Optional Official status link. */
   statusUrl?: string
+  /** ISO timestamp of the current snapshot, when known. */
+  checkedAt?: string
   /** Newest unresolved incident, when the feed has one. */
   incidentTitle?: string
   incidentUrl?: string
@@ -84,8 +99,20 @@ export type DigestUser = {
   notifyPartial: boolean
 }
 
+export type AlertChannelUser = DigestUser & {
+  emailEnabled: boolean
+  webhookEnabled: boolean
+  webhookUrl?: string
+  webhookSecret?: string
+}
+
 export type UserDigest = {
   user: DigestUser
+  items: StatusTransition[]
+}
+
+export type PlannedAlert = {
+  user: AlertChannelUser
   items: StatusTransition[]
 }
 
@@ -120,6 +147,7 @@ export function collectTransitions(
     previous: ServiceStatus | null
     current: ServiceStatus
     statusUrl?: string
+    checkedAt?: string
   }>
 ): StatusTransition[] {
   const items: StatusTransition[] = []
@@ -133,6 +161,7 @@ export function collectTransitions(
       from: pair.previous as ServiceStatus,
       to: pair.current,
       ...(pair.statusUrl ? { statusUrl: pair.statusUrl } : {}),
+      ...(pair.checkedAt ? { checkedAt: pair.checkedAt } : {}),
     })
   }
   return items
@@ -262,6 +291,67 @@ export function groupUserDigests(
   return digests
 }
 
+export function mergeAlertUsers(
+  emailUsers: readonly DigestUser[],
+  webhookUsers: readonly AlertChannelUser[]
+): AlertChannelUser[] {
+  const byId = new Map<string, AlertChannelUser>()
+  for (const user of emailUsers) {
+    byId.set(user.userId, {
+      ...user,
+      favoriteIds: [...user.favoriteIds],
+      emailEnabled: true,
+      webhookEnabled: false,
+    })
+  }
+  for (const user of webhookUsers) {
+    const existing = byId.get(user.userId)
+    if (!existing) {
+      byId.set(user.userId, {
+        ...user,
+        favoriteIds: [...user.favoriteIds],
+        emailEnabled: false,
+        webhookEnabled: true,
+      })
+      continue
+    }
+    existing.webhookEnabled = true
+    existing.webhookUrl = user.webhookUrl
+    existing.webhookSecret = user.webhookSecret
+    const seen = new Set(existing.favoriteIds)
+    for (const id of user.favoriteIds) {
+      if (!seen.has(id)) {
+        existing.favoriteIds.push(id)
+        seen.add(id)
+      }
+    }
+  }
+  return [...byId.values()]
+}
+
+/** One planned alert per user. Email and webhook share the same items. */
+export function planUserAlerts(
+  users: readonly AlertChannelUser[],
+  transitions: readonly StatusTransition[],
+  mutedByUser: ReadonlyMap<string, ReadonlySet<string>> = new Map()
+): PlannedAlert[] {
+  const planned: PlannedAlert[] = []
+  for (const user of users) {
+    if (!user.emailEnabled && !user.webhookEnabled) {
+      continue
+    }
+    const items = qualifyingDigestItems(
+      user,
+      transitions,
+      mutedByUser.get(user.userId) ?? new Set()
+    )
+    if (items.length > 0) {
+      planned.push({ user, items })
+    }
+  }
+  return planned
+}
+
 export function digestPollId(
   snapshotIds: ReadonlyArray<string | number>
 ): string {
@@ -290,6 +380,7 @@ type LatestPairRow = {
   snapshot_id: string
   status: ServiceStatus
   status_url?: string | null
+  fetched_at?: Date | string | null
   rn: string | number
 }
 
@@ -301,10 +392,17 @@ type SubscriberRow = {
   notify_partial: boolean
 }
 
+type WebhookSubscriberRow = SubscriberRow & {
+  webhook_url: string
+  signing_secret: string
+}
+
 export type DigestRunResult = {
   sent: number
   users: number
   skipped: number
+  webhooksSent: number
+  webhooksFailed: number
 }
 
 export type DigestRunOptions = {
@@ -335,6 +433,34 @@ function groupSubscriberRows(rows: SubscriberRow[]): DigestUser[] {
   return [...byUser.values()]
 }
 
+function groupWebhookRows(rows: WebhookSubscriberRow[]): AlertChannelUser[] {
+  const byUser = new Map<string, AlertChannelUser>()
+  for (const row of rows) {
+    const url = row.webhook_url.trim()
+    const secret = row.signing_secret.trim()
+    if (!url || !secret) {
+      continue
+    }
+    const existing = byUser.get(row.user_id)
+    if (existing) {
+      existing.favoriteIds.push(row.service_id)
+      continue
+    }
+    byUser.set(row.user_id, {
+      userId: row.user_id,
+      email: row.email.trim(),
+      favoriteIds: [row.service_id],
+      notifyMajor: row.notify_major,
+      notifyPartial: row.notify_partial,
+      emailEnabled: false,
+      webhookEnabled: true,
+      webhookUrl: url,
+      webhookSecret: secret,
+    })
+  }
+  return [...byUser.values()]
+}
+
 export function pairsFromSnapshotRows(rows: LatestPairRow[]): {
   pairs: Array<{
     serviceId: string
@@ -342,6 +468,7 @@ export function pairsFromSnapshotRows(rows: LatestPairRow[]): {
     previous: ServiceStatus | null
     current: ServiceStatus
     statusUrl?: string
+    checkedAt?: string
   }>
   snapshotIds: string[]
 } {
@@ -355,13 +482,19 @@ export function pairsFromSnapshotRows(rows: LatestPairRow[]): {
       previous.set(row.service_id, row)
     }
   }
-  const pairs = [...current.values()].map((row) => ({
-    serviceId: row.service_id,
-    name: row.name,
-    previous: previous.get(row.service_id)?.status ?? null,
-    current: row.status,
-    ...(row.status_url ? { statusUrl: row.status_url } : {}),
-  }))
+  const pairs = [...current.values()].map((row) => {
+    const checkedAt = row.fetched_at
+      ? new Date(row.fetched_at).toISOString()
+      : undefined
+    return {
+      serviceId: row.service_id,
+      name: row.name,
+      previous: previous.get(row.service_id)?.status ?? null,
+      current: row.status,
+      ...(row.status_url ? { statusUrl: row.status_url } : {}),
+      ...(checkedAt ? { checkedAt } : {}),
+    }
+  })
   return {
     pairs,
     snapshotIds: [...current.values()].map((row) => String(row.snapshot_id)),
@@ -372,7 +505,13 @@ export async function sendStackDigests(
   pool: pg.Pool,
   options: DigestRunOptions
 ): Promise<DigestRunResult> {
-  const empty: DigestRunResult = { sent: 0, users: 0, skipped: 0 }
+  const empty: DigestRunResult = {
+    sent: 0,
+    users: 0,
+    skipped: 0,
+    webhooksSent: 0,
+    webhooksFailed: 0,
+  }
   const { rows: snapshotRows } = await pool.query<LatestPairRow>(
     `WITH ranked AS (
        SELECT
@@ -381,6 +520,7 @@ export async function sendStackDigests(
          snap.id::text AS snapshot_id,
          snap.status,
          svc.status_url,
+         snap.fetched_at,
          row_number() OVER (
            PARTITION BY snap.service_id
            ORDER BY snap.fetched_at DESC, snap.id DESC
@@ -388,7 +528,7 @@ export async function sendStackDigests(
        FROM service_snapshots snap
        JOIN services svc ON svc.id = snap.service_id
      )
-     SELECT service_id, name, snapshot_id, status, status_url, rn
+     SELECT service_id, name, snapshot_id, status, status_url, fetched_at, rn
        FROM ranked
       WHERE rn <= 2`
   )
@@ -421,61 +561,166 @@ export async function sendStackDigests(
         AND length(btrim(u.email)) > 0
       ORDER BY u.id, uf.created_at ASC, uf.service_id ASC`
   )
-  const users = groupSubscriberRows(subscriberRows)
+  const { rows: webhookRows } = await pool.query<WebhookSubscriberRow>(
+    `SELECT u.id AS user_id, u.email, uf.service_id,
+            p.notify_major, p.notify_partial,
+            w.url AS webhook_url, w.signing_secret
+       FROM user_webhook_prefs w
+       JOIN "user" u ON u.id = w.user_id
+       JOIN user_digest_prefs p ON p.user_id = w.user_id
+       JOIN user_favorites uf ON uf.user_id = w.user_id
+      WHERE w.enabled = true
+        AND w.url IS NOT NULL
+        AND length(btrim(w.url)) > 0
+        AND length(btrim(w.signing_secret)) > 0
+        AND (p.notify_major = true OR p.notify_partial = true)
+      ORDER BY u.id, uf.created_at ASC, uf.service_id ASC`
+  )
+  const users = mergeAlertUsers(
+    groupSubscriberRows(subscriberRows),
+    groupWebhookRows(webhookRows)
+  )
   const mutedByUser = await loadEpisodeMutes(
     pool,
     users.map((user) => user.userId)
   )
   const now = new Date()
-  const digests = groupUserDigests(users, transitions, mutedByUser)
-  if (digests.length === 0) {
+  const checkedAt = now.toISOString()
+  const alerts = planUserAlerts(users, transitions, mutedByUser)
+  if (alerts.length === 0) {
     return empty
   }
 
-  if (!options.mailer) {
+  const emailAlerts = alerts.filter((alert) => alert.user.emailEnabled)
+  if (emailAlerts.length > 0 && !options.mailer) {
     console.warn(
-      `[digest] ${digests.length} user(s) have qualifying transitions; set RESEND_API_KEY and RESEND_FROM on the worker to send`
+      `[digest] ${emailAlerts.length} user(s) have qualifying email transitions; set RESEND_API_KEY and RESEND_FROM on the worker to send`
     )
-    return { sent: 0, users: digests.length, skipped: digests.length }
   }
 
   let sent = 0
   let skipped = 0
-  for (const digest of digests) {
-    const claimed = await claimDigestSend(
-      pool,
-      digest.user.userId,
-      pollId,
-      digest.items.length
-    )
-    if (!claimed) {
-      skipped += 1
-      continue
+  let webhooksSent = 0
+  let webhooksFailed = 0
+  for (const alert of alerts) {
+    let emailSent = false
+    let webhookSent = false
+
+    if (alert.user.emailEnabled) {
+      if (!options.mailer) {
+        skipped += 1
+      } else {
+        const claimed = await claimDigestSend(
+          pool,
+          alert.user.userId,
+          pollId,
+          alert.items.length
+        )
+        if (!claimed) {
+          skipped += 1
+        } else {
+          try {
+            await options.mailer({
+              to: alert.user.email,
+              subject: digestSubject(alert.items.length),
+              text: digestTextBody(alert.items, options.publicSiteUrl),
+              html: digestHtmlBody(alert.items, options.publicSiteUrl),
+            })
+            sent += 1
+            emailSent = true
+          } catch (err) {
+            await releaseDigestSend(pool, alert.user.userId, pollId).catch(
+              () => {}
+            )
+            console.error(
+              `[digest] send failed user=${alert.user.userId}: ${(err as Error).message}`
+            )
+            skipped += 1
+          }
+        }
+      }
     }
-    try {
-      await options.mailer({
-        to: digest.user.email,
-        subject: digestSubject(digest.items.length),
-        text: digestTextBody(digest.items, options.publicSiteUrl),
-        html: digestHtmlBody(digest.items, options.publicSiteUrl),
-      })
-      sent += 1
+
+    if (
+      alert.user.webhookEnabled &&
+      alert.user.webhookUrl &&
+      alert.user.webhookSecret
+    ) {
+      const claimed = await claimWebhookSend(
+        pool,
+        alert.user.userId,
+        pollId,
+        alert.items.length
+      )
+      if (claimed) {
+        const payload = buildWebhookPayload(
+          buildWebhookServices(
+            alert.items,
+            options.publicSiteUrl,
+            checkedAt
+          )
+        )
+        const body = serializeWebhookPayload(payload)
+        const result = await deliverWebhook({
+          url: alert.user.webhookUrl,
+          secret: alert.user.webhookSecret,
+          body,
+        })
+        if (result.ok) {
+          webhooksSent += 1
+          webhookSent = true
+          try {
+            await recordWebhookSuccess(pool, alert.user.userId)
+          } catch (err) {
+            console.error(
+              `[webhook] success persist failed user=${alert.user.userId}: ${(err as Error).message}`
+            )
+          }
+        } else {
+          webhooksFailed += 1
+          await releaseWebhookSend(pool, alert.user.userId, pollId).catch(
+            () => {}
+          )
+          try {
+            const recorded = await recordWebhookFailure(
+              pool,
+              alert.user.userId,
+              result.error
+            )
+            if (recorded.disabled) {
+              console.warn(
+                `[webhook] disabled after hard failures user=${alert.user.userId}`
+              )
+            }
+          } catch (err) {
+            console.error(
+              `[webhook] failure persist failed user=${alert.user.userId}: ${(err as Error).message}`
+            )
+          }
+          console.error(
+            `[webhook] send failed user=${alert.user.userId}: ${result.error}`
+          )
+        }
+      }
+    }
+
+    if (emailSent || webhookSent) {
       try {
-        await recordEpisodeMutes(pool, digest.user.userId, digest.items, now)
+        await recordEpisodeMutes(pool, alert.user.userId, alert.items, now)
       } catch (err) {
         console.error(
-          `[digest] episode mute persist failed user=${digest.user.userId}: ${(err as Error).message}`
+          `[digest] episode mute persist failed user=${alert.user.userId}: ${(err as Error).message}`
         )
       }
-    } catch (err) {
-      await releaseDigestSend(pool, digest.user.userId, pollId).catch(() => {})
-      console.error(
-        `[digest] send failed user=${digest.user.userId}: ${(err as Error).message}`
-      )
-      skipped += 1
     }
   }
-  return { sent, users: digests.length, skipped }
+  return {
+    sent,
+    users: alerts.length,
+    skipped,
+    webhooksSent,
+    webhooksFailed,
+  }
 }
 
 export async function loadLatestActiveIncidents(
