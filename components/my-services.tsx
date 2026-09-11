@@ -1,10 +1,21 @@
 "use client"
 
 import { Children, isValidElement, useMemo, type ReactNode } from "react"
+import { StarIcon } from "lucide-react"
 
+import { useBoardTabActions } from "@/components/board-panes"
 import { MyStackSortMenu, useMyStackSort } from "@/components/board-sort-menu"
 import { useFavoriteServices } from "@/components/favorite-services"
 import { StatusSummary } from "@/components/status-summary"
+import { Button } from "@/components/ui/button"
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty"
 import { sortBoardServices, type BoardSortItem } from "@/lib/board-sort"
 import { selectFavoriteServices } from "@/lib/favorite-services"
 import { summarizeServices, type BoardStatus } from "@/lib/status"
@@ -39,6 +50,7 @@ export function MyServices({
   children: ReactNode
 }) {
   const { favoriteIds, isLoading } = useFavoriteServices()
+  const { showAllServices } = useBoardTabActions()
   const [sortBy, setSortBy] = useMyStackSort()
   const favorites = useMemo(
     () => sortBoardServices(selectFavoriteServices(items, favoriteIds), sortBy),
@@ -62,41 +74,45 @@ export function MyServices({
   const empty = !isLoading && cards.length === 0
 
   return (
-    <section
+    <div
       className={cn("flex flex-col", empty || isLoading ? "gap-3" : "gap-8")}
-      aria-labelledby="my-services-heading"
       aria-busy={isLoading || undefined}
     >
-      <div className="flex flex-col gap-3">
-        <h2
-          id="my-services-heading"
-          className="font-heading text-lg font-semibold tracking-tight text-foreground md:text-xl"
-        >
-          My Stack
-        </h2>
-        <StatusSummary
-          operational={summary.operational}
-          issues={summary.issues}
-          total={summary.total}
-          action={
-            // Nothing to reorder while the stack is empty or still loading.
-            !empty && !isLoading ? (
-              <MyStackSortMenu sortBy={sortBy} onSortByChange={setSortBy} />
-            ) : undefined
-          }
-        />
-      </div>
+      <StatusSummary
+        operational={summary.operational}
+        issues={summary.issues}
+        total={summary.total}
+        action={
+          // Nothing to reorder while the stack is empty or still loading.
+          !empty && !isLoading ? (
+            <MyStackSortMenu sortBy={sortBy} onSortByChange={setSortBy} />
+          ) : undefined
+        }
+      />
       {isLoading ? (
         <MyStackLoader />
       ) : empty ? (
-        <p className="pt-1 pb-10 text-sm text-muted-foreground" role="status">
-          Star services below to pin them here.
-        </p>
+        <Empty className="py-8" role="status">
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <StarIcon />
+            </EmptyMedia>
+            <EmptyTitle>Nothing in My Stack yet</EmptyTitle>
+            <EmptyDescription>
+              Star services in All Services to pin them here.
+            </EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent>
+            <Button type="button" variant="outline" onClick={showAllServices}>
+              Browse All Services
+            </Button>
+          </EmptyContent>
+        </Empty>
       ) : (
         <ul className="grid grid-cols-1 gap-10 sm:grid-cols-2 xl:grid-cols-3">
           {cards}
         </ul>
       )}
-    </section>
+    </div>
   )
 }
