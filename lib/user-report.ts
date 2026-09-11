@@ -3,7 +3,7 @@ import {
   formatSuggestionIso,
   type SlackNotifyDeps,
   type SlackNotifyResult,
-} from "@/lib/suggest-service"
+} from "./suggest-service.ts"
 
 export const MAX_DESCRIPTION_LENGTH = 2000
 export const MAX_SERVICE_LENGTH = 120
