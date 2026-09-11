@@ -13,10 +13,12 @@
  * SMA-103: signed-out star opens the login dialog and does not toggle.
  * SMA-128: star control lives in `FavoriteButton` so the detail page
  * can reuse the same toggle + auth dialog.
- * SMA-129: Official control is quiet text `Official status ↗` (no extra icon).
+ * SMA-129: Official control is a real vendor-status link (new tab).
+ * SMA-130: label is `Official status` plus Lucide ArrowUpRightIcon.
  */
 "use client"
 
+import { ArrowUpRightIcon } from "lucide-react"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import React, { type MouseEvent } from "react"
@@ -185,6 +187,7 @@ const Card: React.FC<CardProps> = ({ data }) => {
             onClick={stopCardNavigation}
           >
             {countdownText}
+            <ArrowUpRightIcon aria-hidden="true" />
           </a>
         ) : (
           <a
@@ -196,6 +199,7 @@ const Card: React.FC<CardProps> = ({ data }) => {
             }}
           >
             {countdownText}
+            <ArrowUpRightIcon aria-hidden="true" />
           </a>
         )}
       </div>
