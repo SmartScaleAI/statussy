@@ -3,9 +3,12 @@ import { test } from "node:test"
 
 import {
   collectTransitions,
+  createResendMailer,
   digestForUser,
   digestHtmlBody,
   digestPollId,
+  digestPrefsUrl,
+  digestResendHeaders,
   digestSubject,
   digestTextBody,
   filterDigestItems,
@@ -180,6 +183,16 @@ test("digestSubject matches the Statussy N-services copy", () => {
     digestSubject(3),
     "Statussy: 3 services in your stack need attention"
   )
+})
+
+test("digestPrefsUrl points at Settings for List-Unsubscribe", () => {
+  assert.equal(
+    digestPrefsUrl("https://www.statussy.com/"),
+    "https://www.statussy.com/settings"
+  )
+  assert.deepEqual(digestResendHeaders("https://www.statussy.com"), {
+    "List-Unsubscribe": "<https://www.statussy.com/settings>",
+  })
 })
 
 test("digest body lists names, statuses, and a board link", () => {
@@ -364,5 +377,44 @@ test("qualifyingDigestItems still batches one digest when several favorites qual
   assert.deepEqual(
     items.map((item) => item.serviceId),
     ["openai", "anthropic", "vercel"]
+  )
+})
+
+test("createResendMailer posts Statussy from and List-Unsubscribe, never smartaiscaling.com", async () => {
+  const calls: Array<{ url: string; init: RequestInit }> = []
+  const original = globalThis.fetch
+  globalThis.fetch = (async (url, init) => {
+    calls.push({ url: String(url), init: init ?? {} })
+    return new Response("{}", { status: 200 })
+  }) as typeof fetch
+  try {
+    const mailer = createResendMailer(
+      "re_test",
+      "noreply@smartaiscaling.com",
+      "https://www.statussy.com"
+    )
+    await mailer({
+      to: "user@example.com",
+      subject: digestSubject(1),
+      text: "body",
+      html: "<p>body</p>",
+    })
+  } finally {
+    globalThis.fetch = original
+  }
+  assert.equal(calls.length, 1)
+  const body = JSON.parse(String(calls[0]?.init.body)) as {
+    from: string
+    to: string
+    subject: string
+    headers: Record<string, string>
+  }
+  assert.equal(body.from, "Statussy <noreply@statussy.com>")
+  assert.doesNotMatch(body.from, /smartaiscaling/)
+  assert.equal(body.to, "user@example.com")
+  assert.equal(body.subject, "Statussy: 1 service in your stack needs attention")
+  assert.equal(
+    body.headers["List-Unsubscribe"],
+    "<https://www.statussy.com/settings>"
   )
 })
