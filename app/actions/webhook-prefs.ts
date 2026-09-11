@@ -16,8 +16,7 @@ import {
 import { parseWebhookUrl } from "@/lib/webhook"
 
 export type WebhookPrefsState =
-  | ({ signedIn: true } & UserWebhookPrefs)
-  | { signedIn: false }
+  ({ signedIn: true } & UserWebhookPrefs) | { signedIn: false }
 
 export type WebhookSaveState = WebhookPrefsState & {
   secretOnce?: string | null
@@ -59,9 +58,7 @@ export async function getMyWebhookPrefs(): Promise<WebhookPrefsState> {
   }
 }
 
-export async function saveMyWebhookUrl(
-  url: string
-): Promise<WebhookSaveState> {
+export async function saveMyWebhookUrl(url: string): Promise<WebhookSaveState> {
   try {
     const userId = await getSessionUserId()
     if (!userId) {

@@ -169,7 +169,9 @@ export function WebhookSettings({
     }
     applyPrefs(result)
     setSecretOnce(result.secretOnce)
-    setNotice("New signing secret created. Copy it now. The previous secret no longer works.")
+    setNotice(
+      "New signing secret created. Copy it now. The previous secret no longer works."
+    )
   }
 
   async function onReveal() {
@@ -182,11 +184,15 @@ export function WebhookSettings({
       onSignedOut()
       return
     }
-    if (!result.secret) {
-      setError(result.error || "Could not reveal the signing secret.")
+    if (result.secret) {
+      setSecretOnce(result.secret)
       return
     }
-    setSecretOnce(result.secret)
+    setError(
+      "error" in result && result.error
+        ? result.error
+        : "Could not reveal the signing secret."
+    )
   }
 
   async function onCopySecret() {
@@ -334,13 +340,13 @@ export function WebhookSettings({
             </summary>
             <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm text-muted-foreground">
               <li>
-                In Slack, open Apps and add Incoming WebHooks, or open your
-                app at api.slack.com/apps and enable Incoming Webhooks.
+                In Slack, open Apps and add Incoming WebHooks, or open your app
+                at api.slack.com/apps and enable Incoming Webhooks.
               </li>
               <li>Add the webhook to a workspace and pick a channel.</li>
               <li>
-                Copy the URL starting with
-                https://hooks.slack.com/services/ and paste it here.
+                Copy the URL starting with https://hooks.slack.com/services/ and
+                paste it here.
               </li>
               <li>Save the URL, turn on Enable webhook, then Send test.</li>
             </ol>

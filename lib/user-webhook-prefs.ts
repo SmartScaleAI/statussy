@@ -158,7 +158,7 @@ export async function saveUserWebhookUrl(
   if (!parsed.ok) {
     return {
       prefs: {
-        ...(await getUserWebhookPrefs(userId)) ?? DEFAULT_WEBHOOK_PREFS,
+        ...((await getUserWebhookPrefs(userId)) ?? DEFAULT_WEBHOOK_PREFS),
         url: rawUrl.trim(),
       },
       secretOnce: null,
@@ -301,7 +301,9 @@ export async function revealUserWebhookSecret(
   }
 }
 
-export async function sendUserWebhookTest(userId: string): Promise<
+export async function sendUserWebhookTest(
+  userId: string
+): Promise<
   | { ok: true; prefs: UserWebhookPrefs }
   | { ok: false; error: string; prefs: UserWebhookPrefs | null }
 > {
@@ -309,7 +311,11 @@ export async function sendUserWebhookTest(userId: string): Promise<
   const pool = getDatabasePool()
   const current = await getUserWebhookPrefs(userId)
   if (!pool) {
-    return { ok: false, error: "Could not send a test webhook.", prefs: current }
+    return {
+      ok: false,
+      error: "Could not send a test webhook.",
+      prefs: current,
+    }
   }
 
   try {

@@ -47,8 +47,8 @@ export default async function SettingsPage() {
               Settings
             </h1>
             <p className="text-sm text-muted-foreground">
-              Your email, My Stack email and webhook alerts, connected
-              accounts, and account deletion.
+              Your email, My Stack email and webhook alerts, connected accounts,
+              and account deletion.
             </p>
           </div>
         </header>

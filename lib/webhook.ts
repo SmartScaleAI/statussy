@@ -36,12 +36,10 @@ export type WebhookPayload = {
 }
 
 export type WebhookUrlResult =
-  | { ok: true; url: string }
-  | { ok: false; error: string }
+  { ok: true; url: string } | { ok: false; error: string }
 
 export type WebhookDeliveryResult =
-  | { ok: true; status: number }
-  | { ok: false; error: string; status?: number }
+  { ok: true; status: number } | { ok: false; error: string; status?: number }
 
 const BLOCKED_HOSTS = new Set([
   "localhost",
@@ -285,7 +283,10 @@ export async function deliverWebhook(input: {
       lastError = snippet
         ? `HTTP ${response.status}: ${snippet}`
         : `HTTP ${response.status}`
-      if (!isRetryableWebhookStatus(response.status) || attempt === maxAttempts) {
+      if (
+        !isRetryableWebhookStatus(response.status) ||
+        attempt === maxAttempts
+      ) {
         return { ok: false, error: lastError, status: response.status }
       }
     } catch (err) {

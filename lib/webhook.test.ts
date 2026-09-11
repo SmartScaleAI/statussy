@@ -23,10 +23,7 @@ test("parseWebhookUrl accepts Slack Incoming Webhook HTTPS URLs", () => {
   )
   assert.equal(parsed.ok, true)
   if (parsed.ok) {
-    assert.equal(
-      parsed.url,
-      "https://hooks.slack.com/services/T000/B000/xxx"
-    )
+    assert.equal(parsed.url, "https://hooks.slack.com/services/T000/B000/xxx")
   }
 })
 
@@ -132,7 +129,10 @@ test("deliverWebhook signs the POST and does not retry 4xx", async () => {
   }
   assert.equal(calls.length, 1)
   const headers = calls[0]?.init.headers as Record<string, string>
-  assert.equal(headers[WEBHOOK_SIGNATURE_HEADER], signWebhookBody("stsy_secret", body))
+  assert.equal(
+    headers[WEBHOOK_SIGNATURE_HEADER],
+    signWebhookBody("stsy_secret", body)
+  )
   assert.equal(headers["content-type"], "application/json")
 })
 
