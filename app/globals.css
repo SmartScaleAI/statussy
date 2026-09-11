@@ -131,6 +131,9 @@
   }
   html {
     @apply font-sans;
+    /* Keep the viewport width stable when All Services overflows and the
+       classic scrollbar appears — otherwise centered tabs/board shift. */
+    scrollbar-gutter: stable;
   }
 }
 
