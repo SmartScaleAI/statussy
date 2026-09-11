@@ -1,10 +1,12 @@
 import type { MetadataRoute } from "next"
 
+import { SITE_DESCRIPTION } from "@/lib/site-metadata"
+
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "Statussy",
     short_name: "Statussy",
-    description: "One place to see if AI is down.",
+    description: SITE_DESCRIPTION,
     start_url: "/",
     display: "standalone",
     background_color: "#000000",
