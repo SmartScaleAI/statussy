@@ -1,5 +1,5 @@
 /**
- * My Stack email digests (SMA-115 / SMA-118 / SMA-131).
+ * My Stack email digests (SMA-115 / SMA-118 / SMA-131 / SMA-132).
  *
  * After a poll settles: opted-in users get one Resend email if a favorite
  * transitioned *into* Major or Partial from a healthier state and their
@@ -7,12 +7,32 @@
  * every 6 hours. Recoveries, still-bad, Degraded-only, Maintenance, and
  * Live are skipped. `digest_sends (user_id, poll_id)` makes the same
  * snapshot set idempotent.
+ *
+ * HTML/text bodies live in digest-email.ts (Grok-like black column).
  */
 import { createHash } from "node:crypto"
 import type pg from "pg"
 
 import { resolveDigestFrom } from "./config.js"
+import {
+  digestHtmlBody,
+  digestPrefsUrl,
+  digestTextBody,
+} from "./digest-email.js"
 import type { ServiceStatus } from "./statuspage.js"
+
+export {
+  digestAttentionTitle,
+  digestBoardUrl,
+  DIGEST_PREVIEW_ITEMS,
+  digestHtmlBody,
+  digestPreviewDocument,
+  digestMarkUrl,
+  digestPrefsUrl,
+  digestServiceUrl,
+  digestTextBody,
+  STATUS_LABEL,
+} from "./digest-email.js"
 
 /** At most one Partial digest email per user+favorite in this window. */
 export const PARTIAL_COOLDOWN_MS = 6 * 60 * 60 * 1000
@@ -27,23 +47,31 @@ export const STATUS_RANK: Record<ServiceStatus, number> = {
   operational: 5,
 }
 
-export const STATUS_LABEL: Record<ServiceStatus, string> = {
-  operational: "Live",
-  degraded: "Degraded",
-  partial_outage: "Partial outage",
-  major_outage: "Major outage",
-  maintenance: "Maintenance",
-  unknown: "Unknown",
-}
-
 const DIGEST_TO = new Set<ServiceStatus>(["major_outage", "partial_outage"])
+
+export type DigestIncident = {
+  title: string
+  url?: string
+}
 
 export type StatusTransition = {
   serviceId: string
   name: string
   from: ServiceStatus
   to: ServiceStatus
+  /** Vendor status page, when known. Optional Official status link. */
+  statusUrl?: string
+  /** Newest unresolved incident, when the feed has one. */
+  incidentTitle?: string
+  incidentUrl?: string
 }
+
+/** Vendor lifecycle states that mean an incident is over even without resolved_at. */
+export const CLOSED_INCIDENT_STATUSES = [
+  "resolved",
+  "completed",
+  "postmortem",
+] as const
 
 export type DigestNotifyPrefs = {
   notifyMajor: boolean
@@ -93,6 +121,7 @@ export function collectTransitions(
     name: string
     previous: ServiceStatus | null
     current: ServiceStatus
+    statusUrl?: string
   }>
 ): StatusTransition[] {
   const items: StatusTransition[] = []
@@ -105,9 +134,28 @@ export function collectTransitions(
       name: pair.name,
       from: pair.previous as ServiceStatus,
       to: pair.current,
+      ...(pair.statusUrl ? { statusUrl: pair.statusUrl } : {}),
     })
   }
   return items
+}
+
+export function withLatestIncidents(
+  items: readonly StatusTransition[],
+  latest: ReadonlyMap<string, DigestIncident>
+): StatusTransition[] {
+  return items.map((item) => {
+    const incident = latest.get(item.serviceId)
+    const title = incident?.title.trim()
+    if (!title) {
+      return { ...item }
+    }
+    return {
+      ...item,
+      incidentTitle: title,
+      ...(incident?.url ? { incidentUrl: incident.url } : {}),
+    }
+  })
 }
 
 export function toEpochMs(value: Date | number): number {
@@ -215,21 +263,6 @@ export function digestSubject(count: number): string {
   return `Statussy: ${count} services in your stack need attention`
 }
 
-export function digestBoardUrl(publicSiteUrl: string): string {
-  return publicSiteUrl.replace(/\/$/, "") || "https://www.statussy.com"
-}
-
-export function digestServiceUrl(
-  publicSiteUrl: string,
-  serviceId: string
-): string {
-  return `${digestBoardUrl(publicSiteUrl)}/services/${serviceId}`
-}
-
-export function digestPrefsUrl(publicSiteUrl: string): string {
-  return `${digestBoardUrl(publicSiteUrl)}/settings`
-}
-
 export function digestResendHeaders(
   publicSiteUrl: string
 ): Record<string, string> {
@@ -238,58 +271,12 @@ export function digestResendHeaders(
   }
 }
 
-export function digestTextBody(
-  items: readonly StatusTransition[],
-  publicSiteUrl: string
-): string {
-  const board = digestBoardUrl(publicSiteUrl)
-  const lines = items.map(
-    (item) =>
-      `- ${item.name}: ${STATUS_LABEL[item.to]} (${digestServiceUrl(publicSiteUrl, item.serviceId)})`
-  )
-  return [
-    "These services in your stack need attention:",
-    "",
-    ...lines,
-    "",
-    `Open your board: ${board}`,
-  ].join("\n")
-}
-
-export function digestHtmlBody(
-  items: readonly StatusTransition[],
-  publicSiteUrl: string
-): string {
-  const board = digestBoardUrl(publicSiteUrl)
-  const rows = items
-    .map((item) => {
-      const href = digestServiceUrl(publicSiteUrl, item.serviceId)
-      const name = escapeHtml(item.name)
-      const status = escapeHtml(STATUS_LABEL[item.to])
-      return `<li><a href="${href}">${name}</a> — ${status}</li>`
-    })
-    .join("")
-  return [
-    `<p style="font-family:system-ui,sans-serif;font-size:16px;margin:0 0 12px"><strong>Statussy</strong></p>`,
-    `<p style="font-family:system-ui,sans-serif;font-size:14px;margin:0 0 12px">These services in your stack need attention:</p>`,
-    `<ul style="font-family:system-ui,sans-serif;font-size:14px;padding-left:20px">${rows}</ul>`,
-    `<p style="font-family:system-ui,sans-serif;font-size:14px;margin:16px 0 0"><a href="${board}">Open your board</a></p>`,
-  ].join("")
-}
-
-function escapeHtml(value: string): string {
-  return value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-}
-
 type LatestPairRow = {
   service_id: string
   name: string
   snapshot_id: string
   status: ServiceStatus
+  status_url?: string | null
   rn: string | number
 }
 
@@ -341,6 +328,7 @@ export function pairsFromSnapshotRows(rows: LatestPairRow[]): {
     name: string
     previous: ServiceStatus | null
     current: ServiceStatus
+    statusUrl?: string
   }>
   snapshotIds: string[]
 } {
@@ -359,6 +347,7 @@ export function pairsFromSnapshotRows(rows: LatestPairRow[]): {
     name: row.name,
     previous: previous.get(row.service_id)?.status ?? null,
     current: row.status,
+    ...(row.status_url ? { statusUrl: row.status_url } : {}),
   }))
   return {
     pairs,
@@ -378,6 +367,7 @@ export async function sendStackDigests(
          svc.name,
          snap.id::text AS snapshot_id,
          snap.status,
+         svc.status_url,
          row_number() OVER (
            PARTITION BY snap.service_id
            ORDER BY snap.fetched_at DESC, snap.id DESC
@@ -385,7 +375,7 @@ export async function sendStackDigests(
        FROM service_snapshots snap
        JOIN services svc ON svc.id = snap.service_id
      )
-     SELECT service_id, name, snapshot_id, status, rn
+     SELECT service_id, name, snapshot_id, status, status_url, rn
        FROM ranked
       WHERE rn <= 2`
   )
@@ -394,10 +384,17 @@ export async function sendStackDigests(
     return empty
   }
   const pollId = digestPollId(snapshotIds)
-  const transitions = collectTransitions(pairs)
-  if (transitions.length === 0) {
+  const collected = collectTransitions(pairs)
+  if (collected.length === 0) {
     return empty
   }
+  const transitions = withLatestIncidents(
+    collected,
+    await loadLatestActiveIncidents(
+      pool,
+      collected.map((item) => item.serviceId)
+    )
+  )
 
   const { rows: subscriberRows } = await pool.query<SubscriberRow>(
     `SELECT u.id AS user_id, u.email, uf.service_id,
@@ -475,6 +472,41 @@ export async function sendStackDigests(
     }
   }
   return { sent, users: digests.length, skipped }
+}
+
+export async function loadLatestActiveIncidents(
+  pool: pg.Pool,
+  serviceIds: readonly string[]
+): Promise<Map<string, DigestIncident>> {
+  const latest = new Map<string, DigestIncident>()
+  const ids = [...new Set(serviceIds.filter((id) => id.length > 0))]
+  if (ids.length === 0) {
+    return latest
+  }
+  const { rows } = await pool.query<{
+    service_id: string
+    title: string
+    url: string | null
+  }>(
+    `SELECT DISTINCT ON (service_id) service_id, title, url
+       FROM incidents
+      WHERE service_id = ANY($1::text[])
+        AND resolved_at IS NULL
+        AND status != ALL($2::text[])
+      ORDER BY service_id, started_at DESC NULLS LAST, id DESC`,
+    [ids, CLOSED_INCIDENT_STATUSES]
+  )
+  for (const row of rows) {
+    const title = row.title.trim()
+    if (!title) {
+      continue
+    }
+    latest.set(row.service_id, {
+      title,
+      ...(row.url ? { url: row.url } : {}),
+    })
+  }
+  return latest
 }
 
 async function loadPartialNotifyTimes(
