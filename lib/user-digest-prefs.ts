@@ -1,5 +1,5 @@
 /**
- * Per-user My Stack digest prefs (SMA-115 / SMA-118).
+ * Per-user My Stack digest prefs (SMA-115 / SMA-118 / SMA-135).
  * Missing row = email off, banner not dismissed.
  * Always scoped by the Better Auth user id from the session.
  * Server-only (imports the Postgres pool).
@@ -132,7 +132,7 @@ export async function deleteUserDigestPrefs(userId: string): Promise<void> {
       userId,
     ])
     await pool.query(`DELETE FROM digest_sends WHERE user_id = $1`, [userId])
-    await pool.query(`DELETE FROM digest_partial_notifies WHERE user_id = $1`, [
+    await pool.query(`DELETE FROM digest_episode_mutes WHERE user_id = $1`, [
       userId,
     ])
   } catch (err) {
