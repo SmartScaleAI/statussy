@@ -8,13 +8,14 @@
  *
  * SMA-33: the whole card is the detail hit target (stretched overlay link).
  * Star + Official status sit above it and stopPropagation so they stay usable.
+ * SMA-129: Official control is quiet text `Official status ↗` (no extra icon).
  * SMA-36: shelf has no divider; timestamps include a UTC suffix.
  * SMA-37: star toggles localStorage favorites (`statussy:favoriteServiceIds`).
  * SMA-103: signed-out star opens the login dialog and does not toggle.
  */
 "use client"
 
-import { ArrowUpRightIcon, StarIcon } from "lucide-react"
+import { StarIcon } from "lucide-react"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import React, { type MouseEvent } from "react"
@@ -204,16 +205,21 @@ const Card: React.FC<CardProps> = ({ data }) => {
             href={countdownHref}
             className="btn-countdown"
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             onClick={stopCardNavigation}
           >
             {countdownText}
-            <ArrowUpRightIcon aria-hidden="true" />
           </a>
         ) : (
-          <a href="#" className="btn-countdown" onClick={stopCardNavigation}>
+          <a
+            href="#"
+            className="btn-countdown"
+            onClick={(event) => {
+              event.preventDefault()
+              stopCardNavigation(event)
+            }}
+          >
             {countdownText}
-            <ArrowUpRightIcon aria-hidden="true" />
           </a>
         )}
       </div>
