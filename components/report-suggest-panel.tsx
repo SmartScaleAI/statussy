@@ -14,7 +14,7 @@ function catalogServiceNames() {
  */
 export function ReportSuggestPanel() {
   return (
-    <div className="course-design-board">
+    <div id="report-suggest" className="course-design-board">
       <div className="card plain">
         <div className="suggest-card-body">
           <ReportSuggestForm serviceNames={catalogServiceNames()} />
