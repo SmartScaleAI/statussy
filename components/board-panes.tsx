@@ -132,11 +132,7 @@ export function BoardPanes({
   return (
     <BoardTabActionsContext.Provider value={actions}>
       <Tabs value={tab} onValueChange={onValueChange} className="w-full gap-8">
-        <TabsList
-          variant="line"
-          aria-label="Board views"
-          className="w-full max-w-full"
-        >
+        <TabsList variant="line" aria-label="Board views">
           <TabsTrigger value="stack">My Stack</TabsTrigger>
           <TabsTrigger value="all">All Services</TabsTrigger>
         </TabsList>
