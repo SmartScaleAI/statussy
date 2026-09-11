@@ -322,6 +322,11 @@ interval while developing, e.g. `REFRESH_INTERVAL_SECONDS=10 npm run dev`.
 
 The homepage **Report or suggest** panel (right rail ~30% on desktop, below
 the board on mobile) is the only entry point. Footer no longer hosts the form.
+A **Recently added** list (SMA-123) sits above that form in the same rail —
+six catalog services ordered by `services.created_at` desc, each linking to
+the detail page. Dates are first-seen from the worker seed insert (upsert
+does not overwrite `created_at`). An empty or unreachable DB shows no rows
+rather than invented dates.
 
 - **Suggest a service** — required **name**, optional **email**. Writes to
   `service_suggestions` (`status` defaults to `new`) and pings Slack via
