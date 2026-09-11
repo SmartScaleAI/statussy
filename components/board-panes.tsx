@@ -65,6 +65,9 @@ export function BoardPanes({
   const [tab, setTab] = useState<BoardTab>("all")
   const [ready, setReady] = useState(false)
   const userChose = useRef(false)
+  // Defaults apply once per signed-in session — starring the first
+  // service from All Services must not yank the pane to My Stack.
+  const didResolve = useRef(false)
 
   useEffect(() => {
     if (isLoading) {
@@ -72,14 +75,16 @@ export function BoardPanes({
     }
     if (!signedIn) {
       userChose.current = false
+      didResolve.current = false
       setTab("all")
       setReady(true)
       return
     }
-    if (userChose.current) {
+    if (userChose.current || didResolve.current) {
       setReady(true)
       return
     }
+    didResolve.current = true
     setTab(
       resolveBoardTab({
         signedIn,
