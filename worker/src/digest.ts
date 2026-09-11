@@ -1,5 +1,5 @@
 /**
- * My Stack email digests (SMA-115 / SMA-118).
+ * My Stack email digests (SMA-115 / SMA-118 / SMA-131).
  *
  * After a poll settles: opted-in users get one Resend email if a favorite
  * transitioned *into* Major or Partial from a healthier state and their
@@ -11,6 +11,7 @@
 import { createHash } from "node:crypto"
 import type pg from "pg"
 
+import { resolveDigestFrom } from "./config.js"
 import type { ServiceStatus } from "./statuspage.js"
 
 /** At most one Partial digest email per user+favorite in this window. */
@@ -223,6 +224,18 @@ export function digestServiceUrl(
   serviceId: string
 ): string {
   return `${digestBoardUrl(publicSiteUrl)}/services/${serviceId}`
+}
+
+export function digestPrefsUrl(publicSiteUrl: string): string {
+  return `${digestBoardUrl(publicSiteUrl)}/settings`
+}
+
+export function digestResendHeaders(
+  publicSiteUrl: string
+): Record<string, string> {
+  return {
+    "List-Unsubscribe": `<${digestPrefsUrl(publicSiteUrl)}>`,
+  }
 }
 
 export function digestTextBody(
@@ -544,7 +557,13 @@ export async function releaseDigestSend(
   )
 }
 
-export function createResendMailer(apiKey: string, from: string): DigestMailer {
+export function createResendMailer(
+  apiKey: string,
+  from: string,
+  publicSiteUrl = "https://www.statussy.com"
+): DigestMailer {
+  const resolvedFrom = resolveDigestFrom(from)
+  const headers = digestResendHeaders(publicSiteUrl)
   return async ({ to, subject, text, html }) => {
     const response = await fetch("https://api.resend.com/emails", {
       method: "POST",
@@ -552,7 +571,14 @@ export function createResendMailer(apiKey: string, from: string): DigestMailer {
         Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ from, to, subject, text, html }),
+      body: JSON.stringify({
+        from: resolvedFrom,
+        to,
+        subject,
+        text,
+        html,
+        headers,
+      }),
     })
     if (!response.ok) {
       const body = await response.text()

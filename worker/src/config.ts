@@ -3,6 +3,24 @@ export type ResendMailConfig = {
   from: string
 }
 
+/** Verified Resend domain + display name so Mail shows Statussy, not the raw address. */
+export const DEFAULT_RESEND_FROM = "Statussy <noreply@statussy.com>"
+
+/**
+ * Digest From: Statussy display name on @statussy.com.
+ * Empty env and any smartaiscaling.com address fall back to the default.
+ */
+export function resolveDigestFrom(raw: string | undefined | null): string {
+  const trimmed = raw?.trim() ?? ""
+  if (!trimmed || /smartaiscaling\.com/i.test(trimmed)) {
+    return DEFAULT_RESEND_FROM
+  }
+  if (/^[^<>\s]+@[^<>\s]+$/.test(trimmed)) {
+    return `Statussy <${trimmed}>`
+  }
+  return trimmed
+}
+
 export type Config = {
   databaseUrl: string
   refreshIntervalSeconds: number
@@ -13,7 +31,7 @@ export type Config = {
   fetchConcurrency: number
   /** Random 0..N ms delay before each fetch starts, to smooth bursts. */
   fetchJitterMs: number
-  /** Optional. Worker skip-sends digests when unset (SMA-115). */
+  /** Optional. Worker skip-sends digests when RESEND_API_KEY is unset (SMA-115). */
   resend: ResendMailConfig | null
   /** Public board origin used in digest links. */
   publicSiteUrl: string
@@ -101,11 +119,13 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
 
 function resolveResendConfig(env: NodeJS.ProcessEnv): ResendMailConfig | null {
   const apiKey = env.RESEND_API_KEY?.trim() ?? ""
-  const from = (env.RESEND_FROM ?? env.RESEND_FROM_EMAIL)?.trim() ?? ""
-  if (!apiKey || !from) {
+  if (!apiKey) {
     return null
   }
-  return { apiKey, from }
+  return {
+    apiKey,
+    from: resolveDigestFrom(env.RESEND_FROM ?? env.RESEND_FROM_EMAIL),
+  }
 }
 
 function resolvePublicSiteUrl(env: NodeJS.ProcessEnv): string {
