@@ -35,6 +35,18 @@ const selectClassName = cn(
   "dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40"
 )
 
+const KIND_PLACEHOLDER = "What are you sending?"
+
+function descriptionForKind(kind: FormKind | ""): string {
+  if (!kind) {
+    return "Choose a type to continue."
+  }
+  if (kind === "suggest_service") {
+    return "Know a service we should track? Name is required; email is optional."
+  }
+  return "Tell us what looks wrong. Description is required; service is optional."
+}
+
 export function ReportSuggestForm({
   serviceNames,
 }: {
@@ -42,17 +54,23 @@ export function ReportSuggestForm({
 }) {
   const { isSignedIn } = useAuth()
   const formRef = useRef<HTMLFormElement>(null)
-  const [kind, setKind] = useState<FormKind>("suggest_service")
+  const [kind, setKind] = useState<FormKind | "">("")
   const [state, action, pending] = useActionState(
     submitReportSuggest,
     initialReportSuggestState
   )
   const isSuggest = kind === "suggest_service"
+  const isReport = kind !== "" && kind !== "suggest_service"
+  const showService =
+    kind === "wrong_status" ||
+    kind === "wrong_info" ||
+    kind === "site_bug" ||
+    kind === "other"
 
   useEffect(() => {
     if (state.status === "success") {
       formRef.current?.reset()
-      setKind("suggest_service")
+      setKind("")
     }
   }, [state])
 
@@ -64,11 +82,7 @@ export function ReportSuggestForm({
     >
       <FieldSet>
         <FieldLegend>Report or suggest</FieldLegend>
-        <FieldDescription>
-          {isSuggest
-            ? "Know a service we should track? Name is required; email is optional."
-            : "Tell us what looks wrong. Description is required; service is optional."}
-        </FieldDescription>
+        <FieldDescription>{descriptionForKind(kind)}</FieldDescription>
         <div aria-hidden="true" className="sr-only">
           <label htmlFor="report-website">Website</label>
           <input
@@ -92,11 +106,16 @@ export function ReportSuggestForm({
               className={selectClassName}
               onChange={(event) => {
                 const next = event.target.value
+                if (next === "") {
+                  setKind("")
+                  return
+                }
                 if (FORM_KINDS.includes(next as FormKind)) {
                   setKind(next as FormKind)
                 }
               }}
             >
+              <option value="">{KIND_PLACEHOLDER}</option>
               {FORM_KINDS.map((value) => (
                 <option key={value} value={value}>
                   {FORM_KIND_LABELS[value]}
@@ -122,55 +141,54 @@ export function ReportSuggestForm({
               />
               <FieldError>{state.fieldErrors?.name}</FieldError>
             </Field>
-          ) : (
-            <>
-              <Field
-                data-invalid={!!state.fieldErrors?.description || undefined}
-              >
-                <FieldLabel htmlFor="report-description">
-                  Description
-                </FieldLabel>
-                <Textarea
-                  id="report-description"
-                  name="description"
-                  required
-                  maxLength={MAX_DESCRIPTION_LENGTH}
-                  disabled={pending}
-                  aria-invalid={!!state.fieldErrors?.description || undefined}
-                  placeholder="What should we look at?"
-                  rows={4}
-                />
-                <FieldError>{state.fieldErrors?.description}</FieldError>
-              </Field>
-              <Field data-invalid={!!state.fieldErrors?.service || undefined}>
-                <FieldLabel htmlFor="report-service">
-                  Service{" "}
-                  <span className="font-normal text-muted-foreground">
-                    (optional)
-                  </span>
-                </FieldLabel>
-                <Input
-                  id="report-service"
-                  name="service"
-                  type="text"
-                  maxLength={MAX_SERVICE_LENGTH}
-                  autoComplete="off"
-                  list="report-service-list"
-                  disabled={pending}
-                  aria-invalid={!!state.fieldErrors?.service || undefined}
-                  placeholder="Pick or type a name"
-                />
-                <datalist id="report-service-list">
-                  {serviceNames.map((name) => (
-                    <option key={name} value={name} />
-                  ))}
-                </datalist>
-                <FieldError>{state.fieldErrors?.service}</FieldError>
-              </Field>
-            </>
-          )}
+          ) : null}
 
-          {!isSignedIn ? (
+          {isReport ? (
+            <Field data-invalid={!!state.fieldErrors?.description || undefined}>
+              <FieldLabel htmlFor="report-description">Description</FieldLabel>
+              <Textarea
+                id="report-description"
+                name="description"
+                required
+                maxLength={MAX_DESCRIPTION_LENGTH}
+                disabled={pending}
+                aria-invalid={!!state.fieldErrors?.description || undefined}
+                placeholder="What should we look at?"
+                rows={4}
+              />
+              <FieldError>{state.fieldErrors?.description}</FieldError>
+            </Field>
+          ) : null}
+
+          {showService ? (
+            <Field data-invalid={!!state.fieldErrors?.service || undefined}>
+              <FieldLabel htmlFor="report-service">
+                Service{" "}
+                <span className="font-normal text-muted-foreground">
+                  (optional)
+                </span>
+              </FieldLabel>
+              <Input
+                id="report-service"
+                name="service"
+                type="text"
+                maxLength={MAX_SERVICE_LENGTH}
+                autoComplete="off"
+                list="report-service-list"
+                disabled={pending}
+                aria-invalid={!!state.fieldErrors?.service || undefined}
+                placeholder="Pick or type a name"
+              />
+              <datalist id="report-service-list">
+                {serviceNames.map((name) => (
+                  <option key={name} value={name} />
+                ))}
+              </datalist>
+              <FieldError>{state.fieldErrors?.service}</FieldError>
+            </Field>
+          ) : null}
+
+          {kind && !isSignedIn ? (
             <Field data-invalid={!!state.fieldErrors?.email || undefined}>
               <FieldLabel htmlFor="report-email">
                 Email{" "}
@@ -192,11 +210,13 @@ export function ReportSuggestForm({
             </Field>
           ) : null}
 
-          <Field>
-            <Button type="submit" disabled={pending} className="w-full">
-              {pending ? "Sending…" : isSuggest ? "Suggest" : "Send report"}
-            </Button>
-          </Field>
+          {kind ? (
+            <Field>
+              <Button type="submit" disabled={pending} className="w-full">
+                {pending ? "Sending…" : isSuggest ? "Suggest" : "Send report"}
+              </Button>
+            </Field>
+          ) : null}
         </FieldGroup>
       </FieldSet>
       {state.status === "success" ? (
