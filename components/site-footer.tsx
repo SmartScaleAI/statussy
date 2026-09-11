@@ -1,41 +1,20 @@
 import Link from "next/link"
 
-import { SuggestServiceForm } from "@/components/suggest-service-form"
 import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
 
 const GITHUB_REPO = "https://github.com/SmartScaleAI/statussy"
 
-export function SiteFooter({
-  className,
-  showSuggest = true,
-}: {
-  className?: string
-  showSuggest?: boolean
-}) {
+export function SiteFooter({ className }: { className?: string }) {
   return (
     <footer
       className={cn(
-        "mx-auto flex w-full max-w-5xl flex-col px-6 pb-10",
+        "mx-auto flex w-full max-w-7xl flex-col px-6 pb-10",
         className
       )}
     >
       <Separator />
-      {showSuggest ? (
-        <div className="course-design-board mt-8 sm:mt-12">
-          <div className="card plain">
-            <div className="suggest-card-body">
-              <SuggestServiceForm />
-            </div>
-          </div>
-        </div>
-      ) : null}
-      <div
-        className={cn(
-          "flex flex-col items-center gap-2 text-xs text-muted-foreground sm:grid sm:grid-cols-3 sm:items-center sm:gap-3",
-          showSuggest ? "mt-14" : "mt-8"
-        )}
-      >
+      <div className="mt-8 flex flex-col items-center gap-2 text-xs text-muted-foreground sm:grid sm:grid-cols-3 sm:items-center sm:gap-3">
         <Link
           href="/"
           className="flex items-center gap-1.5 font-heading text-sm font-semibold text-foreground"

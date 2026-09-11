@@ -82,3 +82,35 @@ export async function insertServiceSuggestion(
     return { ok: false }
   }
 }
+
+export async function insertUserReport(input: {
+  kind: string
+  description: string
+  service: string | null
+  email: string | null
+  userId: string | null
+}): Promise<{ ok: true; createdAt: Date } | { ok: false }> {
+  const pool = getDatabasePool()
+  if (!pool) {
+    return { ok: false }
+  }
+
+  try {
+    const { rows } = await pool.query<{ created_at: Date }>(
+      `INSERT INTO user_reports (kind, description, service, email, user_id)
+       VALUES ($1, $2, $3, $4, $5)
+       RETURNING created_at`,
+      [input.kind, input.description, input.service, input.email, input.userId]
+    )
+    return {
+      ok: true,
+      createdAt: toSuggestionTimestamp(rows[0]?.created_at),
+    }
+  } catch (err) {
+    console.error(
+      `[statussy] user report insert failed (db=${describeDatabaseTarget()})`,
+      err
+    )
+    return { ok: false }
+  }
+}
