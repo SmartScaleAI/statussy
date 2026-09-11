@@ -1,5 +1,5 @@
 import type { Service, ServiceStatus } from "@/data/services"
-import { formatRelativeAge } from "./board-freshness.ts"
+import { formatRelativeAge, formatUtcStamp } from "./board-freshness.ts"
 import type { ChickletDisplay } from "@/lib/health"
 
 export type { Service, ServiceCategory, ServiceStatus } from "@/data/services"
@@ -82,14 +82,7 @@ export function summarizeServices(items: { status: BoardStatus }[]) {
 }
 
 export function formatTimestamp(iso: string) {
-  return new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-    timeZone: "UTC",
-    timeZoneName: "short",
-  }).format(new Date(iso))
+  return formatUtcStamp(iso)
 }
 
 /** Card footer stamp: relative last-check, e.g. `Checked 2m ago`. */
