@@ -1535,7 +1535,11 @@ async function runTick(): Promise<void> {
       const digest = await sendStackDigests(pool, {
         publicSiteUrl: config.publicSiteUrl,
         mailer: config.resend
-          ? createResendMailer(config.resend.apiKey, config.resend.from)
+          ? createResendMailer(
+              config.resend.apiKey,
+              config.resend.from,
+              config.publicSiteUrl
+            )
           : null,
       })
       if (digest.sent > 0 || digest.users > 0) {
