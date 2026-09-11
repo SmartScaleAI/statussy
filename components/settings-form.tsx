@@ -321,9 +321,9 @@ export function SettingsForm() {
                   Partial outages
                 </FieldLabel>
                 <FieldDescription>
-                  Partial is noisier — multi-region providers can flip often. One
-                  email per episode, then muted until the service recovers to
-                  Live.
+                  Partial is noisier — multi-region providers can flip often.
+                  One email per episode, then muted until the service recovers
+                  to Live.
                 </FieldDescription>
               </FieldContent>
               <Switch

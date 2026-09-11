@@ -177,9 +177,8 @@ export function unmuteRecovered(
   mutedServiceIds: ReadonlySet<string>,
   liveServiceIds: Iterable<string>
 ): Set<string> {
-  const live = liveServiceIds instanceof Set
-    ? liveServiceIds
-    : new Set(liveServiceIds)
+  const live =
+    liveServiceIds instanceof Set ? liveServiceIds : new Set(liveServiceIds)
   const next = new Set<string>()
   for (const id of mutedServiceIds) {
     if (!live.has(id)) {
@@ -462,12 +461,7 @@ export async function sendStackDigests(
       })
       sent += 1
       try {
-        await recordEpisodeMutes(
-          pool,
-          digest.user.userId,
-          digest.items,
-          now
-        )
+        await recordEpisodeMutes(pool, digest.user.userId, digest.items, now)
       } catch (err) {
         console.error(
           `[digest] episode mute persist failed user=${digest.user.userId}: ${(err as Error).message}`

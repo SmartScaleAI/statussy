@@ -294,10 +294,7 @@ test("digest body is a black Grok-like column with pills, CTA, and footer links"
   assert.match(html, /https:\/\/www\.statussy\.com\/settings/)
   assert.match(html, /SmartScale Solutions LLC/)
   assert.match(html, />statussy\.com</)
-  assert.equal(
-    html.includes(digestMarkUrl("https://www.statussy.com/")),
-    true
-  )
+  assert.equal(html.includes(digestMarkUrl("https://www.statussy.com/")), true)
   assert.doesNotMatch(html, /—/)
 })
 
@@ -330,7 +327,13 @@ test("withLatestIncidents copies the newest title and skips blanks", () => {
       },
     ],
     new Map([
-      ["openai", { title: "  API elevated errors  ", url: "https://status.openai.com/incidents/abc" }],
+      [
+        "openai",
+        {
+          title: "  API elevated errors  ",
+          url: "https://status.openai.com/incidents/abc",
+        },
+      ],
       ["anthropic", { title: "   " }],
     ])
   )
@@ -508,9 +511,7 @@ test("mute until Live: alert once, stay Major no second email, recover, then Maj
 
   muted = unmuteRecovered(
     muted,
-    liveServiceIdsFromPairs([
-      { serviceId: "openai", current: "operational" },
-    ])
+    liveServiceIdsFromPairs([{ serviceId: "openai", current: "operational" }])
   )
   assert.equal(muted.has("openai"), false)
 
@@ -535,9 +536,7 @@ test("Partial and Major share mute-until-Live; unmuted favorites still batch", (
   assert.equal(
     unmuteRecovered(
       muted,
-      liveServiceIdsFromPairs([
-        { serviceId: "anthropic", current: "degraded" },
-      ])
+      liveServiceIdsFromPairs([{ serviceId: "anthropic", current: "degraded" }])
     ).has("anthropic"),
     true
   )
@@ -620,7 +619,10 @@ test("createResendMailer posts Statussy from and List-Unsubscribe, never smartai
   assert.equal(body.from, "Statussy <noreply@statussy.com>")
   assert.doesNotMatch(body.from, /smartaiscaling/)
   assert.equal(body.to, "user@example.com")
-  assert.equal(body.subject, "Statussy: 1 service in your stack needs attention")
+  assert.equal(
+    body.subject,
+    "Statussy: 1 service in your stack needs attention"
+  )
   assert.equal(
     body.headers["List-Unsubscribe"],
     "<https://www.statussy.com/settings>"
