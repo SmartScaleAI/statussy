@@ -36,7 +36,7 @@ export function LegalDocument({
           {children}
         </article>
       </main>
-      <SiteFooter className="max-w-3xl" showSuggest={false} />
+      <SiteFooter className="max-w-3xl" />
     </div>
   )
 }

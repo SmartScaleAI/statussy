@@ -23,7 +23,8 @@ npm run build
 
 Live-data foundation for the board: a Railway Postgres database plus a small Node
 worker in [`worker/`](worker/). The worker owns the schema (`services`,
-`service_snapshots`, `components`, `incidents`, `service_suggestions`), seeds the 450 board services,
+`service_snapshots`, `components`, `incidents`, `service_suggestions`,
+`user_reports`), seeds the 450 board services,
 and ticks on a configurable interval (default every 5 minutes). Each tick fetches
 live status for services with a fetcher — OpenAI, Anthropic, Groq, Cohere,
 Fireworks, Cerebras, Replicate, Runway, Ideogram, Stability, ElevenLabs,
@@ -237,7 +238,7 @@ sends; the tick still succeeds.
 
 | Variable | Where | Purpose |
 | --- | --- | --- |
-| `DATABASE_URL` | Railway (worker, read/write) and Vercel (Next.js app) | Postgres connection string. The app reads live status and inserts footer **Suggest a Service** rows into `service_suggestions` (it does not write the `services` catalog). On Railway, reference the Postgres service (`${{Postgres.DATABASE_URL}}`, private network). On Vercel, use the Railway Postgres **`DATABASE_PUBLIC_URL`** — see [Point Vercel at Railway Postgres](#point-vercel-at-railway-postgres). Also used by Better Auth (SMA-103) for `user` / `session` / `account` / `verification`. |
+| `DATABASE_URL` | Railway (worker, read/write) and Vercel (Next.js app) | Postgres connection string. The app reads live status and inserts **Suggest a service** rows into `service_suggestions` plus **report** rows into `user_reports` (it does not write the `services` catalog). On Railway, reference the Postgres service (`${{Postgres.DATABASE_URL}}`, private network). On Vercel, use the Railway Postgres **`DATABASE_PUBLIC_URL`** — see [Point Vercel at Railway Postgres](#point-vercel-at-railway-postgres). Also used by Better Auth (SMA-103) for `user` / `session` / `account` / `verification`. |
 | `BETTER_AUTH_SECRET` | Vercel (Next.js app) | Better Auth signing secret. At least 32 characters (`openssl rand -base64 32`). Required for login. |
 | `BETTER_AUTH_URL` | Vercel (Next.js app) | Public site origin Better Auth uses for callbacks. Production users land on **www** (`https://www.statussy.com`, no trailing slash). Apex (`https://statussy.com`) 308s to www. |
 | `RESEND_API_KEY` | Vercel (Next.js app) and Railway (worker) | Resend API key. App: magic-link email (`POST /api/auth/sign-in/magic-link`). Worker: opt-in My Stack digests (SMA-115). Missing on the worker skips digest sends; the tick still succeeds. **Colin may need to add this on the Railway worker** — this PR does not change secrets. |
@@ -247,7 +248,7 @@ sends; the tick still succeeds.
 | `GOOGLE_CLIENT_SECRET` | Vercel (Next.js app) | Google OAuth client secret. |
 | `GITHUB_CLIENT_ID` | Vercel (Next.js app) | GitHub OAuth app client ID. Callback: `{BETTER_AUTH_URL}/api/auth/callback/github`. |
 | `GITHUB_CLIENT_SECRET` | Vercel (Next.js app) | GitHub OAuth app client secret. |
-| `SLACK_WEBHOOK_URL` | Vercel (Next.js app) | Incoming webhook targeting `_alerts`. Posted after each successful suggestion insert (name, email if present, timestamp). Optional locally — a missing webhook logs a warning and still stores the row. |
+| `SLACK_WEBHOOK_URL` | Vercel (Next.js app) | Incoming webhook targeting `_alerts`. Posted after each successful suggestion insert (name, email if present, timestamp) and each report (type, description, service/email/user when present). Optional locally — a missing webhook logs a warning and still stores the row. |
 | `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` | Vercel (Next.js app) | PostHog project token for Web analytics (autocapture + pageviews). Optional locally — a missing token skips init. `NEXT_PUBLIC_POSTHOG_KEY` is accepted as an alias. Do not commit the token. |
 | `NEXT_PUBLIC_POSTHOG_HOST` | Vercel (Next.js app) | PostHog ingestion host, e.g. `https://us.i.posthog.com` (US Cloud) or `https://eu.i.posthog.com` (EU). Optional; the SDK defaults to US Cloud. |
 | `REFRESH_INTERVAL_SECONDS` | Railway (worker) | Seconds between cron ticks. Optional, defaults to `300` (5 minutes). |
@@ -317,11 +318,19 @@ interval while developing, e.g. `REFRESH_INTERVAL_SECONDS=10 npm run dev`.
 - The Postgres service lives in the same Railway project; the worker's
   `DATABASE_URL` references it over the private network.
 
-### Suggest a Service
+### Report or suggest (SMA-120)
 
-The site footer form takes a required service **name** and optional **email**.
-Submissions go to `service_suggestions` (`status` defaults to `new`) and ping
-Slack via `SLACK_WEBHOOK_URL`. They are **not** added to the board catalog.
+The homepage **Report or suggest** panel (skinny right rail on desktop, below
+the board on mobile) is the only entry point. Footer no longer hosts the form.
+
+- **Suggest a service** — required **name**, optional **email**. Writes to
+  `service_suggestions` (`status` defaults to `new`) and pings Slack via
+  `SLACK_WEBHOOK_URL`, same as SMA-28. Not added to the board catalog.
+- **Report** (wrong status, wrong logo / service info, site bug, other) —
+  required **description**, optional **service** and **email**. Writes to
+  `user_reports` (migration `0011_user_reports.sql`) and pings the same Slack
+  webhook with type + description. Signed-in submissions attach user id/email
+  when the session has them. Existing `service_suggestions` rows are untouched.
 
 ### Point Vercel at Railway Postgres
 

@@ -54,7 +54,7 @@ export default async function SettingsPage() {
         </header>
         <SettingsForm />
       </main>
-      <SiteFooter className="max-w-3xl" showSuggest={false} />
+      <SiteFooter className="max-w-3xl" />
     </div>
   )
 }
