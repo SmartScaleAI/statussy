@@ -8,13 +8,14 @@ import { ModeToggle } from "@/components/mode-toggle"
  * Shared page chrome: brand mark (links home) + theme toggle + auth.
  * Signed-in chrome is avatar-only (SMA-108). Sign In sits immediately
  * right of the theme toggle (SMA-103 / SMA-106). The board freshness
- * stamp lives with the All Services summary (SMA-83). SMA-125: dismissible
- * beta banner sits under the header (not sticky) so the Report rail
+ * stamp lives with the All Services summary (SMA-83). SMA-126: dismissible
+ * beta banner sits above the header (not sticky) so the Report rail
  * `top-4` stickiness is unchanged.
  */
 export function SiteHeader() {
   return (
     <div>
+      <BetaBanner />
       <header className="flex h-14 w-full items-center justify-between px-4 sm:h-16 sm:px-5">
         <Link
           href="/"
@@ -44,7 +45,6 @@ export function SiteHeader() {
           <AuthHeaderControl />
         </div>
       </header>
-      <BetaBanner />
     </div>
   )
 }
