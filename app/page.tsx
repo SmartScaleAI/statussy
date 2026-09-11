@@ -20,17 +20,20 @@ export default function HomePage() {
       <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-8 px-6 py-8 sm:py-12">
         <EmailAlertsBanner />
         {/* SMA-120: board (~80%) + skinny Report/Suggest rail (~20%),
-            centered. Mobile stacks the panel under the full list.
-            Desktop rail is sticky so it stays visible while scrolling. */}
-        <div className="flex flex-col gap-8 md:flex-row md:items-start md:justify-center">
+            centered. Desktop: aside stretches with the board so the
+            inner wrapper can stay sticky at the top while the list
+            scrolls. Mobile: column stack, panel last, no sticky. */}
+        <div className="flex flex-col gap-8 md:flex-row md:justify-center">
           <div className="min-w-0 flex-1">
             <StatusBoard />
           </div>
           <aside
-            className="w-full md:sticky md:top-6 md:w-[22%] md:max-w-[18rem] md:min-w-[14rem] md:shrink-0"
+            className="w-full md:w-[22%] md:max-w-[18rem] md:min-w-[14rem] md:shrink-0"
             aria-label="Report or suggest"
           >
-            <ReportSuggestPanel />
+            <div className="md:sticky md:top-4 md:z-10">
+              <ReportSuggestPanel />
+            </div>
           </aside>
         </div>
       </main>
