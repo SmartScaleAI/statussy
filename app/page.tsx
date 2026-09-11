@@ -1,4 +1,5 @@
 import { EmailAlertsBanner } from "@/components/email-alerts-banner"
+import { RecentlyAddedPanel } from "@/components/recently-added-panel"
 import { ReportSuggestPanel } from "@/components/report-suggest-panel"
 import { SiteFooter } from "@/components/site-footer"
 import { SiteHeader } from "@/components/site-header"
@@ -19,19 +20,20 @@ export default function HomePage() {
       <SiteHeader />
       <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-8 px-6 py-8 sm:py-12">
         <EmailAlertsBanner />
-        {/* SMA-122: board (~70%) + Report/Suggest rail (~30%),
-            centered. Desktop: aside stretches with the board so the
-            inner wrapper can stay sticky at the top while the list
-            scrolls. Mobile: column stack, panel last, no sticky. */}
+        {/* SMA-122/123: board (~70%) + rail (~30%), centered.
+            Desktop: aside stretches with the board so the inner
+            wrapper stays sticky. Mobile: column stack under the
+            board — Recently added, then Report/Suggest. */}
         <div className="flex flex-col gap-8 md:flex-row md:justify-center">
           <div className="min-w-0 flex-1 md:max-w-[70%]">
             <StatusBoard />
           </div>
           <aside
             className="w-full md:w-[30%] md:max-w-[24rem] md:min-w-[14rem] md:shrink-0"
-            aria-label="Report or suggest"
+            aria-label="Recently added and report"
           >
-            <div className="md:sticky md:top-4 md:z-10">
+            <div className="flex flex-col gap-4 md:sticky md:top-4 md:z-10">
+              <RecentlyAddedPanel />
               <ReportSuggestPanel />
             </div>
           </aside>
