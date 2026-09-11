@@ -17,13 +17,11 @@ import {
   WEBHOOK_SIGNATURE_HEADER,
 } from "./webhook.ts"
 
-test("parseWebhookUrl accepts Slack Incoming Webhook HTTPS URLs", () => {
-  const parsed = parseWebhookUrl(
-    "https://hooks.slack.com/services/T000/B000/xxx"
-  )
+test("parseWebhookUrl accepts public HTTPS URLs", () => {
+  const parsed = parseWebhookUrl("https://example.com/webhook")
   assert.equal(parsed.ok, true)
   if (parsed.ok) {
-    assert.equal(parsed.url, "https://hooks.slack.com/services/T000/B000/xxx")
+    assert.equal(parsed.url, "https://example.com/webhook")
   }
 })
 
@@ -37,7 +35,7 @@ test("parseWebhookUrl rejects http, junk, and private hosts", () => {
   assert.equal(parseWebhookUrl("https://192.168.1.5/hook").ok, false)
   assert.equal(parseWebhookUrl("https://172.16.0.8/hook").ok, false)
   assert.equal(parseWebhookUrl("https://169.254.169.254/hook").ok, false)
-  assert.equal(isBlockedWebhookHost("hooks.slack.com"), false)
+  assert.equal(isBlockedWebhookHost("example.com"), false)
 })
 
 test("payload is one batched object with text plus service fields", () => {
@@ -78,7 +76,7 @@ test("payload is one batched object with text plus service fields", () => {
   assert.equal(payload.services[1]?.officialStatusUrl, null)
 })
 
-test("text summary stays short for Slack without Block Kit", () => {
+test("text summary stays short for a single service", () => {
   assert.equal(
     webhookTextSummary([
       {
@@ -118,7 +116,7 @@ test("deliverWebhook signs the POST and does not retry 4xx", async () => {
   }) as typeof fetch
   const body = '{"text":"hi","services":[]}'
   const result = await deliverWebhook({
-    url: "https://hooks.slack.com/services/T000/B000/xxx",
+    url: "https://example.com/webhook",
     secret: "stsy_secret",
     body,
     fetchImpl,

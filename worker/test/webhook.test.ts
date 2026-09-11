@@ -13,10 +13,8 @@ import {
   WEBHOOK_SIGNATURE_HEADER,
 } from "../src/webhook.js"
 
-test("parseWebhookUrl accepts Slack Incoming Webhook HTTPS URLs", () => {
-  const parsed = parseWebhookUrl(
-    "https://hooks.slack.com/services/T000/B000/xxx"
-  )
+test("parseWebhookUrl accepts public HTTPS URLs", () => {
+  const parsed = parseWebhookUrl("https://example.com/webhook")
   assert.equal(parsed.ok, true)
 })
 
@@ -25,7 +23,7 @@ test("parseWebhookUrl rejects non-https and loopback", () => {
   assert.equal(parseWebhookUrl("https://127.0.0.1/hook").ok, false)
 })
 
-test("batched payload includes required service fields and Slack text", () => {
+test("batched payload includes required service fields and text", () => {
   const services = buildWebhookServices(
     [
       {
@@ -88,7 +86,7 @@ test("deliverWebhook sends one signed POST and treats 4xx as hard", async () => 
   }) as typeof fetch
   const body = '{"text":"Statussy test","services":[]}'
   const result = await deliverWebhook({
-    url: "https://hooks.slack.com/services/T000/B000/xxx",
+    url: "https://example.com/webhook",
     secret: "stsy_secret",
     body,
     fetchImpl,

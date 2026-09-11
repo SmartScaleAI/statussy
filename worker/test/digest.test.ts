@@ -643,7 +643,7 @@ function channelUser(
     webhookEnabled: Boolean(channels.webhook),
     ...(channels.webhook
       ? {
-          webhookUrl: "https://hooks.slack.com/services/T000/B000/xxx",
+          webhookUrl: "https://example.com/webhook",
           webhookSecret: "stsy_secret",
         }
       : {}),

@@ -1,9 +1,9 @@
 /**
  * Outbound HTTPS webhook alerts (SMA-137).
  *
- * Slack Incoming Webhook URLs and any public HTTPS endpoint. One batched
- * POST per poll. HMAC in X-Statussy-Signature. Auto-disable after 3 hard
- * failures. Mute-until-Live is shared with email (digest_episode_mutes).
+ * Public HTTPS endpoints. One batched POST per poll. HMAC in
+ * X-Statussy-Signature. Auto-disable after 3 hard failures.
+ * Mute-until-Live is shared with email (digest_episode_mutes).
  */
 import { createHmac, randomBytes } from "node:crypto"
 import type pg from "pg"

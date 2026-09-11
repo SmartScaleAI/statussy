@@ -150,7 +150,7 @@ export function WebhookSettings({
       setError(result.error || "Could not send a test webhook.")
       return
     }
-    setNotice("Test webhook sent. Check Slack or your HTTPS endpoint.")
+    setNotice("Test webhook sent. Check your endpoint.")
   }
 
   async function onRotate() {
@@ -213,8 +213,7 @@ export function WebhookSettings({
         <CardTitle>Webhook alerts</CardTitle>
         <CardDescription>
           Optional HTTPS POST when a starred service flips Major or Partial.
-          Same toggles and mute-until-Live as email, including Slack Incoming
-          Webhook URLs.
+          Same toggles and mute-until-Live as email.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -235,7 +234,7 @@ export function WebhookSettings({
               inputMode="url"
               autoComplete="off"
               spellCheck={false}
-              placeholder="https://hooks.slack.com/services/"
+              placeholder="https://example.com/webhook"
               value={url}
               disabled={busy}
               onChange={(event) => {
@@ -243,8 +242,8 @@ export function WebhookSettings({
               }}
             />
             <FieldDescription>
-              Paste a Slack Incoming Webhook URL or any public HTTPS endpoint.
-              The URL can stay saved while alerts are off.
+              Paste a public HTTPS endpoint. The URL can stay saved while alerts
+              are off.
             </FieldDescription>
           </Field>
           <div className="flex flex-wrap gap-2">
@@ -336,19 +335,22 @@ export function WebhookSettings({
           </div>
           <details className="rounded-lg border border-border px-3 py-2">
             <summary className="cursor-pointer text-sm font-medium">
-              How to create a Slack Incoming Webhook
+              How outbound webhooks work
             </summary>
             <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm text-muted-foreground">
+              <li>Save a public HTTPS URL and turn on Enable webhook.</li>
               <li>
-                In Slack, open Apps and add Incoming WebHooks, or open your app
-                at api.slack.com/apps and enable Incoming Webhooks.
+                When a starred service newly enters Major or Partial, Statussy
+                POSTs one JSON payload for that poll.
               </li>
-              <li>Add the webhook to a workspace and pick a channel.</li>
               <li>
-                Copy the URL starting with https://hooks.slack.com/services/ and
-                paste it here.
+                The body includes a short text summary and a services array with
+                ids, names, statuses, and links.
               </li>
-              <li>Save the URL, turn on Enable webhook, then Send test.</li>
+              <li>
+                Verify the X-Statussy-Signature HMAC-SHA256 header with your
+                signing secret.
+              </li>
             </ol>
           </details>
           {notice ? (
