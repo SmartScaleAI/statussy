@@ -208,7 +208,7 @@ test("digestAttentionTitle is singular or plural", () => {
   assert.equal(digestAttentionTitle(3), "3 services need attention")
 })
 
-test("digest body is a dark card with pills, CTA, and footer links", () => {
+test("digest body is a black Grok-like column with pills, CTA, and footer links", () => {
   const items = [
     {
       serviceId: "openai",
@@ -248,8 +248,10 @@ test("digest body is a dark card with pills, CTA, and footer links", () => {
   assert.doesNotMatch(text, /—/)
 
   const html = digestHtmlBody(items, "https://www.statussy.com/")
-  assert.match(html, /#0a0a0a/)
-  assert.match(html, /max-width:520px/)
+  assert.match(html, /#000000/)
+  assert.match(html, /max-width:480px/)
+  assert.doesNotMatch(html, /#111111/)
+  assert.doesNotMatch(html, /border-radius:12px/)
   assert.match(html, /Statussy/)
   assert.match(html, /Stack alert/)
   assert.match(html, /2 services need attention/)

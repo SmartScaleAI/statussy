@@ -1,20 +1,19 @@
 /**
  * SMA-132: dark, sparse digest template (HTML + plain-text twin).
- * Email-client safe tables and inline styles. No em dashes in copy.
+ * Grok-like full-bleed black column. No em dashes in copy.
  */
 import type { ServiceStatus } from "./statuspage.js"
 
 const FONT =
   "-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif"
-const BG = "#0a0a0a"
-const CARD_BG = "#111111"
-const CARD_BORDER = "#2a2a2a"
+const BG = "#000000"
+const RULE = "#2a2a2a"
 const TEXT = "#f5f5f5"
 const MUTED = "#8a8a8a"
 const FOOTER = "#6b6b6b"
-const CTA_BG = "#f5f5f5"
-const CTA_FG = "#0a0a0a"
-const CARD_WIDTH = 520
+const CTA_BG = "#ffffff"
+const CTA_FG = "#000000"
+const COL_WIDTH = 480
 
 const PILL: Record<
   "major_outage" | "partial_outage",
@@ -90,11 +89,7 @@ export function digestTextBody(
   const blocks = items.map((item) => {
     const detail = digestServiceUrl(publicSiteUrl, item.serviceId)
     const official = safeHttpUrl(item.statusUrl)
-    const lines = [
-      item.name,
-      STATUS_LABEL[item.to],
-      detail,
-    ]
+    const lines = [item.name, STATUS_LABEL[item.to], detail]
     if (official) {
       lines.push(`Official status: ${official}`)
     }
@@ -102,9 +97,9 @@ export function digestTextBody(
   })
   return [
     "Statussy",
-    "Stack alert",
     "",
     digestAttentionTitle(items.length),
+    "Stack alert",
     "",
     ...blocks.flatMap((block, index) => (index === 0 ? [block] : ["", block])),
     "",
@@ -143,36 +138,40 @@ export function digestHtmlBody(
 <body style="margin:0;padding:0;background-color:${BG};">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${BG}" style="margin:0;padding:0;background-color:${BG};width:100%;">
   <tr>
-    <td align="center" style="padding:32px 16px;">
-      <table role="presentation" width="${CARD_WIDTH}" cellpadding="0" cellspacing="0" border="0" bgcolor="${CARD_BG}" style="width:100%;max-width:${CARD_WIDTH}px;background-color:${CARD_BG};border:1px solid ${CARD_BORDER};border-radius:12px;">
+    <td align="center" style="padding:48px 24px 56px;">
+      <table role="presentation" width="${COL_WIDTH}" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:${COL_WIDTH}px;">
         <tr>
-          <td style="padding:28px 28px 24px;">
+          <td style="padding:0 0 36px;">
             ${wordmarkHtml(mark)}
-            <p style="margin:22px 0 0;font-family:${FONT};font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:${MUTED};">Stack alert</p>
-            <h1 style="margin:8px 0 0;font-family:${FONT};font-size:22px;line-height:1.3;font-weight:600;letter-spacing:-0.02em;color:${TEXT};">${escapeHtml(title)}</h1>
           </td>
         </tr>
         <tr>
-          <td style="padding:0 28px 8px;">
+          <td style="padding:0 0 32px;">
+            <h1 style="margin:0;font-family:${FONT};font-size:32px;line-height:1.2;font-weight:600;letter-spacing:-0.03em;color:${TEXT};">${escapeHtml(title)}</h1>
+            <p style="margin:12px 0 0;font-family:${FONT};font-size:15px;line-height:1.4;color:${MUTED};">Stack alert</p>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:0 0 16px;">
             ${rows}
           </td>
         </tr>
         <tr>
-          <td style="padding:16px 28px 28px;">
+          <td style="padding:24px 0 40px;">
             ${ctaHtml(board)}
           </td>
         </tr>
         <tr>
-          <td style="padding:0 28px 24px;border-top:1px solid ${CARD_BORDER};">
-            <p style="margin:18px 0 0;font-family:${FONT};font-size:12px;line-height:1.6;color:${FOOTER};">
-              <a href="${escapeHtml(prefs)}" style="color:${FOOTER};text-decoration:underline;">Manage digest prefs</a>
+          <td style="padding:20px 0 0;border-top:1px solid ${RULE};">
+            <p style="margin:0;font-family:${FONT};font-size:13px;line-height:1.6;color:${FOOTER};">
+              <a href="${escapeHtml(prefs)}" style="color:${FOOTER};text-decoration:none;">Manage digest prefs</a>
               &nbsp;&middot;&nbsp;
-              <a href="${escapeHtml(prefs)}" style="color:${FOOTER};text-decoration:underline;">Unsubscribe</a>
+              <a href="${escapeHtml(prefs)}" style="color:${FOOTER};text-decoration:none;">Unsubscribe</a>
             </p>
-            <p style="margin:8px 0 0;font-family:${FONT};font-size:12px;line-height:1.6;color:${FOOTER};">
+            <p style="margin:6px 0 0;font-family:${FONT};font-size:13px;line-height:1.6;color:${FOOTER};">
               © SmartScale Solutions LLC
               &nbsp;&middot;&nbsp;
-              <a href="${escapeHtml(board)}" style="color:${FOOTER};text-decoration:underline;">statussy.com</a>
+              <a href="${escapeHtml(board)}" style="color:${FOOTER};text-decoration:none;">statussy.com</a>
             </p>
           </td>
         </tr>
@@ -188,9 +187,9 @@ function wordmarkHtml(markUrl: string): string {
   return `<table role="presentation" cellpadding="0" cellspacing="0" border="0">
               <tr>
                 <td style="vertical-align:middle;padding-right:10px;">
-                  <img src="${escapeHtml(markUrl)}" width="24" height="24" alt="" style="display:block;width:24px;height:24px;border:0;border-radius:6px;">
+                  <img src="${escapeHtml(markUrl)}" width="28" height="28" alt="" style="display:block;width:28px;height:28px;border:0;border-radius:7px;">
                 </td>
-                <td style="vertical-align:middle;font-family:${FONT};font-size:18px;line-height:1;font-weight:600;letter-spacing:-0.02em;color:${TEXT};">Statussy</td>
+                <td style="vertical-align:middle;font-family:${FONT};font-size:20px;line-height:1;font-weight:600;letter-spacing:-0.02em;color:${TEXT};">Statussy</td>
               </tr>
             </table>`
 }
@@ -206,20 +205,20 @@ function serviceRowHtml(
     PILL[item.to === "partial_outage" ? "partial_outage" : "major_outage"]
   const label = STATUS_LABEL[item.to]
   const officialHtml = official
-    ? `<p style="margin:6px 0 0;font-family:${FONT};font-size:12px;line-height:1.4;">
-                    <a href="${escapeHtml(official)}" style="color:${MUTED};text-decoration:underline;">Official status</a>
+    ? `<p style="margin:6px 0 0;font-family:${FONT};font-size:13px;line-height:1.4;">
+                    <a href="${escapeHtml(official)}" style="color:${MUTED};text-decoration:none;">Official status</a>
                   </p>`
     : ""
-  const border = last ? "" : `border-bottom:1px solid ${CARD_BORDER};`
+  const border = last ? "" : `border-bottom:1px solid ${RULE};`
 
-  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 16px;${border}">
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0;${border}">
               <tr>
-                <td style="padding:0 12px 16px 0;vertical-align:middle;">
-                  <a href="${escapeHtml(detail)}" style="font-family:${FONT};font-size:15px;line-height:1.4;font-weight:600;color:${TEXT};text-decoration:none;">${escapeHtml(item.name)}</a>
+                <td style="padding:16px 12px 16px 0;vertical-align:middle;">
+                  <a href="${escapeHtml(detail)}" style="font-family:${FONT};font-size:16px;line-height:1.4;font-weight:600;color:${TEXT};text-decoration:none;">${escapeHtml(item.name)}</a>
                   ${officialHtml}
                 </td>
-                <td style="padding:0 0 16px;vertical-align:middle;white-space:nowrap;" align="right">
-                  <span style="display:inline-block;padding:4px 8px;font-family:${FONT};font-size:11px;line-height:1.3;font-weight:600;color:${pill.fg};background-color:${pill.bg};border:1px solid ${pill.border};border-radius:999px;">${escapeHtml(label)}</span>
+                <td style="padding:16px 0;vertical-align:middle;white-space:nowrap;" align="right">
+                  <span style="display:inline-block;padding:4px 10px;font-family:${FONT};font-size:12px;line-height:1.3;font-weight:600;color:${pill.fg};background-color:${pill.bg};border:1px solid ${pill.border};border-radius:999px;">${escapeHtml(label)}</span>
                 </td>
               </tr>
             </table>`
@@ -228,8 +227,8 @@ function serviceRowHtml(
 function ctaHtml(board: string): string {
   return `<table role="presentation" cellpadding="0" cellspacing="0" border="0">
               <tr>
-                <td bgcolor="${CTA_BG}" style="background-color:${CTA_BG};border-radius:8px;">
-                  <a href="${escapeHtml(board)}" style="display:inline-block;padding:12px 20px;font-family:${FONT};font-size:14px;line-height:1;font-weight:600;color:${CTA_FG};text-decoration:none;">Open your board</a>
+                <td bgcolor="${CTA_BG}" style="background-color:${CTA_BG};border-radius:999px;">
+                  <a href="${escapeHtml(board)}" style="display:inline-block;padding:14px 28px;font-family:${FONT};font-size:15px;line-height:1;font-weight:600;color:${CTA_FG};text-decoration:none;">Open your board</a>
                 </td>
               </tr>
             </table>`
