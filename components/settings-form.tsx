@@ -302,9 +302,8 @@ export function SettingsForm() {
               <FieldContent>
                 <FieldLabel htmlFor="digest-major">Major outages</FieldLabel>
                 <FieldDescription>
-                  One email after each status check if a starred service newly
-                  enters a major outage. Recoveries and degraded-only changes
-                  are not emailed.
+                  One email when a starred service newly enters a major outage.
+                  That service stays muted until it recovers to Live.
                 </FieldDescription>
               </FieldContent>
               <Switch
@@ -322,8 +321,9 @@ export function SettingsForm() {
                   Partial outages
                 </FieldLabel>
                 <FieldDescription>
-                  Partial is noisier — multi-region providers can flip often. At
-                  most one Partial email per starred service every 6 hours.
+                  Partial is noisier — multi-region providers can flip often. One
+                  email per episode, then muted until the service recovers to
+                  Live.
                 </FieldDescription>
               </FieldContent>
               <Switch

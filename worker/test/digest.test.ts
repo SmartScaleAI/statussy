@@ -22,9 +22,10 @@ import {
   filterDigestItems,
   groupUserDigests,
   isDigestTransition,
-  isPartialCooldownActive,
-  PARTIAL_COOLDOWN_MS,
+  isLiveStatus,
+  liveServiceIdsFromPairs,
   qualifyingDigestItems,
+  unmuteRecovered,
   pairsFromSnapshotRows,
   type DigestUser,
   type StatusTransition,
@@ -111,6 +112,39 @@ test("collectTransitions filters the pair list", () => {
   )
   assert.equal(items[0]?.statusUrl, "https://status.openai.com/")
   assert.equal(items[1]?.statusUrl, undefined)
+})
+
+test("groupUserDigests drops muted favorites and still batches the rest", () => {
+  const transitions = collectTransitions([
+    {
+      serviceId: "openai",
+      name: "OpenAI",
+      previous: "operational",
+      current: "major_outage",
+    },
+    {
+      serviceId: "anthropic",
+      name: "Anthropic",
+      previous: "operational",
+      current: "partial_outage",
+    },
+    {
+      serviceId: "vercel",
+      name: "Vercel",
+      previous: "operational",
+      current: "partial_outage",
+    },
+  ])
+  const digests = groupUserDigests(
+    [user("u1", "a@example.com", ["openai", "anthropic", "vercel"])],
+    transitions,
+    new Map([["u1", new Set(["anthropic"])]])
+  )
+  assert.equal(digests.length, 1)
+  assert.deepEqual(
+    digests[0]?.items.map((item) => item.serviceId),
+    ["openai", "vercel"]
+  )
 })
 
 test("groupUserDigests batches many favorite transitions into one digest per user", () => {
@@ -405,13 +439,10 @@ const PARTIAL: StatusTransition = {
   from: "operational",
   to: "partial_outage",
 }
-const HOUR = 60 * 60 * 1000
-
 test("filterDigestItems honors Major vs Partial toggles", () => {
-  const now = Date.now()
-  const empty = new Map<string, number>()
+  const empty = new Set<string>()
   assert.deepEqual(
-    filterDigestItems([MAJOR, PARTIAL], BOTH_ON, empty, now).map(
+    filterDigestItems([MAJOR, PARTIAL], BOTH_ON, empty).map(
       (item) => item.serviceId
     ),
     ["openai", "anthropic"]
@@ -420,8 +451,7 @@ test("filterDigestItems honors Major vs Partial toggles", () => {
     filterDigestItems(
       [MAJOR, PARTIAL],
       { notifyMajor: true, notifyPartial: false },
-      empty,
-      now
+      empty
     ).map((item) => item.serviceId),
     ["openai"]
   )
@@ -429,8 +459,7 @@ test("filterDigestItems honors Major vs Partial toggles", () => {
     filterDigestItems(
       [MAJOR, PARTIAL],
       { notifyMajor: false, notifyPartial: true },
-      empty,
-      now
+      empty
     ).map((item) => item.serviceId),
     ["anthropic"]
   )
@@ -438,43 +467,94 @@ test("filterDigestItems honors Major vs Partial toggles", () => {
     filterDigestItems(
       [MAJOR, PARTIAL],
       { notifyMajor: false, notifyPartial: false },
-      empty,
-      now
+      empty
     ),
     []
   )
 })
 
-test("Partial cooldown suppresses 5h59 and allows 6h01; Major is unaffected", () => {
-  const now = Date.parse("2026-09-10T12:00:00.000Z")
-  const lastPartial = new Map<string, number>([
-    ["anthropic", now - (6 * HOUR - 60 * 1000)],
-  ])
-  assert.equal(
-    isPartialCooldownActive(lastPartial.get("anthropic"), now),
-    true
-  )
+test("mute until Live: alert once, stay Major no second email, recover, then Major again", () => {
+  assert.equal(isLiveStatus("operational"), true)
+  assert.equal(isLiveStatus("major_outage"), false)
+  assert.equal(isLiveStatus("partial_outage"), false)
+  assert.equal(isLiveStatus("degraded"), false)
+  assert.equal(isLiveStatus("maintenance"), false)
+
+  const first = filterDigestItems([MAJOR], BOTH_ON)
   assert.deepEqual(
-    filterDigestItems([MAJOR, PARTIAL], BOTH_ON, lastPartial, now).map(
+    first.map((item) => item.serviceId),
+    ["openai"]
+  )
+  let muted = new Set(first.map((item) => item.serviceId))
+
+  assert.equal(
+    collectTransitions([
+      {
+        serviceId: "openai",
+        name: "OpenAI",
+        previous: "major_outage",
+        current: "major_outage",
+      },
+    ]).length,
+    0
+  )
+  const worsenWhileDown: StatusTransition = {
+    serviceId: "openai",
+    name: "OpenAI",
+    from: "partial_outage",
+    to: "major_outage",
+  }
+  assert.deepEqual(filterDigestItems([worsenWhileDown], BOTH_ON, muted), [])
+
+  muted = unmuteRecovered(
+    muted,
+    liveServiceIdsFromPairs([
+      { serviceId: "openai", current: "operational" },
+    ])
+  )
+  assert.equal(muted.has("openai"), false)
+
+  const again = filterDigestItems([MAJOR], BOTH_ON, muted)
+  assert.deepEqual(
+    again.map((item) => item.serviceId),
+    ["openai"]
+  )
+})
+
+test("Partial and Major share mute-until-Live; unmuted favorites still batch", () => {
+  const muted = new Set(["anthropic"])
+  assert.deepEqual(
+    filterDigestItems([MAJOR, PARTIAL], BOTH_ON, muted).map(
       (item) => item.serviceId
     ),
     ["openai"]
   )
+  assert.deepEqual(filterDigestItems([PARTIAL], BOTH_ON, muted), [])
 
-  const afterWindow = new Map<string, number>([
-    ["anthropic", now - (6 * HOUR + 60 * 1000)],
-  ])
+  assert.equal(unmuteRecovered(muted, []).has("anthropic"), true)
   assert.equal(
-    isPartialCooldownActive(afterWindow.get("anthropic"), now),
-    false
+    unmuteRecovered(
+      muted,
+      liveServiceIdsFromPairs([
+        { serviceId: "anthropic", current: "degraded" },
+      ])
+    ).has("anthropic"),
+    true
+  )
+  assert.deepEqual(filterDigestItems([PARTIAL], BOTH_ON, muted), [])
+
+  const recovered = unmuteRecovered(
+    muted,
+    liveServiceIdsFromPairs([
+      { serviceId: "anthropic", current: "operational" },
+    ])
   )
   assert.deepEqual(
-    filterDigestItems([MAJOR, PARTIAL], BOTH_ON, afterWindow, now).map(
+    filterDigestItems([MAJOR, PARTIAL], BOTH_ON, recovered).map(
       (item) => item.serviceId
     ),
     ["openai", "anthropic"]
   )
-  assert.equal(PARTIAL_COOLDOWN_MS, 6 * HOUR)
 })
 
 test("qualifyingDigestItems still batches one digest when several favorites qualify", () => {
@@ -500,9 +580,7 @@ test("qualifyingDigestItems still batches one digest when several favorites qual
   ])
   const items = qualifyingDigestItems(
     user("u1", "a@example.com", ["openai", "anthropic", "vercel"]),
-    transitions,
-    new Map(),
-    Date.now()
+    transitions
   )
   assert.deepEqual(
     items.map((item) => item.serviceId),

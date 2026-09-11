@@ -1,10 +1,11 @@
 /**
- * My Stack email digests (SMA-115 / SMA-118 / SMA-131 / SMA-132).
+ * My Stack email digests (SMA-115 / SMA-118 / SMA-131 / SMA-132 / SMA-135).
  *
  * After a poll settles: opted-in users get one Resend email if a favorite
  * transitioned *into* Major or Partial from a healthier state and their
- * toggles allow it. Partial is rate-limited to one email per favorite
- * every 6 hours. Recoveries, still-bad, Degraded-only, Maintenance, and
+ * toggles allow it. Once a favorite is included, it is muted until that
+ * service recovers to Live (operational). Partial and Major share that
+ * episode rule. Recoveries, still-bad, Degraded-only, Maintenance, and
  * Live are skipped. `digest_sends (user_id, poll_id)` makes the same
  * snapshot set idempotent.
  *
@@ -33,9 +34,6 @@ export {
   digestTextBody,
   STATUS_LABEL,
 } from "./digest-email.js"
-
-/** At most one Partial digest email per user+favorite in this window. */
-export const PARTIAL_COOLDOWN_MS = 6 * 60 * 60 * 1000
 
 /** Lower number = more urgent. Matches app `STATUS_RANK` (lib/status.ts). */
 export const STATUS_RANK: Record<ServiceStatus, number> = {
@@ -158,37 +156,60 @@ export function withLatestIncidents(
   })
 }
 
-export function toEpochMs(value: Date | number): number {
-  return typeof value === "number" ? value : value.getTime()
+/** Live / operational is the only status that ends an episode mute. */
+export function isLiveStatus(status: ServiceStatus): boolean {
+  return status === "operational"
 }
 
-/** True when the last Partial email for this favorite is still inside 6h. */
-export function isPartialCooldownActive(
-  lastNotifiedAt: Date | number | null | undefined,
-  now: Date | number,
-  cooldownMs = PARTIAL_COOLDOWN_MS
-): boolean {
-  if (lastNotifiedAt == null) {
-    return false
+export function liveServiceIdsFromPairs(
+  pairs: ReadonlyArray<{ serviceId: string; current: ServiceStatus }>
+): string[] {
+  return [
+    ...new Set(
+      pairs
+        .filter((pair) => isLiveStatus(pair.current))
+        .map((pair) => pair.serviceId)
+    ),
+  ]
+}
+
+export function unmuteRecovered(
+  mutedServiceIds: ReadonlySet<string>,
+  liveServiceIds: Iterable<string>
+): Set<string> {
+  const live = liveServiceIds instanceof Set
+    ? liveServiceIds
+    : new Set(liveServiceIds)
+  const next = new Set<string>()
+  for (const id of mutedServiceIds) {
+    if (!live.has(id)) {
+      next.add(id)
+    }
   }
-  return toEpochMs(now) - toEpochMs(lastNotifiedAt) < cooldownMs
+  return next
+}
+
+export function isEpisodeMuted(
+  mutedServiceIds: ReadonlySet<string>,
+  serviceId: string
+): boolean {
+  return mutedServiceIds.has(serviceId)
 }
 
 export function filterDigestItems(
   items: readonly StatusTransition[],
   prefs: DigestNotifyPrefs,
-  lastPartialAt: ReadonlyMap<string, Date | number>,
-  now: Date | number
+  mutedServiceIds: ReadonlySet<string> = new Set()
 ): StatusTransition[] {
   return items.filter((item) => {
+    if (isEpisodeMuted(mutedServiceIds, item.serviceId)) {
+      return false
+    }
     if (item.to === "major_outage") {
       return prefs.notifyMajor
     }
     if (item.to === "partial_outage") {
-      if (!prefs.notifyPartial) {
-        return false
-      }
-      return !isPartialCooldownActive(lastPartialAt.get(item.serviceId), now)
+      return prefs.notifyPartial
     }
     return false
   })
@@ -213,14 +234,12 @@ export function digestForUser(
 export function qualifyingDigestItems(
   user: DigestUser,
   transitions: readonly StatusTransition[],
-  lastPartialAt: ReadonlyMap<string, Date | number>,
-  now: Date | number
+  mutedServiceIds: ReadonlySet<string> = new Set()
 ): StatusTransition[] {
   return filterDigestItems(
     digestForUser(user, transitions),
     { notifyMajor: user.notifyMajor, notifyPartial: user.notifyPartial },
-    lastPartialAt,
-    now
+    mutedServiceIds
   )
 }
 
@@ -228,19 +247,14 @@ export function qualifyingDigestItems(
 export function groupUserDigests(
   users: readonly DigestUser[],
   transitions: readonly StatusTransition[],
-  lastPartialAtByUser: ReadonlyMap<
-    string,
-    ReadonlyMap<string, Date | number>
-  > = new Map(),
-  now: Date | number = 0
+  mutedByUser: ReadonlyMap<string, ReadonlySet<string>> = new Map()
 ): UserDigest[] {
   const digests: UserDigest[] = []
   for (const user of users) {
     const items = qualifyingDigestItems(
       user,
       transitions,
-      lastPartialAtByUser.get(user.userId) ?? new Map(),
-      now
+      mutedByUser.get(user.userId) ?? new Set()
     )
     if (items.length > 0) {
       digests.push({ user, items })
@@ -384,6 +398,7 @@ export async function sendStackDigests(
     return empty
   }
   const pollId = digestPollId(snapshotIds)
+  await clearEpisodeMutesForLive(pool, liveServiceIdsFromPairs(pairs))
   const collected = collectTransitions(pairs)
   if (collected.length === 0) {
     return empty
@@ -408,17 +423,12 @@ export async function sendStackDigests(
       ORDER BY u.id, uf.created_at ASC, uf.service_id ASC`
   )
   const users = groupSubscriberRows(subscriberRows)
-  const lastPartialAtByUser = await loadPartialNotifyTimes(
+  const mutedByUser = await loadEpisodeMutes(
     pool,
     users.map((user) => user.userId)
   )
   const now = new Date()
-  const digests = groupUserDigests(
-    users,
-    transitions,
-    lastPartialAtByUser,
-    now
-  )
+  const digests = groupUserDigests(users, transitions, mutedByUser)
   if (digests.length === 0) {
     return empty
   }
@@ -452,7 +462,7 @@ export async function sendStackDigests(
       })
       sent += 1
       try {
-        await recordPartialNotifies(
+        await recordEpisodeMutes(
           pool,
           digest.user.userId,
           digest.items,
@@ -460,7 +470,7 @@ export async function sendStackDigests(
         )
       } catch (err) {
         console.error(
-          `[digest] partial cooldown persist failed user=${digest.user.userId}: ${(err as Error).message}`
+          `[digest] episode mute persist failed user=${digest.user.userId}: ${(err as Error).message}`
         )
       }
     } catch (err) {
@@ -509,56 +519,68 @@ export async function loadLatestActiveIncidents(
   return latest
 }
 
-async function loadPartialNotifyTimes(
+async function clearEpisodeMutesForLive(
+  pool: pg.Pool,
+  liveServiceIds: readonly string[]
+): Promise<void> {
+  if (liveServiceIds.length === 0) {
+    return
+  }
+  await pool.query(
+    `DELETE FROM digest_episode_mutes
+      WHERE service_id = ANY($1::text[])`,
+    [liveServiceIds]
+  )
+}
+
+async function loadEpisodeMutes(
   pool: pg.Pool,
   userIds: string[]
-): Promise<Map<string, Map<string, Date>>> {
-  const byUser = new Map<string, Map<string, Date>>()
+): Promise<Map<string, Set<string>>> {
+  const byUser = new Map<string, Set<string>>()
   if (userIds.length === 0) {
     return byUser
   }
   const { rows } = await pool.query<{
     user_id: string
     service_id: string
-    last_notified_at: Date
   }>(
-    `SELECT user_id, service_id, last_notified_at
-       FROM digest_partial_notifies
+    `SELECT user_id, service_id
+       FROM digest_episode_mutes
       WHERE user_id = ANY($1::text[])`,
     [userIds]
   )
   for (const row of rows) {
     let inner = byUser.get(row.user_id)
     if (!inner) {
-      inner = new Map()
+      inner = new Set()
       byUser.set(row.user_id, inner)
     }
-    inner.set(row.service_id, row.last_notified_at)
+    inner.add(row.service_id)
   }
   return byUser
 }
 
-async function recordPartialNotifies(
+async function recordEpisodeMutes(
   pool: pg.Pool,
   userId: string,
   items: readonly StatusTransition[],
-  notifiedAt: Date
+  alertedAt: Date
 ): Promise<void> {
-  const partials = items.filter((item) => item.to === "partial_outage")
-  if (partials.length === 0) {
+  if (items.length === 0) {
     return
   }
   const values: unknown[] = []
-  const tuples = partials.map((item, index) => {
+  const tuples = items.map((item, index) => {
     const base = index * 3
-    values.push(userId, item.serviceId, notifiedAt)
+    values.push(userId, item.serviceId, alertedAt)
     return `($${base + 1}, $${base + 2}, $${base + 3})`
   })
   await pool.query(
-    `INSERT INTO digest_partial_notifies (user_id, service_id, last_notified_at)
+    `INSERT INTO digest_episode_mutes (user_id, service_id, last_alerted_at)
      VALUES ${tuples.join(", ")}
      ON CONFLICT (user_id, service_id)
-     DO UPDATE SET last_notified_at = EXCLUDED.last_notified_at`,
+     DO UPDATE SET last_alerted_at = EXCLUDED.last_alerted_at`,
     values
   )
 }
