@@ -11,16 +11,17 @@
  * SMA-36: shelf has no divider; timestamps include a UTC suffix.
  * SMA-37: star toggles localStorage favorites (`statussy:favoriteServiceIds`).
  * SMA-103: signed-out star opens the login dialog and does not toggle.
+ * SMA-128: star control lives in `FavoriteButton` so the detail page
+ * can reuse the same toggle + auth dialog.
  */
 "use client"
 
-import { ArrowUpRightIcon, StarIcon } from "lucide-react"
+import { ArrowUpRightIcon } from "lucide-react"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import React, { type MouseEvent } from "react"
 
-import { useAuth } from "@/components/auth-provider"
-import { useFavoriteServices } from "@/components/favorite-services"
+import { FavoriteButton } from "@/components/favorite-button"
 import { CATEGORY_PARAM } from "@/lib/board-filter"
 import { logoInvertClass } from "@/lib/light-logo-ids"
 import { cn } from "@/lib/utils"
@@ -65,35 +66,6 @@ export interface CardData {
 
 interface CardProps {
   data: CardData
-}
-
-function FavoriteButton({ serviceId }: { serviceId: string }) {
-  const { isFavorited, toggleFavorite } = useFavoriteServices()
-  const { isPending, isSignedIn, openLogin } = useAuth()
-  const favorited = isFavorited(serviceId)
-
-  return (
-    <button
-      type="button"
-      className={favorited ? "btn-favorite is-favorited" : "btn-favorite"}
-      aria-pressed={favorited}
-      aria-label={favorited ? "Remove from favorites" : "Add to favorites"}
-      onClick={(event) => {
-        event.preventDefault()
-        stopCardNavigation(event)
-        if (isPending) {
-          return
-        }
-        if (!isSignedIn) {
-          openLogin("favorites")
-          return
-        }
-        toggleFavorite(serviceId)
-      }}
-    >
-      <StarIcon aria-hidden="true" fill={favorited ? "currentColor" : "none"} />
-    </button>
-  )
 }
 
 const Card: React.FC<CardProps> = ({ data }) => {

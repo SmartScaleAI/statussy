@@ -7,6 +7,7 @@ import {
   BackToBoardLink,
   BackToBoardLinkFallback,
 } from "@/components/board-back-link"
+import { ServiceDetailFavorite } from "@/components/service-detail-favorite"
 import { SiteFooter } from "@/components/site-footer"
 import { SiteHeader } from "@/components/site-header"
 import { buttonVariants } from "@/components/ui/button"
@@ -222,10 +223,16 @@ export default async function ServiceDetailPage({ params }: PageProps) {
                 logoInvertClass(service.id)
               )}
             />
-            <div className="flex flex-col gap-1">
-              <h1 className="font-heading text-2xl font-semibold tracking-tight text-foreground">
-                {service.name}
-              </h1>
+            <div className="flex min-w-0 flex-col gap-1">
+              <div className="flex min-w-0 items-center gap-1">
+                <h1 className="min-w-0 font-heading text-2xl font-semibold tracking-tight text-foreground">
+                  {service.name}
+                </h1>
+                {/* SMA-128: same My Stack star as the board; kept next to
+                    the title so it does not compete with Back / Official
+                    status tap targets on narrow viewports. */}
+                <ServiceDetailFavorite serviceId={service.id} />
+              </div>
               <div className="flex flex-wrap items-center gap-2">
                 <StatusChip status={status} />
                 {stale ? <StaleBadge /> : null}
