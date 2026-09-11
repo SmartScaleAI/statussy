@@ -3,8 +3,6 @@
 import { useState } from "react"
 
 import {
-  revealMyWebhookSecret,
-  rotateMyWebhookSecret,
   saveMyWebhookUrl,
   sendMyWebhookTest,
   setMyWebhookEnabled,
@@ -38,83 +36,100 @@ export function WebhookSettings({
 }) {
   const [prefs, setPrefs] = useState<UserWebhookPrefs>(initialPrefs)
   const [url, setUrl] = useState(initialPrefs.url)
-  const [pending, setPending] = useState<
-    "save" | "enable" | "test" | "rotate" | "reveal" | null
-  >(null)
+  const [uiEnabled, setUiEnabled] = useState(initialPrefs.enabled)
+  const [pending, setPending] = useState<"save" | "enable" | "test" | null>(
+    null
+  )
   const [error, setError] = useState<string | null>(null)
   const [notice, setNotice] = useState<string | null>(null)
-  const [secretOnce, setSecretOnce] = useState<string | null>(null)
   const busy = pending !== null
+  const fieldsOpen = uiEnabled
 
   function applyPrefs(next: UserWebhookPrefs) {
-    setPrefs(pickWebhookPrefs(next))
-    setUrl(next.url)
+    const picked = pickWebhookPrefs(next)
+    setPrefs(picked)
+    setUrl(picked.url)
+    setUiEnabled(picked.enabled)
+  }
+
+  async function persistEnabled(enabled: boolean) {
+    const result = await setMyWebhookEnabled(enabled)
+    if (!result.signedIn) {
+      onSignedOut()
+      return null
+    }
+    applyPrefs(result)
+    if (result.error) {
+      setError(result.error)
+      return null
+    }
+    return result
+  }
+
+  async function persistUrl() {
+    const result = await saveMyWebhookUrl(url)
+    if (!result.signedIn) {
+      onSignedOut()
+      return null
+    }
+    if (result.error) {
+      applyPrefs(result)
+      setError(result.error)
+      return null
+    }
+    const picked = pickWebhookPrefs(result)
+    setPrefs(picked)
+    setUrl(picked.url)
+    return result
+  }
+
+  async function onToggleEnabled(enabled: boolean) {
+    setError(null)
+    setNotice(null)
+    if (!enabled) {
+      setUiEnabled(false)
+      if (!prefs.url && !prefs.hasSecret) {
+        return
+      }
+      setPending("enable")
+      const result = await persistEnabled(false)
+      setPending(null)
+      if (result) {
+        setNotice("Webhook URL is saved and alerts are off.")
+      }
+      return
+    }
+
+    setUiEnabled(true)
+    if (!prefs.url) {
+      setNotice("Add a webhook URL and save it to start sending alerts.")
+      return
+    }
+    setPending("enable")
+    const result = await persistEnabled(true)
+    setPending(null)
+    if (result) {
+      setNotice("Webhook alerts are on. Send a test to confirm delivery.")
+    }
   }
 
   async function onSave() {
     setError(null)
     setNotice(null)
     setPending("save")
-    const result = await saveMyWebhookUrl(url)
+    const saved = await persistUrl()
+    if (!saved) {
+      setPending(null)
+      setUiEnabled(true)
+      return
+    }
+    const enabled = await persistEnabled(true)
     setPending(null)
-    if (!result.signedIn) {
-      onSignedOut()
-      return
-    }
-    applyPrefs(result)
-    if (result.error) {
-      setError(result.error)
-      return
-    }
-    if (result.secretOnce) {
-      setSecretOnce(result.secretOnce)
-      setNotice("Signing secret created. Copy it now. You can reveal it later.")
+    if (enabled) {
+      setNotice("Webhook URL saved. Alerts are on.")
     } else {
-      setNotice("Webhook URL saved. It stays off until you enable it.")
+      setUiEnabled(true)
     }
-  }
-
-  async function onToggleEnabled(enabled: boolean) {
-    setError(null)
-    setNotice(null)
-    if (enabled && url.trim() && url.trim() !== prefs.url) {
-      setPending("save")
-      const saved = await saveMyWebhookUrl(url)
-      if (!saved.signedIn) {
-        setPending(null)
-        onSignedOut()
-        return
-      }
-      applyPrefs(saved)
-      if (saved.secretOnce) {
-        setSecretOnce(saved.secretOnce)
-      }
-      if (saved.error) {
-        setPending(null)
-        setError(saved.error)
-        return
-      }
-    }
-    setPending("enable")
-    const previous = prefs
-    setPrefs({ ...prefs, enabled })
-    const result = await setMyWebhookEnabled(enabled)
-    setPending(null)
-    if (!result.signedIn) {
-      setPrefs(previous)
-      onSignedOut()
-      return
-    }
-    applyPrefs(result)
-    if (result.error) {
-      setError(result.error)
-      return
-    }
-    setNotice(
-      enabled
-        ? "Webhook alerts are on. Send a test to confirm delivery."
-        : "Webhook URL is saved and alerts are off."
-    )
   }
 
   async function onTest() {
@@ -122,20 +137,18 @@ export function WebhookSettings({
     setNotice(null)
     if (url.trim() && url.trim() !== prefs.url) {
       setPending("save")
-      const saved = await saveMyWebhookUrl(url)
-      if (!saved.signedIn) {
+      const saved = await persistUrl()
+      if (!saved) {
         setPending(null)
-        onSignedOut()
+        setUiEnabled(true)
         return
       }
-      applyPrefs(saved)
-      if (saved.secretOnce) {
-        setSecretOnce(saved.secretOnce)
-      }
-      if (saved.error) {
-        setPending(null)
-        setError(saved.error)
-        return
+      if (uiEnabled) {
+        const enabled = await persistEnabled(true)
+        if (!enabled) {
+          setPending(null)
+          return
+        }
       }
     }
     setPending("test")
@@ -151,60 +164,6 @@ export function WebhookSettings({
       return
     }
     setNotice("Test webhook sent. Check your endpoint.")
-  }
-
-  async function onRotate() {
-    setError(null)
-    setNotice(null)
-    setPending("rotate")
-    const result = await rotateMyWebhookSecret()
-    setPending(null)
-    if (!result.signedIn) {
-      if (result.error) {
-        setError(result.error)
-        return
-      }
-      onSignedOut()
-      return
-    }
-    applyPrefs(result)
-    setSecretOnce(result.secretOnce)
-    setNotice(
-      "New signing secret created. Copy it now. The previous secret no longer works."
-    )
-  }
-
-  async function onReveal() {
-    setError(null)
-    setNotice(null)
-    setPending("reveal")
-    const result = await revealMyWebhookSecret()
-    setPending(null)
-    if (!result.signedIn) {
-      onSignedOut()
-      return
-    }
-    if (result.secret) {
-      setSecretOnce(result.secret)
-      return
-    }
-    setError(
-      "error" in result && result.error
-        ? result.error
-        : "Could not reveal the signing secret."
-    )
-  }
-
-  async function onCopySecret() {
-    if (!secretOnce || !navigator.clipboard) {
-      return
-    }
-    try {
-      await navigator.clipboard.writeText(secretOnce)
-      setNotice("Signing secret copied.")
-    } catch {
-      setNotice("Select the secret and copy it manually.")
-    }
   }
 
   return (
@@ -226,6 +185,22 @@ export function WebhookSettings({
               {prefs.disabledNote}
             </p>
           ) : null}
+          <Field orientation="horizontal">
+            <FieldContent>
+              <FieldLabel htmlFor="webhook-enabled">Enable webhook</FieldLabel>
+              <FieldDescription>
+                Unlock the URL field. Alerts only send after a URL is saved.
+              </FieldDescription>
+            </FieldContent>
+            <Switch
+              id="webhook-enabled"
+              checked={uiEnabled}
+              disabled={busy}
+              onCheckedChange={(checked) => {
+                void onToggleEnabled(checked)
+              }}
+            />
+          </Field>
           <Field>
             <FieldLabel htmlFor="webhook-url">Webhook URL</FieldLabel>
             <Input
@@ -236,21 +211,20 @@ export function WebhookSettings({
               spellCheck={false}
               placeholder="https://example.com/webhook"
               value={url}
-              disabled={busy}
+              disabled={!fieldsOpen || busy}
               onChange={(event) => {
                 setUrl(event.target.value)
               }}
             />
             <FieldDescription>
-              Paste a public HTTPS endpoint. The URL can stay saved while alerts
-              are off.
+              Public HTTPS endpoint. Statussy signs each POST for you.
             </FieldDescription>
           </Field>
           <div className="flex flex-wrap gap-2">
             <Button
               type="button"
               variant="outline"
-              disabled={busy}
+              disabled={!fieldsOpen || busy}
               onClick={() => {
                 void onSave()
               }}
@@ -260,7 +234,7 @@ export function WebhookSettings({
             <Button
               type="button"
               variant="outline"
-              disabled={busy || (!prefs.url && !url.trim())}
+              disabled={!fieldsOpen || busy || (!prefs.url && !url.trim())}
               onClick={() => {
                 void onTest()
               }}
@@ -268,77 +242,12 @@ export function WebhookSettings({
               {pending === "test" ? "Sending…" : "Send test"}
             </Button>
           </div>
-          <Field orientation="horizontal">
-            <FieldContent>
-              <FieldLabel htmlFor="webhook-enabled">Enable webhook</FieldLabel>
-              <FieldDescription>
-                Off keeps the URL saved without posting. Uses the Major and
-                Partial toggles above.
-              </FieldDescription>
-            </FieldContent>
-            <Switch
-              id="webhook-enabled"
-              checked={prefs.enabled}
-              disabled={busy}
-              onCheckedChange={(checked) => {
-                void onToggleEnabled(checked)
-              }}
-            />
-          </Field>
-          <Field>
-            <FieldLabel htmlFor="webhook-secret">Signing secret</FieldLabel>
-            <Input
-              id="webhook-secret"
-              type="text"
-              readOnly
-              value={secretOnce ?? prefs.secretMasked ?? ""}
-              placeholder="Save a URL to create a secret"
-              autoComplete="off"
-              spellCheck={false}
-            />
-            <FieldDescription>
-              Each POST is signed with HMAC-SHA256 in the X-Statussy-Signature
-              header. Shown in full after create, rotate, or reveal.
-            </FieldDescription>
-          </Field>
-          <div className="flex flex-wrap gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              disabled={busy || !prefs.hasSecret}
-              onClick={() => {
-                void onReveal()
-              }}
-            >
-              {pending === "reveal" ? "Revealing…" : "Reveal secret"}
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              disabled={busy || !secretOnce}
-              onClick={() => {
-                void onCopySecret()
-              }}
-            >
-              Copy secret
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              disabled={busy || !prefs.hasSecret}
-              onClick={() => {
-                void onRotate()
-              }}
-            >
-              {pending === "rotate" ? "Rotating…" : "Rotate secret"}
-            </Button>
-          </div>
           <details className="rounded-lg border border-border px-3 py-2">
             <summary className="cursor-pointer text-sm font-medium">
               How outbound webhooks work
             </summary>
             <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm text-muted-foreground">
-              <li>Save a public HTTPS URL and turn on Enable webhook.</li>
+              <li>Turn on Enable webhook and save a public HTTPS URL.</li>
               <li>
                 When a starred service newly enters Major or Partial, Statussy
                 POSTs one JSON payload for that poll.
@@ -348,8 +257,9 @@ export function WebhookSettings({
                 ids, names, statuses, and links.
               </li>
               <li>
-                Verify the X-Statussy-Signature HMAC-SHA256 header with your
-                signing secret.
+                Statussy generates a signing secret and adds an
+                X-Statussy-Signature HMAC on every POST. You do not create or
+                manage a secret.
               </li>
             </ol>
           </details>
