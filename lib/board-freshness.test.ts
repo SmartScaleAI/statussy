@@ -5,6 +5,7 @@ import {
   BOARD_STALE_AFTER_MS,
   boardFreshnessTitle,
   formatRelativeAge,
+  formatUtcStamp,
   isBoardStale,
   POLL_INTERVAL_MS,
 } from "./board-freshness.ts"
@@ -38,10 +39,7 @@ test("relative age buckets: just now → m → h → d", () => {
   assert.equal(formatRelativeAge(isoBefore(60 * 60_000), T0), "1h ago")
   assert.equal(formatRelativeAge(isoBefore(23 * 60 * 60_000), T0), "23h ago")
   assert.equal(formatRelativeAge(isoBefore(24 * 60 * 60_000), T0), "1d ago")
-  assert.equal(
-    formatRelativeAge(isoBefore(3 * 24 * 60 * 60_000), T0),
-    "3d ago"
-  )
+  assert.equal(formatRelativeAge(isoBefore(3 * 24 * 60 * 60_000), T0), "3d ago")
 })
 
 test("clock skew (future refreshedAt) clamps to just now, never stale", () => {
@@ -50,10 +48,24 @@ test("clock skew (future refreshedAt) clamps to just now, never stale", () => {
   assert.equal(isBoardStale(future, T0), false)
 })
 
+test("formatUtcStamp is locale-stable (no Intl comma vs at)", () => {
+  assert.equal(
+    formatUtcStamp("2026-09-11T21:38:00.000Z"),
+    "Sep 11, 9:38 PM UTC"
+  )
+  assert.equal(
+    formatUtcStamp("2026-09-07T12:00:00.000Z"),
+    "Sep 7, 12:00 PM UTC"
+  )
+  assert.equal(
+    formatUtcStamp("2026-01-01T00:05:00.000Z"),
+    "Jan 1, 12:05 AM UTC"
+  )
+})
+
 test("tooltip carries absolute UTC and the poll cadence", () => {
-  const title = boardFreshnessTitle("2026-09-07T12:00:00.000Z")
-  assert.ok(title.includes("Sep 7"), title)
-  assert.ok(title.includes("12:00"), title)
-  assert.ok(title.includes("UTC"), title)
-  assert.ok(title.includes("polls about every 5 min"), title)
+  assert.equal(
+    boardFreshnessTitle("2026-09-07T12:00:00.000Z"),
+    "Last board update Sep 7, 12:00 PM UTC · polls about every 5 min"
+  )
 })

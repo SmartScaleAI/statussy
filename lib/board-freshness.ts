@@ -49,19 +49,47 @@ export function formatRelativeAge(refreshedAtIso: string, now = Date.now()) {
   return `${Math.floor(hours / 24)}d ago`
 }
 
+const UTC_MONTHS = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+] as const
+
+/**
+ * Absolute UTC stamp for hydrating tooltips / titles.
+ *
+ * Built from UTC getters instead of `Intl.DateTimeFormat`. Node ICU and
+ * Chrome ICU disagree on the date/time conjunction for the same instant
+ * (`Sep 11, 9:38 PM UTC` vs `Sep 11 at 9:38 PM UTC`), which trips React
+ * hydration on `title` attributes (SMA-139).
+ *
+ * Example: `Sep 11, 9:38 PM UTC`
+ */
+export function formatUtcStamp(iso: string) {
+  const date = new Date(iso)
+  const month = UTC_MONTHS[date.getUTCMonth()]
+  const day = date.getUTCDate()
+  const hour24 = date.getUTCHours()
+  const minute = String(date.getUTCMinutes()).padStart(2, "0")
+  const period = hour24 >= 12 ? "PM" : "AM"
+  const hour12 = hour24 % 12 || 12
+  return `${month} ${day}, ${hour12}:${minute} ${period} UTC`
+}
+
 /**
  * Tooltip / `title` copy: absolute UTC time plus the poll cadence, replacing
  * the cut always-visible interval chip (Avery UX lock #2).
  */
 export function boardFreshnessTitle(refreshedAtIso: string) {
-  const absolute = new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-    timeZone: "UTC",
-    timeZoneName: "short",
-  }).format(new Date(refreshedAtIso))
   const intervalMin = POLL_INTERVAL_MS / 60_000
-  return `Last board update ${absolute} · polls about every ${intervalMin} min`
+  return `Last board update ${formatUtcStamp(refreshedAtIso)} · polls about every ${intervalMin} min`
 }
