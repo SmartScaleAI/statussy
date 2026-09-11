@@ -37,12 +37,17 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/icon.svg", type: "image/svg+xml" },
       {
-        url: "/icon-192.png",
+        url: "/icon.png",
         type: "image/png",
         sizes: "192x192",
       },
+      {
+        url: "/favicon.ico",
+        type: "image/x-icon",
+        sizes: "48x48",
+      },
+      { url: "/icon.svg", type: "image/svg+xml" },
       {
         url: "/icon-512.png",
         type: "image/png",
