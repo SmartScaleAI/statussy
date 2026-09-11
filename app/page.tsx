@@ -1,3 +1,5 @@
+import type { Metadata } from "next"
+
 import { EmailAlertsBanner } from "@/components/email-alerts-banner"
 import { RecentlyAddedPanel } from "@/components/recently-added-panel"
 import { ReportSuggestPanel } from "@/components/report-suggest-panel"
@@ -13,6 +15,12 @@ import { StatusBoard } from "@/components/status-board"
  * Must stay a literal — Next requires this to be statically analyzable.
  */
 export const revalidate = 60
+
+export const metadata: Metadata = {
+  alternates: {
+    canonical: "/",
+  },
+}
 
 export default function HomePage() {
   return (

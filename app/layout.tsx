@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google"
 
 import { AuthProvider } from "@/components/auth-provider"
 import { ThemeProvider } from "@/components/theme-provider"
+import { SITE_DESCRIPTION, SITE_TITLE, SITE_URL } from "@/lib/site-metadata"
 import { cn } from "@/lib/utils"
 
 import "./globals.css"
@@ -18,11 +19,35 @@ const fontMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "Statussy",
-  description: "One place to see if AI is down.",
+  metadataBase: new URL(SITE_URL),
+  title: SITE_TITLE,
+  description: SITE_DESCRIPTION,
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "/",
+    siteName: "Statussy",
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+  },
   icons: {
     icon: [
       { url: "/icon.svg", type: "image/svg+xml" },
+      {
+        url: "/icon-192.png",
+        type: "image/png",
+        sizes: "192x192",
+      },
+      {
+        url: "/icon-512.png",
+        type: "image/png",
+        sizes: "512x512",
+      },
       {
         url: "/brand/favicon-light-32.png",
         type: "image/png",
