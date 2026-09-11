@@ -8,21 +8,25 @@
  *
  * SMA-33: the whole card is the detail hit target (stretched overlay link).
  * Star + Official status sit above it and stopPropagation so they stay usable.
- * SMA-36: shelf has no divider; timestamps include a UTC suffix.
+ * SMA-36: shelf has no divider. Footer stamp is relative (`Checked 2m ago`).
  * SMA-37: star toggles localStorage favorites (`statussy:favoriteServiceIds`).
  * SMA-103: signed-out star opens the login dialog and does not toggle.
+ * SMA-128: star control lives in `FavoriteButton` so the detail page
+ * can reuse the same toggle + auth dialog.
+ * SMA-129: Official control is a real vendor-status link (new tab).
+ * SMA-130: label is `Official status` plus Lucide ArrowUpRightIcon.
  */
 "use client"
 
-import { ArrowUpRightIcon, StarIcon } from "lucide-react"
+import { ArrowUpRightIcon } from "lucide-react"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import React, { type MouseEvent } from "react"
 
-import { useAuth } from "@/components/auth-provider"
-import { useFavoriteServices } from "@/components/favorite-services"
+import { FavoriteButton } from "@/components/favorite-button"
 import { CATEGORY_PARAM } from "@/lib/board-filter"
 import { logoInvertClass } from "@/lib/light-logo-ids"
+import { formatTimestamp } from "@/lib/status"
 import { cn } from "@/lib/utils"
 
 function stopCardNavigation(event: MouseEvent) {
@@ -65,35 +69,6 @@ export interface CardData {
 
 interface CardProps {
   data: CardData
-}
-
-function FavoriteButton({ serviceId }: { serviceId: string }) {
-  const { isFavorited, toggleFavorite } = useFavoriteServices()
-  const { isPending, isSignedIn, openLogin } = useAuth()
-  const favorited = isFavorited(serviceId)
-
-  return (
-    <button
-      type="button"
-      className={favorited ? "btn-favorite is-favorited" : "btn-favorite"}
-      aria-pressed={favorited}
-      aria-label={favorited ? "Remove from favorites" : "Add to favorites"}
-      onClick={(event) => {
-        event.preventDefault()
-        stopCardNavigation(event)
-        if (isPending) {
-          return
-        }
-        if (!isSignedIn) {
-          openLogin("favorites")
-          return
-        }
-        toggleFavorite(serviceId)
-      }}
-    >
-      <StarIcon aria-hidden="true" fill={favorited ? "currentColor" : "none"} />
-    </button>
-  )
 }
 
 const Card: React.FC<CardProps> = ({ data }) => {
@@ -193,7 +168,11 @@ const Card: React.FC<CardProps> = ({ data }) => {
       </div>
       <div className="card-footer">
         {updatedLabel ? (
-          <time className="updated-at" dateTime={updatedAt} title={updatedAt}>
+          <time
+            className="updated-at"
+            dateTime={updatedAt}
+            title={updatedAt ? formatTimestamp(updatedAt) : undefined}
+          >
             {updatedLabel}
           </time>
         ) : (
@@ -204,14 +183,21 @@ const Card: React.FC<CardProps> = ({ data }) => {
             href={countdownHref}
             className="btn-countdown"
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             onClick={stopCardNavigation}
           >
             {countdownText}
             <ArrowUpRightIcon aria-hidden="true" />
           </a>
         ) : (
-          <a href="#" className="btn-countdown" onClick={stopCardNavigation}>
+          <a
+            href="#"
+            className="btn-countdown"
+            onClick={(event) => {
+              event.preventDefault()
+              stopCardNavigation(event)
+            }}
+          >
             {countdownText}
             <ArrowUpRightIcon aria-hidden="true" />
           </a>

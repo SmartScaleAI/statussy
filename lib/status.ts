@@ -1,4 +1,5 @@
 import type { Service, ServiceStatus } from "@/data/services"
+import { formatRelativeAge } from "./board-freshness.ts"
 import type { ChickletDisplay } from "@/lib/health"
 
 export type { Service, ServiceCategory, ServiceStatus } from "@/data/services"
@@ -91,13 +92,7 @@ export function formatTimestamp(iso: string) {
   }).format(new Date(iso))
 }
 
-/** Compact card footer stamp with a UTC suffix (SMA-36). */
-export function formatCardUpdatedAt(iso: string) {
-  return `${new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-    timeZone: "UTC",
-  }).format(new Date(iso))} UTC`
+/** Card footer stamp: relative last-check, e.g. `Checked 2m ago`. */
+export function formatCardUpdatedAt(iso: string, now = Date.now()) {
+  return `Checked ${formatRelativeAge(iso, now)}`
 }
