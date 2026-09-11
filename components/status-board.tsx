@@ -30,15 +30,16 @@ export async function StatusBoard() {
   return (
     <FavoriteServicesProvider>
       <div className="course-design-board">
-        {/* SMA-133: line tabs mount one pane at a time so a long My Stack
-            cannot bury All Services. The All Services grid (and each card)
-            reads the ?category= filter with useSearchParams (SMA-89), which
-            the 60s-cached prerender cannot know — so that subtree
-            client-renders up to this Suspense boundary (SMA-97). Board data
-            is embedded in the cached RSC payload. My Stack stays
-            client-side (SMA-104): signed-in stars load from Railway via a
-            server action so the ISR cache never embeds a user's stack.
-            Last tab persists in localStorage when signed-in with favorites. */}
+        {/* SMA-133 / SMA-136: pill tabs mount one pane at a time so a long
+            My Stack cannot bury All Services. The All Services grid (and
+            each card) reads the ?category= filter with useSearchParams
+            (SMA-89), which the 60s-cached prerender cannot know — so that
+            subtree client-renders up to this Suspense boundary (SMA-97).
+            Board data is embedded in the cached RSC payload. My Stack
+            stays client-side (SMA-104): signed-in stars load from Railway
+            via a server action so the ISR cache never embeds a user's
+            stack. Last tab persists in localStorage when signed-in with
+            favorites. */}
         <BoardPanes
           stack={
             <MyServices items={items.map((item) => toSortFields(item))}>

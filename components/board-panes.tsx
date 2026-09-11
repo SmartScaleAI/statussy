@@ -132,9 +132,20 @@ export function BoardPanes({
   return (
     <BoardTabActionsContext.Provider value={actions}>
       <Tabs value={tab} onValueChange={onValueChange} className="w-full gap-8">
-        <TabsList variant="line" aria-label="Board views">
-          <TabsTrigger value="stack">My Stack</TabsTrigger>
-          <TabsTrigger value="all">All Services</TabsTrigger>
+        {/* SMA-136: default pill segment (rounded track + active outline).
+            Track fill is the rail card surface (--bg-footer), same as
+            Recently added / Report Suggest. Triggers stay content-width
+            (SMA-134) so the track hugs the two labels. */}
+        <TabsList
+          aria-label="Board views"
+          className="rounded-full bg-[var(--bg-footer)]"
+        >
+          <TabsTrigger className="flex-none rounded-full px-3" value="stack">
+            My Stack
+          </TabsTrigger>
+          <TabsTrigger className="flex-none rounded-full px-3" value="all">
+            All Services
+          </TabsTrigger>
         </TabsList>
         {showLoader ? (
           <BoardPaneLoader />
