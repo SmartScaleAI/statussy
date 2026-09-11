@@ -1,11 +1,16 @@
 import assert from "node:assert/strict"
+import { readFileSync } from "node:fs"
+import { dirname, join } from "node:path"
 import { test } from "node:test"
+import { fileURLToPath } from "node:url"
 
 import {
   collectTransitions,
   createResendMailer,
+  digestAttentionTitle,
   digestForUser,
   digestHtmlBody,
+  digestMarkUrl,
   digestPollId,
   digestPrefsUrl,
   digestResendHeaders,
@@ -64,6 +69,7 @@ test("collectTransitions filters the pair list", () => {
       name: "OpenAI",
       previous: "operational",
       current: "major_outage",
+      statusUrl: "https://status.openai.com/",
     },
     {
       serviceId: "anthropic",
@@ -100,6 +106,8 @@ test("collectTransitions filters the pair list", () => {
     items.map((item) => item.serviceId),
     ["openai", "github"]
   )
+  assert.equal(items[0]?.statusUrl, "https://status.openai.com/")
+  assert.equal(items[1]?.statusUrl, undefined)
 })
 
 test("groupUserDigests batches many favorite transitions into one digest per user", () => {
@@ -195,23 +203,121 @@ test("digestPrefsUrl points at Settings for List-Unsubscribe", () => {
   })
 })
 
-test("digest body lists names, statuses, and a board link", () => {
+test("digestAttentionTitle is singular or plural", () => {
+  assert.equal(digestAttentionTitle(1), "1 service needs attention")
+  assert.equal(digestAttentionTitle(3), "3 services need attention")
+})
+
+test("digest body is a dark card with pills, CTA, and footer links", () => {
   const items = [
     {
       serviceId: "openai",
       name: "OpenAI",
       from: "operational" as const,
       to: "major_outage" as const,
+      statusUrl: "https://status.openai.com/",
+    },
+    {
+      serviceId: "anthropic",
+      name: "Anthropic",
+      from: "operational" as const,
+      to: "partial_outage" as const,
     },
   ]
   const text = digestTextBody(items, "https://www.statussy.com")
-  assert.match(text, /OpenAI: Major outage/)
+  assert.match(text, /Stack alert/)
+  assert.match(text, /2 services need attention/)
+  assert.match(text, /OpenAI/)
+  assert.match(text, /Major outage/)
   assert.match(text, /https:\/\/www\.statussy\.com\/services\/openai/)
+  assert.match(text, /Official status: https:\/\/status\.openai\.com\//)
+  assert.match(text, /Anthropic/)
+  assert.match(text, /Partial outage/)
+  assert.match(
+    text,
+    /Anthropic\nPartial outage\nhttps:\/\/www\.statussy\.com\/services\/anthropic\n\nOpen your board/
+  )
   assert.match(text, /Open your board: https:\/\/www\.statussy\.com/)
+  assert.match(
+    text,
+    /Manage digest prefs: https:\/\/www\.statussy\.com\/settings/
+  )
+  assert.match(text, /Unsubscribe: https:\/\/www\.statussy\.com\/settings/)
+  assert.match(text, /© SmartScale Solutions LLC/)
+  assert.match(text, /statussy\.com/)
+  assert.doesNotMatch(text, /—/)
+
   const html = digestHtmlBody(items, "https://www.statussy.com/")
+  assert.match(html, /#0a0a0a/)
+  assert.match(html, /max-width:520px/)
   assert.match(html, /Statussy/)
+  assert.match(html, /Stack alert/)
+  assert.match(html, /2 services need attention/)
+  assert.match(html, /https:\/\/www\.statussy\.com\/services\/openai/)
   assert.match(html, /OpenAI/)
   assert.match(html, /Major outage/)
+  assert.match(html, /Partial outage/)
+  assert.match(html, /https:\/\/status\.openai\.com\//)
+  assert.match(html, /Official status/)
+  assert.match(html, /Open your board/)
+  assert.doesNotMatch(html, /text-decoration:underline;">Open your board/)
+  assert.match(html, /Manage digest prefs/)
+  assert.match(html, /Unsubscribe/)
+  assert.match(html, /https:\/\/www\.statussy\.com\/settings/)
+  assert.match(html, /SmartScale Solutions LLC/)
+  assert.match(html, />statussy\.com</)
+  assert.equal(
+    html.includes(digestMarkUrl("https://www.statussy.com/")),
+    true
+  )
+  assert.doesNotMatch(html, /—/)
+})
+
+test("digest HTML preview fixture matches the renderer", () => {
+  const html = digestHtmlBody(
+    [
+      {
+        serviceId: "openai",
+        name: "OpenAI",
+        from: "operational",
+        to: "major_outage",
+        statusUrl: "https://status.openai.com/",
+      },
+      {
+        serviceId: "anthropic",
+        name: "Anthropic",
+        from: "operational",
+        to: "partial_outage",
+      },
+    ],
+    "https://www.statussy.com"
+  )
+  const fixture = readFileSync(
+    join(
+      dirname(fileURLToPath(import.meta.url)),
+      "fixtures/digest-email-preview.html"
+    ),
+    "utf8"
+  )
+  assert.equal(`${html}\n`, fixture)
+})
+
+test("official status is omitted without a safe http(s) URL", () => {
+  const items = [
+    {
+      serviceId: "openai",
+      name: "OpenAI",
+      from: "operational" as const,
+      to: "major_outage" as const,
+      statusUrl: "javascript:alert(1)",
+    },
+  ]
+  const text = digestTextBody(items, "https://www.statussy.com")
+  assert.doesNotMatch(text, /Official status/)
+  assert.doesNotMatch(text, /javascript:/)
+  const html = digestHtmlBody(items, "https://www.statussy.com")
+  assert.doesNotMatch(html, /Official status/)
+  assert.doesNotMatch(html, /javascript:/)
 })
 
 test("digestPollId is stable for the same snapshot set", () => {
@@ -226,6 +332,7 @@ test("pairsFromSnapshotRows maps latest vs previous per service", () => {
       name: "OpenAI",
       snapshot_id: "10",
       status: "major_outage",
+      status_url: "https://status.openai.com/",
       rn: 1,
     },
     {
@@ -233,6 +340,7 @@ test("pairsFromSnapshotRows maps latest vs previous per service", () => {
       name: "OpenAI",
       snapshot_id: "9",
       status: "operational",
+      status_url: "https://status.openai.com/",
       rn: 2,
     },
     {
@@ -252,6 +360,7 @@ test("pairsFromSnapshotRows maps latest vs previous per service", () => {
         name: "OpenAI",
         previous: "operational",
         current: "major_outage",
+        statusUrl: "https://status.openai.com/",
       },
       {
         serviceId: "vercel",
