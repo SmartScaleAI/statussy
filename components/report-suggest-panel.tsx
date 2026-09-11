@@ -8,7 +8,7 @@ function catalogServiceNames() {
 }
 
 /**
- * Report / Suggest rail (SMA-120, width SMA-122). Sits to the right of
+ * Report / Suggest rail (SMA-120, width SMA-124). Sits to the right of
  * the whole board on desktop (My Stack + All Services); stacks below
  * Recently added (SMA-123) on mobile.
  */
