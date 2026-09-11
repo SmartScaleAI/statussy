@@ -320,7 +320,7 @@ interval while developing, e.g. `REFRESH_INTERVAL_SECONDS=10 npm run dev`.
 
 ### Report or suggest (SMA-120)
 
-The homepage **Report or suggest** panel (right rail ~30% on desktop, below
+The homepage **Report or suggest** panel (right rail ~24% on desktop, below
 the board on mobile) is the only entry point. Footer no longer hosts the form.
 A **Recently added** list (SMA-123) sits above that form in the same rail —
 six catalog services ordered by `services.created_at` desc, each linking to
