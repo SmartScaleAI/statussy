@@ -37,7 +37,27 @@ export type DigestEmailItem = {
   name: string
   to: ServiceStatus
   statusUrl?: string
+  incidentTitle?: string
+  incidentUrl?: string
 }
+
+/** Preview rows: incident present vs status-only (no incident to report). */
+export const DIGEST_PREVIEW_ITEMS: DigestEmailItem[] = [
+  {
+    serviceId: "openai",
+    name: "OpenAI",
+    to: "major_outage",
+    statusUrl: "https://status.openai.com/",
+    incidentTitle: "API elevated errors",
+    incidentUrl: "https://status.openai.com/incidents/abc",
+  },
+  {
+    serviceId: "anthropic",
+    name: "Anthropic",
+    to: "partial_outage",
+    statusUrl: "https://status.claude.com/",
+  },
+]
 
 export function digestBoardUrl(publicSiteUrl: string): string {
   return publicSiteUrl.replace(/\/$/, "") || "https://www.statussy.com"
@@ -89,7 +109,16 @@ export function digestTextBody(
   const blocks = items.map((item) => {
     const detail = digestServiceUrl(publicSiteUrl, item.serviceId)
     const official = safeHttpUrl(item.statusUrl)
+    const incidentTitle = item.incidentTitle?.trim()
     const lines = [item.name, STATUS_LABEL[item.to], detail]
+    if (incidentTitle) {
+      const incidentHref = safeHttpUrl(item.incidentUrl)
+      lines.push(
+        incidentHref
+          ? `${incidentTitle} (${incidentHref})`
+          : incidentTitle
+      )
+    }
     if (official) {
       lines.push(`Official status: ${official}`)
     }
@@ -110,6 +139,40 @@ export function digestTextBody(
     "© SmartScale Solutions LLC",
     "statussy.com",
   ].join("\n")
+}
+
+export function digestPreviewDocument(
+  publicSiteUrl = "https://www.statussy.com"
+): string {
+  const withIncident = DIGEST_PREVIEW_ITEMS[0]
+  const withoutIncident = DIGEST_PREVIEW_ITEMS[1]
+  if (!withIncident || !withoutIncident) {
+    throw new Error("DIGEST_PREVIEW_ITEMS must include incident and empty rows")
+  }
+  const samples: Array<{ label: string; items: DigestEmailItem[] }> = [
+    { label: "With an active incident", items: [withIncident] },
+    { label: "No incident to report", items: [withoutIncident] },
+  ]
+  const blocks = samples
+    .map(({ label, items }) => {
+      const html = digestHtmlBody(items, publicSiteUrl)
+      const inner = html.match(/<body[^>]*>([\s\S]*)<\/body>/i)?.[1] ?? html
+      return `<p style="margin:0 0 12px;padding:48px 24px 0;font-family:${FONT};font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:${FOOTER};">${escapeHtml(label)}</p>${inner}`
+    })
+    .join("")
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="supported-color-schemes" content="dark">
+<title>Statussy digest preview</title>
+</head>
+<body style="margin:0;padding:0;background-color:${BG};">
+${blocks}
+</body>
+</html>`
 }
 
 export function digestHtmlBody(
@@ -204,6 +267,15 @@ function serviceRowHtml(
   const pill =
     PILL[item.to === "partial_outage" ? "partial_outage" : "major_outage"]
   const label = STATUS_LABEL[item.to]
+  const incidentTitle = item.incidentTitle?.trim()
+  const incidentHref = safeHttpUrl(item.incidentUrl)
+  const incidentHtml = incidentTitle
+    ? `<p style="margin:6px 0 0;font-family:${FONT};font-size:13px;line-height:1.4;color:${MUTED};">${
+        incidentHref
+          ? `<a href="${escapeHtml(incidentHref)}" style="color:${MUTED};text-decoration:none;">${escapeHtml(incidentTitle)}</a>`
+          : escapeHtml(incidentTitle)
+      }</p>`
+    : ""
   const officialHtml = official
     ? `<p style="margin:6px 0 0;font-family:${FONT};font-size:13px;line-height:1.4;">
                     <a href="${escapeHtml(official)}" style="color:${MUTED};text-decoration:none;">Official status</a>
@@ -215,6 +287,7 @@ function serviceRowHtml(
               <tr>
                 <td style="padding:16px 12px 16px 0;vertical-align:middle;">
                   <a href="${escapeHtml(detail)}" style="font-family:${FONT};font-size:16px;line-height:1.4;font-weight:600;color:${TEXT};text-decoration:none;">${escapeHtml(item.name)}</a>
+                  ${incidentHtml}
                   ${officialHtml}
                 </td>
                 <td style="padding:16px 0;vertical-align:middle;white-space:nowrap;" align="right">

@@ -8,14 +8,17 @@ import {
   collectTransitions,
   createResendMailer,
   digestAttentionTitle,
+  DIGEST_PREVIEW_ITEMS,
   digestForUser,
   digestHtmlBody,
+  digestPreviewDocument,
   digestMarkUrl,
   digestPollId,
   digestPrefsUrl,
   digestResendHeaders,
   digestSubject,
   digestTextBody,
+  withLatestIncidents,
   filterDigestItems,
   groupUserDigests,
   isDigestTransition,
@@ -209,33 +212,21 @@ test("digestAttentionTitle is singular or plural", () => {
 })
 
 test("digest body is a black Grok-like column with pills, CTA, and footer links", () => {
-  const items = [
-    {
-      serviceId: "openai",
-      name: "OpenAI",
-      from: "operational" as const,
-      to: "major_outage" as const,
-      statusUrl: "https://status.openai.com/",
-    },
-    {
-      serviceId: "anthropic",
-      name: "Anthropic",
-      from: "operational" as const,
-      to: "partial_outage" as const,
-    },
-  ]
+  const items = DIGEST_PREVIEW_ITEMS
   const text = digestTextBody(items, "https://www.statussy.com")
   assert.match(text, /Stack alert/)
   assert.match(text, /2 services need attention/)
   assert.match(text, /OpenAI/)
   assert.match(text, /Major outage/)
+  assert.match(text, /API elevated errors/)
   assert.match(text, /https:\/\/www\.statussy\.com\/services\/openai/)
   assert.match(text, /Official status: https:\/\/status\.openai\.com\//)
   assert.match(text, /Anthropic/)
   assert.match(text, /Partial outage/)
+  assert.doesNotMatch(text, /Anthropic[\s\S]*API elevated errors/)
   assert.match(
     text,
-    /Anthropic\nPartial outage\nhttps:\/\/www\.statussy\.com\/services\/anthropic\n\nOpen your board/
+    /Anthropic\nPartial outage\nhttps:\/\/www\.statussy\.com\/services\/anthropic\nOfficial status/
   )
   assert.match(text, /Open your board: https:\/\/www\.statussy\.com/)
   assert.match(
@@ -258,6 +249,7 @@ test("digest body is a black Grok-like column with pills, CTA, and footer links"
   assert.match(html, /https:\/\/www\.statussy\.com\/services\/openai/)
   assert.match(html, /OpenAI/)
   assert.match(html, /Major outage/)
+  assert.match(html, /API elevated errors/)
   assert.match(html, /Partial outage/)
   assert.match(html, /https:\/\/status\.openai\.com\//)
   assert.match(html, /Official status/)
@@ -276,24 +268,7 @@ test("digest body is a black Grok-like column with pills, CTA, and footer links"
 })
 
 test("digest HTML preview fixture matches the renderer", () => {
-  const html = digestHtmlBody(
-    [
-      {
-        serviceId: "openai",
-        name: "OpenAI",
-        from: "operational",
-        to: "major_outage",
-        statusUrl: "https://status.openai.com/",
-      },
-      {
-        serviceId: "anthropic",
-        name: "Anthropic",
-        from: "operational",
-        to: "partial_outage",
-      },
-    ],
-    "https://www.statussy.com"
-  )
+  const html = digestPreviewDocument("https://www.statussy.com")
   const fixture = readFileSync(
     join(
       dirname(fileURLToPath(import.meta.url)),
@@ -302,6 +277,50 @@ test("digest HTML preview fixture matches the renderer", () => {
     "utf8"
   )
   assert.equal(`${html}\n`, fixture)
+})
+
+test("withLatestIncidents copies the newest title and skips blanks", () => {
+  const items = withLatestIncidents(
+    [
+      {
+        serviceId: "openai",
+        name: "OpenAI",
+        from: "operational",
+        to: "major_outage",
+      },
+      {
+        serviceId: "anthropic",
+        name: "Anthropic",
+        from: "operational",
+        to: "partial_outage",
+      },
+    ],
+    new Map([
+      ["openai", { title: "  API elevated errors  ", url: "https://status.openai.com/incidents/abc" }],
+      ["anthropic", { title: "   " }],
+    ])
+  )
+  assert.equal(items[0]?.incidentTitle, "API elevated errors")
+  assert.equal(items[0]?.incidentUrl, "https://status.openai.com/incidents/abc")
+  assert.equal(items[1]?.incidentTitle, undefined)
+  assert.equal(items[1]?.incidentUrl, undefined)
+})
+
+test("incident line is omitted when the service has nothing to report", () => {
+  const items = [
+    {
+      serviceId: "anthropic",
+      name: "Anthropic",
+      from: "operational" as const,
+      to: "partial_outage" as const,
+      statusUrl: "https://status.claude.com/",
+    },
+  ]
+  const text = digestTextBody(items, "https://www.statussy.com")
+  assert.doesNotMatch(text, /API elevated errors/)
+  const html = digestHtmlBody(items, "https://www.statussy.com")
+  assert.doesNotMatch(html, /API elevated errors/)
+  assert.match(html, /Official status/)
 })
 
 test("official status is omitted without a safe http(s) URL", () => {

@@ -8,7 +8,7 @@
  * Live are skipped. `digest_sends (user_id, poll_id)` makes the same
  * snapshot set idempotent.
  *
- * HTML/text bodies live in digest-email.ts (dark card template).
+ * HTML/text bodies live in digest-email.ts (Grok-like black column).
  */
 import { createHash } from "node:crypto"
 import type pg from "pg"
@@ -24,7 +24,9 @@ import type { ServiceStatus } from "./statuspage.js"
 export {
   digestAttentionTitle,
   digestBoardUrl,
+  DIGEST_PREVIEW_ITEMS,
   digestHtmlBody,
+  digestPreviewDocument,
   digestMarkUrl,
   digestPrefsUrl,
   digestServiceUrl,
@@ -47,6 +49,11 @@ export const STATUS_RANK: Record<ServiceStatus, number> = {
 
 const DIGEST_TO = new Set<ServiceStatus>(["major_outage", "partial_outage"])
 
+export type DigestIncident = {
+  title: string
+  url?: string
+}
+
 export type StatusTransition = {
   serviceId: string
   name: string
@@ -54,7 +61,17 @@ export type StatusTransition = {
   to: ServiceStatus
   /** Vendor status page, when known. Optional Official status link. */
   statusUrl?: string
+  /** Newest unresolved incident, when the feed has one. */
+  incidentTitle?: string
+  incidentUrl?: string
 }
+
+/** Vendor lifecycle states that mean an incident is over even without resolved_at. */
+export const CLOSED_INCIDENT_STATUSES = [
+  "resolved",
+  "completed",
+  "postmortem",
+] as const
 
 export type DigestNotifyPrefs = {
   notifyMajor: boolean
@@ -121,6 +138,24 @@ export function collectTransitions(
     })
   }
   return items
+}
+
+export function withLatestIncidents(
+  items: readonly StatusTransition[],
+  latest: ReadonlyMap<string, DigestIncident>
+): StatusTransition[] {
+  return items.map((item) => {
+    const incident = latest.get(item.serviceId)
+    const title = incident?.title.trim()
+    if (!title) {
+      return { ...item }
+    }
+    return {
+      ...item,
+      incidentTitle: title,
+      ...(incident?.url ? { incidentUrl: incident.url } : {}),
+    }
+  })
 }
 
 export function toEpochMs(value: Date | number): number {
@@ -349,10 +384,17 @@ export async function sendStackDigests(
     return empty
   }
   const pollId = digestPollId(snapshotIds)
-  const transitions = collectTransitions(pairs)
-  if (transitions.length === 0) {
+  const collected = collectTransitions(pairs)
+  if (collected.length === 0) {
     return empty
   }
+  const transitions = withLatestIncidents(
+    collected,
+    await loadLatestActiveIncidents(
+      pool,
+      collected.map((item) => item.serviceId)
+    )
+  )
 
   const { rows: subscriberRows } = await pool.query<SubscriberRow>(
     `SELECT u.id AS user_id, u.email, uf.service_id,
@@ -430,6 +472,41 @@ export async function sendStackDigests(
     }
   }
   return { sent, users: digests.length, skipped }
+}
+
+export async function loadLatestActiveIncidents(
+  pool: pg.Pool,
+  serviceIds: readonly string[]
+): Promise<Map<string, DigestIncident>> {
+  const latest = new Map<string, DigestIncident>()
+  const ids = [...new Set(serviceIds.filter((id) => id.length > 0))]
+  if (ids.length === 0) {
+    return latest
+  }
+  const { rows } = await pool.query<{
+    service_id: string
+    title: string
+    url: string | null
+  }>(
+    `SELECT DISTINCT ON (service_id) service_id, title, url
+       FROM incidents
+      WHERE service_id = ANY($1::text[])
+        AND resolved_at IS NULL
+        AND status != ALL($2::text[])
+      ORDER BY service_id, started_at DESC NULLS LAST, id DESC`,
+    [ids, CLOSED_INCIDENT_STATUSES]
+  )
+  for (const row of rows) {
+    const title = row.title.trim()
+    if (!title) {
+      continue
+    }
+    latest.set(row.service_id, {
+      title,
+      ...(row.url ? { url: row.url } : {}),
+    })
+  }
+  return latest
 }
 
 async function loadPartialNotifyTimes(
