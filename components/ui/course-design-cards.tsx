@@ -9,7 +9,7 @@
  * SMA-33: the whole card is the detail hit target (stretched overlay link).
  * Star + Official status sit above it and stopPropagation so they stay usable.
  * SMA-129: Official control is quiet text `Official status ↗` (no extra icon).
- * SMA-36: shelf has no divider; timestamps include a UTC suffix.
+ * SMA-36: shelf has no divider. Footer stamp is relative (`Checked 2m ago`).
  * SMA-37: star toggles localStorage favorites (`statussy:favoriteServiceIds`).
  * SMA-103: signed-out star opens the login dialog and does not toggle.
  */
@@ -24,6 +24,7 @@ import { useAuth } from "@/components/auth-provider"
 import { useFavoriteServices } from "@/components/favorite-services"
 import { CATEGORY_PARAM } from "@/lib/board-filter"
 import { logoInvertClass } from "@/lib/light-logo-ids"
+import { formatTimestamp } from "@/lib/status"
 import { cn } from "@/lib/utils"
 
 function stopCardNavigation(event: MouseEvent) {
@@ -194,7 +195,11 @@ const Card: React.FC<CardProps> = ({ data }) => {
       </div>
       <div className="card-footer">
         {updatedLabel ? (
-          <time className="updated-at" dateTime={updatedAt} title={updatedAt}>
+          <time
+            className="updated-at"
+            dateTime={updatedAt}
+            title={updatedAt ? formatTimestamp(updatedAt) : undefined}
+          >
             {updatedLabel}
           </time>
         ) : (
