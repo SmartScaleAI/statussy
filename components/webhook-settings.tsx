@@ -253,8 +253,9 @@ export function WebhookSettings({
                 POSTs one JSON payload for that poll.
               </li>
               <li>
-                The body includes a short text summary and a services array with
-                ids, names, statuses, and links.
+                The body is the same JSON for every destination: a text
+                summary, a boardUrl, and a services array with ids, names,
+                statuses, incidents, and links.
               </li>
               <li>
                 Statussy generates a signing secret and adds an

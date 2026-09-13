@@ -10,10 +10,6 @@ export const WEBHOOK_HARD_FAILURE_LIMIT = 3
 export const WEBHOOK_TIMEOUT_MS = 4_000
 export const WEBHOOK_MAX_ATTEMPTS = 3
 export const WEBHOOK_DISABLED_REASON_FAILURES = "hard_failures"
-/** Slack Incoming Webhook left rail. */
-export const WEBHOOK_ATTACHMENT_COLOR_MAJOR = "#E24B4A"
-export const WEBHOOK_ATTACHMENT_COLOR_PARTIAL = "#E8A317"
-export const WEBHOOK_BOARD_BUTTON_LABEL = "View board"
 
 export const STATUS_LABEL: Record<string, string> = {
   operational: "Live",
@@ -36,31 +32,9 @@ export type WebhookServiceAlert = {
   incidentUrl: string | null
 }
 
-export type WebhookSectionBlock = {
-  type: "section"
-  text: { type: "mrkdwn"; text: string }
-}
-
-export type WebhookActionsBlock = {
-  type: "actions"
-  elements: Array<{
-    type: "button"
-    text: { type: "plain_text"; text: string }
-    url: string
-  }>
-}
-
-export type WebhookAttachment = {
-  color: string
-  fallback: string
-  text: string
-  blocks: Array<WebhookSectionBlock | WebhookActionsBlock>
-}
-
 export type WebhookPayload = {
   text: string
   boardUrl: string
-  attachments: WebhookAttachment[]
   services: WebhookServiceAlert[]
 }
 
@@ -173,27 +147,8 @@ export function statusLabel(status: string): string {
   return STATUS_LABEL[status] ?? status
 }
 
-export function webhookAttachmentColor(
-  services: readonly WebhookServiceAlert[]
-): string {
-  if (services.some((item) => item.toStatus === "major_outage")) {
-    return WEBHOOK_ATTACHMENT_COLOR_MAJOR
-  }
-  return WEBHOOK_ATTACHMENT_COLOR_PARTIAL
-}
-
-export function escapeSlackMrkdwn(value: string): string {
-  return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
-}
-
 export function webhookServiceLine(item: WebhookServiceAlert): string {
   return `${item.name} (${statusLabel(item.toStatus)})`
-}
-
-export function webhookFallbackSummary(
-  services: readonly WebhookServiceAlert[]
-): string {
-  return services.map((item) => webhookServiceLine(item)).join(", ")
 }
 
 export function webhookTextSummary(
@@ -208,43 +163,6 @@ export function webhookTextSummary(
       return webhookServiceLine(item)
     })
     .join("\n")
-}
-
-export function buildWebhookBlocks(
-  text: string,
-  boardUrl: string
-): Array<WebhookSectionBlock | WebhookActionsBlock> {
-  return [
-    {
-      type: "section",
-      text: { type: "mrkdwn", text: escapeSlackMrkdwn(text) },
-    },
-    {
-      type: "actions",
-      elements: [
-        {
-          type: "button",
-          text: { type: "plain_text", text: WEBHOOK_BOARD_BUTTON_LABEL },
-          url: boardUrl,
-        },
-      ],
-    },
-  ]
-}
-
-export function buildWebhookAttachments(
-  services: readonly WebhookServiceAlert[],
-  text: string,
-  boardUrl: string
-): WebhookAttachment[] {
-  return [
-    {
-      color: webhookAttachmentColor(services),
-      fallback: webhookFallbackSummary(services),
-      text,
-      blocks: buildWebhookBlocks(text, boardUrl),
-    },
-  ]
 }
 
 export function buildWebhookServices(
@@ -283,38 +201,8 @@ export function buildWebhookPayload(
   return {
     text,
     boardUrl,
-    attachments: buildWebhookAttachments(services, text, boardUrl),
     services: [...services],
   }
-}
-
-export function isSlackIncomingWebhookUrl(url: string | undefined): boolean {
-  if (!url) {
-    return false
-  }
-  try {
-    return new URL(url).hostname === "hooks.slack.com"
-  } catch {
-    return false
-  }
-}
-
-function slackAttachments(payload: WebhookPayload) {
-  // Incoming Webhooks reject attachments that mix `text` / legacy `actions`
-  // with Block Kit (`invalid_attachments`). Color + fallback + blocks is valid.
-  return payload.attachments.map((item) => ({
-    color: item.color,
-    fallback: item.fallback,
-    blocks: item.blocks,
-  }))
-}
-
-function genericAttachments(payload: WebhookPayload) {
-  return payload.attachments.map((item) => ({
-    color: item.color,
-    fallback: item.fallback,
-    text: item.text,
-  }))
 }
 
 function serializedServices(payload: WebhookPayload) {
@@ -331,17 +219,10 @@ function serializedServices(payload: WebhookPayload) {
   }))
 }
 
-export function serializeWebhookPayload(
-  payload: WebhookPayload,
-  destinationUrl?: string
-): string {
-  if (isSlackIncomingWebhookUrl(destinationUrl)) {
-    return JSON.stringify({ attachments: slackAttachments(payload) })
-  }
+export function serializeWebhookPayload(payload: WebhookPayload): string {
   return JSON.stringify({
     text: payload.text,
     boardUrl: payload.boardUrl,
-    attachments: genericAttachments(payload),
     services: serializedServices(payload),
   })
 }

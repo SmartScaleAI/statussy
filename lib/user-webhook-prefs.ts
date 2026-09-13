@@ -333,8 +333,7 @@ export async function sendUserWebhookTest(
 
     const checkedAt = new Date().toISOString()
     const body = serializeWebhookPayload(
-      buildTestWebhookPayload(publicSiteUrl(), checkedAt),
-      parsed.url
+      buildTestWebhookPayload(publicSiteUrl(), checkedAt)
     )
     const result = await deliverWebhook({
       url: parsed.url,
