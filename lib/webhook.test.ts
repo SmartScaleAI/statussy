@@ -10,6 +10,7 @@ import {
   parseWebhookUrl,
   serializeWebhookPayload,
   signWebhookBody,
+  buildTestWebhookPayload,
   testWebhookServices,
   webhookDisabledNote,
   webhookTextSummary,
@@ -91,6 +92,22 @@ test("text summary stays short for a single service", () => {
     ]),
     "Statussy: OpenAI flipped to Major outage"
   )
+})
+
+test("Send test uses the same payload layout as a live batch", () => {
+  const checkedAt = "2026-09-11T18:00:00.000Z"
+  const services = testWebhookServices("https://www.statussy.com", checkedAt)
+  const payload = buildTestWebhookPayload("https://www.statussy.com", checkedAt)
+  assert.deepEqual(payload, buildWebhookPayload(services))
+  assert.equal(payload.text, webhookTextSummary(services))
+  assert.equal(
+    payload.text,
+    "Statussy: OpenAI (Major outage), Anthropic (Partial outage)"
+  )
+  assert.equal(payload.services.length, 2)
+  assert.equal(payload.services[0]?.serviceId, "openai")
+  assert.equal(payload.services[1]?.serviceId, "anthropic")
+  assert.doesNotMatch(payload.text, /webhook delivery is working/)
 })
 
 test("HMAC header is sha256 of the exact serialized body", () => {

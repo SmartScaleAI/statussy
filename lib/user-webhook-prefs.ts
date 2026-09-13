@@ -16,8 +16,7 @@ import {
   maskWebhookSecret,
   parseWebhookUrl,
   serializeWebhookPayload,
-  buildWebhookPayload,
-  testWebhookServices,
+  buildTestWebhookPayload,
   webhookDisabledNote,
   WEBHOOK_DISABLED_REASON_FAILURES,
 } from "./webhook.ts"
@@ -333,11 +332,9 @@ export async function sendUserWebhookTest(
     }
 
     const checkedAt = new Date().toISOString()
-    const payload = buildWebhookPayload(
-      testWebhookServices(publicSiteUrl(), checkedAt)
+    const body = serializeWebhookPayload(
+      buildTestWebhookPayload(publicSiteUrl(), checkedAt)
     )
-    payload.text = "Statussy test: webhook delivery is working."
-    const body = serializeWebhookPayload(payload)
     const result = await deliverWebhook({
       url: parsed.url,
       secret: existing.secret,

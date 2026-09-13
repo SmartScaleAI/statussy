@@ -302,22 +302,40 @@ export async function deliverWebhook(input: {
   return { ok: false, error: lastError, status: lastStatus }
 }
 
+/** Same shape as a live Major + Partial batch so Send test previews real copy. */
 export function testWebhookServices(
   publicSiteUrl: string,
   checkedAt: string
 ): WebhookServiceAlert[] {
-  const origin = siteOrigin(publicSiteUrl)
-  return [
-    {
-      serviceId: "statussy-test",
-      name: "Statussy test",
-      fromStatus: "operational",
-      toStatus: "major_outage",
-      checkedAt,
-      officialStatusUrl: null,
-      statussyUrl: `${origin}/settings`,
-    },
-  ]
+  return buildWebhookServices(
+    [
+      {
+        serviceId: "openai",
+        name: "OpenAI",
+        from: "operational",
+        to: "major_outage",
+        statusUrl: "https://status.openai.com/",
+        checkedAt,
+      },
+      {
+        serviceId: "anthropic",
+        name: "Anthropic",
+        from: "operational",
+        to: "partial_outage",
+        statusUrl: "https://status.claude.com/",
+        checkedAt,
+      },
+    ],
+    publicSiteUrl,
+    checkedAt
+  )
+}
+
+export function buildTestWebhookPayload(
+  publicSiteUrl: string,
+  checkedAt: string
+): WebhookPayload {
+  return buildWebhookPayload(testWebhookServices(publicSiteUrl, checkedAt))
 }
 
 export function webhookDisabledNote(
