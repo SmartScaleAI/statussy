@@ -36,12 +36,6 @@ export type WebhookServiceAlert = {
   incidentUrl: string | null
 }
 
-export type WebhookAttachmentAction = {
-  type: "button"
-  text: string
-  url: string
-}
-
 export type WebhookSectionBlock = {
   type: "section"
   text: { type: "mrkdwn"; text: string }
@@ -60,7 +54,6 @@ export type WebhookAttachment = {
   color: string
   fallback: string
   text: string
-  actions: WebhookAttachmentAction[]
   blocks: Array<WebhookSectionBlock | WebhookActionsBlock>
 }
 
@@ -217,16 +210,6 @@ export function webhookTextSummary(
     .join("\n")
 }
 
-export function buildWebhookBoardAction(
-  boardUrl: string
-): WebhookAttachmentAction {
-  return {
-    type: "button",
-    text: WEBHOOK_BOARD_BUTTON_LABEL,
-    url: boardUrl,
-  }
-}
-
 export function buildWebhookBlocks(
   text: string,
   boardUrl: string
@@ -259,7 +242,6 @@ export function buildWebhookAttachments(
       color: webhookAttachmentColor(services),
       fallback: webhookFallbackSummary(services),
       text,
-      actions: [buildWebhookBoardAction(boardUrl)],
       blocks: buildWebhookBlocks(text, boardUrl),
     },
   ]
@@ -317,17 +299,21 @@ export function isSlackIncomingWebhookUrl(url: string | undefined): boolean {
   }
 }
 
-function serializedAttachments(payload: WebhookPayload) {
+function slackAttachments(payload: WebhookPayload) {
+  // Incoming Webhooks reject attachments that mix `text` / legacy `actions`
+  // with Block Kit (`invalid_attachments`). Color + fallback + blocks is valid.
+  return payload.attachments.map((item) => ({
+    color: item.color,
+    fallback: item.fallback,
+    blocks: item.blocks,
+  }))
+}
+
+function genericAttachments(payload: WebhookPayload) {
   return payload.attachments.map((item) => ({
     color: item.color,
     fallback: item.fallback,
     text: item.text,
-    actions: item.actions.map((action) => ({
-      type: action.type,
-      text: action.text,
-      url: action.url,
-    })),
-    blocks: item.blocks,
   }))
 }
 
@@ -349,17 +335,13 @@ export function serializeWebhookPayload(
   payload: WebhookPayload,
   destinationUrl?: string
 ): string {
-  const attachments = serializedAttachments(payload)
-  // Slack Incoming Webhooks show top-level `text` and attachment text as
-  // two messages. Content lives in attachments so the colored left rail
-  // sits next to the alert instead of a duplicate plain line.
   if (isSlackIncomingWebhookUrl(destinationUrl)) {
-    return JSON.stringify({ attachments })
+    return JSON.stringify({ attachments: slackAttachments(payload) })
   }
   return JSON.stringify({
     text: payload.text,
     boardUrl: payload.boardUrl,
-    attachments,
+    attachments: genericAttachments(payload),
     services: serializedServices(payload),
   })
 }

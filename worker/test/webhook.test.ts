@@ -56,23 +56,39 @@ test("batched payload includes required service fields and text", () => {
     text?: string
     boardUrl?: string
     blocks?: unknown
-    attachments?: Array<{ actions?: Array<{ text?: string; url?: string }> }>
+    attachments?: Array<{
+      text?: string
+      actions?: unknown
+      blocks?: unknown
+    }>
   }
   assert.equal(body.text, payload.text)
   assert.equal(body.boardUrl, payload.boardUrl)
   assert.equal(body.blocks, undefined)
-  assert.equal(body.attachments?.[0]?.actions?.[0]?.text, WEBHOOK_BOARD_BUTTON_LABEL)
-  assert.equal(body.attachments?.[0]?.actions?.[0]?.url, payload.boardUrl)
+  assert.equal(body.attachments?.[0]?.text, payload.text)
+  assert.equal(body.attachments?.[0]?.actions, undefined)
+  assert.equal(body.attachments?.[0]?.blocks, undefined)
   assert.equal(payload.attachments[0]?.color, WEBHOOK_ATTACHMENT_COLOR_MAJOR)
   const slackBody = JSON.parse(
     serializeWebhookPayload(
       payload,
       "https://hooks.slack.com/services/T000/B000/XXXX"
     )
-  ) as { text?: string; attachments?: unknown; services?: unknown }
+  ) as {
+    text?: string
+    attachments?: Array<{
+      text?: string
+      actions?: unknown
+      blocks?: unknown
+      color?: string
+    }>
+    services?: unknown
+  }
   assert.equal(slackBody.text, undefined)
   assert.equal(slackBody.services, undefined)
-  assert.deepEqual(slackBody.attachments, payload.attachments)
+  assert.equal(slackBody.attachments?.[0]?.text, undefined)
+  assert.equal(slackBody.attachments?.[0]?.actions, undefined)
+  assert.deepEqual(slackBody.attachments?.[0]?.blocks, payload.attachments[0]?.blocks)
 })
 
 test("incident title sits on the line below its service", () => {
@@ -108,7 +124,11 @@ test("incident title sits on the line below its service", () => {
     "https://status.openai.com/incidents/abc"
   )
   assert.equal(payload.services[1]?.incidentTitle, null)
-  assert.equal(payload.attachments[0]?.actions[0]?.text, WEBHOOK_BOARD_BUTTON_LABEL)
+  const boardButton = payload.attachments[0]?.blocks[1]
+  assert.equal(boardButton?.type, "actions")
+  if (boardButton?.type === "actions") {
+    assert.equal(boardButton.elements[0]?.text.text, WEBHOOK_BOARD_BUTTON_LABEL)
+  }
 })
 
 test("signature is HMAC-SHA256 of the posted body", () => {

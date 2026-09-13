@@ -84,8 +84,10 @@ test("payload is one batched object with text plus service fields", () => {
   assert.equal(payload.boardUrl, "https://www.statussy.com")
   assert.equal(payload.attachments[0]?.color, WEBHOOK_ATTACHMENT_COLOR_MAJOR)
   assert.equal(payload.attachments[0]?.text, payload.text)
-  assert.equal(payload.attachments[0]?.actions[0]?.text, WEBHOOK_BOARD_BUTTON_LABEL)
-  assert.equal(payload.attachments[0]?.actions[0]?.url, payload.boardUrl)
+  assert.equal(
+    payload.attachments[0]?.blocks[1]?.type,
+    "actions"
+  )
 })
 
 test("text summary puts each service on its own line", () => {
@@ -155,11 +157,12 @@ test("Send test uses the same payload layout as a live batch", () => {
   assert.doesNotMatch(payload.text, /webhook delivery is working/)
   assert.doesNotMatch(payload.text, /^Statussy:/)
   assert.equal(payload.attachments[0]?.color, WEBHOOK_ATTACHMENT_COLOR_MAJOR)
-  assert.equal(payload.attachments[0]?.actions[0]?.text, WEBHOOK_BOARD_BUTTON_LABEL)
-  assert.equal(
-    payload.attachments[0]?.actions[0]?.url,
-    "https://www.statussy.com"
-  )
+  const boardButton = payload.attachments[0]?.blocks[1]
+  assert.equal(boardButton?.type, "actions")
+  if (boardButton?.type === "actions") {
+    assert.equal(boardButton.elements[0]?.text.text, WEBHOOK_BOARD_BUTTON_LABEL)
+    assert.equal(boardButton.elements[0]?.url, "https://www.statussy.com")
+  }
 })
 
 test("partial-only batches use the amber attachment rail", () => {
@@ -201,22 +204,37 @@ test("Slack Incoming Webhooks omit top-level text so the rail is not duplicated"
       payload,
       "https://hooks.slack.com/services/T000/B000/XXXX"
     )
-  ) as { text?: string; attachments?: unknown; services?: unknown }
+  ) as {
+    text?: string
+    services?: unknown
+    attachments?: Array<{
+      color?: string
+      fallback?: string
+      text?: string
+      actions?: unknown
+      blocks?: unknown
+    }>
+  }
   assert.equal(slackBody.text, undefined)
   assert.equal(slackBody.services, undefined)
-  assert.deepEqual(slackBody.attachments, payload.attachments)
+  assert.equal(slackBody.attachments?.[0]?.text, undefined)
+  assert.equal(slackBody.attachments?.[0]?.actions, undefined)
+  assert.equal(slackBody.attachments?.[0]?.color, payload.attachments[0]?.color)
+  assert.deepEqual(slackBody.attachments?.[0]?.blocks, payload.attachments[0]?.blocks)
 
   const genericBody = JSON.parse(
     serializeWebhookPayload(payload, "https://example.com/webhook")
   ) as {
     text?: string
     boardUrl?: string
-    attachments?: unknown
+    attachments?: Array<{ text?: string; blocks?: unknown; actions?: unknown }>
     services?: unknown
   }
   assert.equal(genericBody.text, payload.text)
   assert.equal(genericBody.boardUrl, payload.boardUrl)
-  assert.deepEqual(genericBody.attachments, payload.attachments)
+  assert.equal(genericBody.attachments?.[0]?.text, payload.text)
+  assert.equal(genericBody.attachments?.[0]?.blocks, undefined)
+  assert.equal(genericBody.attachments?.[0]?.actions, undefined)
   assert.equal(Array.isArray(genericBody.services), true)
 })
 
