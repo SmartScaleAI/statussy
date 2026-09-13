@@ -182,7 +182,7 @@ test("partial-only batches use the amber attachment rail", () => {
   assert.equal(payload.attachments[0]?.color, WEBHOOK_ATTACHMENT_COLOR_PARTIAL)
 })
 
-test("Slack Incoming Webhooks omit top-level text so the rail is not duplicated", () => {
+test("Slack Incoming Webhooks send color plus Block Kit, not mixed attachment text", () => {
   const payload = buildWebhookPayload(
     testWebhookServices(
       "https://www.statussy.com",
