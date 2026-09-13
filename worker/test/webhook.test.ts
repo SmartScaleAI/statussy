@@ -10,6 +10,7 @@ import {
   serializeWebhookPayload,
   signWebhookBody,
   WEBHOOK_ATTACHMENT_COLOR_MAJOR,
+  WEBHOOK_BOARD_BUTTON_LABEL,
   WEBHOOK_HARD_FAILURE_LIMIT,
   WEBHOOK_SIGNATURE_HEADER,
 } from "../src/webhook.js"
@@ -40,23 +41,28 @@ test("batched payload includes required service fields and text", () => {
     "2026-09-11T18:00:00.000Z"
   )
   const payload = buildWebhookPayload(services)
-  assert.equal(
-    payload.text,
-    "Statussy: OpenAI flipped to Major outage"
-  )
+  assert.equal(payload.text, "OpenAI (Major outage)")
   assert.equal(payload.services[0]?.serviceId, "openai")
   assert.equal(payload.services[0]?.fromStatus, "operational")
   assert.equal(payload.services[0]?.toStatus, "major_outage")
   assert.equal(payload.services[0]?.officialStatusUrl, "https://status.openai.com/")
+  assert.equal(payload.services[0]?.incidentTitle, null)
   assert.equal(
     payload.services[0]?.statussyUrl,
     "https://www.statussy.com/services/openai"
   )
-  const body = serializeWebhookPayload(payload)
-  assert.match(body, /"text":/)
-  assert.match(body, /"attachments":\[/)
-  assert.match(body, /"services":\[/)
-  assert.doesNotMatch(body, /blocks/)
+  assert.equal(payload.boardUrl, "https://www.statussy.com")
+  const body = JSON.parse(serializeWebhookPayload(payload)) as {
+    text?: string
+    boardUrl?: string
+    blocks?: unknown
+    attachments?: Array<{ actions?: Array<{ text?: string; url?: string }> }>
+  }
+  assert.equal(body.text, payload.text)
+  assert.equal(body.boardUrl, payload.boardUrl)
+  assert.equal(body.blocks, undefined)
+  assert.equal(body.attachments?.[0]?.actions?.[0]?.text, WEBHOOK_BOARD_BUTTON_LABEL)
+  assert.equal(body.attachments?.[0]?.actions?.[0]?.url, payload.boardUrl)
   assert.equal(payload.attachments[0]?.color, WEBHOOK_ATTACHMENT_COLOR_MAJOR)
   const slackBody = JSON.parse(
     serializeWebhookPayload(
@@ -67,6 +73,42 @@ test("batched payload includes required service fields and text", () => {
   assert.equal(slackBody.text, undefined)
   assert.equal(slackBody.services, undefined)
   assert.deepEqual(slackBody.attachments, payload.attachments)
+})
+
+test("incident title sits on the line below its service", () => {
+  const payload = buildWebhookPayload(
+    buildWebhookServices(
+      [
+        {
+          serviceId: "openai",
+          name: "OpenAI",
+          from: "operational",
+          to: "major_outage",
+          incidentTitle: "API elevated errors",
+          incidentUrl: "https://status.openai.com/incidents/abc",
+        },
+        {
+          serviceId: "anthropic",
+          name: "Anthropic",
+          from: "operational",
+          to: "partial_outage",
+        },
+      ],
+      "https://www.statussy.com",
+      "2026-09-11T18:00:00.000Z"
+    )
+  )
+  assert.equal(
+    payload.text,
+    "OpenAI (Major outage)\nAPI elevated errors\nAnthropic (Partial outage)"
+  )
+  assert.equal(payload.services[0]?.incidentTitle, "API elevated errors")
+  assert.equal(
+    payload.services[0]?.incidentUrl,
+    "https://status.openai.com/incidents/abc"
+  )
+  assert.equal(payload.services[1]?.incidentTitle, null)
+  assert.equal(payload.attachments[0]?.actions[0]?.text, WEBHOOK_BOARD_BUTTON_LABEL)
 })
 
 test("signature is HMAC-SHA256 of the posted body", () => {

@@ -17,6 +17,7 @@ import {
   webhookTextSummary,
   WEBHOOK_ATTACHMENT_COLOR_MAJOR,
   WEBHOOK_ATTACHMENT_COLOR_PARTIAL,
+  WEBHOOK_BOARD_BUTTON_LABEL,
   WEBHOOK_HARD_FAILURE_LIMIT,
   WEBHOOK_SIGNATURE_HEADER,
 } from "./webhook.ts"
@@ -64,7 +65,7 @@ test("payload is one batched object with text plus service fields", () => {
     "2026-09-11T18:01:00.000Z"
   )
   const payload = buildWebhookPayload(services)
-  assert.match(payload.text, /Statussy/)
+  assert.doesNotMatch(payload.text, /^Statussy:/)
   assert.doesNotMatch(payload.text, /\u2014/)
   assert.equal(payload.services.length, 2)
   assert.deepEqual(payload.services[0], {
@@ -75,19 +76,19 @@ test("payload is one batched object with text plus service fields", () => {
     checkedAt: "2026-09-11T18:00:00.000Z",
     officialStatusUrl: "https://status.openai.com/",
     statussyUrl: "https://www.statussy.com/services/openai",
+    incidentTitle: null,
+    incidentUrl: null,
   })
   assert.equal(payload.services[1]?.checkedAt, "2026-09-11T18:01:00.000Z")
   assert.equal(payload.services[1]?.officialStatusUrl, null)
-  assert.deepEqual(payload.attachments, [
-    {
-      color: WEBHOOK_ATTACHMENT_COLOR_MAJOR,
-      fallback: payload.text,
-      text: payload.text,
-    },
-  ])
+  assert.equal(payload.boardUrl, "https://www.statussy.com")
+  assert.equal(payload.attachments[0]?.color, WEBHOOK_ATTACHMENT_COLOR_MAJOR)
+  assert.equal(payload.attachments[0]?.text, payload.text)
+  assert.equal(payload.attachments[0]?.actions[0]?.text, WEBHOOK_BOARD_BUTTON_LABEL)
+  assert.equal(payload.attachments[0]?.actions[0]?.url, payload.boardUrl)
 })
 
-test("text summary stays short for a single service", () => {
+test("text summary puts each service on its own line", () => {
   assert.equal(
     webhookTextSummary([
       {
@@ -98,9 +99,41 @@ test("text summary stays short for a single service", () => {
         checkedAt: "2026-09-11T18:00:00.000Z",
         officialStatusUrl: null,
         statussyUrl: "https://www.statussy.com/services/openai",
+        incidentTitle: null,
+        incidentUrl: null,
       },
     ]),
-    "Statussy: OpenAI flipped to Major outage"
+    "OpenAI (Major outage)"
+  )
+})
+
+test("text summary puts the active incident on the line below the service", () => {
+  assert.equal(
+    webhookTextSummary([
+      {
+        serviceId: "openai",
+        name: "OpenAI",
+        fromStatus: "operational",
+        toStatus: "major_outage",
+        checkedAt: "2026-09-11T18:00:00.000Z",
+        officialStatusUrl: null,
+        statussyUrl: "https://www.statussy.com/services/openai",
+        incidentTitle: "API elevated errors",
+        incidentUrl: "https://status.openai.com/incidents/abc",
+      },
+      {
+        serviceId: "anthropic",
+        name: "Anthropic",
+        fromStatus: "operational",
+        toStatus: "partial_outage",
+        checkedAt: "2026-09-11T18:00:00.000Z",
+        officialStatusUrl: null,
+        statussyUrl: "https://www.statussy.com/services/anthropic",
+        incidentTitle: null,
+        incidentUrl: null,
+      },
+    ]),
+    "OpenAI (Major outage)\nAPI elevated errors\nAnthropic (Partial outage)"
   )
 })
 
@@ -108,17 +141,25 @@ test("Send test uses the same payload layout as a live batch", () => {
   const checkedAt = "2026-09-11T18:00:00.000Z"
   const services = testWebhookServices("https://www.statussy.com", checkedAt)
   const payload = buildTestWebhookPayload("https://www.statussy.com", checkedAt)
-  assert.deepEqual(payload, buildWebhookPayload(services))
+  assert.deepEqual(payload, buildWebhookPayload(services, "https://www.statussy.com"))
   assert.equal(payload.text, webhookTextSummary(services))
   assert.equal(
     payload.text,
-    "Statussy: OpenAI (Major outage), Anthropic (Partial outage)"
+    "OpenAI (Major outage)\nAPI elevated errors\nAnthropic (Partial outage)"
   )
   assert.equal(payload.services.length, 2)
   assert.equal(payload.services[0]?.serviceId, "openai")
+  assert.equal(payload.services[0]?.incidentTitle, "API elevated errors")
   assert.equal(payload.services[1]?.serviceId, "anthropic")
+  assert.equal(payload.services[1]?.incidentTitle, null)
   assert.doesNotMatch(payload.text, /webhook delivery is working/)
+  assert.doesNotMatch(payload.text, /^Statussy:/)
   assert.equal(payload.attachments[0]?.color, WEBHOOK_ATTACHMENT_COLOR_MAJOR)
+  assert.equal(payload.attachments[0]?.actions[0]?.text, WEBHOOK_BOARD_BUTTON_LABEL)
+  assert.equal(
+    payload.attachments[0]?.actions[0]?.url,
+    "https://www.statussy.com"
+  )
 })
 
 test("partial-only batches use the amber attachment rail", () => {
@@ -167,8 +208,14 @@ test("Slack Incoming Webhooks omit top-level text so the rail is not duplicated"
 
   const genericBody = JSON.parse(
     serializeWebhookPayload(payload, "https://example.com/webhook")
-  ) as { text?: string; attachments?: unknown; services?: unknown }
+  ) as {
+    text?: string
+    boardUrl?: string
+    attachments?: unknown
+    services?: unknown
+  }
   assert.equal(genericBody.text, payload.text)
+  assert.equal(genericBody.boardUrl, payload.boardUrl)
   assert.deepEqual(genericBody.attachments, payload.attachments)
   assert.equal(Array.isArray(genericBody.services), true)
 })

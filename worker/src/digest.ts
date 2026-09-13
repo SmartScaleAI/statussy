@@ -658,7 +658,8 @@ export async function sendStackDigests(
             alert.items,
             options.publicSiteUrl,
             checkedAt
-          )
+          ),
+          options.publicSiteUrl
         )
         const body = serializeWebhookPayload(payload, alert.user.webhookUrl)
         const result = await deliverWebhook({

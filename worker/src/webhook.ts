@@ -8,7 +8,7 @@
 import { createHmac, randomBytes } from "node:crypto"
 import type pg from "pg"
 
-import { digestServiceUrl } from "./digest-email.js"
+import { digestBoardUrl, digestServiceUrl } from "./digest-email.js"
 import type { ServiceStatus } from "./statuspage.js"
 
 export type WebhookTransition = {
@@ -18,6 +18,8 @@ export type WebhookTransition = {
   to: ServiceStatus
   statusUrl?: string
   checkedAt?: string
+  incidentTitle?: string
+  incidentUrl?: string
 }
 
 export const WEBHOOK_SIGNATURE_HEADER = "X-Statussy-Signature"
@@ -25,9 +27,10 @@ export const WEBHOOK_HARD_FAILURE_LIMIT = 3
 export const WEBHOOK_TIMEOUT_MS = 4_000
 export const WEBHOOK_MAX_ATTEMPTS = 3
 export const WEBHOOK_DISABLED_REASON_FAILURES = "hard_failures"
-/** Slack Incoming Webhook left rail. Not Block Kit. */
+/** Slack Incoming Webhook left rail. */
 export const WEBHOOK_ATTACHMENT_COLOR_MAJOR = "#E24B4A"
 export const WEBHOOK_ATTACHMENT_COLOR_PARTIAL = "#E8A317"
+export const WEBHOOK_BOARD_BUTTON_LABEL = "View board"
 
 export const WEBHOOK_STATUS_LABEL: Record<ServiceStatus, string> = {
   operational: "Live",
@@ -46,16 +49,41 @@ export type WebhookServiceAlert = {
   checkedAt: string
   officialStatusUrl: string | null
   statussyUrl: string
+  incidentTitle: string | null
+  incidentUrl: string | null
+}
+
+export type WebhookAttachmentAction = {
+  type: "button"
+  text: string
+  url: string
+}
+
+export type WebhookSectionBlock = {
+  type: "section"
+  text: { type: "mrkdwn"; text: string }
+}
+
+export type WebhookActionsBlock = {
+  type: "actions"
+  elements: Array<{
+    type: "button"
+    text: { type: "plain_text"; text: string }
+    url: string
+  }>
 }
 
 export type WebhookAttachment = {
   color: string
   fallback: string
   text: string
+  actions: WebhookAttachmentAction[]
+  blocks: Array<WebhookSectionBlock | WebhookActionsBlock>
 }
 
 export type WebhookPayload = {
   text: string
+  boardUrl: string
   attachments: WebhookAttachment[]
   services: WebhookServiceAlert[]
 }
@@ -157,34 +185,80 @@ export function webhookAttachmentColor(
   return WEBHOOK_ATTACHMENT_COLOR_PARTIAL
 }
 
-export function buildWebhookAttachments(
-  services: readonly WebhookServiceAlert[],
-  text: string
-): WebhookAttachment[] {
-  return [
-    {
-      color: webhookAttachmentColor(services),
-      fallback: text,
-      text,
-    },
-  ]
+export function escapeSlackMrkdwn(value: string): string {
+  return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+}
+
+export function webhookServiceLine(item: WebhookServiceAlert): string {
+  return `${item.name} (${WEBHOOK_STATUS_LABEL[item.toStatus]})`
+}
+
+export function webhookFallbackSummary(
+  services: readonly WebhookServiceAlert[]
+): string {
+  return services.map((item) => webhookServiceLine(item)).join(", ")
 }
 
 export function webhookTextSummary(
   services: readonly WebhookServiceAlert[]
 ): string {
-  if (services.length === 1) {
-    const item = services[0]
-    return `Statussy: ${item.name} flipped to ${WEBHOOK_STATUS_LABEL[item.toStatus]}`
+  return services
+    .map((item) => {
+      const incident = item.incidentTitle?.trim()
+      if (incident) {
+        return `${webhookServiceLine(item)}\n${incident}`
+      }
+      return webhookServiceLine(item)
+    })
+    .join("\n")
+}
+
+export function buildWebhookBoardAction(
+  boardUrl: string
+): WebhookAttachmentAction {
+  return {
+    type: "button",
+    text: WEBHOOK_BOARD_BUTTON_LABEL,
+    url: boardUrl,
   }
-  if (services.length <= 3) {
-    return `Statussy: ${services
-      .map(
-        (item) => `${item.name} (${WEBHOOK_STATUS_LABEL[item.toStatus]})`
-      )
-      .join(", ")}`
-  }
-  return `Statussy: ${services.length} services in your stack need attention`
+}
+
+export function buildWebhookBlocks(
+  text: string,
+  boardUrl: string
+): Array<WebhookSectionBlock | WebhookActionsBlock> {
+  return [
+    {
+      type: "section",
+      text: { type: "mrkdwn", text: escapeSlackMrkdwn(text) },
+    },
+    {
+      type: "actions",
+      elements: [
+        {
+          type: "button",
+          text: { type: "plain_text", text: WEBHOOK_BOARD_BUTTON_LABEL },
+          url: boardUrl,
+        },
+      ],
+    },
+  ]
+}
+
+export function buildWebhookAttachments(
+  services: readonly WebhookServiceAlert[],
+  text: string,
+  boardUrl: string
+): WebhookAttachment[] {
+  return [
+    {
+      color: webhookAttachmentColor(services),
+      fallback: webhookFallbackSummary(services),
+      text,
+      actions: [buildWebhookBoardAction(boardUrl)],
+      blocks: buildWebhookBlocks(text, boardUrl),
+    },
+  ]
 }
 
 export function buildWebhookServices(
@@ -200,16 +274,21 @@ export function buildWebhookServices(
     checkedAt: item.checkedAt ?? checkedAt,
     officialStatusUrl: safeOfficialStatusUrl(item.statusUrl),
     statussyUrl: digestServiceUrl(publicSiteUrl, item.serviceId),
+    incidentTitle: item.incidentTitle?.trim() || null,
+    incidentUrl: safeOfficialStatusUrl(item.incidentUrl),
   }))
 }
 
 export function buildWebhookPayload(
-  services: readonly WebhookServiceAlert[]
+  services: readonly WebhookServiceAlert[],
+  publicSiteUrl = "https://www.statussy.com"
 ): WebhookPayload {
   const text = webhookTextSummary(services)
+  const boardUrl = digestBoardUrl(publicSiteUrl)
   return {
     text,
-    attachments: buildWebhookAttachments(services, text),
+    boardUrl,
+    attachments: buildWebhookAttachments(services, text, boardUrl),
     services: [...services],
   }
 }
@@ -230,6 +309,12 @@ function serializedAttachments(payload: WebhookPayload) {
     color: item.color,
     fallback: item.fallback,
     text: item.text,
+    actions: item.actions.map((action) => ({
+      type: action.type,
+      text: action.text,
+      url: action.url,
+    })),
+    blocks: item.blocks,
   }))
 }
 
@@ -242,6 +327,8 @@ function serializedServices(payload: WebhookPayload) {
     checkedAt: item.checkedAt,
     officialStatusUrl: item.officialStatusUrl,
     statussyUrl: item.statussyUrl,
+    incidentTitle: item.incidentTitle,
+    incidentUrl: item.incidentUrl,
   }))
 }
 
@@ -258,6 +345,7 @@ export function serializeWebhookPayload(
   }
   return JSON.stringify({
     text: payload.text,
+    boardUrl: payload.boardUrl,
     attachments,
     services: serializedServices(payload),
   })
