@@ -660,7 +660,7 @@ export async function sendStackDigests(
             checkedAt
           )
         )
-        const body = serializeWebhookPayload(payload)
+        const body = serializeWebhookPayload(payload, alert.user.webhookUrl)
         const result = await deliverWebhook({
           url: alert.user.webhookUrl,
           secret: alert.user.webhookSecret,

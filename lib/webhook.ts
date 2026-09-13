@@ -10,6 +10,9 @@ export const WEBHOOK_HARD_FAILURE_LIMIT = 3
 export const WEBHOOK_TIMEOUT_MS = 4_000
 export const WEBHOOK_MAX_ATTEMPTS = 3
 export const WEBHOOK_DISABLED_REASON_FAILURES = "hard_failures"
+/** Slack Incoming Webhook left rail. Not Block Kit. */
+export const WEBHOOK_ATTACHMENT_COLOR_MAJOR = "#E24B4A"
+export const WEBHOOK_ATTACHMENT_COLOR_PARTIAL = "#E8A317"
 
 export const STATUS_LABEL: Record<string, string> = {
   operational: "Live",
@@ -30,8 +33,15 @@ export type WebhookServiceAlert = {
   statussyUrl: string
 }
 
+export type WebhookAttachment = {
+  color: string
+  fallback: string
+  text: string
+}
+
 export type WebhookPayload = {
   text: string
+  attachments: WebhookAttachment[]
   services: WebhookServiceAlert[]
 }
 
@@ -144,6 +154,28 @@ export function statusLabel(status: string): string {
   return STATUS_LABEL[status] ?? status
 }
 
+export function webhookAttachmentColor(
+  services: readonly WebhookServiceAlert[]
+): string {
+  if (services.some((item) => item.toStatus === "major_outage")) {
+    return WEBHOOK_ATTACHMENT_COLOR_MAJOR
+  }
+  return WEBHOOK_ATTACHMENT_COLOR_PARTIAL
+}
+
+export function buildWebhookAttachments(
+  services: readonly WebhookServiceAlert[],
+  text: string
+): WebhookAttachment[] {
+  return [
+    {
+      color: webhookAttachmentColor(services),
+      fallback: text,
+      text,
+    },
+  ]
+}
+
 export function webhookTextSummary(
   services: readonly WebhookServiceAlert[]
 ): string {
@@ -185,24 +217,60 @@ export function buildWebhookServices(
 export function buildWebhookPayload(
   services: readonly WebhookServiceAlert[]
 ): WebhookPayload {
+  const text = webhookTextSummary(services)
   return {
-    text: webhookTextSummary(services),
+    text,
+    attachments: buildWebhookAttachments(services, text),
     services: [...services],
   }
 }
 
-export function serializeWebhookPayload(payload: WebhookPayload): string {
+export function isSlackIncomingWebhookUrl(url: string | undefined): boolean {
+  if (!url) {
+    return false
+  }
+  try {
+    return new URL(url).hostname === "hooks.slack.com"
+  } catch {
+    return false
+  }
+}
+
+function serializedAttachments(payload: WebhookPayload) {
+  return payload.attachments.map((item) => ({
+    color: item.color,
+    fallback: item.fallback,
+    text: item.text,
+  }))
+}
+
+function serializedServices(payload: WebhookPayload) {
+  return payload.services.map((item) => ({
+    serviceId: item.serviceId,
+    name: item.name,
+    fromStatus: item.fromStatus,
+    toStatus: item.toStatus,
+    checkedAt: item.checkedAt,
+    officialStatusUrl: item.officialStatusUrl,
+    statussyUrl: item.statussyUrl,
+  }))
+}
+
+export function serializeWebhookPayload(
+  payload: WebhookPayload,
+  destinationUrl?: string
+): string {
+  const attachments = serializedAttachments(payload)
+  // Slack Incoming Webhooks show top-level `text` and attachment text as
+  // two messages. Content lives in attachments so the colored left rail
+  // sits next to the alert instead of a duplicate plain line.
+  if (isSlackIncomingWebhookUrl(destinationUrl)) {
+    return JSON.stringify({ attachments })
+  }
   return JSON.stringify({
     text: payload.text,
-    services: payload.services.map((item) => ({
-      serviceId: item.serviceId,
-      name: item.name,
-      fromStatus: item.fromStatus,
-      toStatus: item.toStatus,
-      checkedAt: item.checkedAt,
-      officialStatusUrl: item.officialStatusUrl,
-      statussyUrl: item.statussyUrl,
-    })),
+    attachments,
+    services: serializedServices(payload),
   })
 }
 

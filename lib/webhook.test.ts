@@ -11,9 +11,12 @@ import {
   serializeWebhookPayload,
   signWebhookBody,
   buildTestWebhookPayload,
+  isSlackIncomingWebhookUrl,
   testWebhookServices,
   webhookDisabledNote,
   webhookTextSummary,
+  WEBHOOK_ATTACHMENT_COLOR_MAJOR,
+  WEBHOOK_ATTACHMENT_COLOR_PARTIAL,
   WEBHOOK_HARD_FAILURE_LIMIT,
   WEBHOOK_SIGNATURE_HEADER,
 } from "./webhook.ts"
@@ -75,6 +78,13 @@ test("payload is one batched object with text plus service fields", () => {
   })
   assert.equal(payload.services[1]?.checkedAt, "2026-09-11T18:01:00.000Z")
   assert.equal(payload.services[1]?.officialStatusUrl, null)
+  assert.deepEqual(payload.attachments, [
+    {
+      color: WEBHOOK_ATTACHMENT_COLOR_MAJOR,
+      fallback: payload.text,
+      text: payload.text,
+    },
+  ])
 })
 
 test("text summary stays short for a single service", () => {
@@ -108,6 +118,59 @@ test("Send test uses the same payload layout as a live batch", () => {
   assert.equal(payload.services[0]?.serviceId, "openai")
   assert.equal(payload.services[1]?.serviceId, "anthropic")
   assert.doesNotMatch(payload.text, /webhook delivery is working/)
+  assert.equal(payload.attachments[0]?.color, WEBHOOK_ATTACHMENT_COLOR_MAJOR)
+})
+
+test("partial-only batches use the amber attachment rail", () => {
+  const services = buildWebhookServices(
+    [
+      {
+        serviceId: "anthropic",
+        name: "Anthropic",
+        from: "operational",
+        to: "partial_outage",
+      },
+    ],
+    "https://www.statussy.com",
+    "2026-09-11T18:00:00.000Z"
+  )
+  const payload = buildWebhookPayload(services)
+  assert.equal(payload.attachments[0]?.color, WEBHOOK_ATTACHMENT_COLOR_PARTIAL)
+})
+
+test("Slack Incoming Webhooks omit top-level text so the rail is not duplicated", () => {
+  const payload = buildWebhookPayload(
+    testWebhookServices(
+      "https://www.statussy.com",
+      "2026-09-11T18:00:00.000Z"
+    )
+  )
+  assert.equal(
+    isSlackIncomingWebhookUrl(
+      "https://hooks.slack.com/services/T000/B000/XXXX"
+    ),
+    true
+  )
+  assert.equal(
+    isSlackIncomingWebhookUrl("https://example.com/webhook"),
+    false
+  )
+  const slackBody = JSON.parse(
+    serializeWebhookPayload(
+      payload,
+      "https://hooks.slack.com/services/T000/B000/XXXX"
+    )
+  ) as { text?: string; attachments?: unknown; services?: unknown }
+  assert.equal(slackBody.text, undefined)
+  assert.equal(slackBody.services, undefined)
+  assert.deepEqual(slackBody.attachments, payload.attachments)
+
+  const genericBody = JSON.parse(
+    serializeWebhookPayload(payload, "https://example.com/webhook")
+  ) as { text?: string; attachments?: unknown; services?: unknown }
+  assert.equal(genericBody.text, payload.text)
+  assert.deepEqual(genericBody.attachments, payload.attachments)
+  assert.equal(Array.isArray(genericBody.services), true)
 })
 
 test("HMAC header is sha256 of the exact serialized body", () => {

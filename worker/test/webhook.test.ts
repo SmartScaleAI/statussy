@@ -9,6 +9,7 @@ import {
   parseWebhookUrl,
   serializeWebhookPayload,
   signWebhookBody,
+  WEBHOOK_ATTACHMENT_COLOR_MAJOR,
   WEBHOOK_HARD_FAILURE_LIMIT,
   WEBHOOK_SIGNATURE_HEADER,
 } from "../src/webhook.js"
@@ -53,8 +54,19 @@ test("batched payload includes required service fields and text", () => {
   )
   const body = serializeWebhookPayload(payload)
   assert.match(body, /"text":/)
+  assert.match(body, /"attachments":\[/)
   assert.match(body, /"services":\[/)
   assert.doesNotMatch(body, /blocks/)
+  assert.equal(payload.attachments[0]?.color, WEBHOOK_ATTACHMENT_COLOR_MAJOR)
+  const slackBody = JSON.parse(
+    serializeWebhookPayload(
+      payload,
+      "https://hooks.slack.com/services/T000/B000/XXXX"
+    )
+  ) as { text?: string; attachments?: unknown; services?: unknown }
+  assert.equal(slackBody.text, undefined)
+  assert.equal(slackBody.services, undefined)
+  assert.deepEqual(slackBody.attachments, payload.attachments)
 })
 
 test("signature is HMAC-SHA256 of the posted body", () => {
