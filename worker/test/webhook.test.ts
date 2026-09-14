@@ -9,6 +9,7 @@ import {
   parseWebhookUrl,
   serializeWebhookPayload,
   signWebhookBody,
+  WEBHOOK_EVENT_TYPE_ALERT,
   WEBHOOK_HARD_FAILURE_LIMIT,
   WEBHOOK_SIGNATURE_HEADER,
 } from "../src/webhook.js"
@@ -38,30 +39,36 @@ test("batched payload includes required service fields and text", () => {
     "https://www.statussy.com",
     "2026-09-11T18:00:00.000Z"
   )
-  const payload = buildWebhookPayload(services)
-  assert.equal(payload.text, "OpenAI (Major outage)")
-  assert.equal(payload.services[0]?.serviceId, "openai")
-  assert.equal(payload.services[0]?.fromStatus, "operational")
-  assert.equal(payload.services[0]?.toStatus, "major_outage")
-  assert.equal(payload.services[0]?.officialStatusUrl, "https://status.openai.com/")
-  assert.equal(payload.services[0]?.incidentTitle, null)
+  const payload = buildWebhookPayload(services, "https://www.statussy.com", {
+    id: "evt_test",
+    createdAt: "2026-09-11T18:00:00.000Z",
+  })
+  assert.equal(payload.id, "evt_test")
+  assert.equal(payload.type, WEBHOOK_EVENT_TYPE_ALERT)
+  assert.equal(payload.data.text, "OpenAI (Major outage)")
+  assert.equal(payload.data.services[0]?.serviceId, "openai")
+  assert.equal(payload.data.services[0]?.fromStatus, "operational")
+  assert.equal(payload.data.services[0]?.toStatus, "major_outage")
+  assert.equal(payload.data.services[0]?.officialStatusUrl, "https://status.openai.com/")
+  assert.equal(payload.data.services[0]?.incidentTitle, null)
   assert.equal(
-    payload.services[0]?.statussyUrl,
+    payload.data.services[0]?.statussyUrl,
     "https://www.statussy.com/services/openai"
   )
-  assert.equal(payload.boardUrl, "https://www.statussy.com")
+  assert.equal(payload.data.boardUrl, "https://www.statussy.com")
   const body = JSON.parse(serializeWebhookPayload(payload)) as {
+    id?: string
+    type?: string
+    createdAt?: string
     text?: string
-    boardUrl?: string
-    blocks?: unknown
-    attachments?: unknown
-    services?: unknown
+    data?: { text?: string; services?: unknown }
   }
-  assert.equal(body.text, payload.text)
-  assert.equal(body.boardUrl, payload.boardUrl)
-  assert.equal(body.blocks, undefined)
-  assert.equal(body.attachments, undefined)
-  assert.equal(Array.isArray(body.services), true)
+  assert.equal(body.id, "evt_test")
+  assert.equal(body.type, WEBHOOK_EVENT_TYPE_ALERT)
+  assert.equal(body.createdAt, "2026-09-11T18:00:00.000Z")
+  assert.equal(body.text, undefined)
+  assert.equal(body.data?.text, payload.data.text)
+  assert.equal(Array.isArray(body.data?.services), true)
 })
 
 test("incident title sits on the line below its service", () => {
@@ -88,16 +95,16 @@ test("incident title sits on the line below its service", () => {
     )
   )
   assert.equal(
-    payload.text,
+    payload.data.text,
     "OpenAI (Major outage)\nAPI elevated errors\nAnthropic (Partial outage)"
   )
-  assert.equal(payload.services[0]?.incidentTitle, "API elevated errors")
+  assert.equal(payload.data.services[0]?.incidentTitle, "API elevated errors")
   assert.equal(
-    payload.services[0]?.incidentUrl,
+    payload.data.services[0]?.incidentUrl,
     "https://status.openai.com/incidents/abc"
   )
-  assert.equal(payload.services[1]?.incidentTitle, null)
-  assert.equal(payload.boardUrl, "https://www.statussy.com")
+  assert.equal(payload.data.services[1]?.incidentTitle, null)
+  assert.equal(payload.data.boardUrl, "https://www.statussy.com")
 })
 
 test("signature is HMAC-SHA256 of the posted body", () => {

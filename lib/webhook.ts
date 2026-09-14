@@ -10,6 +10,8 @@ export const WEBHOOK_HARD_FAILURE_LIMIT = 3
 export const WEBHOOK_TIMEOUT_MS = 4_000
 export const WEBHOOK_MAX_ATTEMPTS = 3
 export const WEBHOOK_DISABLED_REASON_FAILURES = "hard_failures"
+export const WEBHOOK_EVENT_TYPE_ALERT = "stack.alert"
+export const WEBHOOK_EVENT_TYPE_TEST = "webhook.test"
 
 export const STATUS_LABEL: Record<string, string> = {
   operational: "Live",
@@ -32,10 +34,27 @@ export type WebhookServiceAlert = {
   incidentUrl: string | null
 }
 
-export type WebhookPayload = {
+export type WebhookEventType =
+  | typeof WEBHOOK_EVENT_TYPE_ALERT
+  | typeof WEBHOOK_EVENT_TYPE_TEST
+
+export type WebhookPayloadData = {
   text: string
   boardUrl: string
   services: WebhookServiceAlert[]
+}
+
+export type WebhookPayload = {
+  id: string
+  type: WebhookEventType
+  createdAt: string
+  data: WebhookPayloadData
+}
+
+export type WebhookPayloadOptions = {
+  type?: WebhookEventType
+  createdAt?: string
+  id?: string
 }
 
 export type WebhookUrlResult =
@@ -54,6 +73,10 @@ const BLOCKED_HOSTS = new Set([
 
 export function generateWebhookSecret(): string {
   return `stsy_${randomBytes(32).toString("base64url")}`
+}
+
+export function generateWebhookEventId(): string {
+  return `evt_${randomBytes(16).toString("hex")}`
 }
 
 export function maskWebhookSecret(secret: string): string {
@@ -194,19 +217,25 @@ export function buildWebhookServices(
 
 export function buildWebhookPayload(
   services: readonly WebhookServiceAlert[],
-  publicSiteUrl = "https://www.statussy.com"
+  publicSiteUrl = "https://www.statussy.com",
+  options: WebhookPayloadOptions = {}
 ): WebhookPayload {
   const text = webhookTextSummary(services)
   const boardUrl = siteOrigin(publicSiteUrl)
   return {
-    text,
-    boardUrl,
-    services: [...services],
+    id: options.id ?? generateWebhookEventId(),
+    type: options.type ?? WEBHOOK_EVENT_TYPE_ALERT,
+    createdAt: options.createdAt ?? new Date().toISOString(),
+    data: {
+      text,
+      boardUrl,
+      services: [...services],
+    },
   }
 }
 
-function serializedServices(payload: WebhookPayload) {
-  return payload.services.map((item) => ({
+function serializedServices(services: readonly WebhookServiceAlert[]) {
+  return services.map((item) => ({
     serviceId: item.serviceId,
     name: item.name,
     fromStatus: item.fromStatus,
@@ -221,9 +250,14 @@ function serializedServices(payload: WebhookPayload) {
 
 export function serializeWebhookPayload(payload: WebhookPayload): string {
   return JSON.stringify({
-    text: payload.text,
-    boardUrl: payload.boardUrl,
-    services: serializedServices(payload),
+    id: payload.id,
+    type: payload.type,
+    createdAt: payload.createdAt,
+    data: {
+      text: payload.data.text,
+      boardUrl: payload.data.boardUrl,
+      services: serializedServices(payload.data.services),
+    },
   })
 }
 
@@ -360,7 +394,11 @@ export function buildTestWebhookPayload(
 ): WebhookPayload {
   return buildWebhookPayload(
     testWebhookServices(publicSiteUrl, checkedAt),
-    publicSiteUrl
+    publicSiteUrl,
+    {
+      type: WEBHOOK_EVENT_TYPE_TEST,
+      createdAt: checkedAt,
+    }
   )
 }
 

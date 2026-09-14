@@ -253,9 +253,11 @@ export function WebhookSettings({
                 POSTs one JSON payload for that poll.
               </li>
               <li>
-                The body is the same JSON for every destination: a text
+                The body is the same JSON for every destination: an event
+                envelope with id, type, createdAt, and data. data has a text
                 summary, a boardUrl, and a services array with ids, names,
-                statuses, incidents, and links.
+                statuses, incidents, and links. Send test uses type
+                webhook.test. Live alerts use type stack.alert.
               </li>
               <li>
                 Statussy generates a signing secret and adds an

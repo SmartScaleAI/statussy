@@ -14,6 +14,8 @@ import {
   testWebhookServices,
   webhookDisabledNote,
   webhookTextSummary,
+  WEBHOOK_EVENT_TYPE_ALERT,
+  WEBHOOK_EVENT_TYPE_TEST,
   WEBHOOK_HARD_FAILURE_LIMIT,
   WEBHOOK_SIGNATURE_HEADER,
 } from "./webhook.ts"
@@ -60,11 +62,17 @@ test("payload is one batched object with text plus service fields", () => {
     "https://www.statussy.com/",
     "2026-09-11T18:01:00.000Z"
   )
-  const payload = buildWebhookPayload(services)
-  assert.doesNotMatch(payload.text, /^Statussy:/)
-  assert.doesNotMatch(payload.text, /\u2014/)
-  assert.equal(payload.services.length, 2)
-  assert.deepEqual(payload.services[0], {
+  const payload = buildWebhookPayload(services, "https://www.statussy.com/", {
+    id: "evt_test",
+    createdAt: "2026-09-11T18:01:00.000Z",
+  })
+  assert.equal(payload.id, "evt_test")
+  assert.equal(payload.type, WEBHOOK_EVENT_TYPE_ALERT)
+  assert.equal(payload.createdAt, "2026-09-11T18:01:00.000Z")
+  assert.doesNotMatch(payload.data.text, /^Statussy:/)
+  assert.doesNotMatch(payload.data.text, /\u2014/)
+  assert.equal(payload.data.services.length, 2)
+  assert.deepEqual(payload.data.services[0], {
     serviceId: "openai",
     name: "OpenAI",
     fromStatus: "operational",
@@ -75,9 +83,9 @@ test("payload is one batched object with text plus service fields", () => {
     incidentTitle: null,
     incidentUrl: null,
   })
-  assert.equal(payload.services[1]?.checkedAt, "2026-09-11T18:01:00.000Z")
-  assert.equal(payload.services[1]?.officialStatusUrl, null)
-  assert.equal(payload.boardUrl, "https://www.statussy.com")
+  assert.equal(payload.data.services[1]?.checkedAt, "2026-09-11T18:01:00.000Z")
+  assert.equal(payload.data.services[1]?.officialStatusUrl, null)
+  assert.equal(payload.data.boardUrl, "https://www.statussy.com")
 })
 
 test("text summary puts each service on its own line", () => {
@@ -133,41 +141,70 @@ test("Send test uses the same payload layout as a live batch", () => {
   const checkedAt = "2026-09-11T18:00:00.000Z"
   const services = testWebhookServices("https://www.statussy.com", checkedAt)
   const payload = buildTestWebhookPayload("https://www.statussy.com", checkedAt)
-  assert.deepEqual(payload, buildWebhookPayload(services, "https://www.statussy.com"))
-  assert.equal(payload.text, webhookTextSummary(services))
+  assert.deepEqual(
+    payload,
+    buildWebhookPayload(services, "https://www.statussy.com", {
+      type: WEBHOOK_EVENT_TYPE_TEST,
+      createdAt: checkedAt,
+      id: payload.id,
+    })
+  )
+  assert.equal(payload.type, WEBHOOK_EVENT_TYPE_TEST)
+  assert.match(payload.id, /^evt_[0-9a-f]{32}$/)
+  assert.equal(payload.createdAt, checkedAt)
+  assert.equal(payload.data.text, webhookTextSummary(services))
   assert.equal(
-    payload.text,
+    payload.data.text,
     "OpenAI (Major outage)\nAPI elevated errors\nAnthropic (Partial outage)"
   )
-  assert.equal(payload.services.length, 2)
-  assert.equal(payload.services[0]?.serviceId, "openai")
-  assert.equal(payload.services[0]?.incidentTitle, "API elevated errors")
-  assert.equal(payload.services[1]?.serviceId, "anthropic")
-  assert.equal(payload.services[1]?.incidentTitle, null)
-  assert.doesNotMatch(payload.text, /webhook delivery is working/)
-  assert.doesNotMatch(payload.text, /^Statussy:/)
-  assert.equal(payload.boardUrl, "https://www.statussy.com")
+  assert.equal(payload.data.services.length, 2)
+  assert.equal(payload.data.services[0]?.serviceId, "openai")
+  assert.equal(payload.data.services[0]?.incidentTitle, "API elevated errors")
+  assert.equal(payload.data.services[1]?.serviceId, "anthropic")
+  assert.equal(payload.data.services[1]?.incidentTitle, null)
+  assert.doesNotMatch(payload.data.text, /webhook delivery is working/)
+  assert.doesNotMatch(payload.data.text, /^Statussy:/)
+  assert.equal(payload.data.boardUrl, "https://www.statussy.com")
 })
 
-test("serialized payload is the same JSON for every destination", () => {
+test("serialized payload is an event envelope for every destination", () => {
   const payload = buildWebhookPayload(
     testWebhookServices(
       "https://www.statussy.com",
       "2026-09-11T18:00:00.000Z"
-    )
+    ),
+    "https://www.statussy.com",
+    {
+      id: "evt_fixed",
+      createdAt: "2026-09-11T18:00:00.000Z",
+    }
   )
   const body = JSON.parse(serializeWebhookPayload(payload)) as {
+    id?: string
+    type?: string
+    createdAt?: string
     text?: string
     boardUrl?: string
     attachments?: unknown
     blocks?: unknown
     services?: unknown
+    data?: {
+      text?: string
+      boardUrl?: string
+      services?: unknown
+    }
   }
-  assert.equal(body.text, payload.text)
-  assert.equal(body.boardUrl, payload.boardUrl)
+  assert.equal(body.id, "evt_fixed")
+  assert.equal(body.type, WEBHOOK_EVENT_TYPE_ALERT)
+  assert.equal(body.createdAt, "2026-09-11T18:00:00.000Z")
+  assert.equal(body.text, undefined)
+  assert.equal(body.boardUrl, undefined)
+  assert.equal(body.services, undefined)
   assert.equal(body.attachments, undefined)
   assert.equal(body.blocks, undefined)
-  assert.equal(Array.isArray(body.services), true)
+  assert.equal(body.data?.text, payload.data.text)
+  assert.equal(body.data?.boardUrl, payload.data.boardUrl)
+  assert.equal(Array.isArray(body.data?.services), true)
 })
 
 test("HMAC header is sha256 of the exact serialized body", () => {

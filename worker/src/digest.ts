@@ -27,6 +27,7 @@ import type { ServiceStatus } from "./statuspage.js"
 import {
   buildWebhookPayload,
   buildWebhookServices,
+  WEBHOOK_EVENT_TYPE_ALERT,
   claimWebhookSend,
   deliverWebhook,
   recordWebhookFailure,
@@ -659,7 +660,11 @@ export async function sendStackDigests(
             options.publicSiteUrl,
             checkedAt
           ),
-          options.publicSiteUrl
+          options.publicSiteUrl,
+          {
+            type: WEBHOOK_EVENT_TYPE_ALERT,
+            createdAt: checkedAt,
+          }
         )
         const body = serializeWebhookPayload(payload)
         const result = await deliverWebhook({
