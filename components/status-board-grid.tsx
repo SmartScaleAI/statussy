@@ -143,13 +143,24 @@ export function StatusBoardGrid({
   }
 
   return (
-    <div className="flex flex-col gap-8">
-      <StatusSummary
-        operational={summary.operational}
-        issues={summary.issues}
-        total={summary.total}
-        refreshedAt={refreshedAt}
-      />
+    <section
+      className="flex flex-col gap-8"
+      aria-labelledby="all-services-heading"
+    >
+      <div className="flex flex-col gap-3">
+        <h2
+          id="all-services-heading"
+          className="font-heading text-lg font-semibold tracking-tight text-foreground md:text-xl"
+        >
+          All Services
+        </h2>
+        <StatusSummary
+          operational={summary.operational}
+          issues={summary.issues}
+          total={summary.total}
+          refreshedAt={refreshedAt}
+        />
+      </div>
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2">
@@ -233,6 +244,6 @@ export function StatusBoardGrid({
           </>
         )}
       </div>
-    </div>
+    </section>
   )
 }
