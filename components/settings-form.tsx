@@ -286,18 +286,16 @@ export function SettingsForm() {
 
   return (
     <div className="flex flex-col gap-8 py-8 sm:py-12 [&_[data-slot=card]]:bg-[var(--bg-footer)]">
-      <header className="flex flex-col gap-4">
-        {/* SMA-116 / SMA-117: same compact Back chiclet as service
-            detail (always `/`). self-start so the column flex does not
-            stretch it into a full-width bar; gap-4 keeps the Settings
-            title from sitting flush on the chip. */}
-        <div className="self-start">
-          <BackToBoard />
-        </div>
-        <h1 className="font-heading text-2xl font-semibold tracking-tight text-foreground">
-          Settings
-        </h1>
-      </header>
+      {/* SMA-116 / SMA-117: same compact Back chiclet as service
+          detail (always `/`). self-start so the column flex does not
+          stretch it into a full-width bar. Shared gap-8 matches the
+          space under the Settings title to the first card. */}
+      <div className="self-start">
+        <BackToBoard />
+      </div>
+      <h1 className="font-heading text-2xl font-semibold tracking-tight text-foreground">
+        Settings
+      </h1>
       <div className="flex flex-col gap-6">
       <Card>
         <CardHeader>
