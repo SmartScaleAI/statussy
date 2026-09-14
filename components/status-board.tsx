@@ -42,7 +42,10 @@ export async function StatusBoard() {
             favorites. */}
         <BoardPanes
           stack={
-            <MyServices items={items.map((item) => toSortFields(item))}>
+            <MyServices
+              items={items.map((item) => toSortFields(item))}
+              refreshedAt={refreshedAt}
+            >
               {items.map((service) => (
                 <ServiceCard key={service.id} service={service} />
               ))}

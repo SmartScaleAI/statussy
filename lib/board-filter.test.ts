@@ -6,6 +6,7 @@ import {
   boardHref,
   distinctCategories,
   filterBoardServices,
+  filterServicesByName,
   formatCategoryLabel,
   parseCategoryParam,
   summarizeBoardItems,
@@ -86,6 +87,23 @@ test("search intersects with the active category", () => {
     aiThropic.map((item) => item.name),
     ["Anthropic"]
   )
+})
+
+test("filterServicesByName is category-free (My Stack search)", () => {
+  const pinned = [
+    { name: "OpenAI" },
+    { name: "Anthropic" },
+    { name: "Vercel" },
+  ]
+  assert.deepEqual(
+    filterServicesByName(pinned, "  OPEN  ").map((item) => item.name),
+    ["OpenAI"]
+  )
+  assert.deepEqual(
+    filterServicesByName(pinned, "   ").map((item) => item.name),
+    ["OpenAI", "Anthropic", "Vercel"]
+  )
+  assert.deepEqual(filterServicesByName(pinned, "zzz"), [])
 })
 
 test("search matches service name only (case-insensitive substring)", () => {
