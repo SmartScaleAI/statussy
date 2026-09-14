@@ -1,0 +1,167 @@
+import assert from "node:assert/strict"
+import { test } from "node:test"
+
+import {
+  applyWebhookFailure,
+  buildWebhookPayload,
+  buildWebhookServices,
+  deliverWebhook,
+  parseWebhookUrl,
+  serializeWebhookPayload,
+  signWebhookBody,
+  WEBHOOK_EVENT_TYPE_ALERT,
+  WEBHOOK_HARD_FAILURE_LIMIT,
+  WEBHOOK_SIGNATURE_HEADER,
+} from "../src/webhook.js"
+
+test("parseWebhookUrl accepts public HTTPS URLs", () => {
+  const parsed = parseWebhookUrl("https://example.com/webhook")
+  assert.equal(parsed.ok, true)
+})
+
+test("parseWebhookUrl rejects non-https and loopback", () => {
+  assert.equal(parseWebhookUrl("http://example.com/hook").ok, false)
+  assert.equal(parseWebhookUrl("https://127.0.0.1/hook").ok, false)
+})
+
+test("batched payload includes required service fields and text", () => {
+  const services = buildWebhookServices(
+    [
+      {
+        serviceId: "openai",
+        name: "OpenAI",
+        from: "operational",
+        to: "major_outage",
+        statusUrl: "https://status.openai.com/",
+        checkedAt: "2026-09-11T18:00:00.000Z",
+      },
+    ],
+    "https://www.statussy.com",
+    "2026-09-11T18:00:00.000Z"
+  )
+  const payload = buildWebhookPayload(services, "https://www.statussy.com", {
+    id: "evt_test",
+    createdAt: "2026-09-11T18:00:00.000Z",
+  })
+  assert.equal(payload.id, "evt_test")
+  assert.equal(payload.type, WEBHOOK_EVENT_TYPE_ALERT)
+  assert.equal(payload.text, "OpenAI (Major outage)")
+  assert.equal(payload.data.text, "OpenAI (Major outage)")
+  assert.equal(payload.data.services[0]?.serviceId, "openai")
+  assert.equal(payload.data.services[0]?.fromStatus, "operational")
+  assert.equal(payload.data.services[0]?.toStatus, "major_outage")
+  assert.equal(
+    payload.data.services[0]?.officialStatusUrl,
+    "https://status.openai.com/"
+  )
+  assert.equal(payload.data.services[0]?.incidentTitle, null)
+  assert.equal(
+    payload.data.services[0]?.statussyUrl,
+    "https://www.statussy.com/services/openai"
+  )
+  assert.equal(payload.data.boardUrl, "https://www.statussy.com")
+  const body = JSON.parse(serializeWebhookPayload(payload)) as {
+    id?: string
+    type?: string
+    createdAt?: string
+    text?: string
+    data?: { text?: string; services?: unknown }
+  }
+  assert.equal(body.id, "evt_test")
+  assert.equal(body.type, WEBHOOK_EVENT_TYPE_ALERT)
+  assert.equal(body.createdAt, "2026-09-11T18:00:00.000Z")
+  assert.equal(body.text, payload.text)
+  assert.equal(body.data?.text, payload.data.text)
+  assert.equal(Array.isArray(body.data?.services), true)
+})
+
+test("text lists providers with outage type on one line; incidents stay in services", () => {
+  const payload = buildWebhookPayload(
+    buildWebhookServices(
+      [
+        {
+          serviceId: "openai",
+          name: "OpenAI",
+          from: "operational",
+          to: "major_outage",
+          incidentTitle: "API elevated errors",
+          incidentUrl: "https://status.openai.com/incidents/abc",
+        },
+        {
+          serviceId: "anthropic",
+          name: "Anthropic",
+          from: "operational",
+          to: "partial_outage",
+        },
+      ],
+      "https://www.statussy.com",
+      "2026-09-11T18:00:00.000Z"
+    )
+  )
+  assert.equal(
+    payload.data.text,
+    "OpenAI (Major outage), Anthropic (Partial outage)"
+  )
+  assert.equal(payload.text, payload.data.text)
+  assert.doesNotMatch(payload.data.text, /API elevated errors/)
+  assert.equal(payload.data.services[0]?.incidentTitle, "API elevated errors")
+  assert.equal(
+    payload.data.services[0]?.incidentUrl,
+    "https://status.openai.com/incidents/abc"
+  )
+  assert.equal(payload.data.services[1]?.incidentTitle, null)
+  assert.equal(payload.data.boardUrl, "https://www.statussy.com")
+})
+
+test("signature is HMAC-SHA256 of the posted body", () => {
+  const body = serializeWebhookPayload(
+    buildWebhookPayload(
+      buildWebhookServices(
+        [
+          {
+            serviceId: "openai",
+            name: "OpenAI",
+            from: "operational",
+            to: "major_outage",
+          },
+        ],
+        "https://www.statussy.com",
+        "2026-09-11T18:00:00.000Z"
+      )
+    )
+  )
+  const header = signWebhookBody("stsy_testsecret", body)
+  assert.match(header, /^sha256=[0-9a-f]{64}$/)
+})
+
+test("deliverWebhook sends one signed POST and treats 4xx as hard", async () => {
+  const calls: RequestInit[] = []
+  const fetchImpl = (async (_url: string | URL, init?: RequestInit) => {
+    calls.push(init ?? {})
+    return new Response("no_active_hooks", { status: 404 })
+  }) as typeof fetch
+  const body = '{"text":"Statussy test","services":[]}'
+  const result = await deliverWebhook({
+    url: "https://example.com/webhook",
+    secret: "stsy_secret",
+    body,
+    fetchImpl,
+  })
+  assert.equal(result.ok, false)
+  assert.equal(calls.length, 1)
+  const headers = calls[0]?.headers as Record<string, string>
+  assert.equal(
+    headers[WEBHOOK_SIGNATURE_HEADER],
+    signWebhookBody("stsy_secret", body)
+  )
+})
+
+test("three hard failures disable the webhook", () => {
+  const third = applyWebhookFailure(
+    applyWebhookFailure(applyWebhookFailure(0).consecutiveFailures)
+      .consecutiveFailures
+  )
+  assert.equal(third.consecutiveFailures, WEBHOOK_HARD_FAILURE_LIMIT)
+  assert.equal(third.enabled, false)
+  assert.equal(third.disabledReason, "hard_failures")
+})

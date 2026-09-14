@@ -4,6 +4,7 @@ import { Children, isValidElement, useMemo, type ReactNode } from "react"
 import { StarIcon } from "lucide-react"
 
 import { useBoardTabActions } from "@/components/board-panes"
+import { BrandLoader } from "@/components/brand-loader"
 import { MyStackSortMenu, useMyStackSort } from "@/components/board-sort-menu"
 import { useFavoriteServices } from "@/components/favorite-services"
 import { StatusSummary } from "@/components/status-summary"
@@ -23,23 +24,6 @@ import { cn } from "@/lib/utils"
 
 export type MyServiceItem = BoardSortItem & {
   status: BoardStatus
-}
-
-function MyStackLoader() {
-  return (
-    <div className="flex justify-center pt-8 pb-10">
-      {/* Decorative: sr-only text is the accessible name. */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src="/brand/my-stack-loader.gif"
-        alt=""
-        width={32}
-        height={32}
-        className="size-8"
-      />
-      <span className="sr-only">Loading your stack</span>
-    </div>
-  )
 }
 
 export function MyServices({
@@ -90,7 +74,7 @@ export function MyServices({
         }
       />
       {isLoading ? (
-        <MyStackLoader />
+        <BrandLoader className="pt-8 pb-10" label="Loading your stack" />
       ) : empty ? (
         <Empty className="py-8" role="status">
           <EmptyHeader>

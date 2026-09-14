@@ -11,6 +11,7 @@ import {
   type ReactNode,
 } from "react"
 
+import { BrandLoader } from "@/components/brand-loader"
 import { useFavoriteServices } from "@/components/favorite-services"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
@@ -34,23 +35,6 @@ export function useBoardTabActions() {
     throw new Error("useBoardTabActions must be used within BoardPanes")
   }
   return context
-}
-
-function BoardPaneLoader() {
-  return (
-    <div className="flex justify-center pt-8 pb-10">
-      {/* Decorative: sr-only text is the accessible name. */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src="/brand/my-stack-loader.gif"
-        alt=""
-        width={32}
-        height={32}
-        className="size-8"
-      />
-      <span className="sr-only">Loading board</span>
-    </div>
-  )
 }
 
 export function BoardPanes({
@@ -148,7 +132,7 @@ export function BoardPanes({
           </TabsTrigger>
         </TabsList>
         {showLoader ? (
-          <BoardPaneLoader />
+          <BrandLoader className="pt-8 pb-10" label="Loading board" />
         ) : (
           <>
             {/* keepMounted false: Option A — only one grid mounted. */}

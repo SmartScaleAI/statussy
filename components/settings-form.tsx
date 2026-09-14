@@ -9,6 +9,10 @@ import {
   unlinkSocialAccount,
 } from "@/app/actions/account"
 import { getMyDigestPrefs, setMyDigestNotify } from "@/app/actions/digest-prefs"
+import { getMyWebhookPrefs } from "@/app/actions/webhook-prefs"
+import { BackToBoard } from "@/components/board-back-link"
+import { BrandLoader } from "@/components/brand-loader"
+import { WebhookSettings } from "@/components/webhook-settings"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -55,6 +59,11 @@ import {
   type UserDigestPrefs,
 } from "@/lib/digest-banner"
 import { shouldRenderAccountSettings } from "@/lib/settings-session"
+import {
+  DEFAULT_WEBHOOK_PREFS,
+  pickWebhookPrefs,
+  type UserWebhookPrefs,
+} from "@/lib/webhook-prefs"
 
 function GoogleMark(props: SVGProps<SVGSVGElement>) {
   return (
@@ -106,6 +115,9 @@ export function SettingsForm() {
   } | null>(null)
   const [digestPrefs, setDigestPrefs] =
     useState<UserDigestPrefs>(DEFAULT_DIGEST_PREFS)
+  const [webhookPrefs, setWebhookPrefs] = useState<UserWebhookPrefs>(
+    DEFAULT_WEBHOOK_PREFS
+  )
   const [pending, setPending] = useState<
     | SocialProvider
     | "signout"
@@ -131,6 +143,7 @@ export function SettingsForm() {
     if (!hasUser) {
       setSnapshot(null)
       setDigestPrefs(DEFAULT_DIGEST_PREFS)
+      setWebhookPrefs(DEFAULT_WEBHOOK_PREFS)
       if (pathname === "/settings") {
         router.replace(`/?${SIGN_IN_QUERY}=1`)
         router.refresh()
@@ -138,24 +151,30 @@ export function SettingsForm() {
       return
     }
     let cancelled = false
-    void Promise.all([getMyAccountSnapshot(), getMyDigestPrefs()]).then(
-      ([result, prefs]) => {
-        if (cancelled) {
-          return
-        }
-        if (!result.ok) {
-          setSnapshot(null)
-          setDigestPrefs(DEFAULT_DIGEST_PREFS)
-          router.replace(`/?${SIGN_IN_QUERY}=1`)
-          router.refresh()
-          return
-        }
-        setSnapshot({ email: result.email, accounts: result.accounts })
-        if (prefs.signedIn) {
-          setDigestPrefs(pickDigestPrefs(prefs))
-        }
+    void Promise.all([
+      getMyAccountSnapshot(),
+      getMyDigestPrefs(),
+      getMyWebhookPrefs(),
+    ]).then(([result, prefs, webhook]) => {
+      if (cancelled) {
+        return
       }
-    )
+      if (!result.ok) {
+        setSnapshot(null)
+        setDigestPrefs(DEFAULT_DIGEST_PREFS)
+        setWebhookPrefs(DEFAULT_WEBHOOK_PREFS)
+        router.replace(`/?${SIGN_IN_QUERY}=1`)
+        router.refresh()
+        return
+      }
+      setSnapshot({ email: result.email, accounts: result.accounts })
+      if (prefs.signedIn) {
+        setDigestPrefs(pickDigestPrefs(prefs))
+      }
+      if (webhook.signedIn) {
+        setWebhookPrefs(pickWebhookPrefs(webhook))
+      }
+    })
     return () => {
       cancelled = true
     }
@@ -164,9 +183,10 @@ export function SettingsForm() {
   if (!showAccount || !snapshot) {
     const waiting = sessionPending || hasUser
     return (
-      <p className="text-sm text-muted-foreground" role="status">
-        {waiting ? "Loading account…" : "Redirecting to sign in…"}
-      </p>
+      <BrandLoader
+        className="min-h-0 w-full flex-1 items-center"
+        label={waiting ? "Loading account" : "Redirecting to sign in"}
+      />
     )
   }
 
@@ -265,7 +285,18 @@ export function SettingsForm() {
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-8 py-8 sm:py-12 [&_[data-slot=card]]:bg-[var(--bg-footer)]">
+      {/* SMA-116 / SMA-117: same compact Back chiclet as service
+          detail (always `/`). self-start so the column flex does not
+          stretch it into a full-width bar. Shared gap-8 matches the
+          space under the Settings title to the first card. */}
+      <div className="self-start">
+        <BackToBoard />
+      </div>
+      <h1 className="font-heading text-2xl font-semibold tracking-tight text-foreground">
+        Settings
+      </h1>
+      <div className="flex flex-col gap-6">
       <Card>
         <CardHeader>
           <CardTitle>Account</CardTitle>
@@ -293,7 +324,7 @@ export function SettingsForm() {
           <CardTitle>Email alerts</CardTitle>
           <CardDescription>
             Optional My Stack digest. After you opt in, Major starts on and
-            Partial stays off.
+            Partial stays off. Webhook alerts use these same toggles.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -338,6 +369,13 @@ export function SettingsForm() {
           </FieldGroup>
         </CardContent>
       </Card>
+
+      <WebhookSettings
+        initialPrefs={webhookPrefs}
+        onSignedOut={() => {
+          router.push(`/?${SIGN_IN_QUERY}=1`)
+        }}
+      />
 
       <Card>
         <CardHeader>
@@ -465,6 +503,7 @@ export function SettingsForm() {
           </AlertDialog>
         </CardContent>
       </Card>
+      </div>
     </div>
   )
 }

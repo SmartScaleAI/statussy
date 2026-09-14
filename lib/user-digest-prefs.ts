@@ -135,6 +135,10 @@ export async function deleteUserDigestPrefs(userId: string): Promise<void> {
     await pool.query(`DELETE FROM digest_episode_mutes WHERE user_id = $1`, [
       userId,
     ])
+    await pool.query(`DELETE FROM webhook_sends WHERE user_id = $1`, [userId])
+    await pool.query(`DELETE FROM user_webhook_prefs WHERE user_id = $1`, [
+      userId,
+    ])
   } catch (err) {
     console.error(
       `[statussy] delete user digest prefs failed (db=${describeDatabaseTarget()})`,
