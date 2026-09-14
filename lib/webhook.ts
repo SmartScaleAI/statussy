@@ -48,6 +48,8 @@ export type WebhookPayload = {
   id: string
   type: WebhookEventType
   createdAt: string
+  /** Top-level so Incoming Webhooks that require `text` (and return no_text otherwise) can render. */
+  text: string
   data: WebhookPayloadData
 }
 
@@ -226,6 +228,7 @@ export function buildWebhookPayload(
     id: options.id ?? generateWebhookEventId(),
     type: options.type ?? WEBHOOK_EVENT_TYPE_ALERT,
     createdAt: options.createdAt ?? new Date().toISOString(),
+    text,
     data: {
       text,
       boardUrl,
@@ -253,6 +256,7 @@ export function serializeWebhookPayload(payload: WebhookPayload): string {
     id: payload.id,
     type: payload.type,
     createdAt: payload.createdAt,
+    text: payload.text,
     data: {
       text: payload.data.text,
       boardUrl: payload.data.boardUrl,

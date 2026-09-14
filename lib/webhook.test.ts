@@ -69,6 +69,7 @@ test("payload is one batched object with text plus service fields", () => {
   assert.equal(payload.id, "evt_test")
   assert.equal(payload.type, WEBHOOK_EVENT_TYPE_ALERT)
   assert.equal(payload.createdAt, "2026-09-11T18:01:00.000Z")
+  assert.equal(payload.text, payload.data.text)
   assert.doesNotMatch(payload.data.text, /^Statussy:/)
   assert.doesNotMatch(payload.data.text, /\u2014/)
   assert.equal(payload.data.services.length, 2)
@@ -152,6 +153,7 @@ test("Send test uses the same payload layout as a live batch", () => {
   assert.equal(payload.type, WEBHOOK_EVENT_TYPE_TEST)
   assert.match(payload.id, /^evt_[0-9a-f]{32}$/)
   assert.equal(payload.createdAt, checkedAt)
+  assert.equal(payload.text, webhookTextSummary(services))
   assert.equal(payload.data.text, webhookTextSummary(services))
   assert.equal(
     payload.data.text,
@@ -197,7 +199,8 @@ test("serialized payload is an event envelope for every destination", () => {
   assert.equal(body.id, "evt_fixed")
   assert.equal(body.type, WEBHOOK_EVENT_TYPE_ALERT)
   assert.equal(body.createdAt, "2026-09-11T18:00:00.000Z")
-  assert.equal(body.text, undefined)
+  assert.equal(body.text, payload.text)
+  assert.equal(body.text, payload.data.text)
   assert.equal(body.boardUrl, undefined)
   assert.equal(body.services, undefined)
   assert.equal(body.attachments, undefined)
@@ -205,6 +208,21 @@ test("serialized payload is an event envelope for every destination", () => {
   assert.equal(body.data?.text, payload.data.text)
   assert.equal(body.data?.boardUrl, payload.data.boardUrl)
   assert.equal(Array.isArray(body.data?.services), true)
+})
+
+test("serialized body has top-level text so Incoming Webhooks do not return no_text", () => {
+  const body = JSON.parse(
+    serializeWebhookPayload(
+      buildWebhookPayload(
+        testWebhookServices(
+          "https://www.statussy.com",
+          "2026-09-11T18:00:00.000Z"
+        )
+      )
+    )
+  ) as { text?: unknown }
+  assert.equal(typeof body.text, "string")
+  assert.notEqual(body.text, "")
 })
 
 test("HMAC header is sha256 of the exact serialized body", () => {
