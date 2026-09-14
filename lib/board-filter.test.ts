@@ -90,11 +90,7 @@ test("search intersects with the active category", () => {
 })
 
 test("filterServicesByName is category-free (My Stack search)", () => {
-  const pinned = [
-    { name: "OpenAI" },
-    { name: "Anthropic" },
-    { name: "Vercel" },
-  ]
+  const pinned = [{ name: "OpenAI" }, { name: "Anthropic" }, { name: "Vercel" }]
   assert.deepEqual(
     filterServicesByName(pinned, "  OPEN  ").map((item) => item.name),
     ["OpenAI"]
