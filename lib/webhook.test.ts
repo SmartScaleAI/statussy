@@ -89,7 +89,7 @@ test("payload is one batched object with text plus service fields", () => {
   assert.equal(payload.data.boardUrl, "https://www.statussy.com")
 })
 
-test("text summary puts each service on its own line", () => {
+test("text summary is a one-line list of provider names", () => {
   assert.equal(
     webhookTextSummary([
       {
@@ -104,11 +104,8 @@ test("text summary puts each service on its own line", () => {
         incidentUrl: null,
       },
     ]),
-    "OpenAI (Major outage)"
+    "OpenAI"
   )
-})
-
-test("text summary puts the active incident on the line below the service", () => {
   assert.equal(
     webhookTextSummary([
       {
@@ -134,7 +131,7 @@ test("text summary puts the active incident on the line below the service", () =
         incidentUrl: null,
       },
     ]),
-    "OpenAI (Major outage)\nAPI elevated errors\nAnthropic (Partial outage)"
+    "OpenAI, Anthropic"
   )
 })
 
@@ -157,7 +154,7 @@ test("Send test uses the same payload layout as a live batch", () => {
   assert.equal(payload.data.text, webhookTextSummary(services))
   assert.equal(
     payload.data.text,
-    "OpenAI (Major outage)\nAPI elevated errors\nAnthropic (Partial outage)"
+    "OpenAI, Anthropic"
   )
   assert.equal(payload.data.services.length, 2)
   assert.equal(payload.data.services[0]?.serviceId, "openai")

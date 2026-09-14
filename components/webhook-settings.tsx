@@ -255,10 +255,11 @@ export function WebhookSettings({
               <li>
                 The body is the same JSON for every destination: an event
                 envelope with id, type, createdAt, text, and data. text is a
-                plain summary so Incoming Webhooks can render the POST. data
-                repeats that summary plus a boardUrl and a services array with
-                ids, names, statuses, incidents, and links. Send test uses type
-                webhook.test. Live alerts use type stack.alert.
+                one-line list of provider names so Incoming Webhooks can render
+                the POST. data repeats that summary plus a boardUrl and a
+                services array with ids, names, statuses, incidents, and links.
+                Send test uses type webhook.test. Live alerts use type
+                stack.alert.
               </li>
               <li>
                 Statussy generates a signing secret and adds an
