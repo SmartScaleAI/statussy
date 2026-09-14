@@ -10,6 +10,8 @@ import {
 } from "@/app/actions/account"
 import { getMyDigestPrefs, setMyDigestNotify } from "@/app/actions/digest-prefs"
 import { getMyWebhookPrefs } from "@/app/actions/webhook-prefs"
+import { BackToBoard } from "@/components/board-back-link"
+import { BrandLoader } from "@/components/brand-loader"
 import { WebhookSettings } from "@/components/webhook-settings"
 import {
   AlertDialog,
@@ -181,9 +183,10 @@ export function SettingsForm() {
   if (!showAccount || !snapshot) {
     const waiting = sessionPending || hasUser
     return (
-      <p className="text-sm text-muted-foreground" role="status">
-        {waiting ? "Loading account…" : "Redirecting to sign in…"}
-      </p>
+      <BrandLoader
+        className="min-h-0 w-full flex-1 items-center"
+        label={waiting ? "Loading account" : "Redirecting to sign in"}
+      />
     )
   }
 
@@ -282,7 +285,26 @@ export function SettingsForm() {
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-8 py-8 sm:py-12 [&_[data-slot=card]]:bg-[var(--bg-footer)]">
+      <header className="flex flex-col gap-4">
+        {/* SMA-116 / SMA-117: same compact Back chiclet as service
+            detail (always `/`). self-start so the column flex does not
+            stretch it into a full-width bar; gap-4 keeps the Settings
+            title from sitting flush on the chip. */}
+        <div className="self-start">
+          <BackToBoard />
+        </div>
+        <div className="flex flex-col gap-2">
+          <h1 className="font-heading text-2xl font-semibold tracking-tight text-foreground">
+            Settings
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            Your email, My Stack email and webhook alerts, connected accounts,
+            and account deletion.
+          </p>
+        </div>
+      </header>
+      <div className="flex flex-col gap-6">
       <Card>
         <CardHeader>
           <CardTitle>Account</CardTitle>
@@ -489,6 +511,7 @@ export function SettingsForm() {
           </AlertDialog>
         </CardContent>
       </Card>
+      </div>
     </div>
   )
 }
