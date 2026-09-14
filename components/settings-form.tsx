@@ -294,15 +294,9 @@ export function SettingsForm() {
         <div className="self-start">
           <BackToBoard />
         </div>
-        <div className="flex flex-col gap-2">
-          <h1 className="font-heading text-2xl font-semibold tracking-tight text-foreground">
-            Settings
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Your email, My Stack email and webhook alerts, connected accounts,
-            and account deletion.
-          </p>
-        </div>
+        <h1 className="font-heading text-2xl font-semibold tracking-tight text-foreground">
+          Settings
+        </h1>
       </header>
       <div className="flex flex-col gap-6">
       <Card>
