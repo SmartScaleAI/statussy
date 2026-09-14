@@ -255,10 +255,10 @@ export function WebhookSettings({
               <li>
                 The body is the same JSON for every destination: an event
                 envelope with id, type, createdAt, text, and data. text is a
-                one-line list of provider names so Incoming Webhooks can render
-                the POST. data repeats that summary plus a boardUrl and a
-                services array with ids, names, statuses, incidents, and links.
-                Send test uses type webhook.test. Live alerts use type
+                one-line list of providers with outage type so Incoming Webhooks
+                can render the POST. data repeats that summary plus a boardUrl
+                and a services array with ids, names, statuses, incidents, and
+                links. Send test uses type webhook.test. Live alerts use type
                 stack.alert.
               </li>
               <li>

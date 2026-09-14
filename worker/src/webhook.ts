@@ -30,6 +30,15 @@ export const WEBHOOK_DISABLED_REASON_FAILURES = "hard_failures"
 export const WEBHOOK_EVENT_TYPE_ALERT = "stack.alert"
 export const WEBHOOK_EVENT_TYPE_TEST = "webhook.test"
 
+export const WEBHOOK_STATUS_LABEL: Record<ServiceStatus, string> = {
+  operational: "Live",
+  degraded: "Degraded",
+  partial_outage: "Partial outage",
+  major_outage: "Major outage",
+  maintenance: "Maintenance",
+  unknown: "Unknown",
+}
+
 export type WebhookServiceAlert = {
   serviceId: string
   name: string
@@ -43,8 +52,7 @@ export type WebhookServiceAlert = {
 }
 
 export type WebhookEventType =
-  | typeof WEBHOOK_EVENT_TYPE_ALERT
-  | typeof WEBHOOK_EVENT_TYPE_TEST
+  typeof WEBHOOK_EVENT_TYPE_ALERT | typeof WEBHOOK_EVENT_TYPE_TEST
 
 export type WebhookPayloadData = {
   text: string
@@ -68,12 +76,10 @@ export type WebhookPayloadOptions = {
 }
 
 export type WebhookUrlResult =
-  | { ok: true; url: string }
-  | { ok: false; error: string }
+  { ok: true; url: string } | { ok: false; error: string }
 
 export type WebhookDeliveryResult =
-  | { ok: true; status: number }
-  | { ok: false; error: string; status?: number }
+  { ok: true; status: number } | { ok: false; error: string; status?: number }
 
 const BLOCKED_HOSTS = new Set([
   "localhost",
@@ -159,10 +165,14 @@ export function safeOfficialStatusUrl(
   }
 }
 
+export function webhookServiceLine(item: WebhookServiceAlert): string {
+  return `${item.name} (${WEBHOOK_STATUS_LABEL[item.toStatus]})`
+}
+
 export function webhookTextSummary(
   services: readonly WebhookServiceAlert[]
 ): string {
-  return services.map((item) => item.name).join(", ")
+  return services.map((item) => webhookServiceLine(item)).join(", ")
 }
 
 export function buildWebhookServices(
@@ -308,7 +318,10 @@ export async function deliverWebhook(input: {
       lastError = snippet
         ? `HTTP ${response.status}: ${snippet}`
         : `HTTP ${response.status}`
-      if (!isRetryableWebhookStatus(response.status) || attempt === maxAttempts) {
+      if (
+        !isRetryableWebhookStatus(response.status) ||
+        attempt === maxAttempts
+      ) {
         return { ok: false, error: lastError, status: response.status }
       }
     } catch (err) {

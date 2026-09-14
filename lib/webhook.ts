@@ -13,6 +13,15 @@ export const WEBHOOK_DISABLED_REASON_FAILURES = "hard_failures"
 export const WEBHOOK_EVENT_TYPE_ALERT = "stack.alert"
 export const WEBHOOK_EVENT_TYPE_TEST = "webhook.test"
 
+export const STATUS_LABEL: Record<string, string> = {
+  operational: "Live",
+  degraded: "Degraded",
+  partial_outage: "Partial outage",
+  major_outage: "Major outage",
+  maintenance: "Maintenance",
+  unknown: "Unknown",
+}
+
 export type WebhookServiceAlert = {
   serviceId: string
   name: string
@@ -26,8 +35,7 @@ export type WebhookServiceAlert = {
 }
 
 export type WebhookEventType =
-  | typeof WEBHOOK_EVENT_TYPE_ALERT
-  | typeof WEBHOOK_EVENT_TYPE_TEST
+  typeof WEBHOOK_EVENT_TYPE_ALERT | typeof WEBHOOK_EVENT_TYPE_TEST
 
 export type WebhookPayloadData = {
   text: string
@@ -159,10 +167,18 @@ export function safeOfficialStatusUrl(
   }
 }
 
+export function statusLabel(status: string): string {
+  return STATUS_LABEL[status] ?? status
+}
+
+export function webhookServiceLine(item: WebhookServiceAlert): string {
+  return `${item.name} (${statusLabel(item.toStatus)})`
+}
+
 export function webhookTextSummary(
   services: readonly WebhookServiceAlert[]
 ): string {
-  return services.map((item) => item.name).join(", ")
+  return services.map((item) => webhookServiceLine(item)).join(", ")
 }
 
 export function buildWebhookServices(

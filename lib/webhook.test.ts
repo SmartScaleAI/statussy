@@ -89,7 +89,7 @@ test("payload is one batched object with text plus service fields", () => {
   assert.equal(payload.data.boardUrl, "https://www.statussy.com")
 })
 
-test("text summary is a one-line list of provider names", () => {
+test("text summary is a one-line list of providers with outage type", () => {
   assert.equal(
     webhookTextSummary([
       {
@@ -104,7 +104,7 @@ test("text summary is a one-line list of provider names", () => {
         incidentUrl: null,
       },
     ]),
-    "OpenAI"
+    "OpenAI (Major outage)"
   )
   assert.equal(
     webhookTextSummary([
@@ -131,7 +131,7 @@ test("text summary is a one-line list of provider names", () => {
         incidentUrl: null,
       },
     ]),
-    "OpenAI, Anthropic"
+    "OpenAI (Major outage), Anthropic (Partial outage)"
   )
 })
 
@@ -154,7 +154,7 @@ test("Send test uses the same payload layout as a live batch", () => {
   assert.equal(payload.data.text, webhookTextSummary(services))
   assert.equal(
     payload.data.text,
-    "OpenAI, Anthropic"
+    "OpenAI (Major outage), Anthropic (Partial outage)"
   )
   assert.equal(payload.data.services.length, 2)
   assert.equal(payload.data.services[0]?.serviceId, "openai")
@@ -168,10 +168,7 @@ test("Send test uses the same payload layout as a live batch", () => {
 
 test("serialized payload is an event envelope for every destination", () => {
   const payload = buildWebhookPayload(
-    testWebhookServices(
-      "https://www.statussy.com",
-      "2026-09-11T18:00:00.000Z"
-    ),
+    testWebhookServices("https://www.statussy.com", "2026-09-11T18:00:00.000Z"),
     "https://www.statussy.com",
     {
       id: "evt_fixed",

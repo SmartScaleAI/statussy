@@ -45,12 +45,15 @@ test("batched payload includes required service fields and text", () => {
   })
   assert.equal(payload.id, "evt_test")
   assert.equal(payload.type, WEBHOOK_EVENT_TYPE_ALERT)
-  assert.equal(payload.text, "OpenAI")
-  assert.equal(payload.data.text, "OpenAI")
+  assert.equal(payload.text, "OpenAI (Major outage)")
+  assert.equal(payload.data.text, "OpenAI (Major outage)")
   assert.equal(payload.data.services[0]?.serviceId, "openai")
   assert.equal(payload.data.services[0]?.fromStatus, "operational")
   assert.equal(payload.data.services[0]?.toStatus, "major_outage")
-  assert.equal(payload.data.services[0]?.officialStatusUrl, "https://status.openai.com/")
+  assert.equal(
+    payload.data.services[0]?.officialStatusUrl,
+    "https://status.openai.com/"
+  )
   assert.equal(payload.data.services[0]?.incidentTitle, null)
   assert.equal(
     payload.data.services[0]?.statussyUrl,
@@ -72,7 +75,7 @@ test("batched payload includes required service fields and text", () => {
   assert.equal(Array.isArray(body.data?.services), true)
 })
 
-test("text lists provider names on one line; incidents stay in services", () => {
+test("text lists providers with outage type on one line; incidents stay in services", () => {
   const payload = buildWebhookPayload(
     buildWebhookServices(
       [
@@ -97,8 +100,10 @@ test("text lists provider names on one line; incidents stay in services", () => 
   )
   assert.equal(
     payload.data.text,
-    "OpenAI, Anthropic"
+    "OpenAI (Major outage), Anthropic (Partial outage)"
   )
+  assert.equal(payload.text, payload.data.text)
+  assert.doesNotMatch(payload.data.text, /API elevated errors/)
   assert.equal(payload.data.services[0]?.incidentTitle, "API elevated errors")
   assert.equal(
     payload.data.services[0]?.incidentUrl,
