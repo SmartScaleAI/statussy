@@ -1,36 +1,38 @@
 "use client"
 
+import Link from "next/link"
 import { useEffect, useState } from "react"
 import { XIcon } from "lucide-react"
 
 import {
   dismissDigestBanner,
-  enableMyDigest,
   getMyDigestPrefs,
 } from "@/app/actions/digest-prefs"
 import { useAuth } from "@/components/auth-provider"
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import {
+  ALERTS_BANNER_BODY,
+  ALERTS_BANNER_CTA,
+  ALERTS_BANNER_HREF,
   DEFAULT_DIGEST_PREFS,
-  OPT_IN_DIGEST_PREFS,
   persistLocalBannerDismissed,
   pickDigestPrefs,
   readLocalBannerDismissed,
   shouldShowDigestBanner,
   type UserDigestPrefs,
 } from "@/lib/digest-banner"
+import { cn } from "@/lib/utils"
 
 /**
- * Top-of-board opt-in (SMA-115 / SMA-118). Signed-out CTA opens the login
- * dialog. Signed-in CTA enables master + Major (Partial stays off). X
- * persists dismiss until they opt in from Settings.
+ * Top-of-board alerts promo (SMA-115 / SMA-118 / SMA-142). CTA deep-links
+ * to Settings alerts. X persists dismiss until they opt in from Settings.
  */
 export function EmailAlertsBanner() {
-  const { isPending, isSignedIn, openLogin } = useAuth()
+  const { isPending, isSignedIn } = useAuth()
   const [prefs, setPrefs] = useState<UserDigestPrefs | null>(null)
   const [localDismissed, setLocalDismissed] = useState(false)
   const [storageReady, setStorageReady] = useState(false)
-  const [pending, setPending] = useState<"enable" | "dismiss" | null>(null)
+  const [pending, setPending] = useState(false)
 
   useEffect(() => {
     setLocalDismissed(readLocalBannerDismissed())
@@ -80,8 +82,6 @@ export function EmailAlertsBanner() {
     authPending: isPending,
     signedIn: isSignedIn,
     emailEnabled: prefs?.emailEnabled ?? DEFAULT_DIGEST_PREFS.emailEnabled,
-    bannerDismissed:
-      prefs?.bannerDismissed ?? DEFAULT_DIGEST_PREFS.bannerDismissed,
     prefsReady: prefs != null,
     localDismissed,
     storageReady,
@@ -91,21 +91,6 @@ export function EmailAlertsBanner() {
     return null
   }
 
-  async function onEnable() {
-    const previous = prefs ?? DEFAULT_DIGEST_PREFS
-    setPending("enable")
-    setPrefs(OPT_IN_DIGEST_PREFS)
-    const result = await enableMyDigest()
-    setPending(null)
-    if (!result.signedIn) {
-      setPrefs(previous)
-      return
-    }
-    persistLocalBannerDismissed(true)
-    setLocalDismissed(true)
-    setPrefs(pickDigestPrefs(result))
-  }
-
   async function onDismiss() {
     persistLocalBannerDismissed(true)
     setLocalDismissed(true)
@@ -113,10 +98,10 @@ export function EmailAlertsBanner() {
       return
     }
     const previous = prefs ?? DEFAULT_DIGEST_PREFS
-    setPending("dismiss")
+    setPending(true)
     setPrefs({ ...previous, bannerDismissed: true })
     const result = await dismissDigestBanner()
-    setPending(null)
+    setPending(false)
     if (!result.signedIn) {
       setPrefs(previous)
       return
@@ -128,7 +113,7 @@ export function EmailAlertsBanner() {
     <div
       className="flex gap-3 rounded-xl bg-card px-4 py-3 text-card-foreground ring-1 ring-foreground/10"
       role="region"
-      aria-label="Email alerts"
+      aria-label="My Stack alerts"
     >
       {/* Light: black mark. Dark: white-on-black tile. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -150,37 +135,22 @@ export function EmailAlertsBanner() {
       <div className="flex min-w-0 flex-1 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">
           <p className="font-heading text-sm font-medium">
-            Email alerts for My Stack
-          </p>
-          <p className="text-sm text-muted-foreground">
-            One email when a starred service newly hits a major outage. Partial
-            stays off until you turn it on in Settings. Recoveries are not
-            emailed yet.
+            {ALERTS_BANNER_BODY}
           </p>
         </div>
         <div className="flex shrink-0 items-center gap-2">
-          {isSignedIn ? (
-            <Button
-              type="button"
-              size="sm"
-              disabled={pending !== null}
-              onClick={() => {
-                void onEnable()
-              }}
-            >
-              {pending === "enable" ? "Enabling…" : "Enable email alerts"}
-            </Button>
-          ) : (
-            <Button type="button" size="sm" onClick={() => openLogin("alerts")}>
-              Sign in to enable email alerts
-            </Button>
-          )}
+          <Link
+            href={ALERTS_BANNER_HREF}
+            className={cn(buttonVariants({ size: "sm" }))}
+          >
+            {ALERTS_BANNER_CTA}
+          </Link>
           <Button
             type="button"
             variant="ghost"
             size="icon-sm"
-            disabled={pending !== null}
-            aria-label="Dismiss email alerts banner"
+            disabled={pending}
+            aria-label="Dismiss alerts banner"
             onClick={() => {
               void onDismiss()
             }}
