@@ -10,9 +10,11 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useAuth } from "@/components/auth-provider"
+import { ModeToggle, ThemeMenuSub } from "@/components/mode-toggle"
 import { authClient } from "@/lib/auth-client"
 import { signOutAndInvalidateViews } from "@/lib/client-sign-out"
 import { emailAvatarLetter } from "@/lib/sign-in-methods"
@@ -24,20 +26,28 @@ export function AuthHeaderControl() {
   const pathname = usePathname()
 
   if (isPending) {
-    return <div className="size-10" aria-hidden="true" />
+    return (
+      <>
+        <ModeToggle />
+        <div className="size-10" aria-hidden="true" />
+      </>
+    )
   }
 
   if (!isSignedIn || !session?.user) {
     return (
-      <Button
-        type="button"
-        variant="default"
-        aria-label="Sign In"
-        className="h-10"
-        onClick={() => openLogin("login")}
-      >
-        Sign In
-      </Button>
+      <>
+        <ModeToggle />
+        <Button
+          type="button"
+          variant="default"
+          aria-label="Sign In"
+          className="h-10"
+          onClick={() => openLogin("login")}
+        >
+          Sign In
+        </Button>
+      </>
     )
   }
 
@@ -64,11 +74,15 @@ export function AuthHeaderControl() {
           <AvatarFallback>{letter}</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="min-w-40">
+      <DropdownMenuContent align="end" className="min-w-44">
         <DropdownMenuGroup>
           <DropdownMenuItem render={<Link href="/settings" />}>
             Settings
           </DropdownMenuItem>
+          <ThemeMenuSub />
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
           <DropdownMenuItem
             onClick={() => {
               void (async () => {

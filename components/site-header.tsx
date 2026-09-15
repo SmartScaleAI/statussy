@@ -2,12 +2,12 @@ import Link from "next/link"
 
 import { AuthHeaderControl } from "@/components/auth-header-control"
 import { BetaBanner } from "@/components/beta-banner"
-import { ModeToggle } from "@/components/mode-toggle"
 
 /**
- * Shared page chrome: brand mark (links home) + theme toggle + auth.
- * Signed-in chrome is avatar-only (SMA-108). Sign In sits immediately
- * right of the theme toggle (SMA-103 / SMA-106). The board freshness
+ * Shared page chrome: brand mark (links home) + auth / theme.
+ * Signed-in chrome is avatar-only (SMA-108); Theme lives in the profile
+ * menu (Light / Dark / System). Signed-out keeps the header theme toggle
+ * immediately left of Sign In (SMA-103 / SMA-106). The board freshness
  * stamp lives with the All Services summary (SMA-83). SMA-126: dismissible
  * beta banner sits above the header (not sticky) so the Report rail
  * `top-4` stickiness is unchanged.
@@ -41,7 +41,6 @@ export function SiteHeader() {
           Statussy
         </Link>
         <div className="flex items-center gap-2">
-          <ModeToggle />
           <AuthHeaderControl />
         </div>
       </header>
