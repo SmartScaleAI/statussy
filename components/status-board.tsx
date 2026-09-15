@@ -42,7 +42,10 @@ export async function StatusBoard() {
             favorites. */}
         <BoardPanes
           stack={
-            <MyServices items={items.map((item) => toSortFields(item))}>
+            <MyServices
+              items={items.map((item) => toSortFields(item))}
+              refreshedAt={refreshedAt}
+            >
               {items.map((service) => (
                 <ServiceCard key={service.id} service={service} />
               ))}
@@ -51,9 +54,17 @@ export async function StatusBoard() {
           all={
             <Suspense
               fallback={
-                <p className="text-sm text-muted-foreground" role="status">
-                  Loading services…
-                </p>
+                <div className="flex flex-col gap-3">
+                  <h2
+                    id="all-services-heading"
+                    className="font-heading text-lg font-semibold tracking-tight text-foreground md:text-xl"
+                  >
+                    All Services
+                  </h2>
+                  <p className="text-sm text-muted-foreground" role="status">
+                    Loading services…
+                  </p>
+                </div>
               }
             >
               <StatusBoardGrid

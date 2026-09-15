@@ -49,22 +49,32 @@ export function formatCategoryLabel(category: string): string {
 }
 
 /**
+ * Case-insensitive name substring. Empty/whitespace query keeps the list.
+ * Shared by All Services (after category) and My Stack (favorites only).
+ */
+export function filterServicesByName<T extends { name: string }>(
+  items: readonly T[],
+  query: string
+): T[] {
+  const needle = query.trim().toLowerCase()
+  if (!needle) {
+    return [...items]
+  }
+  return items.filter((item) => item.name.toLowerCase().includes(needle))
+}
+
+/**
  * Board visibility: search query ∧ category.
  * All = every service; a category chiclet matches `item.category`.
  */
 export function filterBoardServices<
   T extends { name: string; category: string },
 >(items: T[], query: string, category: string): T[] {
-  const needle = query.trim().toLowerCase()
-  return items.filter((item) => {
-    if (category !== ALL_CATEGORY && item.category !== category) {
-      return false
-    }
-    if (needle && !item.name.toLowerCase().includes(needle)) {
-      return false
-    }
-    return true
-  })
+  const scoped =
+    category === ALL_CATEGORY
+      ? items
+      : items.filter((item) => item.category === category)
+  return filterServicesByName(scoped, query)
 }
 
 /** Metrics for the currently visible All Services set (search ∧ category). */
