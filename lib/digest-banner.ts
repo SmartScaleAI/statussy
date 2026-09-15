@@ -1,8 +1,9 @@
 /**
- * Top-of-board email opt-in banner visibility (SMA-115 / SMA-118).
- * Signed-out users see it (CTA → login). Signed-in users see it until
- * they enable alerts or dismiss. Not gated on first favorite.
- * This module is client-safe — no Postgres imports.
+ * Top-of-board alerts promo banner (SMA-115 / SMA-118 / SMA-142).
+ * Signed-out users see it (CTA → Settings alerts, which gates on sign-in).
+ * Signed-in users see it until they enable email alerts or dismiss.
+ * Not gated on first favorite.
+ * This module is client-safe. No Postgres imports.
  */
 
 export type UserDigestPrefs = {
@@ -35,9 +36,20 @@ export const OPT_IN_DIGEST_PREFS: UserDigestPrefs = {
   bannerDismissed: true,
 }
 
-/** localStorage key for signed-out (and cross-session) dismiss. */
-export const DIGEST_BANNER_DISMISS_KEY =
-  "statussy.email-alerts-banner-dismissed"
+/** Locked copy (SMA-142). No em dashes. Channel-agnostic (not Slack-only). */
+export const ALERTS_BANNER_BODY =
+  "Get alerts when tools in My Stack go down. Email or webhook."
+export const ALERTS_BANNER_CTA = "Set up alerts"
+export const ALERTS_BANNER_HASH_ID = "alerts"
+export const ALERTS_BANNER_HREF = `/settings#${ALERTS_BANNER_HASH_ID}`
+
+/**
+ * localStorage dismiss key. SMA-142 bumped this off
+ * `statussy.email-alerts-banner-dismissed` so a prior email-only dismiss
+ * does not hide this update. Signed-in `bannerDismissed` in prefs is the
+ * previous generation and is not used for visibility.
+ */
+export const DIGEST_BANNER_DISMISS_KEY = "statussy.alerts-banner-dismissed"
 
 export function readLocalBannerDismissed(): boolean {
   if (typeof window === "undefined") {
@@ -61,7 +73,7 @@ export function persistLocalBannerDismissed(dismissed: boolean): void {
       window.localStorage.removeItem(DIGEST_BANNER_DISMISS_KEY)
     }
   } catch {
-    // Private mode / blocked storage — in-memory flag still hides this visit.
+    // Private mode / blocked storage: in-memory flag still hides this visit.
   }
 }
 
@@ -109,7 +121,6 @@ export type DigestBannerState = {
   authPending: boolean
   signedIn: boolean
   emailEnabled: boolean
-  bannerDismissed: boolean
   prefsReady: boolean
   localDismissed: boolean
   storageReady: boolean
@@ -122,10 +133,5 @@ export function shouldShowDigestBanner(state: DigestBannerState): boolean {
   if (!state.signedIn) {
     return state.storageReady && !state.localDismissed
   }
-  return (
-    state.prefsReady &&
-    !state.emailEnabled &&
-    !state.bannerDismissed &&
-    !state.localDismissed
-  )
+  return state.prefsReady && !state.emailEnabled && !state.localDismissed
 }

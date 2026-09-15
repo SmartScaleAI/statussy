@@ -52,6 +52,7 @@ import {
   type SocialProvider,
 } from "@/lib/sign-in-methods"
 import {
+  ALERTS_BANNER_HASH_ID,
   DEFAULT_DIGEST_PREFS,
   persistLocalBannerDismissed,
   pickDigestPrefs,
@@ -178,6 +179,16 @@ export function SettingsForm() {
       cancelled = true
     }
   }, [hasUser, pathname, router, sessionPending])
+
+  useEffect(() => {
+    if (!showAccount || !snapshot) {
+      return
+    }
+    if (window.location.hash !== `#${ALERTS_BANNER_HASH_ID}`) {
+      return
+    }
+    document.getElementById(ALERTS_BANNER_HASH_ID)?.scrollIntoView()
+  }, [showAccount, snapshot])
 
   if (!showAccount || !snapshot) {
     const waiting = sessionPending || hasUser
@@ -318,6 +329,7 @@ export function SettingsForm() {
         </CardContent>
       </Card>
 
+      <div id={ALERTS_BANNER_HASH_ID} className="flex flex-col gap-6">
       <Card>
         <CardHeader>
           <CardTitle>Email alerts</CardTitle>
@@ -375,6 +387,7 @@ export function SettingsForm() {
           router.push(`/?${SIGN_IN_QUERY}=1`)
         }}
       />
+      </div>
 
       <Card>
         <CardHeader>
