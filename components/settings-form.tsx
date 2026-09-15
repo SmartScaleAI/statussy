@@ -24,7 +24,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -397,12 +396,7 @@ export function SettingsForm() {
                 >
                   <div className="flex min-w-0 items-center gap-3">
                     <Mark className="size-5 shrink-0" />
-                    <div className="flex min-w-0 flex-col gap-1">
-                      <span className="text-sm font-medium">{label}</span>
-                      <Badge variant={connected ? "secondary" : "outline"}>
-                        {connected ? "Connected" : "Not connected"}
-                      </Badge>
-                    </div>
+                    <span className="text-sm font-medium">{label}</span>
                   </div>
                   <div className="flex flex-col items-start gap-2 sm:items-end">
                     {connected ? (
