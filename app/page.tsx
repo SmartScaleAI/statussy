@@ -8,11 +8,11 @@ import { SiteHeader } from "@/components/site-header"
 import { StatusBoard } from "@/components/status-board"
 
 /**
- * ISR (SMA-97): serve the board from the Vercel/Next page cache and
- * re-render at most every 60s. Data only changes on the worker's 5m tick,
- * so a ≤60s-old view stays well inside the freshness floor, and repeated
- * hits (incl. bots) stop costing an invocation + a Postgres round trip each.
- * Must stay a literal — Next requires this to be statically analyzable.
+ * Board snapshots stay on a 60s cadence (SMA-97 / getStatusBoard).
+ * The selected tab is request-specific (SMA-143): StatusBoard reads the
+ * session and `statussy:boardTab` cookie so first HTML is already My Stack
+ * when the signed-in user has favorites. Must stay a literal — Next
+ * requires `revalidate` to be statically analyzable.
  */
 export const revalidate = 60
 
