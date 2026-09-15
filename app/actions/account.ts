@@ -1,12 +1,13 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
-import { headers } from "next/headers"
+import { cookies, headers } from "next/headers"
 import { unstable_rethrow } from "next/navigation"
 
 import { auth } from "@/lib/auth"
-import { getAuthSession } from "@/lib/auth-session"
 import { listLinkedAccounts } from "@/lib/auth-accounts"
+import { getAuthSession } from "@/lib/auth-session"
+import { BOARD_TAB_KEY } from "@/lib/board-tab"
 import {
   canUnlinkSocialProvider,
   isSocialProvider,
@@ -48,6 +49,11 @@ export async function getMyAccountSnapshot(): Promise<AccountSnapshotResult> {
 
 /** Drop cached /settings (and layout) after sign-out or account deletion. */
 export async function invalidateAuthViews(): Promise<void> {
+  try {
+    ;(await cookies()).delete(BOARD_TAB_KEY)
+  } catch (err) {
+    console.error("[statussy] clear board-tab cookie failed", err)
+  }
   revalidatePath("/settings")
   revalidatePath("/", "layout")
 }

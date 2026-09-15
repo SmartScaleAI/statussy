@@ -11,10 +11,11 @@ import {
   type ReactNode,
 } from "react"
 
-import { BrandLoader } from "@/components/brand-loader"
 import { useFavoriteServices } from "@/components/favorite-services"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
+  DEFAULT_BOARD_TAB,
+  clearStoredBoardTab,
   isBoardTab,
   readStoredBoardTab,
   resolveBoardTab,
@@ -40,18 +41,23 @@ export function useBoardTabActions() {
 export function BoardPanes({
   stack,
   all,
+  initialTab = DEFAULT_BOARD_TAB,
 }: {
   stack: ReactNode
   all: ReactNode
+  /** SSR first-paint tab (SMA-143). Hydration must match this value. */
+  initialTab?: BoardTab
 }) {
   const { signedIn, isLoading, favoriteIds } = useFavoriteServices()
   const favoriteCount = favoriteIds.length
-  const [tab, setTab] = useState<BoardTab>("all")
-  const [ready, setReady] = useState(false)
+  const [tab, setTab] = useState<BoardTab>(initialTab)
   const userChose = useRef(false)
   // Defaults apply once per signed-in session — starring the first
   // service from All Services must not yank the pane to My Stack.
   const didResolve = useRef(false)
+
+  // Signed-out first paint stays All Services without an effect setState.
+  const visibleTab = !isLoading && !signedIn ? DEFAULT_BOARD_TAB : tab
 
   useEffect(() => {
     if (isLoading) {
@@ -60,31 +66,44 @@ export function BoardPanes({
     if (!signedIn) {
       userChose.current = false
       didResolve.current = false
-      setTab("all")
-      setReady(true)
+      clearStoredBoardTab()
       return
     }
     if (userChose.current || didResolve.current) {
-      setReady(true)
       return
     }
     didResolve.current = true
-    setTab(
-      resolveBoardTab({
-        signedIn,
-        favoriteCount,
-        stored: readStoredBoardTab(),
+    const next = resolveBoardTab({
+      signedIn,
+      favoriteCount,
+      // Treat SSR My Stack as the stored default so a missing cookie
+      // does not flip away from first paint. Do not treat SSR All
+      // Services as a stored choice — that is the empty/signed-out
+      // default, not last-tab.
+      stored: readStoredBoardTab() ?? (initialTab === "stack" ? "stack" : null),
+    })
+    if (shouldPersistBoardTab({ signedIn, favoriteCount })) {
+      writeStoredBoardTab(next)
+    } else {
+      clearStoredBoardTab()
+    }
+    if (next !== tab) {
+      // localStorage / cookie last-tab after auth+favorites settle.
+      // First render already used initialTab so hydration matches SSR.
+      queueMicrotask(() => {
+        setTab(next)
       })
-    )
-    setReady(true)
-  }, [favoriteCount, isLoading, signedIn])
+    }
+  }, [favoriteCount, initialTab, isLoading, signedIn, tab])
 
   const selectTab = useCallback(
     (next: BoardTab, persistChoice: boolean) => {
+      userChose.current = true
       setTab(next)
-      setReady(true)
       if (persistChoice && shouldPersistBoardTab({ signedIn, favoriteCount })) {
         writeStoredBoardTab(next)
+      } else if (!shouldPersistBoardTab({ signedIn, favoriteCount })) {
+        clearStoredBoardTab()
       }
     },
     [favoriteCount, signedIn]
@@ -95,7 +114,6 @@ export function BoardPanes({
       if (!isBoardTab(next)) {
         return
       }
-      userChose.current = true
       selectTab(next, true)
     },
     [selectTab]
@@ -104,18 +122,19 @@ export function BoardPanes({
   const actions = useMemo<BoardTabActions>(
     () => ({
       showAllServices: () => {
-        userChose.current = true
         selectTab("all", true)
       },
     }),
     [selectTab]
   )
 
-  const showLoader = signedIn && (!ready || isLoading)
-
   return (
     <BoardTabActionsContext.Provider value={actions}>
-      <Tabs value={tab} onValueChange={onValueChange} className="w-full gap-8">
+      <Tabs
+        value={visibleTab}
+        onValueChange={onValueChange}
+        className="w-full gap-8"
+      >
         {/* SMA-136: default pill segment (rounded track + active outline).
             Track fill is the rail card surface (--bg-footer), same as
             Recently added / Report Suggest. Triggers stay content-width
@@ -131,19 +150,15 @@ export function BoardPanes({
             All Services
           </TabsTrigger>
         </TabsList>
-        {showLoader ? (
-          <BrandLoader className="pt-8 pb-10" label="Loading board" />
-        ) : (
-          <>
-            {/* keepMounted false: Option A — only one grid mounted. */}
-            <TabsContent value="stack" keepMounted={false}>
-              {stack}
-            </TabsContent>
-            <TabsContent value="all" keepMounted={false}>
-              {all}
-            </TabsContent>
-          </>
-        )}
+        {/* keepMounted false: Option A — only one grid mounted.
+            No board-level hold-with-loader (SMA-143): first HTML already
+            has the SSR tab; My Stack keeps its own favorites loader. */}
+        <TabsContent value="stack" keepMounted={false}>
+          {stack}
+        </TabsContent>
+        <TabsContent value="all" keepMounted={false}>
+          {all}
+        </TabsContent>
       </Tabs>
     </BoardTabActionsContext.Provider>
   )
