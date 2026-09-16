@@ -5,7 +5,7 @@ import { FavoriteServicesProvider } from "@/components/favorite-services"
 import { MyServices } from "@/components/my-services"
 import { ServiceCard } from "@/components/service-card"
 import { StatusBoardGrid } from "@/components/status-board-grid"
-import { getInitialBoardTab } from "@/lib/board-tab-server"
+import { DEFAULT_BOARD_TAB, type BoardTab } from "@/lib/board-tab"
 import { getStatusBoard } from "@/lib/status-board"
 import type { BoardStatus, ChickletDisplay } from "@/lib/status"
 
@@ -25,11 +25,12 @@ function toSortFields(item: {
   }
 }
 
-export async function StatusBoard() {
-  const [{ items, refreshedAt }, initialTab] = await Promise.all([
-    getStatusBoard(),
-    getInitialBoardTab(),
-  ])
+export async function StatusBoard({
+  initialTab = DEFAULT_BOARD_TAB,
+}: {
+  initialTab?: BoardTab
+} = {}) {
+  const { items, refreshedAt } = await getStatusBoard()
 
   return (
     <FavoriteServicesProvider>
@@ -39,13 +40,14 @@ export async function StatusBoard() {
             each card) reads the ?category= filter with useSearchParams
             (SMA-89), which the 60s-cached prerender cannot know — so that
             subtree client-renders up to this Suspense boundary (SMA-97).
-            Board snapshots stay on the 60s getStatusBoard cadence. The
-            selected tab is request-specific (SMA-143): session + favorite
-            count + statussy:boardTab cookie pick initialTab so first HTML
-            is already My Stack when appropriate. My Stack cards stay
-            client-side (SMA-104) so the payload never embeds a user's
-            stack. Last tab persists in localStorage and a mirroring cookie
-            when signed-in with favorites. */}
+            Board snapshots stay on the 60s getStatusBoard ISR cadence
+            (SMA-145): this component must not read cookies/session, or the
+            shared HTML cache is lost. initialTab comes from the route
+            (All Services on `/` and `/services`; My Stack on the internal
+            rewrite variant). My Stack cards stay client-side (SMA-104) so
+            the payload never embeds a user's stack. Last tab persists in
+            localStorage and a mirroring cookie when signed-in with
+            favorites. */}
         <BoardPanes
           initialTab={initialTab}
           stack={
