@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google"
 
 import { AuthProvider } from "@/components/auth-provider"
 import { ThemeProvider } from "@/components/theme-provider"
+import { AUTH_HEADER_HINT_SCRIPT } from "@/lib/auth-header-hint"
 import { SITE_DESCRIPTION, SITE_TITLE, SITE_URL } from "@/lib/site-metadata"
 import { cn } from "@/lib/utils"
 
@@ -92,6 +93,11 @@ export default function RootLayout({
         geist.variable
       )}
     >
+      <head>
+        {/* SMA-147: hint cookie → data-auth-hint before first paint. Static
+            script only — does not call cookies() or dynamize `/`. */}
+        <script dangerouslySetInnerHTML={{ __html: AUTH_HEADER_HINT_SCRIPT }} />
+      </head>
       <body className="min-h-svh bg-background text-foreground">
         <ThemeProvider>
           <AuthProvider>{children}</AuthProvider>

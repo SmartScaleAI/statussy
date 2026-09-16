@@ -8,8 +8,9 @@ import { DEFAULT_BOARD_TAB } from "@/lib/board-tab"
  * and re-render at most every 60s. The page must not read cookies(),
  * headers(), or the Better Auth session — that opts the shared snapshot
  * out of the cache. Signed-in My Stack first paint is a second ISR
- * variant selected by proxy.ts from cookies only. Must stay a literal —
- * Next requires `revalidate` to be statically analyzable.
+ * variant selected by proxy.ts from cookies only. Header Sign In vs
+ * avatar uses a JS hint cookie (SMA-147), not cookies() here. Must stay
+ * a literal — Next requires `revalidate` to be statically analyzable.
  */
 export const revalidate = 60
 
