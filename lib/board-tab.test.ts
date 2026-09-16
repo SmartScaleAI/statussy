@@ -2,12 +2,18 @@ import assert from "node:assert/strict"
 import { test } from "node:test"
 
 import {
+  BOARD_STACK_PATH,
+  BOARD_STACK_SERVICES_PATH,
   BOARD_TAB_KEY,
   DEFAULT_BOARD_TAB,
+  hasAuthSessionCookieNames,
+  isAuthSessionCookieName,
   isBoardTab,
   parseBoardTab,
   parseBoardTabCookieHeader,
+  resolveBoardProxyAction,
   resolveBoardTab,
+  resolveCookieBoardTab,
   resolveServerBoardTab,
   shouldPersistBoardTab,
 } from "./board-tab.ts"
@@ -118,6 +124,116 @@ test("SSR resolver uses stored tab, else My Stack, when signed-in with favorites
       stored: "all",
     }),
     "all"
+  )
+})
+
+test("cookie-only first paint ignores stored tab without a session cookie", () => {
+  assert.equal(
+    resolveCookieBoardTab({ hasSessionCookie: false, stored: "stack" }),
+    DEFAULT_BOARD_TAB
+  )
+  assert.equal(
+    resolveCookieBoardTab({ hasSessionCookie: false, stored: "all" }),
+    "all"
+  )
+  assert.equal(
+    resolveCookieBoardTab({ hasSessionCookie: true, stored: "stack" }),
+    "stack"
+  )
+  assert.equal(
+    resolveCookieBoardTab({ hasSessionCookie: true, stored: "all" }),
+    "all"
+  )
+  assert.equal(
+    resolveCookieBoardTab({ hasSessionCookie: true, stored: null }),
+    DEFAULT_BOARD_TAB
+  )
+})
+
+test("Better Auth session cookie names include Secure and chunk suffixes", () => {
+  assert.equal(isAuthSessionCookieName("better-auth.session_token"), true)
+  assert.equal(
+    isAuthSessionCookieName("__Secure-better-auth.session_token"),
+    true
+  )
+  assert.equal(isAuthSessionCookieName("better-auth.session_token.0"), true)
+  assert.equal(isAuthSessionCookieName("better-auth-session_token"), true)
+  assert.equal(isAuthSessionCookieName("statussy:boardTab"), false)
+  assert.equal(isAuthSessionCookieName("better-auth.session_data"), false)
+  assert.equal(
+    hasAuthSessionCookieNames(["theme", "__Secure-better-auth.session_token"]),
+    true
+  )
+  assert.equal(hasAuthSessionCookieNames(["statussy:boardTab"]), false)
+})
+
+test("proxy rewrites stack cookie + session onto the ISR variant", () => {
+  assert.deepEqual(
+    resolveBoardProxyAction({
+      pathname: "/",
+      hasSessionCookie: true,
+      stored: "stack",
+    }),
+    { type: "rewrite", pathname: BOARD_STACK_PATH }
+  )
+  assert.deepEqual(
+    resolveBoardProxyAction({
+      pathname: "/services",
+      hasSessionCookie: true,
+      stored: "stack",
+    }),
+    { type: "rewrite", pathname: BOARD_STACK_SERVICES_PATH }
+  )
+  assert.deepEqual(
+    resolveBoardProxyAction({
+      pathname: "/",
+      hasSessionCookie: true,
+      stored: "all",
+    }),
+    { type: "next" }
+  )
+  assert.deepEqual(
+    resolveBoardProxyAction({
+      pathname: "/",
+      hasSessionCookie: false,
+      stored: "stack",
+    }),
+    { type: "next" }
+  )
+  assert.deepEqual(
+    resolveBoardProxyAction({
+      pathname: "/",
+      hasSessionCookie: true,
+      stored: null,
+    }),
+    { type: "next" }
+  )
+})
+
+test("proxy redirects direct hits to the internal stack paths", () => {
+  assert.deepEqual(
+    resolveBoardProxyAction({
+      pathname: BOARD_STACK_PATH,
+      hasSessionCookie: true,
+      stored: "stack",
+    }),
+    { type: "redirect", pathname: "/" }
+  )
+  assert.deepEqual(
+    resolveBoardProxyAction({
+      pathname: `${BOARD_STACK_SERVICES_PATH}/`,
+      hasSessionCookie: false,
+      stored: null,
+    }),
+    { type: "redirect", pathname: "/services" }
+  )
+  assert.deepEqual(
+    resolveBoardProxyAction({
+      pathname: "/settings",
+      hasSessionCookie: true,
+      stored: "stack",
+    }),
+    { type: "next" }
   )
 })
 

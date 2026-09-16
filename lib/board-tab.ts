@@ -1,10 +1,11 @@
 /**
- * Homepage My Stack | All Services tab (SMA-133 / SMA-143).
+ * Homepage My Stack | All Services tab (SMA-133 / SMA-143 / SMA-145).
  *
  * Persistence is only for signed-in users with at least one favorite.
  * Signed-out and empty-stack visits always land on All Services.
- * Last tab is stored in localStorage and mirrored to a cookie so the
- * server can pick the first-paint tab on refresh.
+ * Last tab is stored in localStorage and mirrored to a cookie so proxy
+ * can pick a shared ISR HTML variant on refresh — no session/favorites
+ * DB on the board page.
  */
 
 export const BOARD_TAB_KEY = "statussy:boardTab"
@@ -17,6 +18,51 @@ export const DEFAULT_BOARD_TAB: BoardTab = "all"
 
 /** One year — last-tab cookie should survive across visits. */
 export const BOARD_TAB_COOKIE_MAX_AGE = 60 * 60 * 24 * 365
+
+/**
+ * Internal ISR HTML for My Stack first paint (SMA-145). Public `/` and
+ * `/services` stay on the All Services snapshot; proxy rewrites here when
+ * a session cookie and `statussy:boardTab=stack` are both present. Not
+ * linked; direct visits redirect back to the public URL.
+ */
+export const BOARD_STACK_PATH = "/internal/board-stack"
+
+export const BOARD_STACK_SERVICES_PATH = "/internal/board-stack/services"
+
+/**
+ * Better Auth session_token names (default prefix, hyphen fallback, Secure
+ * prefix, optional chunk suffix). Presence only — proxy never verifies.
+ */
+const AUTH_SESSION_COOKIE_RE =
+  /^(?:__Secure-|__Host-)?better-auth[.-]session_token(?:\.|$)/
+
+export function isAuthSessionCookieName(name: string): boolean {
+  return AUTH_SESSION_COOKIE_RE.test(name)
+}
+
+export function hasAuthSessionCookieNames(
+  names: readonly string[] | Iterable<{ name: string }>
+): boolean {
+  for (const entry of names) {
+    const name = typeof entry === "string" ? entry : entry.name
+    if (isAuthSessionCookieName(name)) {
+      return true
+    }
+  }
+  return false
+}
+
+export type BoardProxyAction =
+  | { type: "next" }
+  | { type: "rewrite"; pathname: string }
+  | { type: "redirect"; pathname: string }
+
+function normalizePathname(pathname: string): string {
+  if (pathname.length > 1 && pathname.endsWith("/")) {
+    return pathname.slice(0, -1)
+  }
+  return pathname
+}
 
 export function isBoardTab(value: unknown): value is BoardTab {
   return (
@@ -97,6 +143,56 @@ export function resolveServerBoardTab(input: {
     favoriteCount,
     stored: input.stored,
   })
+}
+
+/**
+ * Cookie-only first paint (SMA-145). No session/favorites DB: honor the
+ * stored tab only when a Better Auth session cookie is present. Missing
+ * cookie → All Services (client locked-default still moves signed-in
+ * stacks to My Stack after favorites settle).
+ */
+export function resolveCookieBoardTab(input: {
+  hasSessionCookie: boolean
+  stored: BoardTab | null
+}): BoardTab {
+  if (!input.hasSessionCookie) {
+    return DEFAULT_BOARD_TAB
+  }
+  return input.stored ?? DEFAULT_BOARD_TAB
+}
+
+/**
+ * Proxy routing for board ISR variants. Direct hits to the internal
+ * stack paths redirect to the public URL. Session + stack cookie rewrites
+ * `/` and `/services` onto those paths so first HTML is already My Stack.
+ */
+export function resolveBoardProxyAction(input: {
+  pathname: string
+  hasSessionCookie: boolean
+  stored: BoardTab | null
+}): BoardProxyAction {
+  const pathname = normalizePathname(input.pathname)
+  if (pathname === BOARD_STACK_PATH) {
+    return { type: "redirect", pathname: "/" }
+  }
+  if (pathname === BOARD_STACK_SERVICES_PATH) {
+    return { type: "redirect", pathname: "/services" }
+  }
+  if (pathname !== "/" && pathname !== "/services") {
+    return { type: "next" }
+  }
+  const tab = resolveCookieBoardTab({
+    hasSessionCookie: input.hasSessionCookie,
+    stored: input.stored,
+  })
+  if (tab !== "stack") {
+    return { type: "next" }
+  }
+  return {
+    type: "rewrite",
+    pathname:
+      pathname === "/services" ? BOARD_STACK_SERVICES_PATH : BOARD_STACK_PATH,
+  }
 }
 
 function readDocumentBoardTabCookie(): BoardTab | null {

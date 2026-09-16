@@ -1,7 +1,7 @@
 "use client"
 
 import { Suspense, useEffect } from "react"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 
 import { useAuth } from "@/components/auth-provider"
 import { SIGN_IN_QUERY } from "@/lib/auth-client"
@@ -14,7 +14,6 @@ function SignInFromQueryInner() {
   const { isPending, isSignedIn, openLogin } = useAuth()
   const searchParams = useSearchParams()
   const router = useRouter()
-  const pathname = usePathname()
 
   useEffect(() => {
     if (isPending || searchParams.get(SIGN_IN_QUERY) !== "1") {
@@ -26,8 +25,10 @@ function SignInFromQueryInner() {
     const next = new URLSearchParams(searchParams.toString())
     next.delete(SIGN_IN_QUERY)
     const query = next.toString()
-    router.replace(query ? `${pathname}?${query}` : pathname)
-  }, [isPending, isSignedIn, openLogin, pathname, router, searchParams])
+    // Browser path, not a proxy rewrite destination (SMA-145).
+    const path = window.location.pathname
+    router.replace(query ? `${path}?${query}` : path)
+  }, [isPending, isSignedIn, openLogin, router, searchParams])
 
   return null
 }

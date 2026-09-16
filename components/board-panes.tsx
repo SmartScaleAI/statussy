@@ -45,7 +45,7 @@ export function BoardPanes({
 }: {
   stack: ReactNode
   all: ReactNode
-  /** SSR first-paint tab (SMA-143). Hydration must match this value. */
+  /** SSR first-paint tab (SMA-143 / SMA-145). Hydration must match this value. */
   initialTab?: BoardTab
 }) {
   const { signedIn, isLoading, favoriteIds } = useFavoriteServices()
@@ -152,7 +152,8 @@ export function BoardPanes({
         </TabsList>
         {/* keepMounted false: Option A — only one grid mounted.
             No board-level hold-with-loader (SMA-143): first HTML already
-            has the SSR tab; My Stack keeps its own favorites loader. */}
+            has the SSR tab from the ISR variant; My Stack keeps its own
+            favorites loader. */}
         <TabsContent value="stack" keepMounted={false}>
           {stack}
         </TabsContent>
