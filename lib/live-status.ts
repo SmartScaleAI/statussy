@@ -9,6 +9,7 @@
  * database is unreachable or `DATABASE_URL` is unset, the whole board falls
  * back to mock.
  */
+import { unstable_cache } from "next/cache"
 import { Pool } from "pg"
 
 import type { ServiceStatus } from "@/data/services"
@@ -50,6 +51,13 @@ const LIVE_STATUSES: readonly LiveStatus[] = [
  * board staleness never drift apart.
  */
 export const STALE_AFTER_MS = BOARD_STALE_AFTER_MS
+
+/**
+ * Cross-request TTL for live snapshot reads (SMA-144). Same 60s window as
+ * board/detail ISR (SMA-97): worker writes every 5m, so a cached query at
+ * most ~60s older than uncached stays inside the freshness floor.
+ */
+export const LIVE_SNAPSHOT_CACHE_SECONDS = 60
 
 type SnapshotRow = {
   service_id: string
@@ -160,10 +168,113 @@ function toLiveStatus(status: string): LiveStatus {
 }
 
 /**
+ * JSON-safe snapshot rows for `unstable_cache` (Map/Date are not).
+ * `fetchedAt` is ISO-8601; revived to `Date` in `getLiveSnapshots`.
+ */
+type CachedLiveSnapshot = {
+  serviceId: string
+  status: LiveStatus
+  incidentTitle: string | null
+  stale: boolean
+  fetchedAt: string
+  chicklet: HealthChicklet
+}
+
+function snapshotsFromCachedRows(
+  rows: CachedLiveSnapshot[]
+): Map<string, LiveSnapshot> {
+  const snapshots = new Map<string, LiveSnapshot>()
+  for (const row of rows) {
+    snapshots.set(row.serviceId, {
+      serviceId: row.serviceId,
+      status: row.status,
+      incidentTitle: row.incidentTitle,
+      stale: row.stale,
+      fetchedAt: new Date(row.fetchedAt),
+      chicklet: row.chicklet,
+    })
+  }
+  return snapshots
+}
+
+/**
+ * Postgres board query. Throws on failure so `unstable_cache` does not
+ * store a mock-empty miss from a transient error.
+ */
+async function queryLiveSnapshotRows(): Promise<CachedLiveSnapshot[]> {
+  const pool = getPool()
+  if (!pool) {
+    return []
+  }
+
+  const { rows } = await pool.query<SnapshotRow>(
+    `WITH latest AS (
+       SELECT DISTINCT ON (service_id)
+              service_id, status::text AS status, incident_title, stale,
+              fetched_at
+       FROM service_snapshots
+       ORDER BY service_id, fetched_at DESC, id DESC
+     ),
+     health AS (
+       SELECT service_id,
+              count(*) FILTER (WHERE status = 'operational') AS operational,
+              count(*) AS total
+       FROM components
+       GROUP BY service_id
+     ),
+     open_incidents AS (
+       SELECT service_id, count(*) AS open_incidents
+       FROM incidents
+       WHERE resolved_at IS NULL
+         AND status != ALL($1::text[])
+       GROUP BY service_id
+     )
+     SELECT l.service_id, l.status, l.incident_title, l.stale, l.fetched_at,
+            h.operational, h.total, o.open_incidents
+     FROM latest l
+     LEFT JOIN health h USING (service_id)
+     LEFT JOIN open_incidents o USING (service_id)`,
+    [CLOSED_INCIDENT_STATUSES]
+  )
+
+  return rows.map((row) => {
+    const status = toLiveStatus(row.status)
+    return {
+      serviceId: row.service_id,
+      status,
+      incidentTitle: row.incident_title,
+      stale: row.stale,
+      fetchedAt: new Date(row.fetched_at).toISOString(),
+      chicklet: resolveHealthChicklet(
+        status,
+        Number(row.operational ?? 0),
+        Number(row.total ?? 0),
+        Number(row.open_incidents ?? 0)
+      ),
+    }
+  })
+}
+
+const getCachedLiveSnapshotRows = unstable_cache(
+  queryLiveSnapshotRows,
+  ["statussy-live-snapshots"],
+  {
+    revalidate: LIVE_SNAPSHOT_CACHE_SECONDS,
+    tags: ["live-snapshots"],
+  }
+)
+
+/**
  * Latest snapshot per service plus live Health from current `components`
  * rows (SMA-31) and the open-incident count for the no-grid chicklet modes
  * (SMA-79). Returns an empty map when no database is configured or the
  * read fails, so the board can fall back to mock data.
+ *
+ * The Postgres read is `unstable_cache`d for `LIVE_SNAPSHOT_CACHE_SECONDS`
+ * (SMA-144) so dynamic requests and the two ISR board variants share one
+ * snapshot payload instead of each paying the board query. Stale/freshness
+ * badges still use snapshot `fetchedAt` + `stale` at render time, not cache
+ * time.
  */
 export async function getLiveSnapshots(): Promise<Map<string, LiveSnapshot>> {
   const pool = getPool()
@@ -172,54 +283,7 @@ export async function getLiveSnapshots(): Promise<Map<string, LiveSnapshot>> {
   }
 
   try {
-    const { rows } = await pool.query<SnapshotRow>(
-      `WITH latest AS (
-         SELECT DISTINCT ON (service_id)
-                service_id, status::text AS status, incident_title, stale,
-                fetched_at
-         FROM service_snapshots
-         ORDER BY service_id, fetched_at DESC, id DESC
-       ),
-       health AS (
-         SELECT service_id,
-                count(*) FILTER (WHERE status = 'operational') AS operational,
-                count(*) AS total
-         FROM components
-         GROUP BY service_id
-       ),
-       open_incidents AS (
-         SELECT service_id, count(*) AS open_incidents
-         FROM incidents
-         WHERE resolved_at IS NULL
-           AND status != ALL($1::text[])
-         GROUP BY service_id
-       )
-       SELECT l.service_id, l.status, l.incident_title, l.stale, l.fetched_at,
-              h.operational, h.total, o.open_incidents
-       FROM latest l
-       LEFT JOIN health h USING (service_id)
-       LEFT JOIN open_incidents o USING (service_id)`,
-      [CLOSED_INCIDENT_STATUSES]
-    )
-
-    const snapshots = new Map<string, LiveSnapshot>()
-    for (const row of rows) {
-      const status = toLiveStatus(row.status)
-      snapshots.set(row.service_id, {
-        serviceId: row.service_id,
-        status,
-        incidentTitle: row.incident_title,
-        stale: row.stale,
-        fetchedAt: row.fetched_at,
-        chicklet: resolveHealthChicklet(
-          status,
-          Number(row.operational ?? 0),
-          Number(row.total ?? 0),
-          Number(row.open_incidents ?? 0)
-        ),
-      })
-    }
-    return snapshots
+    return snapshotsFromCachedRows(await getCachedLiveSnapshotRows())
   } catch (err) {
     console.error(
       `[statussy] live snapshot read failed (db=${describeDatabaseTarget()}) — board is falling back to MOCK data`,
