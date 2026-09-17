@@ -56,9 +56,6 @@ export function BoardPanes({
   // service from All Services must not yank the pane to My Stack.
   const didResolve = useRef(false)
 
-  // Signed-out first paint stays All Services without an effect setState.
-  const visibleTab = !isLoading && !signedIn ? DEFAULT_BOARD_TAB : tab
-
   useEffect(() => {
     if (isLoading) {
       return
@@ -130,8 +127,10 @@ export function BoardPanes({
 
   return (
     <BoardTabActionsContext.Provider value={actions}>
+      {/* SMA-148: use tab (not a signed-out override) so My Stack clicks
+          work. First paint stays All Services via initialTab. */}
       <Tabs
-        value={visibleTab}
+        value={tab}
         onValueChange={onValueChange}
         className="w-full gap-8"
       >
