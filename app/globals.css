@@ -138,6 +138,15 @@
        classic scrollbar appears — otherwise centered tabs/board shift. */
     scrollbar-gutter: stable;
   }
+
+  /* SMA-147: cached header HTML includes both chromes. A blocking script
+     sets data-auth-hint from statussy:authHint before first paint. */
+  html[data-auth-hint="signed-in"] [data-auth-chrome="signed-out"] {
+    display: none;
+  }
+  html:not([data-auth-hint="signed-in"]) [data-auth-chrome="signed-in"] {
+    display: none;
+  }
 }
 
 /*

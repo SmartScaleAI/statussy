@@ -11,6 +11,8 @@ import { BetaBanner } from "@/components/beta-banner"
  * stamp lives with the All Services summary (SMA-83). SMA-126: dismissible
  * beta banner sits above the header (not sticky) so the Report rail
  * `top-4` stickiness is unchanged.
+ * SMA-147: auth chrome uses a JS hint cookie (`statussy:authHint`) so
+ * Sign In vs avatar can first-paint correctly without cookies() on `/`.
  */
 export function SiteHeader() {
   return (

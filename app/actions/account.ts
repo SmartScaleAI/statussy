@@ -7,6 +7,7 @@ import { unstable_rethrow } from "next/navigation"
 import { auth } from "@/lib/auth"
 import { listLinkedAccounts } from "@/lib/auth-accounts"
 import { getAuthSession } from "@/lib/auth-session"
+import { AUTH_HEADER_HINT_KEY } from "@/lib/auth-header-hint"
 import { BOARD_TAB_KEY } from "@/lib/board-tab"
 import {
   canUnlinkSocialProvider,
@@ -50,9 +51,11 @@ export async function getMyAccountSnapshot(): Promise<AccountSnapshotResult> {
 /** Drop cached /settings (and layout) after sign-out or account deletion. */
 export async function invalidateAuthViews(): Promise<void> {
   try {
-    ;(await cookies()).delete(BOARD_TAB_KEY)
+    const jar = await cookies()
+    jar.delete(BOARD_TAB_KEY)
+    jar.delete(AUTH_HEADER_HINT_KEY)
   } catch (err) {
-    console.error("[statussy] clear board-tab cookie failed", err)
+    console.error("[statussy] clear board-tab / auth-hint cookies failed", err)
   }
   revalidatePath("/settings")
   revalidatePath("/", "layout")
