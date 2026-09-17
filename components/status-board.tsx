@@ -44,10 +44,11 @@ export async function StatusBoard({
             (SMA-145): this component must not read cookies/session, or the
             shared HTML cache is lost. initialTab comes from the route
             (All Services on `/` and `/services`; My Stack on the internal
-            rewrite variant). My Stack cards stay client-side (SMA-104) so
-            the payload never embeds a user's stack. Last tab persists in
-            localStorage and a mirroring cookie when signed-in with
-            favorites. */}
+            rewrite variant). My Stack cards stay client-side (SMA-104 /
+            SMA-146) so the payload never embeds a user's stack. Favorites
+            prefetch on the client in parallel with auth — still not from
+            this server render. Last tab persists in localStorage and a
+            mirroring cookie when signed-in with favorites. */}
         <BoardPanes
           initialTab={initialTab}
           stack={

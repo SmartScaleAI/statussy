@@ -6,17 +6,23 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react"
 
 import { getMyFavorites, toggleMyFavorite } from "@/app/actions/favorites"
 import { useAuth } from "@/components/auth-provider"
+import {
+  resolveFavoritesClientState,
+  shouldFetchFavorites,
+  type FavoritesFetchState,
+} from "@/lib/favorites-client"
 import { toggleFavoriteServiceId } from "@/lib/favorite-services"
 
 type FavoriteServicesContextValue = {
   signedIn: boolean
-  /** True until auth is known and, if signed in, favorites have settled. */
+  /** True until stars / My Stack can render; signed-in favorites may settle before useSession. */
   isLoading: boolean
   favoriteIds: readonly string[]
   isFavorited: (id: string) => boolean
@@ -26,43 +32,106 @@ type FavoriteServicesContextValue = {
 const FavoriteServicesContext =
   createContext<FavoriteServicesContextValue | null>(null)
 
+/**
+ * One in-flight getMyFavorites for this tab. Board + detail providers
+ * share it so auth settling does not start a second round-trip (SMA-146).
+ */
+let inflightFavorites: Promise<{
+  signedIn: boolean
+  favoriteIds: string[]
+}> | null = null
+
+function loadMyFavorites(force = false) {
+  if (force) {
+    inflightFavorites = null
+  }
+  if (!inflightFavorites) {
+    inflightFavorites = getMyFavorites()
+  }
+  return inflightFavorites
+}
+
+function rememberMyFavorites(result: {
+  signedIn: boolean
+  favoriteIds: string[]
+}) {
+  inflightFavorites = Promise.resolve(result)
+}
+
+function invalidateMyFavoritesCache() {
+  inflightFavorites = null
+}
+
 export function FavoriteServicesProvider({
   children,
 }: {
   children: ReactNode
 }) {
   const { isPending, isSignedIn } = useAuth()
-  const [favoriteIds, setFavoriteIds] = useState<string[]>([])
-  // SMA-111: empty ids before the first fetch must not count as an empty stack.
-  const [favoritesSettled, setFavoritesSettled] = useState(false)
+  const [favoritesFetch, setFavoritesFetch] = useState<FavoritesFetchState>({
+    status: "idle",
+  })
+  const wasSignedIn = useRef(false)
+  const justSignedIn = !isPending && isSignedIn && !wasSignedIn.current
+  const wantsFavorites = shouldFetchFavorites({
+    authPending: isPending,
+    authSignedIn: isSignedIn,
+    fetch: favoritesFetch,
+    justSignedIn,
+  })
+  // Reuse an in-flight first read. Force only after a completed
+  // signed-out payload on a fresh sign-in — not while the first
+  // request is still open.
+  const forceFavorites =
+    justSignedIn &&
+    favoritesFetch.status === "done" &&
+    !favoritesFetch.signedIn
+
+  // SMA-146: start getMyFavorites during the first client render so it
+  // overlaps useSession. The action reads the session cookie itself —
+  // waiting for isPending only added a waterfall. ISR HTML still has
+  // no private stack ids.
+  if (typeof window !== "undefined" && wantsFavorites) {
+    void loadMyFavorites(forceFavorites)
+  }
 
   useEffect(() => {
-    if (isPending) {
+    if (!isPending) {
+      wasSignedIn.current = isSignedIn
+    }
+    if (!isPending && !isSignedIn) {
+      invalidateMyFavoritesCache()
+      if (favoritesFetch.status !== "idle") {
+        setFavoritesFetch({ status: "idle" })
+      }
       return
     }
-    if (!isSignedIn) {
-      setFavoriteIds([])
-      setFavoritesSettled(true)
+
+    if (!wantsFavorites) {
       return
     }
-    setFavoritesSettled(false)
+
     let cancelled = false
-    void getMyFavorites()
-      .then((result) => {
-        if (cancelled) {
-          return
-        }
-        setFavoriteIds(result.signedIn ? result.favoriteIds : [])
+    void loadMyFavorites(forceFavorites).then((result) => {
+      if (cancelled) {
+        return
+      }
+      setFavoritesFetch({
+        status: "done",
+        signedIn: result.signedIn,
+        favoriteIds: result.signedIn ? result.favoriteIds : [],
       })
-      .finally(() => {
-        if (!cancelled) {
-          setFavoritesSettled(true)
-        }
-      })
+    })
     return () => {
       cancelled = true
     }
-  }, [isPending, isSignedIn])
+  }, [
+    favoritesFetch.status,
+    forceFavorites,
+    isPending,
+    isSignedIn,
+    wantsFavorites,
+  ])
 
   const toggleFavorite = useCallback(
     (id: string) => {
@@ -70,34 +139,52 @@ export function FavoriteServicesProvider({
       if (!isSignedIn) {
         return
       }
-      setFavoriteIds((prev) => {
-        const next = toggleFavoriteServiceId(prev, id)
+      setFavoritesFetch((prev) => {
+        const currentIds =
+          prev.status === "done" && prev.signedIn ? [...prev.favoriteIds] : []
+        const nextIds = toggleFavoriteServiceId(currentIds, id)
+        const optimistic = {
+          status: "done" as const,
+          signedIn: true,
+          favoriteIds: nextIds,
+        }
         void toggleMyFavorite(id).then((result) => {
           if (result.signedIn) {
-            setFavoriteIds(result.favoriteIds)
+            rememberMyFavorites(result)
+            setFavoritesFetch({
+              status: "done",
+              signedIn: true,
+              favoriteIds: result.favoriteIds,
+            })
           } else {
-            setFavoriteIds(prev)
+            setFavoritesFetch(
+              prev.status === "done"
+                ? prev
+                : { status: "done", signedIn: false, favoriteIds: [] }
+            )
           }
         })
-        return next
+        return optimistic
       })
     },
     [isSignedIn]
   )
 
-  // Session refetch can set isPending again; don't swap a loaded stack
-  // back to the loader. Signed-out stays empty once auth has settled.
-  const isLoading = !favoritesSettled && (isPending || isSignedIn)
+  const view = resolveFavoritesClientState({
+    authPending: isPending,
+    authSignedIn: isSignedIn,
+    fetch: favoritesFetch,
+  })
 
   const value = useMemo<FavoriteServicesContextValue>(
     () => ({
-      signedIn: isSignedIn,
-      isLoading,
-      favoriteIds,
-      isFavorited: (itemId) => favoriteIds.includes(itemId),
+      signedIn: view.signedIn,
+      isLoading: view.isLoading,
+      favoriteIds: view.favoriteIds,
+      isFavorited: (itemId) => view.favoriteIds.includes(itemId),
       toggleFavorite,
     }),
-    [favoriteIds, isLoading, isSignedIn, toggleFavorite]
+    [toggleFavorite, view.favoriteIds, view.isLoading, view.signedIn]
   )
 
   return (

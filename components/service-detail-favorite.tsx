@@ -5,7 +5,8 @@ import { FavoriteServicesProvider } from "@/components/favorite-services"
 
 /**
  * Detail-page star (SMA-128). Same toggle + login dialog as the board.
- * Provider is local so the ISR-cached page never embeds a user's stack.
+ * Provider is local so the ISR-cached page never embeds a user's stack
+ * (SMA-146: same client prefetch as the board, still no private ids in HTML).
  */
 export function ServiceDetailFavorite({ serviceId }: { serviceId: string }) {
   return (
