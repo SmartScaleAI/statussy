@@ -138,15 +138,17 @@
        classic scrollbar appears — otherwise centered tabs/board shift. */
     scrollbar-gutter: stable;
   }
+}
 
-  /* SMA-147: cached header HTML includes both chromes. A blocking script
-     sets data-auth-hint from statussy:authHint before first paint. */
-  html[data-auth-hint="signed-in"] [data-auth-chrome="signed-out"] {
-    display: none;
-  }
-  html:not([data-auth-hint="signed-in"]) [data-auth-chrome="signed-in"] {
-    display: none;
-  }
+/* SMA-147 / SMA-149: dual chrome is only for first paint / pending.
+   Unlayered + !important so Tailwind `flex` cannot keep Sign In visible
+   beside the avatar. AuthHeaderControl unmounts the inactive chrome
+   once the session settles. */
+html[data-auth-hint="signed-in"] [data-auth-chrome="signed-out"] {
+  display: none !important;
+}
+html:not([data-auth-hint="signed-in"]) [data-auth-chrome="signed-in"] {
+  display: none !important;
 }
 
 /*

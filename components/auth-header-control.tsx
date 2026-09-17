@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
+import { useLayoutEffect, useRef, useState } from "react"
 
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -17,25 +18,30 @@ import { useAuth } from "@/components/auth-provider"
 import { ModeToggle, ThemeMenuSub } from "@/components/mode-toggle"
 import { authClient } from "@/lib/auth-client"
 import {
-  clearAuthHeaderHint,
   applyAuthHeaderHintDocument,
+  clearAuthHeaderHint,
+  resolveAuthHeaderChromeMount,
+  resolveAuthHeaderSessionStatus,
+  type AuthHeaderChromeMount,
 } from "@/lib/auth-header-hint"
 import { signOutAndInvalidateViews } from "@/lib/client-sign-out"
 import { emailAvatarLetter } from "@/lib/sign-in-methods"
 
 function SignedOutChrome({ onSignIn }: { onSignIn: () => void }) {
   return (
-    <div data-auth-chrome="signed-out" className="flex items-center gap-2">
-      <ModeToggle />
-      <Button
-        type="button"
-        variant="default"
-        aria-label="Sign In"
-        className="h-10"
-        onClick={onSignIn}
-      >
-        Sign In
-      </Button>
+    <div data-auth-chrome="signed-out">
+      <div className="flex items-center gap-2">
+        <ModeToggle />
+        <Button
+          type="button"
+          variant="default"
+          aria-label="Sign In"
+          className="h-10"
+          onClick={onSignIn}
+        >
+          Sign In
+        </Button>
+      </div>
     </div>
   )
 }
@@ -88,22 +94,45 @@ function SignedInChrome({
 }
 
 /**
- * SMA-147: both chromes stay in the cached HTML. `data-auth-hint` (set by
- * a blocking script from `statussy:authHint`) shows avatar vs Sign In on
- * first paint. Do not read cookies() here — that dynamizes `/`.
+ * SMA-147 / SMA-149: both chromes stay in the cached HTML while the
+ * session is pending. `data-auth-hint` (set by a blocking script from
+ * `statussy:authHint`) shows avatar vs Sign In on first paint. Once the
+ * session settles, only the matching chrome is mounted so Tailwind `flex`
+ * cannot keep Sign In beside the avatar. Do not read cookies() here —
+ * that dynamizes `/`.
  */
 export function AuthHeaderControl() {
   const { openLogin } = useAuth()
-  const { data: session } = authClient.useSession()
+  const { data: session, isPending } = authClient.useSession()
   const router = useRouter()
   const pathname = usePathname()
+  const seenPending = useRef(false)
+  const [mount, setMount] = useState<AuthHeaderChromeMount>("both")
+
+  useLayoutEffect(() => {
+    if (isPending) {
+      seenPending.current = true
+    }
+    setMount(
+      resolveAuthHeaderChromeMount(
+        resolveAuthHeaderSessionStatus({
+          isPending,
+          hasSession: Boolean(session),
+          seenPending: seenPending.current,
+        })
+      )
+    )
+  }, [isPending, session])
 
   const email = session?.user?.email ?? ""
   const image = session?.user?.image
 
-  return (
-    <>
+  const signedOut =
+    mount !== "signed-in" ? (
       <SignedOutChrome onSignIn={() => openLogin("login")} />
+    ) : null
+  const signedIn =
+    mount !== "signed-out" ? (
       <SignedInChrome
         email={email}
         image={image}
@@ -119,6 +148,12 @@ export function AuthHeaderControl() {
           })()
         }}
       />
+    ) : null
+
+  return (
+    <>
+      {signedOut}
+      {signedIn}
     </>
   )
 }

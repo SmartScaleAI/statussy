@@ -14,7 +14,10 @@ import {
 } from "react"
 
 import { authClient } from "@/lib/auth-client"
-import { syncAuthHeaderHintFromSession } from "@/lib/auth-header-hint"
+import {
+  resolveAuthHeaderSessionStatus,
+  syncAuthHeaderHintFromSession,
+} from "@/lib/auth-header-hint"
 import { LoginDialog, type LoginReason } from "@/components/login-dialog"
 import { SignInFromQuery } from "@/components/sign-in-from-query"
 
@@ -58,18 +61,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useLayoutEffect(() => {
     if (isPending) {
       seenSessionPending.current = true
-      syncAuthHeaderHintFromSession({ sessionStatus: "pending" })
-      return
     }
-    if (session) {
-      syncAuthHeaderHintFromSession({ sessionStatus: "signed-in" })
-      return
-    }
-    if (seenSessionPending.current) {
-      syncAuthHeaderHintFromSession({ sessionStatus: "signed-out" })
-    } else {
-      syncAuthHeaderHintFromSession({ sessionStatus: "pending" })
-    }
+    syncAuthHeaderHintFromSession({
+      sessionStatus: resolveAuthHeaderSessionStatus({
+        isPending,
+        hasSession: Boolean(session),
+        seenPending: seenSessionPending.current,
+      }),
+    })
   }, [isPending, session])
 
   const value = useMemo<AuthContextValue>(
