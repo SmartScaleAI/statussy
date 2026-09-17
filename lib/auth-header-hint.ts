@@ -22,6 +22,8 @@ export type AuthHeaderSessionStatus = "pending" | "signed-in" | "signed-out"
 
 export type AuthHeaderChrome = "signed-in" | "signed-out"
 
+export type AuthHeaderChromeMount = "both" | AuthHeaderChrome
+
 /**
  * Pending session honors the hint so refresh does not paint Sign In while
  * Better Auth is still resolving. Confirmed session always wins.
@@ -37,6 +39,39 @@ export function resolveAuthHeaderChrome(input: {
     return "signed-out"
   }
   return input.hasHint ? "signed-in" : "signed-out"
+}
+
+/**
+ * Dual chrome is only for pending / first paint (cached HTML + hint CSS).
+ * Settled session mounts a single chrome so Sign In cannot stay visible
+ * beside the avatar when Tailwind `flex` beats `display: none`.
+ */
+export function resolveAuthHeaderChromeMount(
+  sessionStatus: AuthHeaderSessionStatus
+): AuthHeaderChromeMount {
+  if (sessionStatus === "pending") {
+    return "both"
+  }
+  return sessionStatus
+}
+
+/**
+ * Better Auth may report `isPending=false` with no session before the
+ * first fetch starts. Treat that as pending until pending has been seen,
+ * matching AuthProvider's hint sync.
+ */
+export function resolveAuthHeaderSessionStatus(input: {
+  isPending: boolean
+  hasSession: boolean
+  seenPending: boolean
+}): AuthHeaderSessionStatus {
+  if (input.hasSession) {
+    return "signed-in"
+  }
+  if (input.isPending || !input.seenPending) {
+    return "pending"
+  }
+  return "signed-out"
 }
 
 /**

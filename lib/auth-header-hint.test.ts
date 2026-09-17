@@ -9,6 +9,8 @@ import {
   AUTH_HEADER_HINT_VALUE,
   parseAuthHeaderHintCookieHeader,
   resolveAuthHeaderChrome,
+  resolveAuthHeaderChromeMount,
+  resolveAuthHeaderSessionStatus,
 } from "./auth-header-hint.ts"
 
 test("hint cookie name and value stay stable", () => {
@@ -57,6 +59,55 @@ test("pending session honors the hint; settled session wins", () => {
   )
   assert.equal(
     resolveAuthHeaderChrome({ sessionStatus: "signed-out", hasHint: false }),
+    "signed-out"
+  )
+})
+
+test("pending session mounts both chromes; settled session mounts one", () => {
+  assert.equal(resolveAuthHeaderChromeMount("pending"), "both")
+  assert.equal(resolveAuthHeaderChromeMount("signed-in"), "signed-in")
+  assert.equal(resolveAuthHeaderChromeMount("signed-out"), "signed-out")
+})
+
+test("session status stays pending until Better Auth has been pending", () => {
+  assert.equal(
+    resolveAuthHeaderSessionStatus({
+      isPending: true,
+      hasSession: false,
+      seenPending: false,
+    }),
+    "pending"
+  )
+  assert.equal(
+    resolveAuthHeaderSessionStatus({
+      isPending: false,
+      hasSession: false,
+      seenPending: false,
+    }),
+    "pending"
+  )
+  assert.equal(
+    resolveAuthHeaderSessionStatus({
+      isPending: false,
+      hasSession: true,
+      seenPending: false,
+    }),
+    "signed-in"
+  )
+  assert.equal(
+    resolveAuthHeaderSessionStatus({
+      isPending: false,
+      hasSession: true,
+      seenPending: true,
+    }),
+    "signed-in"
+  )
+  assert.equal(
+    resolveAuthHeaderSessionStatus({
+      isPending: false,
+      hasSession: false,
+      seenPending: true,
+    }),
     "signed-out"
   )
 })
