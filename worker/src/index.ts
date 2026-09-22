@@ -137,11 +137,14 @@
  * are seeded
  * without a fetcher) and writes snapshots, components,
  * and incidents to Postgres.
- * A tiny HTTP server exposes /healthz.
+ * A tiny HTTP server exposes /healthz (503 once the last successful tick is
+ * older than 3× the refresh interval) and /livez (process is up).
  */
 import { createServer } from "node:http"
 import { loadConfig } from "./config.js"
-import { createPool } from "./db.js"
+import { createPool, resolvePoolMax } from "./db.js"
+import { runGuardedTick, tickDeadlineMs } from "./tick-deadline.js"
+import { workerHealthStatus } from "./worker-health.js"
 import { drainConditionalFetchStats } from "./http.js"
 import { fetchAdobeState } from "./adobe.js"
 import { fetchChecklyClientState } from "./checkly-client.js"
@@ -228,17 +231,20 @@ import { createTickDedupe, type TickDedupe } from "./tick-dedupe.js"
 import { createResendMailer, sendStackDigests } from "./digest.js"
 
 const config = loadConfig()
-const pool = createPool(config.databaseUrl)
+const pool = createPool(config.databaseUrl, config.fetchConcurrency)
+const tickDeadline = tickDeadlineMs(config.refreshIntervalSeconds)
 
 const state = {
   startedAt: new Date(),
   tickCount: 0,
   lastTickAt: null as Date | null,
+  /** Set only when a tick finishes its fan-out. Health uses this, not lastTickAt. */
+  lastSuccessfulTickAt: null as Date | null,
   lastTickOk: null as boolean | null,
 }
 
 console.log(
-  `[worker] starting (interval=${config.refreshIntervalSeconds}s, port=${config.port}, concurrency=${config.fetchConcurrency}, jitter=${config.fetchJitterMs}ms)`,
+  `[worker] starting (interval=${config.refreshIntervalSeconds}s, port=${config.port}, concurrency=${config.fetchConcurrency}, jitter=${config.fetchJitterMs}ms, pool=${resolvePoolMax(config.fetchConcurrency)}, tickDeadline=${tickDeadline}ms)`,
 )
 
 const applied = await runMigrations(pool)
@@ -1494,93 +1500,164 @@ async function mapWithConcurrency<T, R>(
   return results
 }
 
-// SMA-100: if a tick somehow outlives the refresh interval, skip the next
-// interval instead of piling a second fan-out on top of the first.
-let tickInProgress = false
+// SMA-100: if a tick is still inside its deadline, skip the next interval
+// instead of piling a second fan-out on top of the first. The deadline
+// (tick-deadline.ts) fails a tick that never settles so this flag cannot
+// stick for the life of the process.
+const tickGuard = { current: false }
+/** Bumped when a tick's work starts. A late finish must not clobber a newer tick. */
+let tickGeneration = 0
 
-async function runTick(): Promise<void> {
-  if (tickInProgress) {
-    console.warn("[tick] previous tick still running — skipping this interval")
+async function executeTick(
+  tickNumber: number,
+  startedAtMs: number,
+  inFlight: Set<string>,
+  isCurrent: () => boolean,
+): Promise<void> {
+  // Fresh dedupe per tick (SMA-96): shared feeds are fetched once and stay
+  // as fresh as any solo fetch this tick would be.
+  const shared = createTickDedupe()
+  const results = await mapWithConcurrency(
+    SERVICE_JOBS,
+    config.fetchConcurrency,
+    async (service) => {
+      inFlight.add(service.id)
+      try {
+        await jitter(config.fetchJitterMs)
+        return await fetchService(service, shared)
+      } finally {
+        inFlight.delete(service.id)
+      }
+    },
+  )
+  const okCount = results.filter(Boolean).length
+  // SMA-98: retention prune. A failed prune must not fail the tick.
+  try {
+    const pruned = await pruneOldSnapshots(pool)
+    if (pruned > 0) {
+      console.log(
+        `[prune] removed ${pruned} snapshots older than ${SNAPSHOT_RETENTION_DAYS}d`,
+      )
+    }
+  } catch (err) {
+    console.error(`[prune] failed: ${(err as Error).message}`)
+  }
+  // SMA-115 / SMA-118 / SMA-135: one batched digest per opted-in user.
+  try {
+    const digest = await sendStackDigests(pool, {
+      publicSiteUrl: config.publicSiteUrl,
+      mailer: config.resend
+        ? createResendMailer(
+            config.resend.apiKey,
+            config.resend.from,
+            config.publicSiteUrl,
+          )
+        : null,
+    })
+    if (
+      digest.sent > 0 ||
+      digest.users > 0 ||
+      digest.webhooksSent > 0 ||
+      digest.webhooksFailed > 0
+    ) {
+      console.log(
+        `[digest] #${tickNumber} sent=${digest.sent} users=${digest.users} skipped=${digest.skipped} webhooks=${digest.webhooksSent} webhookFails=${digest.webhooksFailed}`,
+      )
+    }
+  } catch (err) {
+    console.error(`[digest] failed: ${(err as Error).message}`)
+  }
+  const conditional = drainConditionalFetchStats()
+  const finishedAt = new Date()
+  // Snapshots landed, including when this tick lost the deadline race and a
+  // newer tick has already started. Only the current tick owns lastTickOk.
+  state.lastSuccessfulTickAt = finishedAt
+  if (!isCurrent()) {
+    console.warn(
+      `[tick] #${tickNumber} finished after a newer tick started ok=${okCount}/${results.length} in=${Date.now() - startedAtMs}ms`,
+    )
     return
   }
-  tickInProgress = true
-  const tickNumber = ++state.tickCount
+  state.lastTickAt = finishedAt
+  state.lastTickOk = okCount === results.length
+  console.log(
+    `[tick] #${tickNumber} done ok=${okCount}/${results.length} in=${Date.now() - startedAtMs}ms 304s=${conditional.notModified}/${conditional.requests} at=${state.lastTickAt.toISOString()}`,
+  )
+}
+
+async function runTick(): Promise<void> {
+  const inFlight = new Set<string>()
+  let tickNumber = 0
   const startedAtMs = Date.now()
-  try {
-    // Fresh dedupe per tick (SMA-96): shared feeds are fetched once and stay
-    // as fresh as any solo fetch this tick would be.
-    const shared = createTickDedupe()
-    const results = await mapWithConcurrency(
-      SERVICE_JOBS,
-      config.fetchConcurrency,
-      async (service) => {
-        await jitter(config.fetchJitterMs)
-        return fetchService(service, shared)
-      },
+  await runGuardedTick({
+    inProgress: tickGuard,
+    deadlineMs: tickDeadline,
+    inFlight: () => inFlight,
+    onSkip: () => {
+      console.warn("[tick] previous tick still running — skipping this interval")
+    },
+    onError: (err) => {
+      state.lastTickAt = new Date()
+      state.lastTickOk = false
+      console.error(
+        `[tick] #${tickNumber} failed: ${(err as Error).message}`,
+      )
+    },
+    work: async () => {
+      const generation = ++tickGeneration
+      tickNumber = ++state.tickCount
+      await executeTick(
+        tickNumber,
+        startedAtMs,
+        inFlight,
+        () => generation === tickGeneration,
+      )
+    },
+  })
+}
+
+let healthReportedStale = false
+
+function logHealthTransition(status: "ok" | "stale", staleAfterSeconds: number): void {
+  if (status === "stale" && !healthReportedStale) {
+    healthReportedStale = true
+    console.error(
+      `[health] last successful tick older than ${staleAfterSeconds}s — /healthz unhealthy`,
     )
-    const okCount = results.filter(Boolean).length
-    // SMA-98: retention prune. A failed prune must not fail the tick.
-    try {
-      const pruned = await pruneOldSnapshots(pool)
-      if (pruned > 0) {
-        console.log(
-          `[prune] removed ${pruned} snapshots older than ${SNAPSHOT_RETENTION_DAYS}d`,
-        )
-      }
-    } catch (err) {
-      console.error(`[prune] failed: ${(err as Error).message}`)
-    }
-    // SMA-115 / SMA-118 / SMA-135: one batched digest per opted-in user.
-    try {
-      const digest = await sendStackDigests(pool, {
-        publicSiteUrl: config.publicSiteUrl,
-        mailer: config.resend
-          ? createResendMailer(
-              config.resend.apiKey,
-              config.resend.from,
-              config.publicSiteUrl
-            )
-          : null,
-      })
-      if (
-        digest.sent > 0 ||
-        digest.users > 0 ||
-        digest.webhooksSent > 0 ||
-        digest.webhooksFailed > 0
-      ) {
-        console.log(
-          `[digest] #${tickNumber} sent=${digest.sent} users=${digest.users} skipped=${digest.skipped} webhooks=${digest.webhooksSent} webhookFails=${digest.webhooksFailed}`,
-        )
-      }
-    } catch (err) {
-      console.error(`[digest] failed: ${(err as Error).message}`)
-    }
-    const conditional = drainConditionalFetchStats()
-    state.lastTickAt = new Date()
-    state.lastTickOk = okCount === results.length
-    console.log(
-      `[tick] #${tickNumber} done ok=${okCount}/${results.length} in=${Date.now() - startedAtMs}ms 304s=${conditional.notModified}/${conditional.requests} at=${state.lastTickAt.toISOString()}`,
-    )
-  } catch (err) {
-    state.lastTickAt = new Date()
-    state.lastTickOk = false
-    console.error(`[tick] #${tickNumber} failed: ${(err as Error).message}`)
-  } finally {
-    tickInProgress = false
+  } else if (status === "ok" && healthReportedStale) {
+    healthReportedStale = false
+    console.log("[health] tick freshness recovered")
   }
 }
 
 const server = createServer((req, res) => {
-  if (req.url === "/healthz" || req.url === "/") {
+  const path = req.url?.split("?")[0]
+  if (path === "/livez") {
     res.writeHead(200, { "content-type": "application/json" })
+    res.end(JSON.stringify({ status: "ok" }))
+    return
+  }
+  if (path === "/healthz" || path === "/") {
+    const health = workerHealthStatus({
+      startedAtMs: state.startedAt.getTime(),
+      lastSuccessfulTickAtMs: state.lastSuccessfulTickAt?.getTime() ?? null,
+      now: Date.now(),
+      refreshIntervalSeconds: config.refreshIntervalSeconds,
+      startupGraceMs: tickDeadline,
+    })
+    logHealthTransition(health.status, health.staleAfterSeconds)
+    res.writeHead(health.httpStatus, { "content-type": "application/json" })
     res.end(
       JSON.stringify({
-        status: "ok",
+        status: health.status,
         startedAt: state.startedAt.toISOString(),
         refreshIntervalSeconds: config.refreshIntervalSeconds,
+        staleAfterSeconds: health.staleAfterSeconds,
         tickCount: state.tickCount,
+        tickInProgress: tickGuard.current,
         lastTickAt: state.lastTickAt?.toISOString() ?? null,
         lastTickOk: state.lastTickOk,
+        lastSuccessfulTickAt: state.lastSuccessfulTickAt?.toISOString() ?? null,
       }),
     )
     return
