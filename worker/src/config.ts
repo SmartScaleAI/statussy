@@ -1,3 +1,5 @@
+import { POOL_MAX } from "./db.js"
+
 export type ResendMailConfig = {
   apiKey: string
   from: string
@@ -39,7 +41,11 @@ export type Config = {
 
 const DEFAULT_REFRESH_INTERVAL_SECONDS = 300
 const DEFAULT_FETCH_TIMEOUT_MS = 10_000
-const DEFAULT_FETCH_CONCURRENCY = 40
+/**
+ * Same as `POOL_MAX`. A default of 40 against a 3-connection pool queued
+ * most persists with no acquire timeout (Sep 21–22 hung tick).
+ */
+const DEFAULT_FETCH_CONCURRENCY = POOL_MAX
 const DEFAULT_FETCH_JITTER_MS = 250
 const DEFAULT_FETCH_USER_AGENT =
   "statussy-worker/0.1 (+https://github.com/SmartScaleAI/statussy)"

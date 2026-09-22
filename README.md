@@ -306,8 +306,11 @@ npm run dev       # migrate, seed, tick on the interval, serve /healthz
 ```
 
 `npm run dev` logs a `[tick]` heartbeat line on every interval; `curl
-localhost:8080/healthz` reports tick count and last tick time. Use a low
-interval while developing, e.g. `REFRESH_INTERVAL_SECONDS=10 npm run dev`.
+localhost:8080/healthz` reports tick count and last tick time, and returns
+503 when the last successful tick is older than three refresh intervals
+(15 minutes at the default 5 minute cadence). `/livez` only checks that
+the process is up. Use a low interval while developing, e.g.
+`REFRESH_INTERVAL_SECONDS=10 npm run dev`.
 
 ### Deploy notes
 

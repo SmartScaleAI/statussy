@@ -1,6 +1,7 @@
 import assert from "node:assert/strict"
 import { test } from "node:test"
 
+import { POOL_MAX } from "../src/db.js"
 import {
   DEFAULT_RESEND_FROM,
   loadConfig,
@@ -59,6 +60,10 @@ test("loadConfig never keeps smartaiscaling.com as digest From", () => {
   })
   assert.equal(config.resend?.from, DEFAULT_RESEND_FROM)
   assert.doesNotMatch(config.resend?.from ?? "", /smartaiscaling/)
+})
+
+test("loadConfig defaults fetch concurrency to the pool cap", () => {
+  assert.equal(loadConfig(DB).fetchConcurrency, POOL_MAX)
 })
 
 test("loadConfig skips Resend when the API key is missing", () => {
