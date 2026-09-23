@@ -24,9 +24,9 @@ test("stale threshold = 3 missed 5m poll ticks", () => {
 
 test("open-board refresh stays inside the stale window on a healthy poll", () => {
   assert.equal(BOARD_REFRESH_MS, 60_000)
-  // Per-request board render: no ISR stale-while-revalidate gap to budget.
-  // One worker poll plus the open-tab re-read stays inside the badge
-  // threshold, so a healthy poller does not show "Updates delayed".
+  // Cached HTML is deleted after a worker tick (no stale-while-revalidate
+  // response to budget). One poll plus the open-tab re-read stays inside
+  // the badge threshold, so a healthy poller does not show "Updates delayed".
   assert.ok(POLL_INTERVAL_MS + BOARD_REFRESH_MS < BOARD_STALE_AFTER_MS)
 })
 

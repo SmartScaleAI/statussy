@@ -28,11 +28,18 @@ type PageProps = {
 }
 
 /**
- * Per-request render, same as the board (`app/page.tsx`). A 60s ISR window
- * served the previous detail HTML on the stale request and only a later
- * reload saw the new snapshot. Must stay a literal for static analysis.
+ * Same cache as the board (`app/page.tsx`): keep the rendered detail until
+ * the worker deletes it. A numeric `revalidate` is stale-while-revalidate
+ * on Vercel; `0` renders from Postgres on every request. Empty
+ * `generateStaticParams` caches each id on first visit instead of at
+ * build (one Postgres read per service would blow the build). Must stay
+ * a literal for static analysis.
  */
-export const revalidate = 0
+export const revalidate = false
+
+export function generateStaticParams() {
+  return []
+}
 
 /** Geist accents by severity — matches the board card palette. */
 const STATUS_TEXT: Record<BoardStatus, string> = {

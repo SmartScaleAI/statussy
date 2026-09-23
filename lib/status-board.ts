@@ -28,9 +28,10 @@ function withScopeNote(
 }
 
 export const getStatusBoard = cache(async function getStatusBoard() {
-  // The board route is per-request (`revalidate = 0` in `app/page.tsx`)
-  // and this read is not background-cached, so the render cannot be a
-  // stale ISR document. Do not call cookies()/headers()/auth from
+  // The board HTML is cached until the worker deletes it
+  // (`revalidate = false` in `app/page.tsx`). This read runs for that
+  // regeneration, not for every refresh, and not behind a background
+  // `unstable_cache`. Do not call cookies()/headers()/auth from
   // StatusBoard — My Stack first paint is a separate route, and this
   // payload must stay a shared board snapshot. The freshness stamp stays
   // DB-driven (`refreshedAt` below), so the Stale badge semantics are

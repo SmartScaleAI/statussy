@@ -244,7 +244,7 @@ sends; the tick still succeeds.
 | `BETTER_AUTH_URL` | Vercel (Next.js app) | Public site origin Better Auth uses for callbacks. Production users land on **www** (`https://www.statussy.com`, no trailing slash). Apex (`https://statussy.com`) 308s to www. |
 | `RESEND_API_KEY` | Vercel (Next.js app) and Railway (worker) | Resend API key. App: magic-link email (`POST /api/auth/sign-in/magic-link`). Worker: opt-in My Stack digests (SMA-115). Missing on the worker skips digest sends; the tick still succeeds. **Colin may need to add this on the Railway worker** — this PR does not change secrets. |
 | `RESEND_FROM` | Vercel (Next.js app) and Railway (worker) | Verified Resend from address. Worker default is `Statussy <noreply@statussy.com>` (never `smartaiscaling.com`). Set **`RESEND_FROM=Statussy <noreply@statussy.com>` on the Railway worker and redeploy** so Mail shows Statussy, not a raw address. `RESEND_FROM_EMAIL` is accepted as an alias. Same from-domain as magic link. |
-| `STATUSSY_URL` | Railway (worker) | Public board origin used in digest links, e.g. `https://www.statussy.com` (no trailing slash). Optional; falls back to `BETTER_AUTH_URL`, then `https://www.statussy.com`. |
+| `STATUSSY_URL` | Railway (worker) | Public board origin used in digest links and to delete the cached board after a tick (`POST /api/revalidate-board`), e.g. `https://www.statussy.com` (no trailing slash). Optional; falls back to `BETTER_AUTH_URL`, then `https://www.statussy.com`. |
 | `GOOGLE_CLIENT_ID` | Vercel (Next.js app) | Google OAuth client ID. Authorized redirect: `{BETTER_AUTH_URL}/api/auth/callback/google`. |
 | `GOOGLE_CLIENT_SECRET` | Vercel (Next.js app) | Google OAuth client secret. |
 | `GITHUB_CLIENT_ID` | Vercel (Next.js app) | GitHub OAuth app client ID. Callback: `{BETTER_AUTH_URL}/api/auth/callback/github`. |
@@ -380,15 +380,26 @@ reads the latest `service_snapshots` row per service from Postgres
 [`lib/live-status.ts`](lib/live-status.ts)) and merges it over the mock
 registry in [`data/services.ts`](data/services.ts).
 
-### Per-request board render
+### Cached board, deleted after each tick
 
 The board (`/`, `/services`, and the internal My Stack rewrites) and detail
-pages (`/services/[id]`) export `revalidate = 0`. A 60s ISR window on Vercel
-is stale-while-revalidate: the request that notices the cached page is stale
-is served the previous HTML (`x-vercel-cache: STALE`), and only a later
-reload sees the regeneration. Stacked on `unstable_cache`, that made status
-checks lag until several refreshes. The page now renders for the request and
-reads Postgres in that same render. The freshness stamp and Stale badges are
+pages (`/services/[id]`) export `revalidate = false`. That caches the HTML
+(CDN / full-route cache) with no time-based stale-while-revalidate window.
+A numeric `revalidate` (the old `60`) makes Vercel answer the request that
+notices the page is stale with the previous HTML (`x-vercel-cache: STALE`);
+only a later reload sees the regeneration. `revalidate = 0` avoided that by
+rendering every request from Postgres, which made hard refresh wait on a
+cold dynamic render.
+
+After a tick writes snapshots, the worker `POST`s
+`/api/revalidate-board` on `STATUSSY_URL` with the bearer in
+`board_revalidate_secret` (migration `0014`, inserted by the worker, read
+by the app — no extra env var). The route calls `revalidatePath("/", "layout")`
+with no cache profile, which **deletes** the cached documents. The next
+request regenerates in the foreground (`x-vercel-cache: REVALIDATED`) and
+shows the snapshots from that tick; refreshes until the next tick are cache
+hits. Do not switch the route to `revalidateTag(..., "max")` — that is
+stale-while-revalidate again. The freshness stamp and Stale badges are
 still computed from snapshot timestamps in the DB, not from render time.
 
 Client-side features still never render user-specific data on the server:

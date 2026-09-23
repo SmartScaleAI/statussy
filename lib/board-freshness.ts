@@ -13,8 +13,11 @@
  * or a payload older than the threshold — showed the loud badge next to
  * fresh-looking cards while the worker was still polling.
  * `BOARD_REFRESH_MS` is how often the open board re-reads that payload so
- * a healthy poller stays under the threshold. A real multi-tick gap still
- * trips the badge, because new renders keep the old `refreshedAt`.
+ * a healthy poller stays under the threshold. The cached document is
+ * replaced when the worker deletes it, so that re-read is the new
+ * snapshots rather than a stale-while-revalidate of the previous HTML.
+ * A real multi-tick gap still trips the badge, because new renders keep
+ * the old `refreshedAt`.
  *
  * Import-free on purpose: client-safe, and runnable under
  * `node --test` without path-alias resolution (same policy as the other
@@ -32,9 +35,10 @@ export const POLL_INTERVAL_MS = 5 * 60 * 1000
 export const BOARD_STALE_AFTER_MS = 3 * POLL_INTERVAL_MS
 
 /**
- * Open-tab re-read interval. The board route renders per request, so this
- * refresh is the latest snapshots rather than a stale ISR document. One
- * poll interval plus this interval stays inside `BOARD_STALE_AFTER_MS`.
+ * Open-tab re-read interval. The board document stays cached until the
+ * worker deletes it after a tick, so this re-read does not budget an
+ * extra stale-while-revalidate response. One poll interval plus this
+ * interval stays inside `BOARD_STALE_AFTER_MS`.
  */
 export const BOARD_REFRESH_MS = 60_000
 
