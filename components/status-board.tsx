@@ -40,11 +40,10 @@ export async function StatusBoard({
           {/* SMA-133 / SMA-136: pill tabs mount one pane at a time so a long
             My Stack cannot bury All Services. The All Services grid (and
             each card) reads the ?category= filter with useSearchParams
-            (SMA-89), which the 60s-cached prerender cannot know — so that
+            (SMA-89), which this server render does not read — so that
             subtree client-renders up to this Suspense boundary (SMA-97).
-            Board snapshots stay on the 60s getStatusBoard ISR cadence
-            (SMA-145): this component must not read cookies/session, or the
-            shared HTML cache is lost. initialTab comes from the route
+            This component must not read cookies/session (SMA-145):
+            initialTab comes from the route
             (All Services on `/` and `/services`; My Stack on the internal
             rewrite variant). My Stack cards stay client-side (SMA-104 /
             SMA-146) so the payload never embeds a user's stack. Favorites

@@ -28,15 +28,13 @@ function withScopeNote(
 }
 
 export const getStatusBoard = cache(async function getStatusBoard() {
-  // No `connection()` gate here (SMA-97 / SMA-145): the board route is
-  // ISR-cached with `revalidate = 60` (see `app/page.tsx`). Do not call
-  // cookies()/headers()/auth from StatusBoard or this render becomes
-  // per-request. Snapshot reads are also `unstable_cache`d for 60s (SMA-144)
-  // so a dynamic request — or a second ISR variant — does not re-query
-  // Postgres. A build-time prerender is fine: it can be at most 60s older
-  // than an uncached render, well inside the 5m worker cadence. The
-  // freshness stamp stays DB-driven (`refreshedAt` below), so the Stale
-  // badge semantics are unchanged.
+  // The board route is per-request (`revalidate = 0` in `app/page.tsx`)
+  // and this read is not background-cached, so the render cannot be a
+  // stale ISR document. Do not call cookies()/headers()/auth from
+  // StatusBoard — My Stack first paint is a separate route, and this
+  // payload must stay a shared board snapshot. The freshness stamp stays
+  // DB-driven (`refreshedAt` below), so the Stale badge semantics are
+  // unchanged.
   const snapshots = await getLiveSnapshots()
 
   const items = sortServices(

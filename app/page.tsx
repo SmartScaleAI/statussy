@@ -4,15 +4,17 @@ import { HomeBoardPage } from "@/components/home-board-page"
 import { DEFAULT_BOARD_TAB } from "@/lib/board-tab"
 
 /**
- * ISR (SMA-97 / SMA-145): serve the board from the Vercel/Next page cache
- * and re-render at most every 60s. The page must not read cookies(),
- * headers(), or the Better Auth session — that opts the shared snapshot
- * out of the cache. Signed-in My Stack first paint is a second ISR
- * variant selected by proxy.ts from cookies only. Header Sign In vs
- * avatar uses a JS hint cookie (SMA-147), not cookies() here. Must stay
- * a literal — Next requires `revalidate` to be statically analyzable.
+ * Per-request render. `revalidate = 60` made Vercel serve the previous
+ * HTML on the request that noticed the page was stale
+ * (`x-vercel-cache: STALE`) and only a later reload saw the new
+ * snapshots, so status checks lagged across several refreshes. `0` keeps
+ * this response tied to the snapshots read for it. Do not read cookies(),
+ * headers(), or the Better Auth session here — signed-in My Stack first
+ * paint is a second route selected by proxy.ts, and header Sign In vs
+ * avatar uses a JS hint cookie (SMA-147). Must stay a literal — Next
+ * requires `revalidate` to be statically analyzable.
  */
-export const revalidate = 60
+export const revalidate = 0
 
 export const metadata: Metadata = {
   alternates: {

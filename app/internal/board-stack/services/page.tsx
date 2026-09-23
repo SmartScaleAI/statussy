@@ -3,10 +3,10 @@ import type { Metadata } from "next"
 import { HomeBoardPage } from "@/components/home-board-page"
 
 /**
- * Internal ISR variant for `/services` My Stack first paint (SMA-145).
+ * Internal route for `/services` My Stack first paint (SMA-145).
  * Keep `revalidate` in sync with `app/internal/board-stack/page.tsx`.
  */
-export const revalidate = 60
+export const revalidate = 0
 
 export const metadata: Metadata = {
   robots: {
