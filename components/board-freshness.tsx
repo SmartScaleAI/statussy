@@ -1,38 +1,26 @@
 "use client"
 
-import { useEffect, useState } from "react"
-
 import { Badge } from "@/components/ui/badge"
+import { useBoardNow } from "@/components/board-clock"
 import {
   boardFreshnessTitle,
   formatRelativeAge,
   isBoardStale,
 } from "@/lib/board-freshness"
 
-/** Re-render cadence — labels have minute granularity, 30s keeps them honest. */
-const TICK_MS = 30_000
-
 /**
  * Board freshness stamp (SMA-83). Healthy = a quiet relative stamp
  * ("Updated 2m ago") with absolute UTC + poll cadence in the tooltip.
  * Stale (worker/poller dead or aged data) = a loud "Updates delayed" chip.
  *
- * SSR + hydrate: the server prerenders the label from its own clock and the
- * client re-computes every `TICK_MS` after mount. With the 60s board cache
- * (SMA-97) the prerender can be up to a minute older than the view, so the
- * clocks can disagree by a minute bucket or two; the label carries
- * `suppressHydrationWarning`. The fresh/stale branch only flips if the
- * 15-minute threshold is crossed between prerender and hydration (now at
- * most ~60s apart), which React recovers from with a client render.
+ * The clock and the ISR re-read live in `BoardFreshnessProvider`, shared
+ * with card footers so the two surfaces age the same payload. SSR + hydrate
+ * can disagree by a cache window; the label carries `suppressHydrationWarning`.
+ * The fresh/stale branch only flips when the 15-minute threshold is crossed
+ * between prerender and hydration, which React recovers from on the client.
  */
 export function BoardFreshness({ refreshedAt }: { refreshedAt: string }) {
-  const [now, setNow] = useState(() => Date.now())
-
-  useEffect(() => {
-    const id = setInterval(() => setNow(Date.now()), TICK_MS)
-    return () => clearInterval(id)
-  }, [])
-
+  const now = useBoardNow()
   const title = boardFreshnessTitle(refreshedAt)
 
   if (isBoardStale(refreshedAt, now)) {

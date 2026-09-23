@@ -1,5 +1,6 @@
 import { Suspense } from "react"
 
+import { BoardFreshnessProvider } from "@/components/board-clock"
 import { BoardPanes } from "@/components/board-panes"
 import { FavoriteServicesProvider } from "@/components/favorite-services"
 import { MyServices } from "@/components/my-services"
@@ -34,8 +35,9 @@ export async function StatusBoard({
 
   return (
     <FavoriteServicesProvider>
-      <div className="course-design-board">
-        {/* SMA-133 / SMA-136: pill tabs mount one pane at a time so a long
+      <BoardFreshnessProvider refreshedAt={refreshedAt}>
+        <div className="course-design-board">
+          {/* SMA-133 / SMA-136: pill tabs mount one pane at a time so a long
             My Stack cannot bury All Services. The All Services grid (and
             each card) reads the ?category= filter with useSearchParams
             (SMA-89), which the 60s-cached prerender cannot know — so that
@@ -49,49 +51,50 @@ export async function StatusBoard({
             prefetch on the client in parallel with auth — still not from
             this server render. Last tab persists in localStorage and a
             mirroring cookie when signed-in with favorites. */}
-        <BoardPanes
-          initialTab={initialTab}
-          stack={
-            <MyServices
-              items={items.map((item) => toSortFields(item))}
-              refreshedAt={refreshedAt}
-            >
-              {items.map((service) => (
-                <ServiceCard key={service.id} service={service} />
-              ))}
-            </MyServices>
-          }
-          all={
-            <Suspense
-              fallback={
-                <div className="flex flex-col gap-3">
-                  <h2
-                    id="all-services-heading"
-                    className="font-heading text-lg font-semibold tracking-tight text-foreground md:text-xl"
-                  >
-                    All Services
-                  </h2>
-                  <p className="text-sm text-muted-foreground" role="status">
-                    Loading services…
-                  </p>
-                </div>
-              }
-            >
-              <StatusBoardGrid
-                items={items.map((item) => ({
-                  ...toSortFields(item),
-                  category: item.category,
-                }))}
+          <BoardPanes
+            initialTab={initialTab}
+            stack={
+              <MyServices
+                items={items.map((item) => toSortFields(item))}
                 refreshedAt={refreshedAt}
               >
                 {items.map((service) => (
                   <ServiceCard key={service.id} service={service} />
                 ))}
-              </StatusBoardGrid>
-            </Suspense>
-          }
-        />
-      </div>
+              </MyServices>
+            }
+            all={
+              <Suspense
+                fallback={
+                  <div className="flex flex-col gap-3">
+                    <h2
+                      id="all-services-heading"
+                      className="font-heading text-lg font-semibold tracking-tight text-foreground md:text-xl"
+                    >
+                      All Services
+                    </h2>
+                    <p className="text-sm text-muted-foreground" role="status">
+                      Loading services…
+                    </p>
+                  </div>
+                }
+              >
+                <StatusBoardGrid
+                  items={items.map((item) => ({
+                    ...toSortFields(item),
+                    category: item.category,
+                  }))}
+                  refreshedAt={refreshedAt}
+                >
+                  {items.map((service) => (
+                    <ServiceCard key={service.id} service={service} />
+                  ))}
+                </StatusBoardGrid>
+              </Suspense>
+            }
+          />
+        </div>
+      </BoardFreshnessProvider>
     </FavoriteServicesProvider>
   )
 }

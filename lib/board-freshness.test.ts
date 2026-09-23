@@ -2,6 +2,7 @@ import assert from "node:assert/strict"
 import { test } from "node:test"
 
 import {
+  BOARD_REFRESH_MS,
   BOARD_STALE_AFTER_MS,
   boardFreshnessTitle,
   formatRelativeAge,
@@ -19,6 +20,18 @@ function isoBefore(ms: number) {
 test("stale threshold = 3 missed 5m poll ticks", () => {
   assert.equal(POLL_INTERVAL_MS, 5 * 60 * 1000)
   assert.equal(BOARD_STALE_AFTER_MS, 3 * POLL_INTERVAL_MS)
+})
+
+test("open-board refresh stays inside the stale window on a healthy poll", () => {
+  assert.equal(BOARD_REFRESH_MS, 60_000)
+  // 60s ISR / snapshot cache (page `revalidate`, LIVE_SNAPSHOT_CACHE_SECONDS).
+  const cacheMs = 60_000
+  // A stale-while-revalidate response can repeat the previous cache once.
+  const staleResponseMs = cacheMs
+  assert.ok(
+    POLL_INTERVAL_MS + cacheMs + staleResponseMs + BOARD_REFRESH_MS <
+      BOARD_STALE_AFTER_MS
+  )
 })
 
 test("isBoardStale flips only past the threshold", () => {
