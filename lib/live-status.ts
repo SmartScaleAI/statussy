@@ -71,9 +71,14 @@ declare global {
   var __statussyPool: Pool | undefined
 }
 
-/** Fail fast instead of hanging a server render on an unreachable database. */
+/**
+ * Fail a dead connection quickly. The board query itself is a few seconds
+ * (latest snapshot per service plus health and incidents), and it runs when
+ * the cached page is regenerated — not on every refresh — so the statement
+ * budget matches the worker pool rather than cutting a live read into mock.
+ */
 const CONNECT_TIMEOUT_MS = 5_000
-const QUERY_TIMEOUT_MS = 8_000
+const QUERY_TIMEOUT_MS = 20_000
 
 /** Hosts reachable only over trusted private networks — no TLS needed. */
 function isPrivateHost(hostname: string): boolean {
@@ -226,13 +231,12 @@ async function queryLiveSnapshots(): Promise<Map<string, LiveSnapshot>> {
  * read fails, so the board can fall back to mock data.
  *
  * The read is not `unstable_cache`d. That helper returns the previous
- * snapshot and refreshes in the background, and the board used to put a
- * 60s ISR page cache on top of it. Vercel then answered the request that
- * noticed the page was stale with the old HTML (`x-vercel-cache: STALE`);
- * only a later reload saw the regeneration, so service checks lagged
- * across several refreshes. This query runs in the same render as the
- * response. Stale/freshness badges still use snapshot `fetchedAt` +
- * `stale`, not render time.
+ * snapshot and refreshes in the background. The board HTML is cached
+ * until the worker deletes it (`revalidate = false` + `revalidatePath`),
+ * so this query runs when that cache is regenerated, not on every
+ * refresh, and not as a stale-while-revalidate of the previous document.
+ * Stale/freshness badges still use snapshot `fetchedAt` + `stale`, not
+ * render time.
  */
 export async function getLiveSnapshots(): Promise<Map<string, LiveSnapshot>> {
   const pool = getPool()
@@ -243,11 +247,56 @@ export async function getLiveSnapshots(): Promise<Map<string, LiveSnapshot>> {
   try {
     return await queryLiveSnapshots()
   } catch (err) {
+    // Build prerenders the four board routes at once. A timed-out read would
+    // be cached as mock until the next worker delete, so try the query once
+    // more before giving up.
+    if (err instanceof Error && err.message === "Query read timeout") {
+      try {
+        return await queryLiveSnapshots()
+      } catch (retryErr) {
+        console.error(
+          `[statussy] live snapshot read failed (db=${describeDatabaseTarget()}) — board is falling back to MOCK data`,
+          retryErr
+        )
+        return new Map()
+      }
+    }
     console.error(
       `[statussy] live snapshot read failed (db=${describeDatabaseTarget()}) — board is falling back to MOCK data`,
       err
     )
     return new Map()
+  }
+}
+
+let warnedRevalidateSecret = false
+
+/**
+ * Bearer for `POST /api/revalidate-board`. The worker inserts the row
+ * (migration 0014). Null when the database is unset, the table is missing,
+ * or the read fails — the route then refuses the purge instead of deleting
+ * the board cache anonymously.
+ */
+export async function readBoardRevalidateSecret(): Promise<string | null> {
+  const pool = getPool()
+  if (!pool) {
+    return null
+  }
+  try {
+    const { rows } = await pool.query<{ secret: string }>(
+      "SELECT secret FROM board_revalidate_secret WHERE id = true"
+    )
+    const secret = rows[0]?.secret
+    return typeof secret === "string" && secret.length >= 32 ? secret : null
+  } catch (err) {
+    if (!warnedRevalidateSecret) {
+      warnedRevalidateSecret = true
+      console.error(
+        `[statussy] board revalidate secret read failed (db=${describeDatabaseTarget()})`,
+        err
+      )
+    }
+    return null
   }
 }
 

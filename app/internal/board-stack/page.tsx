@@ -5,11 +5,11 @@ import { HomeBoardPage } from "@/components/home-board-page"
 /**
  * Internal route for My Stack first paint (SMA-145). proxy.ts rewrites
  * `/` here when a session cookie and `statussy:boardTab=stack` are present.
- * Same per-request snapshot as the public board; no cookies/session/favorites
+ * Same cached snapshot as the public board; no cookies/session/favorites
  * DB. Direct visits are redirected to `/`. Keep `revalidate` in sync with
- * `app/page.tsx`.
+ * `app/page.tsx` (`false`: cached until the worker deletes it).
  */
-export const revalidate = 0
+export const revalidate = false
 
 export const metadata: Metadata = {
   robots: {

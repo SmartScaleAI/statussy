@@ -229,6 +229,10 @@ import {
 } from "./store.js"
 import { createTickDedupe, type TickDedupe } from "./tick-dedupe.js"
 import { createResendMailer, sendStackDigests } from "./digest.js"
+import {
+  ensureBoardRevalidateSecret,
+  purgeBoardCache,
+} from "./revalidate-board.js"
 
 const config = loadConfig()
 const pool = createPool(config.databaseUrl, config.fetchConcurrency)
@@ -1576,13 +1580,32 @@ async function executeTick(
     console.warn(
       `[tick] #${tickNumber} finished after a newer tick started ok=${okCount}/${results.length} in=${Date.now() - startedAtMs}ms`,
     )
-    return
+  } else {
+    state.lastTickAt = finishedAt
+    state.lastTickOk = okCount === results.length
+    console.log(
+      `[tick] #${tickNumber} done ok=${okCount}/${results.length} in=${Date.now() - startedAtMs}ms 304s=${conditional.notModified}/${conditional.requests} at=${state.lastTickAt.toISOString()}`,
+    )
   }
-  state.lastTickAt = finishedAt
-  state.lastTickOk = okCount === results.length
-  console.log(
-    `[tick] #${tickNumber} done ok=${okCount}/${results.length} in=${Date.now() - startedAtMs}ms 304s=${conditional.notModified}/${conditional.requests} at=${state.lastTickAt.toISOString()}`,
-  )
+  // Snapshots are in Postgres. Delete the cached board so the next
+  // refresh renders them in the foreground instead of serving the
+  // previous HTML. A failed purge must not fail the tick.
+  try {
+    const secret = await ensureBoardRevalidateSecret(pool)
+    const purged = await purgeBoardCache({
+      publicSiteUrl: config.publicSiteUrl,
+      secret,
+    })
+    if (purged.ok) {
+      console.log(`[revalidate] board cache deleted`)
+    } else {
+      console.error(
+        `[revalidate] board cache delete failed status=${purged.status}`,
+      )
+    }
+  } catch (err) {
+    console.error(`[revalidate] failed: ${(err as Error).message}`)
+  }
 }
 
 async function runTick(): Promise<void> {
