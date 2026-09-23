@@ -10,7 +10,7 @@ import {
 
 /**
  * SMA-145: cookie-only board tab at the network boundary (Next 16 proxy).
- * `/` and `/services` stay on shared 60s ISR All Services HTML. A Better
+ * `/` and `/services` render All Services per request. A Better
  * Auth session cookie plus `statussy:boardTab=stack` rewrites onto a second
  * ISR variant whose first HTML is already My Stack (loader only — no
  * private favorite ids). No session or favorites DB on the page.

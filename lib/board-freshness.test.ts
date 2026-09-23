@@ -24,14 +24,10 @@ test("stale threshold = 3 missed 5m poll ticks", () => {
 
 test("open-board refresh stays inside the stale window on a healthy poll", () => {
   assert.equal(BOARD_REFRESH_MS, 60_000)
-  // 60s ISR / snapshot cache (page `revalidate`, LIVE_SNAPSHOT_CACHE_SECONDS).
-  const cacheMs = 60_000
-  // A stale-while-revalidate response can repeat the previous cache once.
-  const staleResponseMs = cacheMs
-  assert.ok(
-    POLL_INTERVAL_MS + cacheMs + staleResponseMs + BOARD_REFRESH_MS <
-      BOARD_STALE_AFTER_MS
-  )
+  // Per-request board render: no ISR stale-while-revalidate gap to budget.
+  // One worker poll plus the open-tab re-read stays inside the badge
+  // threshold, so a healthy poller does not show "Updates delayed".
+  assert.ok(POLL_INTERVAL_MS + BOARD_REFRESH_MS < BOARD_STALE_AFTER_MS)
 })
 
 test("isBoardStale flips only past the threshold", () => {

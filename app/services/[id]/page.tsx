@@ -28,22 +28,11 @@ type PageProps = {
 }
 
 /**
- * ISR (SMA-97): serve detail pages from the Vercel/Next page cache and
- * re-render each at most every 60s — same window and rationale as the board
- * (`app/page.tsx`). Must stay a literal for static analysis.
+ * Per-request render, same as the board (`app/page.tsx`). A 60s ISR window
+ * served the previous detail HTML on the stale request and only a later
+ * reload saw the new snapshot. Must stay a literal for static analysis.
  */
-export const revalidate = 60
-
-/**
- * Empty on purpose: with ~450 registry services (3 DB queries each), build
- * would hammer Postgres prerendering pages nobody visits. An empty array
- * keeps the route on the static/ISR path (without it Next renders the route
- * dynamically on every hit), and each page renders on first visit, then
- * stays cached for the 60s window.
- */
-export function generateStaticParams(): Array<{ id: string }> {
-  return []
-}
+export const revalidate = 0
 
 /** Geist accents by severity — matches the board card palette. */
 const STATUS_TEXT: Record<BoardStatus, string> = {
@@ -165,10 +154,8 @@ export default async function ServiceDetailPage({ params }: PageProps) {
     notFound()
   }
 
-  // No `connection()` gate (SMA-97): the route is ISR-cached (see
-  // `revalidate` above), so this DB read runs at most ~once a minute per
-  // service. Timestamps and the Stale badge come from the snapshot itself,
-  // so a ≤60s-old cached view keeps honest, DB-driven freshness.
+  // Timestamps and the Stale badge come from the snapshot itself, so
+  // freshness stays DB-driven rather than "rendered just now".
   const detail = await getServiceLiveDetail(id)
   const snapshot = detail?.snapshot ?? null
 
@@ -190,10 +177,11 @@ export default async function ServiceDetailPage({ params }: PageProps) {
             wraps Official status under Back on narrow viewports. */}
         <div className="flex items-center justify-between gap-3">
           {/* Back restores the board category filter (SMA-89). The category
-              is read from the URL on the client so the cached page (SMA-97)
-              stays shared across ?category= variants; the fallback is the
-              same chip pointing at the bare board. Arrow lives on the
-              client chip (SMA-94) so the cached shell and hydrated link match. */}
+              is read from the URL on the client so the server render
+              (SMA-97) stays the same across ?category= variants; the
+              fallback is the same chip pointing at the bare board. Arrow
+              lives on the client chip (SMA-94) so the shell and hydrated
+              link match. */}
           <Suspense fallback={<BackToBoardLinkFallback />}>
             <BackToBoardLink categories={distinctCategories(services)} />
           </Suspense>

@@ -39,11 +39,11 @@ function BackChiclet({ href }: { href: string }) {
 /**
  * Detail-page Back link that restores the board category filter (SMA-89).
  *
- * Reads `?category=` with `useSearchParams` on the client so the detail page
- * itself never touches request search params — that would opt the route out
- * of the 60s ISR cache (SMA-97). Render it inside `<Suspense>` with
- * `<BackToBoardLinkFallback />`: the cached shell carries the plain-board
- * Back link and hydration swaps in the filtered href. Arrow is SMA-94.
+ * Reads `?category=` with `useSearchParams` on the client so the detail
+ * page itself never touches request search params (SMA-97). Render it
+ * inside `<Suspense>` with `<BackToBoardLinkFallback />`: the shell
+ * carries the plain-board Back link and hydration swaps in the filtered
+ * href. Arrow is SMA-94.
  */
 export function BackToBoardLink({ categories }: { categories: string[] }) {
   const searchParams = useSearchParams()

@@ -39,10 +39,10 @@ export function useBoardNow() {
  * ISR payload while the tab is visible.
  *
  * `router.refresh()` clears the client cache and re-renders server
- * components without dropping client state. It does not bypass the 60s
- * server cache; the interval matches that window. A healthy worker moves
- * `refreshedAt` forward. A multi-tick gap leaves it old, and the badge
- * still goes loud.
+ * components without dropping client state. The board route is
+ * per-request, so this re-read is the latest snapshots rather than a
+ * stale ISR document. A healthy worker moves `refreshedAt` forward. A
+ * multi-tick gap leaves it old, and the badge still goes loud.
  */
 export function BoardFreshnessProvider({
   refreshedAt,

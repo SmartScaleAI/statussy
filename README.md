@@ -380,27 +380,27 @@ reads the latest `service_snapshots` row per service from Postgres
 [`lib/live-status.ts`](lib/live-status.ts)) and merges it over the mock
 registry in [`data/services.ts`](data/services.ts).
 
-### Page cache (60s ISR)
+### Per-request board render
 
-The board (`/`, `/services`) and detail pages (`/services/[id]`) export
-`revalidate = 60` (SMA-97): Vercel serves them from the Next.js page cache and
-re-renders each route at most once a minute, so repeated hits (including bots)
-don't each cost a function invocation plus a Postgres round trip over the
-public proxy. The worker only writes every 5 minutes, so a view that is up to
-60s older than an uncached render stays well inside the freshness floor; the
-freshness stamp and Stale badges are computed from snapshot timestamps in the
-DB, not from render time, so their semantics are unchanged.
+The board (`/`, `/services`, and the internal My Stack rewrites) and detail
+pages (`/services/[id]`) export `revalidate = 0`. A 60s ISR window on Vercel
+is stale-while-revalidate: the request that notices the cached page is stale
+is served the previous HTML (`x-vercel-cache: STALE`), and only a later
+reload sees the regeneration. Stacked on `unstable_cache`, that made status
+checks lag until several refreshes. The page now renders for the request and
+reads Postgres in that same render. The freshness stamp and Stale badges are
+still computed from snapshot timestamps in the DB, not from render time.
 
-Client-side features are unaffected by the cache because they never render
-user-specific data on the server: signed-in My Stack stars load from Railway
-Postgres (`user_favorites`) through a Better Auth–aware server action after
-hydrate, so the shared 60s page cache cannot leak another user's stack. My
-Stack sort order stays in `localStorage` (`statussy:myStackSortBy`) for v1.
-Theme switching is `next-themes` on the client, and the `?category=` filter
-(SMA-89) is read with `useSearchParams` inside client components. The cached
-shell can't know the query string, so the All Services grid and the detail
-page's Back link hydrate behind `<Suspense>` boundaries and apply the filter
-on the client — one shared cached page serves every `?category=` variant.
+Client-side features still never render user-specific data on the server:
+signed-in My Stack stars load from Railway Postgres (`user_favorites`)
+through a Better Auth–aware server action after hydrate, so the server
+payload cannot leak another user's stack. My Stack sort order stays in
+`localStorage` (`statussy:myStackSortBy`) for v1. Theme switching is
+`next-themes` on the client, and the `?category=` filter (SMA-89) is read
+with `useSearchParams` inside client components. The server render doesn't
+know the query string, so the All Services grid and the detail page's Back
+link hydrate behind `<Suspense>` boundaries and apply the filter on the
+client — the same server payload serves every `?category=` variant.
 
 Signed-out visitors can still use the board; starring does not write
 anonymous / localStorage favorites (sign-in is required — SMA-103). There

@@ -7,7 +7,7 @@ import { StatusBoard } from "@/components/status-board"
 import type { BoardTab } from "@/lib/board-tab"
 
 /**
- * Shared `/` and `/services` chrome. `initialTab` selects which ISR HTML
+ * Shared `/` and `/services` chrome. `initialTab` selects which route
  * variant to emit (SMA-145): All Services on the public routes, My Stack
  * on the internal rewrite targets. Must not read cookies/session here.
  * Header auth chrome uses a JS hint cookie (SMA-147), not cookies().

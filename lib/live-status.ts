@@ -9,7 +9,6 @@
  * database is unreachable or `DATABASE_URL` is unset, the whole board falls
  * back to mock.
  */
-import { unstable_cache } from "next/cache"
 import { Pool } from "pg"
 
 import type { ServiceStatus } from "@/data/services"
@@ -51,13 +50,6 @@ const LIVE_STATUSES: readonly LiveStatus[] = [
  * board staleness never drift apart.
  */
 export const STALE_AFTER_MS = BOARD_STALE_AFTER_MS
-
-/**
- * Cross-request TTL for live snapshot reads (SMA-144). Same 60s window as
- * board/detail ISR (SMA-97): worker writes every 5m, so a cached query at
- * most ~60s older than uncached stays inside the freshness floor.
- */
-export const LIVE_SNAPSHOT_CACHE_SECONDS = 60
 
 type SnapshotRow = {
   service_id: string
@@ -168,43 +160,13 @@ function toLiveStatus(status: string): LiveStatus {
 }
 
 /**
- * JSON-safe snapshot rows for `unstable_cache` (Map/Date are not).
- * `fetchedAt` is ISO-8601; revived to `Date` in `getLiveSnapshots`.
+ * Postgres board query. Throws on failure so a transient error is not
+ * turned into an empty board by the caller's fallback.
  */
-type CachedLiveSnapshot = {
-  serviceId: string
-  status: LiveStatus
-  incidentTitle: string | null
-  stale: boolean
-  fetchedAt: string
-  chicklet: HealthChicklet
-}
-
-function snapshotsFromCachedRows(
-  rows: CachedLiveSnapshot[]
-): Map<string, LiveSnapshot> {
-  const snapshots = new Map<string, LiveSnapshot>()
-  for (const row of rows) {
-    snapshots.set(row.serviceId, {
-      serviceId: row.serviceId,
-      status: row.status,
-      incidentTitle: row.incidentTitle,
-      stale: row.stale,
-      fetchedAt: new Date(row.fetchedAt),
-      chicklet: row.chicklet,
-    })
-  }
-  return snapshots
-}
-
-/**
- * Postgres board query. Throws on failure so `unstable_cache` does not
- * store a mock-empty miss from a transient error.
- */
-async function queryLiveSnapshotRows(): Promise<CachedLiveSnapshot[]> {
+async function queryLiveSnapshots(): Promise<Map<string, LiveSnapshot>> {
   const pool = getPool()
   if (!pool) {
-    return []
+    return new Map()
   }
 
   const { rows } = await pool.query<SnapshotRow>(
@@ -237,32 +199,25 @@ async function queryLiveSnapshotRows(): Promise<CachedLiveSnapshot[]> {
     [CLOSED_INCIDENT_STATUSES]
   )
 
-  return rows.map((row) => {
+  const snapshots = new Map<string, LiveSnapshot>()
+  for (const row of rows) {
     const status = toLiveStatus(row.status)
-    return {
+    snapshots.set(row.service_id, {
       serviceId: row.service_id,
       status,
       incidentTitle: row.incident_title,
       stale: row.stale,
-      fetchedAt: new Date(row.fetched_at).toISOString(),
+      fetchedAt: new Date(row.fetched_at),
       chicklet: resolveHealthChicklet(
         status,
         Number(row.operational ?? 0),
         Number(row.total ?? 0),
         Number(row.open_incidents ?? 0)
       ),
-    }
-  })
-}
-
-const getCachedLiveSnapshotRows = unstable_cache(
-  queryLiveSnapshotRows,
-  ["statussy-live-snapshots"],
-  {
-    revalidate: LIVE_SNAPSHOT_CACHE_SECONDS,
-    tags: ["live-snapshots"],
+    })
   }
-)
+  return snapshots
+}
 
 /**
  * Latest snapshot per service plus live Health from current `components`
@@ -270,11 +225,14 @@ const getCachedLiveSnapshotRows = unstable_cache(
  * (SMA-79). Returns an empty map when no database is configured or the
  * read fails, so the board can fall back to mock data.
  *
- * The Postgres read is `unstable_cache`d for `LIVE_SNAPSHOT_CACHE_SECONDS`
- * (SMA-144) so dynamic requests and the two ISR board variants share one
- * snapshot payload instead of each paying the board query. Stale/freshness
- * badges still use snapshot `fetchedAt` + `stale` at render time, not cache
- * time.
+ * The read is not `unstable_cache`d. That helper returns the previous
+ * snapshot and refreshes in the background, and the board used to put a
+ * 60s ISR page cache on top of it. Vercel then answered the request that
+ * noticed the page was stale with the old HTML (`x-vercel-cache: STALE`);
+ * only a later reload saw the regeneration, so service checks lagged
+ * across several refreshes. This query runs in the same render as the
+ * response. Stale/freshness badges still use snapshot `fetchedAt` +
+ * `stale`, not render time.
  */
 export async function getLiveSnapshots(): Promise<Map<string, LiveSnapshot>> {
   const pool = getPool()
@@ -283,7 +241,7 @@ export async function getLiveSnapshots(): Promise<Map<string, LiveSnapshot>> {
   }
 
   try {
-    return snapshotsFromCachedRows(await getCachedLiveSnapshotRows())
+    return await queryLiveSnapshots()
   } catch (err) {
     console.error(
       `[statussy] live snapshot read failed (db=${describeDatabaseTarget()}) — board is falling back to MOCK data`,
