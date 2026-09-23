@@ -8,6 +8,14 @@
  * When the age exceeds `BOARD_STALE_AFTER_MS` the board fails loud
  * (`Updates delayed`) instead of silently showing an old clock.
  *
+ * That stamp is frozen into the ISR payload. Card footers used to bake
+ * "Checked just now" at the same render and never tick, so an open tab —
+ * or a stale ISR document older than the threshold — showed the loud
+ * badge next to fresh-looking cards while the worker was still polling.
+ * `BOARD_REFRESH_MS` is how often the open board re-reads that payload so
+ * a healthy poller stays under the threshold. A real multi-tick gap still
+ * trips the badge, because new renders keep the old `refreshedAt`.
+ *
  * Import-free on purpose: client-safe, and runnable under
  * `node --test` without path-alias resolution (same policy as the other
  * tested lib modules).
@@ -22,6 +30,14 @@ export const POLL_INTERVAL_MS = 5 * 60 * 1000
  * from this constant — one threshold for "the worker stopped delivering".
  */
 export const BOARD_STALE_AFTER_MS = 3 * POLL_INTERVAL_MS
+
+/**
+ * Open-tab re-read interval. Matches the 60s board ISR and
+ * `LIVE_SNAPSHOT_CACHE_SECONDS` so a refresh is not faster than the cache
+ * that serves it. One poll interval + that cache + one stale-while-revalidate
+ * response + this interval stays inside `BOARD_STALE_AFTER_MS`.
+ */
+export const BOARD_REFRESH_MS = 60_000
 
 /** True when the last successful board update is older than the threshold. */
 export function isBoardStale(refreshedAtIso: string, now = Date.now()) {

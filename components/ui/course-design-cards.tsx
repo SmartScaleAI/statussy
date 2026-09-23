@@ -23,10 +23,11 @@ import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import React, { type MouseEvent } from "react"
 
+import { useBoardNow } from "@/components/board-clock"
 import { FavoriteButton } from "@/components/favorite-button"
 import { CATEGORY_PARAM } from "@/lib/board-filter"
 import { logoInvertClass } from "@/lib/light-logo-ids"
-import { formatTimestamp } from "@/lib/status"
+import { formatCardUpdatedAt, formatTimestamp } from "@/lib/status"
 import { cn } from "@/lib/utils"
 
 function stopCardNavigation(event: MouseEvent) {
@@ -88,6 +89,12 @@ const Card: React.FC<CardProps> = ({ data }) => {
     updatedAt,
     updatedLabel,
   } = data
+
+  // Same client clock as the board badge. A baked label stays "just now"
+  // for the life of the document while the badge ages into "Updates delayed".
+  const now = useBoardNow()
+  const stamp =
+    updatedAt != null ? formatCardUpdatedAt(updatedAt, now) : updatedLabel
 
   const chickletDisplay = chicklet ?? {
     label: "Health",
@@ -167,13 +174,14 @@ const Card: React.FC<CardProps> = ({ data }) => {
         </div>
       </div>
       <div className="card-footer">
-        {updatedLabel ? (
+        {stamp ? (
           <time
             className="updated-at"
             dateTime={updatedAt}
             title={updatedAt ? formatTimestamp(updatedAt) : undefined}
+            suppressHydrationWarning
           >
-            {updatedLabel}
+            {stamp}
           </time>
         ) : (
           <span />
