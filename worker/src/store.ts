@@ -175,9 +175,16 @@ export async function pruneOldSnapshots(pool: pg.Pool): Promise<number> {
     `DELETE FROM service_snapshots
      WHERE fetched_at < now() - make_interval(days => $1)
        AND id NOT IN (
-         SELECT DISTINCT ON (service_id) id
-         FROM service_snapshots
-         ORDER BY service_id, fetched_at DESC, id DESC
+         -- One index probe per service, not a sort of the whole table.
+         SELECT l.id
+         FROM services s
+         CROSS JOIN LATERAL (
+           SELECT ss.id
+           FROM service_snapshots ss
+           WHERE ss.service_id = s.id
+           ORDER BY ss.fetched_at DESC, ss.id DESC
+           LIMIT 1
+         ) l
        )`,
     [SNAPSHOT_RETENTION_DAYS],
   )

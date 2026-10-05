@@ -72,10 +72,10 @@ declare global {
 }
 
 /**
- * Fail a dead connection quickly. The board query itself is a few seconds
- * (latest snapshot per service plus health and incidents), and it runs when
- * the cached page is regenerated — not on every refresh — so the statement
- * budget matches the worker pool rather than cutting a live read into mock.
+ * Fail a dead connection quickly. The board query (latest snapshot per
+ * service plus health and incidents) runs when the cached page is
+ * regenerated — not on every refresh — so the statement budget matches the
+ * worker pool rather than cutting a live read into mock.
  */
 const CONNECT_TIMEOUT_MS = 5_000
 const QUERY_TIMEOUT_MS = 20_000
@@ -174,13 +174,21 @@ async function queryLiveSnapshots(): Promise<Map<string, LiveSnapshot>> {
     return new Map()
   }
 
+  // `latest` is one `LIMIT 1` probe of service_snapshots_service_fetched_idx
+  // per service. `DISTINCT ON` over the table read the full 30-day history
+  // (~450 rows/tick) and took ~13s, which every board cache miss waited on.
   const { rows } = await pool.query<SnapshotRow>(
     `WITH latest AS (
-       SELECT DISTINCT ON (service_id)
-              service_id, status::text AS status, incident_title, stale,
-              fetched_at
-       FROM service_snapshots
-       ORDER BY service_id, fetched_at DESC, id DESC
+       SELECT s.id AS service_id, l.status, l.incident_title, l.stale,
+              l.fetched_at
+       FROM services s
+       CROSS JOIN LATERAL (
+         SELECT status::text AS status, incident_title, stale, fetched_at
+         FROM service_snapshots ss
+         WHERE ss.service_id = s.id
+         ORDER BY ss.fetched_at DESC, ss.id DESC
+         LIMIT 1
+       ) l
      ),
      health AS (
        SELECT service_id,
